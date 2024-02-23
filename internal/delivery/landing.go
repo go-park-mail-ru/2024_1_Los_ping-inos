@@ -10,8 +10,7 @@ func (c *Deliver) landingHandler(mux *http.ServeMux) {
 		func(w http.ResponseWriter, _ *http.Request) {
 			ids, err := c.serv.GetCoolIdsList()
 			if err != nil {
-				// а вот тут хз как ошибку обрабатывать
-				// просто в лог писать?
+				//TODO log + http response
 			}
 
 			fmt.Fprintf(w, "cool ids:\n")

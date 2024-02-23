@@ -16,16 +16,16 @@ type Deliver struct {
 	serv Service
 }
 
-func New(l Service) *Deliver {
-	return &Deliver{serv: l}
+func New(service Service) *Deliver {
+	return &Deliver{serv: service}
 }
 
 // StartServer - запуск сервера
-func StartServer(deliver *Deliver) error {
+func StartServer(deliver ...*Deliver) error {
 	mux := http.NewServeMux()
 
 	// тут хендлеры добавлять
-	deliver.landingHandler(mux)
+	deliver[0].landingHandler(mux)
 
 	server := http.Server{
 		Addr:         config.Cfg.Server.Host + config.Cfg.Server.Port,

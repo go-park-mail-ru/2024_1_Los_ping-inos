@@ -14,8 +14,8 @@ type Service struct {
 	storage Storage
 }
 
-func New(s Storage) *Service {
-	return &Service{storage: s}
+func New(stor Storage) *Service {
+	return &Service{storage: stor}
 }
 
 // GetCoolIdsList - пример логики
