@@ -8,11 +8,24 @@ import (
 	"main.go/config"
 )
 
-func StartServer() error {
+type Service interface {
+	GetCoolIdsList() ([]string, error)
+}
+
+type Deliver struct {
+	serv Service
+}
+
+func New(l Service) *Deliver {
+	return &Deliver{serv: l}
+}
+
+// StartServer - запуск сервера
+func StartServer(deliver *Deliver) error {
 	mux := http.NewServeMux()
 
-	// сюда добавлять хендлеры страничек
-	mux.HandleFunc("/", landing)
+	// тут хендлеры добавлять
+	deliver.landingHandler(mux)
 
 	server := http.Server{
 		Addr:         config.Cfg.Server.Host + config.Cfg.Server.Port,
