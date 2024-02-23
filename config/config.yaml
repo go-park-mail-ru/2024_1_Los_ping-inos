@@ -1,0 +1,15 @@
+debug: true
+
+server: 
+    host: "127.0.0.1"
+    port: ":8080"
+    timeout: 5
+
+database:
+  host: ""
+  port: ""
+  database: ""
+  username: ""
+  password: ""
+  
+filesPaths:
