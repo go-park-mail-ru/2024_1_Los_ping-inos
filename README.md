@@ -8,8 +8,14 @@ Backend-репозиторий команды Los_ping-inos
 
 - `internal`
   - `app`
-    - `main.go` - старт сервера
-  - `storage` - 50 оттенков крудов
+    - `main.go` - main.
+  - `delivery` - общение с внешним миром
+    - `runserver.go` - старт сервера
+    - `landing.go` - пример обработки страницы
+  - `service` - бизнес логика
+    - `getExample.go` - пример бизнес логики
+  - `storage` - круды
+    - `entityExample.go` - пример вытаскивания информации из бд (без бд) 
   - `types` - кастомные гошные типы
 
 ## Добавочное
