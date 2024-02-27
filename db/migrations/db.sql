@@ -49,16 +49,3 @@ create table if not exists dislike (
   
   primary key(peson_one_id, person_two_id)
 );
-
-create table if not exists match (
-  person_one_id serial not null references person(id)
-    on delete cascade
-    on update cascade,
-  person_two_id serial not null references person(id)
-    on delete cascade
-    on update cascade,
-  isFirstBlock boolean not null default false,
-  isSecondBlock boolean not null default false,
-  
-  primary key(person_one_id, person_two_id)
-);
