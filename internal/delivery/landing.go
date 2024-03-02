@@ -5,17 +5,16 @@ import (
 	"net/http"
 )
 
-func (c *Deliver) landingHandler(mux *http.ServeMux) {
+func (c *Deliver) GetCardsHandler(mux *http.ServeMux) {
 	mux.HandleFunc("/",
-		func(w http.ResponseWriter, _ *http.Request) {
-			ids, err := c.serv.GetCoolIdsList()
+		func(w http.ResponseWriter, r *http.Request) {
+			_, err := c.serv.GetCards(w, r)
 			if err != nil {
-				//TODO log + http response
-			}
-
-			fmt.Fprintf(w, "cool ids:\n")
-			for i := range ids {
-				fmt.Fprintf(w, "%v\n", i)
+				http.Error(w, "forbidden", http.StatusForbidden)
+				fmt.Println("access denied!")
+			} else {
+				// TODO вернуть карточки
+				fmt.Println("u'r good")
 			}
 		})
 }

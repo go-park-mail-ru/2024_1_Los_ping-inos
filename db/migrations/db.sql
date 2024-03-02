@@ -9,7 +9,8 @@ create table if not exists person (
   password text not null default '',
   created_at timestamp not null default current_timestamp,
   premium boolean not null default false,
-  likes_left integer not null default '0'
+  likes_left integer not null default '0',
+  session_id text default ''
 );
 
 create table if not exists interest (
@@ -47,5 +48,5 @@ create table if not exists dislike (
     on delete cascade
     on update cascade,
   
-  primary key(peson_one_id, person_two_id)
+  primary key(person_one_id, person_two_id)
 );

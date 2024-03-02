@@ -1,6 +1,7 @@
 package delivery
 
 import (
+	models "main.go/db"
 	"net/http"
 	"time"
 
@@ -9,7 +10,7 @@ import (
 )
 
 type Service interface {
-	GetCoolIdsList() ([]string, error)
+	GetCards(w http.ResponseWriter, r *http.Request) ([]models.Person, error)
 }
 
 type Deliver struct {
@@ -25,7 +26,7 @@ func StartServer(deliver ...*Deliver) error {
 	mux := http.NewServeMux()
 
 	// тут хендлеры добавлять
-	deliver[0].landingHandler(mux)
+	deliver[0].GetCardsHandler(mux)
 
 	server := http.Server{
 		Addr:         config.Cfg.Server.Host + config.Cfg.Server.Port,

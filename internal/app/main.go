@@ -16,9 +16,10 @@ func main() {
 		logrus.Fatal(err)
 	}
 
-	stor := storage.Storage{}
-	serv := service.New(stor)
-	deliver := delivery.New(serv)
+	personStore := storage.PersonStorage{}
+	auth := service.NewAuthHandler()
+	authServ := service.New(&personStore, auth)
+	deliver := delivery.New(authServ)
 
 	err = delivery.StartServer(deliver)
 	if err != nil {

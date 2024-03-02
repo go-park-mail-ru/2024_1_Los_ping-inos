@@ -3,6 +3,7 @@ module main.go
 go 1.19
 
 require (
+	github.com/Masterminds/squirrel v1.5.4
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/viper v1.18.2
 )
@@ -10,6 +11,8 @@ require (
 require (
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
+	github.com/lann/builder v0.0.0-20180802200727-47ae307949d0 // indirect
+	github.com/lann/ps v0.0.0-20150810152359-62de8c46ede0 // indirect
 	github.com/magiconair/properties v1.8.7 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/pelletier/go-toml/v2 v2.1.0 // indirect
