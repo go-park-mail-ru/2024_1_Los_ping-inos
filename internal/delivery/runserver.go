@@ -10,15 +10,22 @@ import (
 )
 
 type Service interface {
-	GetCards(w http.ResponseWriter, r *http.Request) ([]models.Person, error)
+	GetCards(sessionID string) ([]models.Person, error)
+}
+
+type Auth interface {
+	IsAuthenticated(sessionID string) bool
+	Login(email, password string) (string, error)
+	Logout(sessionID string) error
 }
 
 type Deliver struct {
 	serv Service
+	auth Auth
 }
 
-func New(service Service) *Deliver {
-	return &Deliver{serv: service}
+func New(service Service, auth Auth) *Deliver {
+	return &Deliver{serv: service, auth: auth}
 }
 
 // StartServer - запуск сервера

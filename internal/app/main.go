@@ -18,8 +18,8 @@ func main() {
 
 	personStore := storage.PersonStorage{}
 	auth := service.NewAuthHandler()
-	authServ := service.New(&personStore, auth)
-	deliver := delivery.New(authServ)
+	serv := service.New(&personStore)
+	deliver := delivery.New(serv, auth)
 
 	err = delivery.StartServer(deliver)
 	if err != nil {

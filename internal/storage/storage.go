@@ -21,33 +21,13 @@ func (storage *PersonStorage) Get(filter *models.PersonFilter) ([]*models.Person
 		filter = &models.PersonFilter{}
 	}
 
-	if filter.ID != nil {
-		IDMap := qb.Or{}
-		for _, id := range filter.ID {
-			IDMap = append(IDMap, qb.Eq{"id": id})
-		}
-		whereMap = append(whereMap, IDMap)
-	}
-
-	if filter.Email != nil {
-		emailMap := qb.Or{}
-		for _, ID := range filter.Email {
-			emailMap = append(emailMap, qb.Eq{"email": ID})
-		}
-		whereMap = append(whereMap, emailMap)
-	}
-
-	if filter.SessionID != nil {
-		emailMap := qb.Or{}
-		for _, ID := range filter.Email {
-			emailMap = append(emailMap, qb.Eq{"session_id": ID})
-		}
-		whereMap = append(whereMap, emailMap)
-	}
+	whereMap = processIDFilter(filter, whereMap)
+	whereMap = processEmailFilter(filter, whereMap)
+	whereMap = processSessionIDFilter(filter, whereMap)
 
 	query := qb.
 		Select("*").
-		From("person").
+		From("person"). // TODO название таблиц в константы
 		Where(whereMap).
 		RunWith(storage.dbReader)
 
@@ -72,4 +52,37 @@ func (storage *PersonStorage) Get(filter *models.PersonFilter) ([]*models.Person
 	}
 
 	return persons, nil
+}
+
+func processIDFilter(filter *models.PersonFilter, whereMap qb.And) qb.And {
+	if filter.ID != nil {
+		IDMap := qb.Or{}
+		for _, id := range filter.ID {
+			IDMap = append(IDMap, qb.Eq{"id": id})
+		}
+		whereMap = append(whereMap, IDMap)
+	}
+	return whereMap
+}
+
+func processEmailFilter(filter *models.PersonFilter, whereMap qb.And) qb.And {
+	if filter.Email != nil {
+		emailMap := qb.Or{}
+		for _, ID := range filter.Email {
+			emailMap = append(emailMap, qb.Eq{"email": ID})
+		}
+		whereMap = append(whereMap, emailMap)
+	}
+	return whereMap
+}
+
+func processSessionIDFilter(filter *models.PersonFilter, whereMap qb.And) qb.And {
+	if filter.SessionID != nil {
+		emailMap := qb.Or{}
+		for _, ID := range filter.Email {
+			emailMap = append(emailMap, qb.Eq{"session_id": ID})
+		}
+		whereMap = append(whereMap, emailMap)
+	}
+	return whereMap
 }
