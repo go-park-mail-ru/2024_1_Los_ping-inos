@@ -1,37 +1,26 @@
 package service
 
 import (
-	"errors"
-	"main.go/db"
+	models "main.go/db"
 	"main.go/internal/types"
-	"net/http"
 )
 
-// Storage - С ростом количества крудов тоже растёт
-type Storage interface {
-	PersonStorage
-}
-
-type PersonStorage interface {
+type PersonStorage interface { // pochemu on tut, logichnee opredelit v storage
 	Get(filter *models.PersonFilter) ([]*models.Person, error)
+	AddAccount(Name string, Birhday string, Gender string, Email string, Password string) error
 }
 
 // Service - Обработчик всей логики
 type Service struct {
-	storage Storage
-	auth    Auth
+	storage PersonStorage
 }
 
-func New(stor Storage, auth Auth) *Service {
-	return &Service{storage: stor, auth: auth}
+func New(stor PersonStorage) *Service {
+	return &Service{storage: stor}
 }
 
 // GetCards - вернуть ленту пользователей, доступно только авторизованному пользователю
-func (service *Service) GetCards(w http.ResponseWriter, r *http.Request) ([]models.Person, error) {
-	if !service.auth.IsAuthenticated(w, r) {
-		return nil, errors.New("not authenticated")
-	}
-
+func (service *Service) GetCards(sessionID string) ([]models.Person, error) {
 	res := make([]models.Person, 0)
 	var i types.UserID
 	for ; i < 5; i++ {

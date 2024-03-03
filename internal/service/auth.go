@@ -1,34 +1,19 @@
 package service
 
 import (
-	"main.go/db"
+	"errors"
+	"sync"
+
+	"github.com/google/uuid"
+	"golang.org/x/crypto/bcrypt"
+	models "main.go/db"
 	"main.go/internal/types"
-	"math/rand"
-	"net/http"
-	"time"
 )
-
-var (
-	letterRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
-)
-
-type Auth interface {
-	IsAuthenticated(w http.ResponseWriter, r *http.Request) bool
-	Login(w http.ResponseWriter, r *http.Request) bool
-	Logout(w http.ResponseWriter, r *http.Request) bool
-}
-
-func RandStringRunes(n int) string {
-	b := make([]rune, n)
-	for i := range b {
-		b[i] = letterRunes[rand.Intn(len(letterRunes))]
-	}
-	return string(b)
-}
 
 type AuthHandler struct {
 	sessions map[string]types.UserID
-	dbReader Storage
+	dbReader PersonStorage
+	mutex    sync.RWMutex
 }
 
 func NewAuthHandler() *AuthHandler {
@@ -37,69 +22,86 @@ func NewAuthHandler() *AuthHandler {
 	}
 }
 
-func (api *AuthHandler) IsAuthenticated(_ http.ResponseWriter, r *http.Request) bool {
-	authorized := false
-	session, err := r.Cookie("session_id")
-	if err == nil && session != nil {
-		_, authorized = api.sessions[session.Value]
+func (api *AuthHandler) IsAuthenticated(sessionID string) bool {
+	api.mutex.RLock()
+	if _, authorized := api.sessions[sessionID]; authorized { // смотрим, есть ли запись в кеше
+		return true
+	}
+	api.mutex.RUnlock()
+
+	// если сейчас в кеше сессии нет, лезем смотреть в бд
+	sessions := make([]string, 1)
+	sessions[0] = sessionID
+	person, err := api.dbReader.Get(&models.PersonFilter{SessionID: sessions})
+	if err != nil || person == nil {
+		return false
 	}
 
-	if authorized {
-		return true
-	} else { // если сейчас в кеше сессии нет, лезем смотреть в бд
-		sessions := make([]string, 1)
-		sessions[0] = session.Value
-		person, err := api.dbReader.Get(&models.PersonFilter{SessionID: sessions})
-		if err != nil || person == nil {
-			return false
-		}
-		api.sessions[session.Value] = person[0].ID // нашли - запоминаем
-		return true
-	}
+	api.mutex.Lock()
+	api.sessions[sessionID] = person[0].ID // нашли - запоминаем в кеш, gonka, sessii ne doljni hranitsa v sql
+	api.mutex.Unlock()
+	return true
 }
 
-func (api *AuthHandler) Login(w http.ResponseWriter, r *http.Request) bool {
+// Login - принимает логин, пароль; возвращает ID сессии и ошибку
+// Email and password, not login
+func (api *AuthHandler) Login(email, password string) (string, error) {
 	ems := make([]string, 1)
-	ems[0] = r.FormValue("email")
+	ems[0] = email
 	users, ok := api.dbReader.Get(&models.PersonFilter{Email: ems})
-	if ok != nil {
-		http.Error(w, `no user`, http.StatusNotFound)
-		return false
+	if ok != nil || users == nil {
+		return "", errors.New("no such person")
 	}
+
 	user := users[0]
-	if user.Password != r.FormValue("password") {
-		http.Error(w, `bad pass`, http.StatusBadRequest)
-		return false
+
+	pass, err := hashPassword(password)
+	if err != nil || user.Password != pass { // dve raznie proverki doljni bit
+		return "", errors.New("wrong password")
 	}
 
-	SID := RandStringRunes(32)
+	SID := uuid.NewString()
 
-	api.sessions[SID] = user.ID
+	api.mutex.Lock()
+	api.sessions[SID] = user.ID // gonka
+	api.mutex.Unlock()
 
-	cookie := &http.Cookie{
-		Name:    "session_id",
-		Value:   SID,
-		Expires: time.Now().Add(10 * time.Hour),
-	}
-	http.SetCookie(w, cookie)
-	return true
+	// TODO сделать update в personStorage и через него в бд записать
+
+	return SID, nil
 }
 
-func (api *AuthHandler) Logout(w http.ResponseWriter, r *http.Request) bool {
-	session, err := r.Cookie("session_id")
-	if err == http.ErrNoCookie {
-		http.Error(w, `no sess`, http.StatusUnauthorized)
-		return false
+func (api *AuthHandler) Registration(Name string, Birthday string, Gender string, Email string, Password string) error {
+	hashPassword, err := hashPassword(Password)
+	if err != nil {
+		return errors.New("hash func error")
 	}
 
-	if _, ok := api.sessions[session.Value]; !ok {
-		http.Error(w, `no sess`, http.StatusUnauthorized)
-		return false
+	err = api.dbReader.AddAccount(Name, Birthday, Gender, Email, hashPassword)
+	if err != nil {
+		return err
 	}
 
-	delete(api.sessions, session.Value)
+	return nil
+}
 
-	session.Expires = time.Now().AddDate(0, 0, -1)
-	http.SetCookie(w, session)
-	return true
+func (api *AuthHandler) Logout(sessionID string) error {
+	api.mutex.RLock()
+	if _, ok := api.sessions[sessionID]; !ok {
+		return errors.New("no session")
+	}
+	api.mutex.RUnlock()
+
+	api.mutex.Lock()
+	delete(api.sessions, sessionID)
+	api.mutex.Unlock()
+
+	// TODO сделать update в personStorage и через него в бд записать
+
+	return nil
+}
+
+func hashPassword(password string) (string, error) {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14) // TODO подумать насчет константы
+	return string(bytes), err
 }

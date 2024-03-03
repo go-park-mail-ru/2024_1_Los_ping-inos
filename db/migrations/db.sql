@@ -7,6 +7,7 @@ create table if not exists person (
   photo text not null default '',
   email text not null default '',
   password text not null default '',
+  gender text not null default 'attach helicopter',
   created_at timestamp not null default current_timestamp,
   premium boolean not null default false,
   likes_left integer not null default '0',

@@ -8,7 +8,7 @@ import (
 	"main.go/internal/storage"
 )
 
-const configPath = "config/config.yaml"
+const configPath = "../../config/config.yaml"
 
 func main() {
 	_, err := config.LoadConfig(configPath)
@@ -18,8 +18,8 @@ func main() {
 
 	personStore := storage.PersonStorage{}
 	auth := service.NewAuthHandler()
-	authServ := service.New(&personStore, auth)
-	deliver := delivery.New(authServ)
+	serv := service.New(&personStore)
+	deliver := delivery.New(serv, auth) // strange
 
 	err = delivery.StartServer(deliver)
 	if err != nil {
