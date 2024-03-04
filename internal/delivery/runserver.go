@@ -1,7 +1,7 @@
 package delivery
 
 import (
-	models "main.go/db"
+	"main.go/internal/types"
 	"net/http"
 	"time"
 
@@ -10,7 +10,7 @@ import (
 )
 
 type Service interface {
-	GetCards(sessionID string) ([]models.Person, error)
+	GetCards(sessionID string, firstID types.UserID) (string, error)
 }
 
 type Auth interface {

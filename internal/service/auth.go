@@ -3,23 +3,25 @@ package service
 import (
 	"errors"
 	"github.com/google/uuid"
+	"github.com/sirupsen/logrus"
 	"golang.org/x/crypto/bcrypt"
 	"main.go/db"
 	"main.go/internal/types"
 )
 
-type AuthHandler struct {
+type AuthService struct {
 	sessions map[string]types.UserID
 	dbReader PersonStorage
 }
 
-func NewAuthHandler() *AuthHandler {
-	return &AuthHandler{
+func NewAuthHandler(dbReader PersonStorage) *AuthService {
+	return &AuthService{
 		sessions: make(map[string]types.UserID),
+		dbReader: dbReader,
 	}
 }
 
-func (api *AuthHandler) IsAuthenticated(sessionID string) bool {
+func (api *AuthService) IsAuthenticated(sessionID string) bool {
 	if _, authorized := api.sessions[sessionID]; authorized { // смотрим, есть ли запись в кеше
 		return true
 	}
@@ -27,8 +29,10 @@ func (api *AuthHandler) IsAuthenticated(sessionID string) bool {
 	// если сейчас в кеше сессии нет, лезем смотреть в бд
 	sessions := make([]string, 1)
 	sessions[0] = sessionID
+
 	person, err := api.dbReader.Get(&models.PersonFilter{SessionID: sessions})
-	if err != nil || person == nil {
+	if err != nil || person == nil || len(person) == 0 {
+		logrus.Info("noUser")
 		return false
 	}
 
@@ -37,7 +41,7 @@ func (api *AuthHandler) IsAuthenticated(sessionID string) bool {
 }
 
 // Login - принимает логин, пароль; возвращает ID сессии и ошибку
-func (api *AuthHandler) Login(email, password string) (string, error) {
+func (api *AuthService) Login(email, password string) (string, error) {
 	ems := make([]string, 1)
 	ems[0] = email
 	users, ok := api.dbReader.Get(&models.PersonFilter{Email: ems})
@@ -61,7 +65,7 @@ func (api *AuthHandler) Login(email, password string) (string, error) {
 	return SID, nil
 }
 
-func (api *AuthHandler) Logout(sessionID string) error {
+func (api *AuthService) Logout(sessionID string) error {
 	if _, ok := api.sessions[sessionID]; !ok {
 		return errors.New("no session")
 	}

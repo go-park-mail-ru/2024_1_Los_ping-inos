@@ -64,7 +64,7 @@ func LoadConfig(path string) (*Config, error) {
 	if err != nil {
 		return nil, err
 	}
-	err = viper.BindEnv("database.database", "DB_DATABASE")
+	err = viper.BindEnv("database.dbname", "DB_NAME")
 	if err != nil {
 		return nil, err
 	}

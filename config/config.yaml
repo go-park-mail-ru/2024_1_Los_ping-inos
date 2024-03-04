@@ -5,11 +5,12 @@ server:
     port: ":8080"
     timeout: 5
 
+# TODO тут пока дефолтные настройки для локалки поставил, на деплое надо в .env прятать
 database:
-  host: ""
-  port: ""
-  database: ""
-  username: ""
-  password: ""
+  host: "localhost"
+  port: 5432
+  dbname: "tpTinder"
+  user: "postgres"
+  password: "postgres"
   
 filesPaths:
