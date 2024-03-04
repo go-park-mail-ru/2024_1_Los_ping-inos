@@ -1,6 +1,7 @@
 package delivery
 
 import (
+	"main.go/internal/types"
 	"net/http"
 	"time"
 
@@ -9,15 +10,22 @@ import (
 )
 
 type Service interface {
-	GetCoolIdsList() ([]string, error)
+	GetCards(sessionID string, firstID types.UserID) (string, error)
+}
+
+type Auth interface {
+	IsAuthenticated(sessionID string) bool
+	Login(email, password string) (string, error)
+	Logout(sessionID string) error
 }
 
 type Deliver struct {
 	serv Service
+	auth Auth
 }
 
-func New(service Service) *Deliver {
-	return &Deliver{serv: service}
+func New(service Service, auth Auth) *Deliver {
+	return &Deliver{serv: service, auth: auth}
 }
 
 // StartServer - запуск сервера
@@ -25,7 +33,7 @@ func StartServer(deliver ...*Deliver) error {
 	mux := http.NewServeMux()
 
 	// тут хендлеры добавлять
-	deliver[0].landingHandler(mux)
+	deliver[0].GetCardsHandler(mux)
 
 	server := http.Server{
 		Addr:         config.Cfg.Server.Host + config.Cfg.Server.Port,
