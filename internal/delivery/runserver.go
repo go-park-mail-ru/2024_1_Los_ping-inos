@@ -1,21 +1,18 @@
 package delivery
 
 import (
+	"github.com/sirupsen/logrus"
+	"main.go/config"
 	"main.go/internal/types"
 	"net/http"
 	"time"
-
-	models "main.go/db"
-
-	"github.com/sirupsen/logrus"
-	"main.go/config"
 )
 
 type Service interface {
 	GetCards(sessionID string, firstID types.UserID) (string, error)
 }
 
-type Auth interface { 
+type Auth interface {
 	IsAuthenticated(sessionID string) bool
 	Login(email, password string) (string, error)
 	Logout(sessionID string) error

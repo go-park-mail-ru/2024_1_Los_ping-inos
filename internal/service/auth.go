@@ -16,8 +16,8 @@ type AuthHandler struct {
 	mutex    sync.RWMutex
 }
 
-func NewAuthHandler(dbReader PersonStorage) *AuthService {
-	return &AuthService{
+func NewAuthHandler(dbReader PersonStorage) *AuthHandler {
+	return &AuthHandler{
 		sessions: make(map[string]types.UserID),
 		dbReader: dbReader,
 	}
@@ -70,7 +70,6 @@ func (api *AuthHandler) Login(email, password string) (string, error) {
 
 	return SID, nil
 }
-
 
 func (api *AuthHandler) Registration(Name string, Birthday string, Gender string, Email string, Password string) error {
 	hashPassword, err := hashPassword(Password)

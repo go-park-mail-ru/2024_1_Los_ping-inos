@@ -12,7 +12,7 @@ import (
 	"main.go/internal/storage"
 )
 
-const configPath = "../../config/config.yaml"
+const configPath = "config/config.yaml"
 
 func main() {
 	_, err := config.LoadConfig(configPath)
