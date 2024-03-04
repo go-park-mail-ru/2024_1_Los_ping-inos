@@ -6,18 +6,18 @@ import (
 )
 
 type Person struct {
-	ID          types.UserID
-	Name        string
-	Birthday    time.Time
-	Description string
-	Location    string
-	Photo       string
-	Email       string
-	Password    string
-	CreatedAt   time.Time
-	Premium     bool
-	LikesLeft   int
-	SessionID   string
+	ID          types.UserID `json:"ID"`
+	Name        string       `json:"name"`
+	Birthday    time.Time    `json:"birthday"`
+	Description string       `json:"description"`
+	Location    string       `json:"-"`
+	Photo       string       `json:"photo"`
+	Email       string       `json:"-"`
+	Password    string       `json:"-"`
+	CreatedAt   time.Time    `json:"-"`
+	Premium     bool         `json:"-"`
+	LikesLeft   int          `json:"-"`
+	SessionID   string       `json:"-"`
 }
 
 type PersonFilter struct {

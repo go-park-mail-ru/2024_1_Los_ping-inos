@@ -1,6 +1,7 @@
 package delivery
 
 import (
+	"main.go/internal/types"
 	"net/http"
 	"time"
 
@@ -11,10 +12,10 @@ import (
 )
 
 type Service interface {
-	GetCards(sessionID string) ([]models.Person, error)
+	GetCards(sessionID string, firstID types.UserID) (string, error)
 }
 
-type Auth interface { // pochemu eto v delivery? k chemu ono otnositsya, kak ponyat?
+type Auth interface { 
 	IsAuthenticated(sessionID string) bool
 	Login(email, password string) (string, error)
 	Logout(sessionID string) error

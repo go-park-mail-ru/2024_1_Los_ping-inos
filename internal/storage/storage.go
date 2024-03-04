@@ -5,36 +5,44 @@ import (
 	"fmt"
 
 	qb "github.com/Masterminds/squirrel"
-	models "main.go/db"
+	"github.com/sirupsen/logrus"
+	"main.go/db"
 )
-
-type Storage struct {
-	Person PersonStorage
-}
 
 type PersonStorage struct {
 	dbReader *sql.DB
 }
 
+func NewPersonStorage(dbReader *sql.DB) *PersonStorage {
+	return &PersonStorage{
+		dbReader: dbReader,
+	}
+}
+
 func (storage *PersonStorage) Get(filter *models.PersonFilter) ([]*models.Person, error) {
+	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
 	whereMap := qb.And{}
 
 	if filter == nil {
 		filter = &models.PersonFilter{}
 	}
 
-	whereMap = processIDFilter(filter, whereMap)
-	whereMap = processEmailFilter(filter, whereMap)
-	whereMap = processSessionIDFilter(filter, whereMap)
+	processIDFilter(filter, &whereMap)
+	processEmailFilter(filter, &whereMap)
+	processSessionIDFilter(filter, &whereMap)
 
-	query := qb.
-		Select("*").    // select * - not safe
+	query := stBuilder.
+		Select("*").
 		From("person"). // TODO название таблиц в константы
 		Where(whereMap).
 		RunWith(storage.dbReader)
 
 	rows, err := query.Query()
+
 	if err != nil {
+		logrus.Info("can't query")
+		println(query.ToSql())
+		println(err.Error())
 		return nil, err
 	}
 	defer rows.Close()
@@ -47,6 +55,7 @@ func (storage *PersonStorage) Get(filter *models.PersonFilter) ([]*models.Person
 			&person.Email, &person.Password, &person.CreatedAt, &person.Premium, &person.LikesLeft, &person.SessionID)
 
 		if err != nil {
+			logrus.Info("can't scan row")
 			return nil, err
 		}
 
@@ -55,6 +64,7 @@ func (storage *PersonStorage) Get(filter *models.PersonFilter) ([]*models.Person
 
 	return persons, nil
 }
+
 
 func (storage *PersonStorage) AddAccount(Name string, Birthday string, Gender string, Email string, Password string) error {
 	_, err := storage.dbReader.Exec(
@@ -67,35 +77,21 @@ func (storage *PersonStorage) AddAccount(Name string, Birthday string, Gender st
 	return nil
 }
 
-func processIDFilter(filter *models.PersonFilter, whereMap qb.And) qb.And { // what is it?
+func processIDFilter(filter *models.PersonFilter, whereMap *qb.And) {
 	if filter.ID != nil {
-		IDMap := qb.Or{}
-		for _, id := range filter.ID {
-			IDMap = append(IDMap, qb.Eq{"id": id})
-		}
-		whereMap = append(whereMap, IDMap)
+		*whereMap = append(*whereMap, qb.Eq{"id": filter.ID})
 	}
-	return whereMap
 }
 
-func processEmailFilter(filter *models.PersonFilter, whereMap qb.And) qb.And {
+func processEmailFilter(filter *models.PersonFilter, whereMap *qb.And) {
 	if filter.Email != nil {
-		emailMap := qb.Or{}
-		for _, ID := range filter.Email {
-			emailMap = append(emailMap, qb.Eq{"email": ID})
-		}
-		whereMap = append(whereMap, emailMap)
+		*whereMap = append(*whereMap, qb.Eq{"email": filter.Email})
 	}
-	return whereMap
+
 }
 
-func processSessionIDFilter(filter *models.PersonFilter, whereMap qb.And) qb.And {
+func processSessionIDFilter(filter *models.PersonFilter, whereMap *qb.And) {
 	if filter.SessionID != nil {
-		emailMap := qb.Or{}
-		for _, ID := range filter.Email {
-			emailMap = append(emailMap, qb.Eq{"session_id": ID})
-		}
-		whereMap = append(whereMap, emailMap)
+		*whereMap = append(*whereMap, qb.Eq{"session_id": filter.SessionID})
 	}
-	return whereMap
 }

@@ -5,8 +5,10 @@ import (
 	"io"
 	"net/http"
 	"time"
-
 	requests "main.go/internal/pkg"
+	"main.go/internal/types"
+	"strconv"
+
 )
 
 func (deliver *Deliver) GetCardsHandler(mux *http.ServeMux) {
@@ -16,15 +18,31 @@ func (deliver *Deliver) GetCardsHandler(mux *http.ServeMux) {
 			session, err := request.Cookie("session_id") // проверка авторизации
 			if err != nil || session == nil || !deliver.auth.IsAuthenticated(session.Value) {
 				http.Error(respWriter, "forbidden", http.StatusForbidden)
-			} // nujen logger
+        return
+			} 
 
-			// _, err = deliver.serv.GetCards(session.Value) - TUT PANIKA
+			var lastID int
+			if request.URL.Query().Get("last") != "" {
+				lastID, err = strconv.Atoi(request.URL.Query().Get("last"))
+			} else {
+				lastID = 0
+			}
 
-			// if err != nil {
-			// 	http.Error(respWriter, "can't return cards", http.StatusInternalServerError)
-			// } else {
-			// 	// TODO вернуть карточки
-			// }
+			if err != nil {
+				http.Error(respWriter, "can't return cards: no last ID", http.StatusInternalServerError)
+				return
+			}
+
+			cards, err := deliver.serv.GetCards(session.Value, types.UserID(lastID))
+			if err != nil {
+				http.Error(respWriter, "can't return cards: smth went wrong", http.StatusInternalServerError)
+				return
+			}
+
+			respWriter.Header().Set("Content-Type", "application/json")
+			_, err = respWriter.Write([]byte(cards))
+			if err != nil {
+				http.Error(respWriter, "can't return cards: response writer error", http.StatusInternalServerError)
 		})
 }
 

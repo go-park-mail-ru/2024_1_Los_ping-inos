@@ -16,9 +16,10 @@ type AuthHandler struct {
 	mutex    sync.RWMutex
 }
 
-func NewAuthHandler() *AuthHandler {
-	return &AuthHandler{
+func NewAuthHandler(dbReader PersonStorage) *AuthService {
+	return &AuthService{
 		sessions: make(map[string]types.UserID),
+		dbReader: dbReader,
 	}
 }
 
@@ -43,8 +44,7 @@ func (api *AuthHandler) IsAuthenticated(sessionID string) bool {
 	return true
 }
 
-// Login - принимает логин, пароль; возвращает ID сессии и ошибку
-// Email and password, not login
+// Login - принимает email, пароль; возвращает ID сессии и ошибку
 func (api *AuthHandler) Login(email, password string) (string, error) {
 	ems := make([]string, 1)
 	ems[0] = email
@@ -56,20 +56,21 @@ func (api *AuthHandler) Login(email, password string) (string, error) {
 	user := users[0]
 
 	pass, err := hashPassword(password)
-	if err != nil || user.Password != pass { // dve raznie proverki doljni bit
+	if err != nil || user.Password != pass { // TODO dve raznie proverki doljni bit
 		return "", errors.New("wrong password")
 	}
 
 	SID := uuid.NewString()
 
 	api.mutex.Lock()
-	api.sessions[SID] = user.ID // gonka
+	api.sessions[SID] = user.ID
 	api.mutex.Unlock()
 
 	// TODO сделать update в personStorage и через него в бд записать
 
 	return SID, nil
 }
+
 
 func (api *AuthHandler) Registration(Name string, Birthday string, Gender string, Email string, Password string) error {
 	hashPassword, err := hashPassword(Password)
@@ -97,7 +98,6 @@ func (api *AuthHandler) Logout(sessionID string) error {
 	api.mutex.Unlock()
 
 	// TODO сделать update в personStorage и через него в бд записать
-
 	return nil
 }
 
