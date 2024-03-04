@@ -1,12 +1,11 @@
 package delivery
 
 import (
+	"github.com/sirupsen/logrus"
+	"main.go/config"
 	"main.go/internal/types"
 	"net/http"
 	"time"
-
-	"github.com/sirupsen/logrus"
-	"main.go/config"
 )
 
 type Service interface {
@@ -17,6 +16,7 @@ type Auth interface {
 	IsAuthenticated(sessionID string) bool
 	Login(email, password string) (string, error)
 	Logout(sessionID string) error
+	Registration(Name string, Birthday string, Gender string, Email string, Password string) error
 }
 
 type Deliver struct {
@@ -34,6 +34,9 @@ func StartServer(deliver ...*Deliver) error {
 
 	// тут хендлеры добавлять
 	deliver[0].GetCardsHandler(mux)
+	deliver[0].GetLoginHandler(mux)
+	deliver[0].GetRegistrationHandler(mux)
+	deliver[0].GetLogoutHandler(mux)
 
 	server := http.Server{
 		Addr:         config.Cfg.Server.Host + config.Cfg.Server.Port,

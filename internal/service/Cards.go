@@ -1,15 +1,16 @@
 package service
 
 import (
-	"encoding/json"
+	models "main.go/db"
+	"main.go/internal/types"
+  "encoding/json"
 	"errors"
 	"golang.org/x/exp/slices"
-	"main.go/db"
-	"main.go/internal/types"
 )
 
 type PersonStorage interface {
 	Get(filter *models.PersonFilter) ([]*models.Person, error)
+	AddAccount(Name string, Birhday string, Gender string, Email string, Password string) error
 }
 
 // Service - Обработчик всей логики

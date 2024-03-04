@@ -2,6 +2,8 @@ package storage
 
 import (
 	"database/sql"
+	"fmt"
+
 	qb "github.com/Masterminds/squirrel"
 	"github.com/sirupsen/logrus"
 	"main.go/db"
@@ -61,6 +63,18 @@ func (storage *PersonStorage) Get(filter *models.PersonFilter) ([]*models.Person
 	}
 
 	return persons, nil
+}
+
+
+func (storage *PersonStorage) AddAccount(Name string, Birthday string, Gender string, Email string, Password string) error {
+	_, err := storage.dbReader.Exec(
+		"INSERT INTO person(name, birthday, email, password, gender) "+
+			"VALUES (s1, s2, s3, s4, s5)", Name, Birthday, Email, Password, Gender)
+	if err != nil {
+		return fmt.Errorf("Create user %w", err)
+	}
+
+	return nil
 }
 
 func processIDFilter(filter *models.PersonFilter, whereMap *qb.And) {

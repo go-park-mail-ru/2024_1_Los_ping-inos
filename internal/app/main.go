@@ -19,7 +19,6 @@ func main() {
 	if err != nil {
 		logrus.Fatal(err)
 	}
-
 	psqInfo := fmt.Sprintf("host=%s port=%d user=%s "+
 		"password=%s dbname=%s sslmode=disable",
 		viper.Get("database.host"), viper.Get("database.port"), viper.Get("database.user"),
@@ -39,7 +38,6 @@ func main() {
 	auth := service.NewAuthHandler(personStore)
 	serv := service.New(personStore)
 	deliver := delivery.New(serv, auth)
-
 	err = delivery.StartServer(deliver)
 	if err != nil {
 		logrus.Fatal(err)
