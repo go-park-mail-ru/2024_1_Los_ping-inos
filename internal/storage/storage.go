@@ -65,12 +65,12 @@ func (storage *PersonStorage) Get(filter *models.PersonFilter) ([]*models.Person
 	return persons, nil
 }
 
-
 func (storage *PersonStorage) AddAccount(Name string, Birthday string, Gender string, Email string, Password string) error {
 	_, err := storage.dbReader.Exec(
 		"INSERT INTO person(name, birthday, email, password, gender) "+
-			"VALUES (s1, s2, s3, s4, s5)", Name, Birthday, Email, Password, Gender)
+			"VALUES ($1, $2, $3, $4, $5)", Name, Birthday, Email, Password, Gender)
 	if err != nil {
+		println(err.Error())
 		return fmt.Errorf("Create user %w", err)
 	}
 

@@ -105,7 +105,7 @@ func (deliver *Deliver) GetRegistrationHandler(mux *http.ServeMux) {
 		func(w http.ResponseWriter, r *http.Request) {
 			if r.Method != http.MethodPost {
 				requests.SendResponse(w, r, http.StatusMethodNotAllowed, nil) // 405
-				// logger
+				logrus.Info("method not allowed")
 				return
 			}
 
@@ -114,20 +114,21 @@ func (deliver *Deliver) GetRegistrationHandler(mux *http.ServeMux) {
 			body, err := io.ReadAll(r.Body)
 			if err != nil {
 				requests.SendResponse(w, r, http.StatusBadRequest, nil)
-				// logger
+				logrus.Info("bad request")
 				return
 			}
 
 			err = json.Unmarshal(body, &request)
 			if err != nil {
 				requests.SendResponse(w, r, http.StatusBadRequest, nil)
-				// logger
+				logrus.Info("can't unmarshall")
 				return
 			}
 			err = deliver.auth.Registration(request.Name, request.Birthday, request.Gender, request.Email, request.Password)
 
 			if err != nil {
 				requests.SendResponse(w, r, http.StatusBadRequest, nil)
+				logrus.Info("can't auth")
 			}
 			requests.SendResponse(w, r, http.StatusOK, nil)
 		})
