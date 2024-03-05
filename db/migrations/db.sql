@@ -7,11 +7,11 @@ create table if not exists person (
   photo text not null default '',
   email text not null default '',
   password text not null default '',
-  gender text,
   created_at timestamp not null default current_timestamp,
   premium boolean not null default false,
   likes_left integer not null default '0',
-  session_id text default ''
+  session_id text default '',
+  gender text
 );
 
 create table if not exists interest (
