@@ -34,7 +34,7 @@ func (api *AuthHandler) IsAuthenticated(sessionID string) bool {
 	sessions := make([]string, 1)
 	sessions[0] = sessionID
 	person, err := api.dbReader.Get(&models.PersonFilter{SessionID: sessions})
-	if err != nil || person == nil {
+	if err != nil || len(person) == 0 {
 		return false
 	}
 

@@ -13,7 +13,11 @@ import (
 
 func (deliver *Deliver) GetCardsHandler(mux *http.ServeMux) {
 	mux.HandleFunc("/",
-		func(respWriter http.ResponseWriter, request *http.Request) {
+		func(respWriter http.ResponseWriter, request *http.Request) { //MethodOptions
+			if request.Method == http.MethodOptions {
+				requests.SendResponse(respWriter, request, http.StatusOK, nil) // 405
+			}
+
 			if request.Method != http.MethodGet {
 				requests.SendResponse(respWriter, request, http.StatusMethodNotAllowed, "wrong method") // 405
 				logrus.Info("wrong method")
@@ -50,13 +54,16 @@ func (deliver *Deliver) GetCardsHandler(mux *http.ServeMux) {
 				requests.SendResponse(respWriter, request, http.StatusInternalServerError,
 					"can't return cards: smth went wrong")
 			}
-
 		})
 }
 
 func (deliver *Deliver) GetLoginHandler(mux *http.ServeMux) {
 	mux.HandleFunc("/login",
 		func(w http.ResponseWriter, r *http.Request) {
+			if r.Method == http.MethodOptions {
+				requests.SendResponse(w, r, http.StatusOK, nil) // 405
+			}
+
 			if r.Method != http.MethodPost {
 				requests.SendResponse(w, r, http.StatusMethodNotAllowed, nil) // 405
 				// logger
@@ -103,6 +110,10 @@ func (deliver *Deliver) GetLoginHandler(mux *http.ServeMux) {
 func (deliver *Deliver) GetRegistrationHandler(mux *http.ServeMux) {
 	mux.HandleFunc("/registration",
 		func(w http.ResponseWriter, r *http.Request) {
+			if r.Method == http.MethodOptions {
+				requests.SendResponse(w, r, http.StatusOK, nil) // 405
+			}
+
 			if r.Method != http.MethodPost {
 				requests.SendResponse(w, r, http.StatusMethodNotAllowed, nil) // 405
 				logrus.Info("method not allowed")
@@ -137,6 +148,10 @@ func (deliver *Deliver) GetRegistrationHandler(mux *http.ServeMux) {
 func (deliver *Deliver) GetLogoutHandler(mux *http.ServeMux) {
 	mux.HandleFunc("/logout",
 		func(w http.ResponseWriter, r *http.Request) {
+			if r.Method == http.MethodOptions {
+				requests.SendResponse(w, r, http.StatusOK, nil) // 405
+			}
+
 			if r.Method != http.MethodGet { // delete zapros?
 				requests.SendResponse(w, r, http.StatusMethodNotAllowed, nil) // 405
 				// logger
