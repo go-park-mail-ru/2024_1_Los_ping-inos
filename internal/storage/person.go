@@ -51,7 +51,7 @@ func (storage *PersonStorage) Get(filter *models.PersonGetFilter) ([]*models.Per
 
 	for rows.Next() {
 		person := &models.Person{}
-		err := rows.Scan(&person.ID, &person.Name, &person.Birthday, &person.Description, &person.Location, &person.Photo,
+		err = rows.Scan(&person.ID, &person.Name, &person.Birthday, &person.Description, &person.Location, &person.Photo,
 			&person.Email, &person.Password, &person.CreatedAt, &person.Premium, &person.LikesLeft, &person.SessionID, &person.Gender)
 
 		if err != nil {

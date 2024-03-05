@@ -78,18 +78,23 @@ func (api *AuthHandler) Login(email, password string) (string, error) {
 	return SID, nil
 }
 
-func (api *AuthHandler) Registration(Name string, Birthday string, Gender string, Email string, Password string) error {
+func (api *AuthHandler) Registration(Name string, Birthday string, Gender string, Email string, Password string) (string, error) {
 	hashPassword, err := hashPassword(Password)
 	if err != nil {
-		return errors.New("hash func error")
+		return "", errors.New("hash func error")
 	}
 
 	err = api.dbReader.AddAccount(Name, Birthday, Gender, Email, hashPassword)
 	if err != nil {
-		return err
+		return "", err
 	}
 
-	return nil
+	SID, err := api.Login(Name, Password)
+	if err != nil {
+		logrus.Info(err.Error())
+		return "", err
+	}
+	return SID, nil
 }
 
 func (api *AuthHandler) Logout(sessionID string) error {

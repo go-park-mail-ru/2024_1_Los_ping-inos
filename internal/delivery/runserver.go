@@ -3,21 +3,9 @@ package delivery
 import (
 	"github.com/sirupsen/logrus"
 	"main.go/config"
-	"main.go/internal/types"
 	"net/http"
 	"time"
 )
-
-type Service interface {
-	GetCards(sessionID string, firstID types.UserID) (string, error)
-}
-
-type Auth interface {
-	IsAuthenticated(sessionID string) bool
-	Login(email, password string) (string, error)
-	Logout(sessionID string) error
-	Registration(Name string, Birthday string, Gender string, Email string, Password string) error
-}
 
 type Deliver struct {
 	serv Service

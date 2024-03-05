@@ -5,7 +5,7 @@ create table if not exists person (
   description text not null default '',
   location text not null default '', 
   photo text not null default '',
-  email text not null default '',
+  email text not null default '' UNIQUE,
   password text not null default '',
   created_at timestamp not null default current_timestamp,
   premium boolean not null default false,

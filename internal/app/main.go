@@ -35,8 +35,10 @@ func main() {
 	defer db.Close()
 
 	personStore := storage.NewPersonStorage(db)
+	interestStore := storage.NewInterestStorage(db)
+
 	auth := service.NewAuthHandler(personStore)
-	serv := service.New(personStore)
+	serv := service.New(personStore, interestStore)
 	deliver := delivery.New(serv, auth)
 	err = delivery.StartServer(deliver)
 	if err != nil {

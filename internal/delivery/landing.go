@@ -13,13 +13,14 @@ import (
 
 func (deliver *Deliver) GetCardsHandler(mux *http.ServeMux) {
 	mux.HandleFunc("/",
-		func(respWriter http.ResponseWriter, request *http.Request) { //MethodOptions
+		func(respWriter http.ResponseWriter, request *http.Request) {
 			if request.Method == http.MethodOptions {
-				requests.SendResponse(respWriter, request, http.StatusOK, nil) // 405
+				requests.SendResponse(respWriter, request, http.StatusOK, nil)
+				return
 			}
 
 			if request.Method != http.MethodGet {
-				requests.SendResponse(respWriter, request, http.StatusMethodNotAllowed, "wrong method") // 405
+				requests.SendResponse(respWriter, request, http.StatusMethodNotAllowed, nil)
 				logrus.Info("wrong method")
 				return
 			}
@@ -35,7 +36,7 @@ func (deliver *Deliver) GetCardsHandler(mux *http.ServeMux) {
 				lastID, err = strconv.Atoi(request.URL.Query().Get("last"))
 				if err != nil {
 					logrus.Info("can't process ID")
-					requests.SendResponse(respWriter, request, http.StatusBadRequest, "can't process ID")
+					requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
 				}
 			} else {
 				lastID = 0
@@ -43,12 +44,10 @@ func (deliver *Deliver) GetCardsHandler(mux *http.ServeMux) {
 
 			cards, err := deliver.serv.GetCards(session.Value, types.UserID(lastID))
 			if err != nil {
-				requests.SendResponse(respWriter, request, http.StatusInternalServerError,
-					"can't return cards: smth went wrong")
+				requests.SendResponse(respWriter, request, http.StatusInternalServerError, err.Error())
 				return
 			}
 
-			respWriter.Header().Set("Content-Type", "application/json")
 			_, err = respWriter.Write([]byte(cards))
 			if err != nil {
 				requests.SendResponse(respWriter, request, http.StatusInternalServerError,
@@ -61,11 +60,12 @@ func (deliver *Deliver) GetLoginHandler(mux *http.ServeMux) {
 	mux.HandleFunc("/login",
 		func(w http.ResponseWriter, r *http.Request) {
 			if r.Method == http.MethodOptions {
-				requests.SendResponse(w, r, http.StatusOK, nil) // 405
+				requests.SendResponse(w, r, http.StatusOK, nil)
+				return
 			}
 
 			if r.Method != http.MethodPost {
-				requests.SendResponse(w, r, http.StatusMethodNotAllowed, nil) // 405
+				requests.SendResponse(w, r, http.StatusMethodNotAllowed, nil)
 				// logger
 				return
 			}
@@ -74,33 +74,26 @@ func (deliver *Deliver) GetLoginHandler(mux *http.ServeMux) {
 
 			body, err := io.ReadAll(r.Body)
 			if err != nil {
-				requests.SendResponse(w, r, http.StatusBadRequest, nil)
+				requests.SendResponse(w, r, http.StatusBadRequest, err.Error())
 				// logger
 				return
 			}
 
 			err = json.Unmarshal(body, &request)
 			if err != nil {
-				requests.SendResponse(w, r, http.StatusBadRequest, nil)
+				requests.SendResponse(w, r, http.StatusBadRequest, err.Error())
 				// logger
 				return
 			}
 
 			SID, err := deliver.auth.Login(request.Email, request.Password)
 			if err != nil {
-				requests.SendResponse(w, r, http.StatusUnauthorized, nil)
+				requests.SendResponse(w, r, http.StatusUnauthorized, err.Error())
 				logrus.Info(err.Error())
 				return
 			}
 
-			cookie := &http.Cookie{
-				Name:     "session_id",
-				Value:    SID,
-				Path:     "/",
-				Expires:  time.Now().Add(24 * time.Hour),
-				HttpOnly: true, // tolko back izmenyaet
-			}
-
+			cookie := generateCookie(SID)
 			http.SetCookie(w, cookie)
 
 			requests.SendResponse(w, r, http.StatusOK, nil)
@@ -111,11 +104,22 @@ func (deliver *Deliver) GetRegistrationHandler(mux *http.ServeMux) {
 	mux.HandleFunc("/registration",
 		func(w http.ResponseWriter, r *http.Request) {
 			if r.Method == http.MethodOptions {
-				requests.SendResponse(w, r, http.StatusOK, nil) // 405
+				requests.SendResponse(w, r, http.StatusOK, nil)
+				return
+			}
+
+			if r.Method == http.MethodGet {
+				body, err := deliver.serv.GetAllInterests()
+				if err != nil {
+					requests.SendResponse(w, r, http.StatusInternalServerError, err.Error())
+					return
+				}
+				requests.SendResponse(w, r, http.StatusOK, body)
+				return
 			}
 
 			if r.Method != http.MethodPost {
-				requests.SendResponse(w, r, http.StatusMethodNotAllowed, nil) // 405
+				requests.SendResponse(w, r, http.StatusMethodNotAllowed, nil)
 				logrus.Info("method not allowed")
 				return
 			}
@@ -124,25 +128,37 @@ func (deliver *Deliver) GetRegistrationHandler(mux *http.ServeMux) {
 
 			body, err := io.ReadAll(r.Body)
 			if err != nil {
-				requests.SendResponse(w, r, http.StatusBadRequest, nil)
+				requests.SendResponse(w, r, http.StatusBadRequest, err.Error())
 				logrus.Info("bad request")
 				return
 			}
 
 			err = json.Unmarshal(body, &request)
 			if err != nil {
-				requests.SendResponse(w, r, http.StatusBadRequest, nil)
+				requests.SendResponse(w, r, http.StatusBadRequest, err.Error())
 				logrus.Info("can't unmarshall")
 				return
 			}
-			err = deliver.auth.Registration(request.Name, request.Birthday, request.Gender, request.Email, request.Password)
+			SID, err := deliver.auth.Registration(request.Name, request.Birthday, request.Gender, request.Email, request.Password)
+			cookie := generateCookie(SID)
+			http.SetCookie(w, cookie)
 
 			if err != nil {
-				requests.SendResponse(w, r, http.StatusBadRequest, nil)
+				requests.SendResponse(w, r, http.StatusBadRequest, err.Error())
 				logrus.Info("can't auth")
 			}
 			requests.SendResponse(w, r, http.StatusOK, nil)
 		})
+}
+
+func generateCookie(SID string) *http.Cookie {
+	return &http.Cookie{
+		Name:     "session_id",
+		Value:    SID,
+		Path:     "/",
+		Expires:  time.Now().Add(24 * time.Hour),
+		HttpOnly: true,
+	}
 }
 
 func (deliver *Deliver) GetLogoutHandler(mux *http.ServeMux) {
@@ -164,7 +180,7 @@ func (deliver *Deliver) GetLogoutHandler(mux *http.ServeMux) {
 				return
 			}
 
-			deliver.auth.Logout(session.Value)
+			err = deliver.auth.Logout(session.Value)
 			if err != nil {
 				requests.SendResponse(w, r, http.StatusBadRequest, nil)
 				// logger

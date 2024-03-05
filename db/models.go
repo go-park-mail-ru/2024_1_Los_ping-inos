@@ -29,3 +29,8 @@ type PersonGetFilter struct {
 	Premium   []bool
 	SessionID []string
 }
+
+type Interest struct {
+	ID   types.InterestID
+	Name string
+}
