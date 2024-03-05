@@ -19,7 +19,7 @@ func main() {
 	if err != nil {
 		logrus.Fatal(err)
 	}
-	psqInfo := fmt.Sprintf("host=%s port=%d user=%s "+
+	psqInfo := fmt.Sprintf("host=%s port=%s user=%s "+
 		"password=%s dbname=%s sslmode=disable",
 		viper.Get("database.host"), viper.Get("database.port"), viper.Get("database.user"),
 		viper.Get("database.password"), viper.Get("database.dbname"))
