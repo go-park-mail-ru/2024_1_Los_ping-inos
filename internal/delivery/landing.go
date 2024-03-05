@@ -82,7 +82,7 @@ func (deliver *Deliver) GetLoginHandler(mux *http.ServeMux) {
 			SID, err := deliver.auth.Login(request.Email, request.Password)
 			if err != nil {
 				requests.SendResponse(w, r, http.StatusUnauthorized, nil)
-				// logger
+				logrus.Info(err.Error())
 				return
 			}
 

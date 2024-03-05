@@ -55,8 +55,10 @@ func (api *AuthHandler) Login(email, password string) (string, error) {
 
 	user := users[0]
 
-	pass, err := hashPassword(password)
-	if err != nil || user.Password != pass { // TODO dve raznie proverki doljni bit
+	err := checkPassword(user.Password, password)
+
+	if err != nil {
+		println(err.Error())
 		return "", errors.New("wrong password")
 	}
 
@@ -103,4 +105,9 @@ func (api *AuthHandler) Logout(sessionID string) error {
 func hashPassword(password string) (string, error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14) // TODO подумать насчет константы
 	return string(bytes), err
+}
+
+// CheckPassword - принимает hash - захэшированный пароль из базы и проверяет, соответствует ли ему password
+func checkPassword(hash, password string) error {
+	return bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 }

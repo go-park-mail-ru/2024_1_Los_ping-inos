@@ -14,6 +14,7 @@ type Person struct {
 	Photo       string       `json:"photo"`
 	Email       string       `json:"-"`
 	Password    string       `json:"-"`
+	Gender      string       `json:"gender"`
 	CreatedAt   time.Time    `json:"-"`
 	Premium     bool         `json:"-"`
 	LikesLeft   int          `json:"-"`

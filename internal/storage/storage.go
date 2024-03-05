@@ -52,10 +52,10 @@ func (storage *PersonStorage) Get(filter *models.PersonFilter) ([]*models.Person
 	for rows.Next() {
 		person := &models.Person{}
 		err := rows.Scan(&person.ID, &person.Name, &person.Birthday, &person.Description, &person.Location, &person.Photo,
-			&person.Email, &person.Password, &person.CreatedAt, &person.Premium, &person.LikesLeft, &person.SessionID)
+			&person.Email, &person.Password, &person.Gender, &person.CreatedAt, &person.Premium, &person.LikesLeft, &person.SessionID)
 
 		if err != nil {
-			logrus.Info("can't scan row")
+			logrus.Info("can't scan row ", err.Error())
 			return nil, err
 		}
 
