@@ -17,7 +17,58 @@ const configPath = "config/config.yaml"
 func main() {
 	_, err := config.LoadConfig(configPath)
 	if err != nil {
-		logrus.Fatal(err)
+		logrus.Fatal(err)package main
+
+		import (
+			"database/sql"
+			"fmt"
+			"os"
+			_ "github.com/lib/pq"
+			"github.com/sirupsen/logrus"
+			"main.go/config"
+			"main.go/internal/delivery"
+			"main.go/internal/service"
+			"main.go/internal/storage"
+		)
+		
+		const configPath = "config/config.yaml"
+		
+		func main() {
+			_, err := config.LoadConfig(configPath)
+			if err != nil {
+				logrus.Fatal(err)
+			}
+		
+			// psqInfo := fmt.Sprintf("host=%s port=%d user=%s "+
+			// 	"password=%s dbname=%s sslmode=disable",
+			// 	viper.Get("database.host"), viper.Get("database.port"), viper.Get("database.user"),
+			// 	viper.Get("database.password"), viper.Get("database.dbname"))
+			psqInfo := fmt.Sprintf("host=%s port=%s user=%s "+
+				"password=%s dbname=%s sslmode=disable",
+				os.Getenv("DB_HOST"), os.Getenv("DB_PORT"), os.Getenv("DB_USER"),
+				os.Getenv("DB_PASS"), os.Getenv("DB_NAME"))
+			println(psqInfo)	
+			db, err := sql.Open("postgres", psqInfo)
+			if err != nil {
+				logrus.Fatalf("can't open db! %v", err.Error())
+			}
+			if err := db.Ping(); err != nil {
+				println(err.Error())
+				logrus.Fatal(err)
+			}
+			defer db.Close()
+		
+			personStore := storage.NewPersonStorage(db)
+			auth := service.NewAuthHandler(personStore)
+			serv := service.New(personStore)
+			deliver := delivery.New(serv, auth)
+		
+			err = delivery.StartServer(deliver)
+			if err != nil {
+				logrus.Fatal(err)
+			}
+		}
+		
 	}
 
 	psqInfo := fmt.Sprintf("host=%s port=%d user=%s "+
