@@ -1,16 +1,17 @@
 package service
 
 import (
-	models "main.go/db"
-	"main.go/internal/types"
-  "encoding/json"
+	"encoding/json"
 	"errors"
 	"golang.org/x/exp/slices"
+	models "main.go/db"
+	"main.go/internal/types"
 )
 
 type PersonStorage interface {
-	Get(filter *models.PersonFilter) ([]*models.Person, error)
+	Get(filter *models.PersonGetFilter) ([]*models.Person, error)
 	AddAccount(Name string, Birhday string, Gender string, Email string, Password string) error
+	Update(person models.Person) error
 }
 
 // Service - Обработчик всей логики
@@ -29,13 +30,13 @@ func (service *Service) GetCards(sessionID string, firstID types.UserID) (string
 		ids[i] = firstID + types.UserID(i+1)
 	}
 
-	user, err := service.storage.Get(&models.PersonFilter{SessionID: []string{sessionID}})
+	user, err := service.storage.Get(&models.PersonGetFilter{SessionID: []string{sessionID}})
 
 	if (err != nil || user == nil) && slices.Contains(ids, user[0].ID) {
 		ids[slices.Index(ids, user[0].ID)] = firstID + 6
 	}
 
-	persons, err := service.storage.Get(&models.PersonFilter{ID: ids})
+	persons, err := service.storage.Get(&models.PersonGetFilter{ID: ids})
 
 	if err != nil {
 		return "", errors.New("can't get users")

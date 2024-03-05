@@ -18,10 +18,10 @@ type Person struct {
 	CreatedAt   time.Time    `json:"-"`
 	Premium     bool         `json:"-"`
 	LikesLeft   int          `json:"-"`
-	SessionID   string       `json:"-"`
+	SessionID   string       `json:"session_id"`
 }
 
-type PersonFilter struct {
+type PersonGetFilter struct {
 	ID        []types.UserID
 	Birthday  []time.Time
 	Location  []string

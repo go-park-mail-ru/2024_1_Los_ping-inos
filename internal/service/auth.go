@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"github.com/sirupsen/logrus"
 	"sync"
 
 	"github.com/google/uuid"
@@ -33,7 +34,7 @@ func (api *AuthHandler) IsAuthenticated(sessionID string) bool {
 	// если сейчас в кеше сессии нет, лезем смотреть в бд
 	sessions := make([]string, 1)
 	sessions[0] = sessionID
-	person, err := api.dbReader.Get(&models.PersonFilter{SessionID: sessions})
+	person, err := api.dbReader.Get(&models.PersonGetFilter{SessionID: sessions})
 	if err != nil || len(person) == 0 {
 		return false
 	}
@@ -48,7 +49,7 @@ func (api *AuthHandler) IsAuthenticated(sessionID string) bool {
 func (api *AuthHandler) Login(email, password string) (string, error) {
 	ems := make([]string, 1)
 	ems[0] = email
-	users, ok := api.dbReader.Get(&models.PersonFilter{Email: ems})
+	users, ok := api.dbReader.Get(&models.PersonGetFilter{Email: ems})
 	if ok != nil || users == nil {
 		return "", errors.New("no such person")
 	}
@@ -58,7 +59,7 @@ func (api *AuthHandler) Login(email, password string) (string, error) {
 	err := checkPassword(user.Password, password)
 
 	if err != nil {
-		println(err.Error())
+		logrus.Info(err.Error())
 		return "", errors.New("wrong password")
 	}
 
@@ -66,9 +67,13 @@ func (api *AuthHandler) Login(email, password string) (string, error) {
 
 	api.mutex.Lock()
 	api.sessions[SID] = user.ID
+	user.SessionID = SID
+	err = api.dbReader.Update(*user)
+	if err != nil {
+		logrus.Info(err.Error())
+		return "", errors.New("can't write session to bd")
+	}
 	api.mutex.Unlock()
-
-	// TODO сделать update в personStorage и через него в бд записать
 
 	return SID, nil
 }

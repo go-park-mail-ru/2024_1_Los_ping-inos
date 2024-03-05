@@ -2,8 +2,8 @@ package storage
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
-
 	qb "github.com/Masterminds/squirrel"
 	"github.com/sirupsen/logrus"
 	"main.go/db"
@@ -19,12 +19,12 @@ func NewPersonStorage(dbReader *sql.DB) *PersonStorage {
 	}
 }
 
-func (storage *PersonStorage) Get(filter *models.PersonFilter) ([]*models.Person, error) {
+func (storage *PersonStorage) Get(filter *models.PersonGetFilter) ([]*models.Person, error) {
 	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
 	whereMap := qb.And{}
 
 	if filter == nil {
-		filter = &models.PersonFilter{}
+		filter = &models.PersonGetFilter{}
 	}
 
 	processIDFilter(filter, &whereMap)
@@ -65,6 +65,33 @@ func (storage *PersonStorage) Get(filter *models.PersonFilter) ([]*models.Person
 	return persons, nil
 }
 
+func (storage *PersonStorage) Update(person models.Person) error {
+	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
+	setMap := make(map[string]interface{})
+
+	tmp, err := json.Marshal(person)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(tmp, &setMap)
+	if err != nil {
+		return err
+	}
+
+	query := stBuilder.
+		Update("person").
+		SetMap(setMap).
+		Where(qb.Eq{"id": person.ID}).
+		RunWith(storage.dbReader)
+
+	_, err = query.Query()
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (storage *PersonStorage) AddAccount(Name string, Birthday string, Gender string, Email string, Password string) error {
 	_, err := storage.dbReader.Exec(
 		"INSERT INTO person(name, birthday, email, password, gender) "+
@@ -77,20 +104,20 @@ func (storage *PersonStorage) AddAccount(Name string, Birthday string, Gender st
 	return nil
 }
 
-func processIDFilter(filter *models.PersonFilter, whereMap *qb.And) {
+func processIDFilter(filter *models.PersonGetFilter, whereMap *qb.And) {
 	if filter.ID != nil {
 		*whereMap = append(*whereMap, qb.Eq{"id": filter.ID})
 	}
 }
 
-func processEmailFilter(filter *models.PersonFilter, whereMap *qb.And) {
+func processEmailFilter(filter *models.PersonGetFilter, whereMap *qb.And) {
 	if filter.Email != nil {
 		*whereMap = append(*whereMap, qb.Eq{"email": filter.Email})
 	}
 
 }
 
-func processSessionIDFilter(filter *models.PersonFilter, whereMap *qb.And) {
+func processSessionIDFilter(filter *models.PersonGetFilter, whereMap *qb.And) {
 	if filter.SessionID != nil {
 		*whereMap = append(*whereMap, qb.Eq{"session_id": filter.SessionID})
 	}
