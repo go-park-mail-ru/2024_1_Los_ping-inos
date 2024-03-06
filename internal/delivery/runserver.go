@@ -25,6 +25,7 @@ func StartServer(deliver ...*Deliver) error {
 	deliver[0].GetLoginHandler(mux)
 	deliver[0].GetRegistrationHandler(mux)
 	deliver[0].GetLogoutHandler(mux)
+	deliver[0].IsAuthenticated(mux)
 
 	server := http.Server{
 		Addr:         config.Cfg.Server.Host + config.Cfg.Server.Port,
