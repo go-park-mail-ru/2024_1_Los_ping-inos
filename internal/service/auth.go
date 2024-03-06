@@ -50,7 +50,11 @@ func (api *AuthHandler) Login(email, password string) (string, error) {
 	ems := make([]string, 1)
 	ems[0] = email
 	users, ok := api.dbReader.Get(&models.PersonGetFilter{Email: ems})
-	if ok != nil || len(users) == 0 {
+	if ok != nil {
+		return "", ok
+	}
+
+	if len(users) == 0 {
 		return "", errors.New("no such person")
 	}
 
