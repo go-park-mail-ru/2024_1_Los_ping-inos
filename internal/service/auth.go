@@ -2,8 +2,9 @@ package service
 
 import (
 	"errors"
-	"github.com/sirupsen/logrus"
 	"sync"
+
+	"github.com/sirupsen/logrus"
 
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
@@ -112,7 +113,13 @@ func (api *AuthHandler) Logout(sessionID string) error {
 	delete(api.sessions, sessionID)
 	api.mutex.Unlock()
 
+	err := api.dbReader.RemoveSession(sessionID)
+	if err != nil {
+		return nil
+	}
+
 	// TODO сделать update в personStorage и через него в бд записать
+
 	return nil
 }
 

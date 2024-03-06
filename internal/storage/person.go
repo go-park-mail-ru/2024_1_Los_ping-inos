@@ -4,9 +4,10 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+
 	qb "github.com/Masterminds/squirrel"
 	"github.com/sirupsen/logrus"
-	"main.go/db"
+	models "main.go/db"
 )
 
 type PersonStorage struct {
@@ -105,6 +106,17 @@ func (storage *PersonStorage) AddAccount(Name string, Birthday string, Gender st
 	if err != nil {
 		println(err.Error())
 		return fmt.Errorf("Create user %w", err)
+	}
+
+	return nil
+}
+
+func (storage *PersonStorage) RemoveSession(sid string) error {
+	_, err := storage.dbReader.Exec(
+		"UPDATE persons SET session_id = NULL "+
+			"WHERE session_id = $1", sid)
+	if err != nil {
+		return fmt.Errorf("Remove sessions %w", err)
 	}
 
 	return nil
