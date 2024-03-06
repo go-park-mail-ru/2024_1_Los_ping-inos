@@ -1,6 +1,7 @@
 package requests
 
 import (
+	"github.com/sirupsen/logrus"
 	"encoding/json"
 	"net/http"
 )
@@ -15,6 +16,7 @@ import (
 func SendResponse(w http.ResponseWriter, r *http.Request, code int, Body any) {
 	jsonResponse, err := json.Marshal(Body)
 	if err != nil {
+		logrus.Info(err.Error())
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -28,7 +30,7 @@ func SendResponse(w http.ResponseWriter, r *http.Request, code int, Body any) {
 	w.WriteHeader(code)
 	_, err = w.Write(jsonResponse)
 	if err != nil {
-		// tut doljna bit obrabotka oshibki loggerom
+		logrus.Info(err.Error())
 		return
 	}
 }

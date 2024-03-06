@@ -71,24 +71,30 @@ func (storage *PersonStorage) Update(person models.Person) error {
 
 	tmp, err := json.Marshal(person)
 	if err != nil {
+		logrus.Info(err.Error())
 		return err
 	}
-
+	logrus.Info("after marshal")
 	err = json.Unmarshal(tmp, &setMap)
 	if err != nil {
+		logrus.Info(err.Error())
 		return err
 	}
-
+	logrus.Info("after unmarshal")
 	query := stBuilder.
 		Update("person").
 		SetMap(setMap).
 		Where(qb.Eq{"id": person.ID}).
 		RunWith(storage.dbReader)
 
-	_, err = query.Query()
+	rows, err := query.Query()
+	logrus.Info("updated?")
+	defer rows.Close()
 	if err != nil {
+		logrus.Info(err.Error())
 		return err
 	}
+	logrus.Info("truely updated?")
 	return nil
 }
 
@@ -112,6 +118,7 @@ func processIDFilter(filter *models.PersonGetFilter, whereMap *qb.And) {
 
 func processEmailFilter(filter *models.PersonGetFilter, whereMap *qb.And) {
 	if filter.Email != nil {
+		logrus.Info("EMAIL FILTER:", filter.Email[0])
 		*whereMap = append(*whereMap, qb.Eq{"email": filter.Email})
 	}
 

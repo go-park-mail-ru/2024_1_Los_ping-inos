@@ -53,6 +53,7 @@ func (deliver *Deliver) GetCardsHandler(mux *http.ServeMux) {
 				requests.SendResponse(respWriter, request, http.StatusInternalServerError,
 					"can't return cards: smth went wrong")
 			}
+			logrus.Info("okok")
 		})
 }
 
@@ -66,7 +67,7 @@ func (deliver *Deliver) GetLoginHandler(mux *http.ServeMux) {
 
 			if r.Method != http.MethodPost {
 				requests.SendResponse(w, r, http.StatusMethodNotAllowed, nil)
-				// logger
+				logrus.Info("method")
 				return
 			}
 
@@ -75,18 +76,19 @@ func (deliver *Deliver) GetLoginHandler(mux *http.ServeMux) {
 			body, err := io.ReadAll(r.Body)
 			if err != nil {
 				requests.SendResponse(w, r, http.StatusBadRequest, err.Error())
-				// logger
+				logrus.Info("bad request")
 				return
 			}
 
 			err = json.Unmarshal(body, &request)
 			if err != nil {
 				requests.SendResponse(w, r, http.StatusBadRequest, err.Error())
-				// logger
+				logrus.Info("can't unmarshall")
 				return
 			}
 
 			SID, err := deliver.auth.Login(request.Email, request.Password)
+			logrus.Info("landing SID: ", SID)
 			if err != nil {
 				requests.SendResponse(w, r, http.StatusUnauthorized, err.Error())
 				logrus.Info(err.Error())
@@ -95,8 +97,9 @@ func (deliver *Deliver) GetLoginHandler(mux *http.ServeMux) {
 
 			cookie := generateCookie(SID)
 			http.SetCookie(w, cookie)
-
+			logrus.Info("setted cookie")
 			requests.SendResponse(w, r, http.StatusOK, nil)
+			logrus.Info("okok")
 		})
 }
 
@@ -148,6 +151,7 @@ func (deliver *Deliver) GetRegistrationHandler(mux *http.ServeMux) {
 			http.SetCookie(w, cookie)
 
 			requests.SendResponse(w, r, http.StatusOK, nil)
+			logrus.Info("okok")
 		})
 }
 
@@ -176,14 +180,14 @@ func (deliver *Deliver) GetLogoutHandler(mux *http.ServeMux) {
 			session, err := r.Cookie("session_id")
 			if err != nil {
 				requests.SendResponse(w, r, http.StatusUnauthorized, nil)
-				// logger
+				logrus.Info("no cookie")
 				return
 			}
 
 			err = deliver.auth.Logout(session.Value)
 			if err != nil {
 				requests.SendResponse(w, r, http.StatusBadRequest, nil)
-				// logger
+				logrus.Info("can't logout")
 				return
 			}
 			requests.SendResponse(w, r, http.StatusOK, nil)

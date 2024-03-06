@@ -14,13 +14,14 @@ import (
 type AuthHandler struct {
 	sessions map[string]types.UserID
 	dbReader PersonStorage
-	mutex    sync.RWMutex
+	mutex    *sync.RWMutex
 }
 
 func NewAuthHandler(dbReader PersonStorage) *AuthHandler {
 	return &AuthHandler{
 		sessions: make(map[string]types.UserID),
 		dbReader: dbReader,
+		mutex: &sync.RWMutex{},
 	}
 }
 
@@ -59,7 +60,7 @@ func (api *AuthHandler) Login(email, password string) (string, error) {
 	}
 
 	user := users[0]
-
+	logrus.Info("LOGIN USER ", user.Email)
 	err := checkPassword(user.Password, password)
 
 	if err != nil {
@@ -68,16 +69,15 @@ func (api *AuthHandler) Login(email, password string) (string, error) {
 	}
 
 	SID := uuid.NewString()
-
-	api.mutex.Lock()
+	logrus.Info("SID ", SID)
 	api.sessions[SID] = user.ID
 	user.SessionID = SID
 	err = api.dbReader.Update(*user)
+	logrus.Info("UPDATED")
 	if err != nil {
 		logrus.Info(err.Error())
 		return "", errors.New("can't write session to bd")
 	}
-	api.mutex.Unlock()
 
 	return SID, nil
 }
