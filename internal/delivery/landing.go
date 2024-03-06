@@ -10,7 +10,7 @@ import (
 )
 
 func (deliver *Deliver) GetCardsHandler(mux *http.ServeMux) {
-	mux.HandleFunc("/",
+	mux.HandleFunc("/cards",
 		func(respWriter http.ResponseWriter, request *http.Request) {
 			if request.Method == http.MethodOptions {
 				requests.SendResponse(respWriter, request, http.StatusOK, nil)
