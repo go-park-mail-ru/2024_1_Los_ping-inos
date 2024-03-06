@@ -14,17 +14,23 @@ type Person struct {
 	Photo       string       `json:"photo"`
 	Email       string       `json:"-"`
 	Password    string       `json:"-"`
+	Gender      string       `json:"gender"`
 	CreatedAt   time.Time    `json:"-"`
 	Premium     bool         `json:"-"`
 	LikesLeft   int          `json:"-"`
-	SessionID   string       `json:"-"`
+	SessionID   string       `json:"session_id"`
 }
 
-type PersonFilter struct {
+type PersonGetFilter struct {
 	ID        []types.UserID
 	Birthday  []time.Time
 	Location  []string
 	Email     []string
 	Premium   []bool
 	SessionID []string
+}
+
+type Interest struct {
+	ID   types.InterestID
+	Name string
 }

@@ -1,41 +1,28 @@
 package service
 
 import (
-	models "main.go/db"
-	"main.go/internal/types"
-  "encoding/json"
+	"encoding/json"
 	"errors"
-	"golang.org/x/exp/slices"
+	models "main.go/db"
 )
-
-type PersonStorage interface {
-	Get(filter *models.PersonFilter) ([]*models.Person, error)
-	AddAccount(Name string, Birhday string, Gender string, Email string, Password string) error
-}
 
 // Service - Обработчик всей логики
 type Service struct {
-	storage PersonStorage
+	personStorage   PersonStorage
+	interestStorage InterestStorage
 }
 
-func New(stor PersonStorage) *Service {
-	return &Service{storage: stor}
+func New(pstor PersonStorage, istor InterestStorage) *Service {
+	return &Service{
+		personStorage:   pstor,
+		interestStorage: istor,
+	}
 }
 
 // GetCards - вернуть ленту пользователей, доступно только авторизованному пользователю
-func (service *Service) GetCards(sessionID string, firstID types.UserID) (string, error) {
-	ids := make([]types.UserID, 5) // пока что без какой-либо логики возвращаем первые 5 от последнего запроса
-	for i := range ids {
-		ids[i] = firstID + types.UserID(i+1)
-	}
+func (service *Service) GetCards(sessionID string) (string, error) {
 
-	user, err := service.storage.Get(&models.PersonFilter{SessionID: []string{sessionID}})
-
-	if (err != nil || user == nil) && slices.Contains(ids, user[0].ID) {
-		ids[slices.Index(ids, user[0].ID)] = firstID + 6
-	}
-
-	persons, err := service.storage.Get(&models.PersonFilter{ID: ids})
+	persons, err := service.personStorage.Get(nil)
 
 	if err != nil {
 		return "", errors.New("can't get users")
