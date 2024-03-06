@@ -47,6 +47,11 @@ func (deliver *Deliver) GetCardsHandler(mux *http.ServeMux) {
 func (deliver *Deliver) IsAuthenticated(mux *http.ServeMux) {
 	mux.HandleFunc("/isAuth",
 		func(respWriter http.ResponseWriter, request *http.Request) {
+			if request.Method == http.MethodOptions {
+				requests.SendResponse(respWriter, request, http.StatusOK, nil)
+				return
+			}
+
 			session, err := request.Cookie("session_id") // проверка авторизации
 			if err != nil || session == nil || !deliver.auth.IsAuthenticated(session.Value) {
 				requests.SendResponse(respWriter, request, http.StatusForbidden, nil)
