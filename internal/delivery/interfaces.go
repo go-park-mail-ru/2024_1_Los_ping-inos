@@ -9,7 +9,7 @@ type Service interface {
 
 type Auth interface {
 	IsAuthenticated(sessionID string) bool
-	Login(email, password string) (string, error)
+	Login(email, password string) (string, string, error)
 	Logout(sessionID string) error
-	Registration(Name string, Birthday string, Gender string, Email string, Password string) (string, error)
+	Registration(Name string, Birthday string, Gender string, Email string, Password string) (string, string, error)
 }

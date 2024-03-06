@@ -87,7 +87,7 @@ func (deliver *Deliver) GetLoginHandler(mux *http.ServeMux) {
 				return
 			}
 
-			SID, err := deliver.auth.Login(request.Email, request.Password)
+			SID, userName, err := deliver.auth.Login(request.Email, request.Password)
 			logrus.Info("landing SID: ", SID)
 			if err != nil {
 				requests.SendResponse(w, r, http.StatusUnauthorized, err.Error())
@@ -95,7 +95,9 @@ func (deliver *Deliver) GetLoginHandler(mux *http.ServeMux) {
 				return
 			}
 
-			cookie := generateCookie(SID)
+			cookie := generateCookie("session_id", SID)
+			http.SetCookie(w, cookie)
+			cookie = generateCookie("name", userName)
 			http.SetCookie(w, cookie)
 			logrus.Info("setted cookie")
 			requests.SendResponse(w, r, http.StatusOK, nil)
@@ -142,12 +144,15 @@ func (deliver *Deliver) GetRegistrationHandler(mux *http.ServeMux) {
 				logrus.Info("can't unmarshall")
 				return
 			}
-			SID, err := deliver.auth.Registration(request.Name, request.Birthday, request.Gender, request.Email, request.Password)
+			SID, userName, err := deliver.auth.Registration(request.Name, request.Birthday, request.Gender, request.Email, request.Password)
 			if err != nil {
 				requests.SendResponse(w, r, http.StatusBadRequest, err.Error())
 				logrus.Info("can't auth")
 			}
-			cookie := generateCookie(SID)
+
+			cookie := generateCookie("session_id", SID)
+			http.SetCookie(w, cookie)
+			cookie = generateCookie("name", userName)
 			http.SetCookie(w, cookie)
 
 			requests.SendResponse(w, r, http.StatusOK, nil)
@@ -155,10 +160,10 @@ func (deliver *Deliver) GetRegistrationHandler(mux *http.ServeMux) {
 		})
 }
 
-func generateCookie(SID string) *http.Cookie {
+func generateCookie(name, value string) *http.Cookie {
 	return &http.Cookie{
-		Name:     "session_id",
-		Value:    SID,
+		Name:     name,
+		Value:    value,
 		Path:     "/",
 		Expires:  time.Now().Add(24 * time.Hour),
 		HttpOnly: true,

@@ -21,7 +21,7 @@ func NewAuthHandler(dbReader PersonStorage) *AuthHandler {
 	return &AuthHandler{
 		sessions: make(map[string]types.UserID),
 		dbReader: dbReader,
-		mutex: &sync.RWMutex{},
+		mutex:    &sync.RWMutex{},
 	}
 }
 
@@ -47,16 +47,16 @@ func (api *AuthHandler) IsAuthenticated(sessionID string) bool {
 }
 
 // Login - принимает email, пароль; возвращает ID сессии и ошибку
-func (api *AuthHandler) Login(email, password string) (string, error) {
+func (api *AuthHandler) Login(email, password string) (string, string, error) {
 	ems := make([]string, 1)
 	ems[0] = email
 	users, ok := api.dbReader.Get(&models.PersonGetFilter{Email: ems})
 	if ok != nil {
-		return "", ok
+		return "", "", ok
 	}
 
 	if len(users) == 0 {
-		return "", errors.New("no such person")
+		return "", "", errors.New("no such person")
 	}
 
 	user := users[0]
@@ -65,7 +65,7 @@ func (api *AuthHandler) Login(email, password string) (string, error) {
 
 	if err != nil {
 		logrus.Info(err.Error())
-		return "", errors.New("wrong password")
+		return "", "", errors.New("wrong password")
 	}
 
 	SID := uuid.NewString()
@@ -76,29 +76,29 @@ func (api *AuthHandler) Login(email, password string) (string, error) {
 	logrus.Info("UPDATED")
 	if err != nil {
 		logrus.Info(err.Error())
-		return "", errors.New("can't write session to bd")
+		return "", "", errors.New("can't write session to bd")
 	}
 
-	return SID, nil
+	return SID, user.Name, nil
 }
 
-func (api *AuthHandler) Registration(Name string, Birthday string, Gender string, Email string, Password string) (string, error) {
+func (api *AuthHandler) Registration(Name string, Birthday string, Gender string, Email string, Password string) (string, string, error) {
 	hashPassword, err := hashPassword(Password)
 	if err != nil {
-		return "", errors.New("hash func error")
+		return "", "", errors.New("hash func error")
 	}
 
 	err = api.dbReader.AddAccount(Name, Birthday, Gender, Email, hashPassword)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 
-	SID, err := api.Login(Email, Password)
+	SID, userName, err := api.Login(Email, Password)
 	if err != nil {
 		logrus.Info(err.Error())
-		return "", err
+		return "", "", err
 	}
-	return SID, nil
+	return SID, userName, nil
 }
 
 func (api *AuthHandler) Logout(sessionID string) error {
