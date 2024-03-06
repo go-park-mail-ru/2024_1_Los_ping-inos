@@ -140,13 +140,13 @@ func (deliver *Deliver) GetRegistrationHandler(mux *http.ServeMux) {
 				return
 			}
 			SID, err := deliver.auth.Registration(request.Name, request.Birthday, request.Gender, request.Email, request.Password)
-			cookie := generateCookie(SID)
-			http.SetCookie(w, cookie)
-
 			if err != nil {
 				requests.SendResponse(w, r, http.StatusBadRequest, err.Error())
 				logrus.Info("can't auth")
 			}
+			cookie := generateCookie(SID)
+			http.SetCookie(w, cookie)
+
 			requests.SendResponse(w, r, http.StatusOK, nil)
 		})
 }
