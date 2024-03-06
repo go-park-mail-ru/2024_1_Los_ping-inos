@@ -1,9 +1,7 @@
 package delivery
 
-import "main.go/internal/types"
-
 type Service interface {
-	GetCards(sessionID string, firstID types.UserID) (string, error)
+	GetCards(sessionID string) (string, error)
 	GetAllInterests() (string, error)
 }
 

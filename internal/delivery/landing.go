@@ -5,9 +5,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"io"
 	requests "main.go/internal/pkg"
-	"main.go/internal/types"
 	"net/http"
-	"strconv"
 	"time"
 )
 
@@ -31,18 +29,7 @@ func (deliver *Deliver) GetCardsHandler(mux *http.ServeMux) {
 				return
 			}
 
-			var lastID int
-			if request.URL.Query().Get("last") != "" {
-				lastID, err = strconv.Atoi(request.URL.Query().Get("last"))
-				if err != nil {
-					logrus.Info("can't process ID")
-					requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
-				}
-			} else {
-				lastID = 0
-			}
-
-			cards, err := deliver.serv.GetCards(session.Value, types.UserID(lastID))
+			cards, err := deliver.serv.GetCards(session.Value)
 			if err != nil {
 				requests.SendResponse(respWriter, request, http.StatusInternalServerError, err.Error())
 				return
