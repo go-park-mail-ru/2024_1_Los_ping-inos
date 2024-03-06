@@ -50,7 +50,7 @@ func (api *AuthHandler) Login(email, password string) (string, error) {
 	ems := make([]string, 1)
 	ems[0] = email
 	users, ok := api.dbReader.Get(&models.PersonGetFilter{Email: ems})
-	if ok != nil || users == nil {
+	if ok != nil || len(users) == 0 {
 		return "", errors.New("no such person")
 	}
 
@@ -89,7 +89,7 @@ func (api *AuthHandler) Registration(Name string, Birthday string, Gender string
 		return "", err
 	}
 
-	SID, err := api.Login(Name, Password)
+	SID, err := api.Login(Email, Password)
 	if err != nil {
 		logrus.Info(err.Error())
 		return "", err
