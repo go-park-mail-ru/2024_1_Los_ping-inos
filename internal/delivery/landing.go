@@ -2,17 +2,19 @@ package delivery
 
 import (
 	"encoding/json"
-	"github.com/sirupsen/logrus"
 	"io"
-	requests "main.go/internal/pkg"
 	"net/http"
 	"time"
+
+	"github.com/sirupsen/logrus"
+	requests "main.go/internal/pkg"
 )
 
 func (deliver *Deliver) GetCardsHandler(mux *http.ServeMux) {
 	mux.HandleFunc("/cards",
 		func(respWriter http.ResponseWriter, request *http.Request) {
 			if request.Method == http.MethodOptions {
+				logrus.Info("Preflight request cards")
 				requests.SendResponse(respWriter, request, http.StatusOK, nil)
 				return
 			}
@@ -35,12 +37,15 @@ func (deliver *Deliver) GetCardsHandler(mux *http.ServeMux) {
 				return
 			}
 
-			_, err = respWriter.Write([]byte(cards))
-			if err != nil {
-				requests.SendResponse(respWriter, request, http.StatusInternalServerError,
-					"can't return cards: smth went wrong")
-			}
-			logrus.Info("okok")
+			// _, err = respWriter.Write([]byte(cards))
+			logrus.Info(cards)
+			// if err != nil {
+			// 	requests.SendResponse(respWriter, request, http.StatusInternalServerError,
+			// 		"can't return cards: smth went wrong")
+			// 	return
+			// }
+			logrus.Info("sent cards okok")
+			requests.SendResponse(respWriter, request, http.StatusOK, cards)
 		})
 }
 
