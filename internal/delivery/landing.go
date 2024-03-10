@@ -40,19 +40,19 @@ func (deliver *Deliver) GetCardsHandler(mux *http.ServeMux) {
 		})
 }
 
-func generateCookie(name, value string, expires time.Time) *http.Cookie {
+func generateCookie(name, value string, expires time.Time, httpOnly bool) *http.Cookie {
 	return &http.Cookie{
 		Name:     name,
 		Value:    value,
 		Path:     "/",
 		Expires:  expires,
-		HttpOnly: true,
+		HttpOnly: httpOnly,
 	}
 }
 
 func setLoginCookie(sessionID, name string, expires time.Time, writer http.ResponseWriter) {
-	cookie := generateCookie("session_id", sessionID, expires)
+	cookie := generateCookie("session_id", sessionID, expires, true)
 	http.SetCookie(writer, cookie)
-	cookie = generateCookie("name", name, expires)
+	cookie = generateCookie("name", name, expires, false)
 	http.SetCookie(writer, cookie)
 }
