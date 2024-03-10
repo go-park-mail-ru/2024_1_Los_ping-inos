@@ -183,7 +183,8 @@ func (deliver *Deliver) GetLogoutHandler(mux *http.ServeMux) {
 	mux.HandleFunc("/logout",
 		func(w http.ResponseWriter, r *http.Request) {
 			if r.Method == http.MethodOptions {
-				requests.SendResponse(w, r, http.StatusOK, nil) // 405
+				requests.SendResponse(w, r, http.StatusOK, nil)
+				return
 			}
 
 			if r.Method != http.MethodGet { // delete zapros?
