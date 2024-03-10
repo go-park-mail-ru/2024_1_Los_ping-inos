@@ -118,8 +118,6 @@ func (api *AuthHandler) Logout(sessionID string) error {
 		return nil
 	}
 
-	// TODO сделать update в personStorage и через него в бд записать
-
 	return nil
 }
 

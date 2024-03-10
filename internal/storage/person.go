@@ -75,13 +75,11 @@ func (storage *PersonStorage) Update(person models.Person) error {
 		logrus.Info(err.Error())
 		return err
 	}
-	logrus.Info("after marshal")
 	err = json.Unmarshal(tmp, &setMap)
 	if err != nil {
 		logrus.Info(err.Error())
 		return err
 	}
-	logrus.Info("after unmarshal")
 	query := stBuilder.
 		Update("person").
 		SetMap(setMap).
@@ -89,13 +87,12 @@ func (storage *PersonStorage) Update(person models.Person) error {
 		RunWith(storage.dbReader)
 
 	rows, err := query.Query()
-	logrus.Info("updated?")
 	defer rows.Close()
 	if err != nil {
 		logrus.Info(err.Error())
 		return err
 	}
-	logrus.Info("truely updated?")
+	logrus.Info("user updated")
 	return nil
 }
 
