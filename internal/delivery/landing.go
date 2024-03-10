@@ -204,6 +204,10 @@ func (deliver *Deliver) GetLogoutHandler(mux *http.ServeMux) {
 				logrus.Info("can't logout")
 				return
 			}
+
+			session.Expires = time.Now().AddDate(0, 0, -1)
+			http.SetCookie(w, session)
+			
 			requests.SendResponse(w, r, http.StatusOK, nil)
 		})
 }
