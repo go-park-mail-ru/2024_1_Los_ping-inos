@@ -110,7 +110,7 @@ func (storage *PersonStorage) AddAccount(Name string, Birthday string, Gender st
 
 func (storage *PersonStorage) RemoveSession(sid string) error {
 	_, err := storage.dbReader.Exec(
-		"UPDATE persons SET session_id = NULL "+
+		"UPDATE person SET session_id = '' "+
 			"WHERE session_id = $1", sid)
 	if err != nil {
 		return fmt.Errorf("Remove sessions %w", err)
