@@ -41,9 +41,9 @@ func (api *AuthHandler) IsAuthenticated(sessionID string) bool {
 		return false
 	}
 
-	api.mutex.Lock()
+	// api.mutex.Lock()
 	api.sessions[sessionID] = person[0].ID // нашли - запоминаем в кеш, gonka, sessii ne doljni hranitsa v sql
-	api.mutex.Unlock()
+	// api.mutex.Unlock()
 	return true
 }
 
@@ -103,18 +103,19 @@ func (api *AuthHandler) Registration(Name string, Birthday string, Gender string
 }
 
 func (api *AuthHandler) Logout(sessionID string) error {
-	api.mutex.RLock()
+	// api.mutex.RLock()
 	if _, ok := api.sessions[sessionID]; !ok {
 		return errors.New("no session")
 	}
-	api.mutex.RUnlock()
+	// api.mutex.RUnlock()
 
-	api.mutex.Lock()
+	// api.mutex.Lock()
 	delete(api.sessions, sessionID)
-	api.mutex.Unlock()
+	// api.mutex.Unlock()
 
 	err := api.dbReader.RemoveSession(sessionID)
 	if err != nil {
+		logrus.Info(err.Error())
 		return nil
 	}
 
