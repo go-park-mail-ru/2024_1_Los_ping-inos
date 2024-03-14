@@ -22,10 +22,10 @@ func StartServer(deliver ...*Deliver) error {
 
 	// тут хендлеры добавлять
 	deliver[0].GetCardsHandler(mux)
-	deliver[0].GetLoginHandler(mux)
+	deliver[0].LoginHandler(mux)
 	deliver[0].GetRegistrationHandler(mux)
 	deliver[0].GetLogoutHandler(mux)
-	deliver[0].IsAuthenticated(mux)
+	deliver[0].IsAuthenticatedHandler(mux)
 
 	server := http.Server{
 		Addr:         config.Cfg.Server.Host + config.Cfg.Server.Port,
