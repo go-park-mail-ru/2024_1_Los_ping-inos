@@ -1,8 +1,11 @@
 package delivery
 
 import (
+	"github.com/go-chi/chi"
 	"github.com/sirupsen/logrus"
+	httpSwagger "github.com/swaggo/http-swagger/v2"
 	"main.go/config"
+	_ "main.go/internal/docs"
 	"net/http"
 	"time"
 )
@@ -16,15 +19,28 @@ func New(service Service, auth Auth) *Deliver {
 	return &Deliver{serv: service, auth: auth}
 }
 
-// StartServer - запуск сервера
+func runSwaggerServer() {
+	r := chi.NewRouter()
+
+	r.Get("/swagger/*", httpSwagger.Handler(
+		httpSwagger.URL(config.Cfg.Server.Host+config.Cfg.Server.SwaggerPort+"/swagger/doc.json"),
+	))
+	err := http.ListenAndServe(config.Cfg.Server.SwaggerPort, r)
+	if err != nil {
+		logrus.Info(err.Error())
+	}
+}
+
 func StartServer(deliver ...*Deliver) error {
+	go runSwaggerServer()
+
 	mux := http.NewServeMux()
 
 	// тут хендлеры добавлять
 	deliver[0].GetCardsHandler(mux)
 	deliver[0].LoginHandler(mux)
-	deliver[0].GetRegistrationHandler(mux)
-	deliver[0].GetLogoutHandler(mux)
+	deliver[0].RegistrationHandler(mux)
+	deliver[0].LogoutHandler(mux)
 	deliver[0].IsAuthenticatedHandler(mux)
 
 	server := http.Server{

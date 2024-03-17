@@ -5,6 +5,8 @@ import (
 	"time"
 )
 
+// Person model info
+// @Description Информация об аккаунте пользователя
 type Person struct {
 	ID          types.UserID `json:"ID"`
 	Name        string       `json:"name"`

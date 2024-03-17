@@ -8,6 +8,17 @@ import (
 	requests "main.go/internal/pkg"
 )
 
+// GetCardsHandler godoc
+// @Summary Получить ленту
+// @Tags    Продукт
+// @Router  /cards [get]
+// @Accept  json
+// @Param   session_id header string false "cookie session_id"
+// @Success 200		  {array}  models.Person
+// @Failure 400       {string} string
+// @Failure 401       {string} string
+// @Failure 405       {string} string
+// @Failure 500       {string} string
 func (deliver *Deliver) GetCardsHandler(mux *http.ServeMux) {
 	mux.HandleFunc("/cards",
 		func(respWriter http.ResponseWriter, request *http.Request) {

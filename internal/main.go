@@ -8,12 +8,17 @@ import (
 	"github.com/spf13/viper"
 	"main.go/config"
 	"main.go/internal/delivery"
+	_ "main.go/internal/docs"
 	"main.go/internal/service"
 	"main.go/internal/storage"
 )
 
 const configPath = "config/config.yaml"
 
+// @title SportBro API
+// @version 0.1
+// @host  185.241.192.216:8081
+// @BasePath /
 func main() {
 	_, err := config.LoadConfig(configPath)
 	if err != nil {
