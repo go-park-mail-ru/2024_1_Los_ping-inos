@@ -5,13 +5,15 @@ Backend-репозиторий команды Los_ping-inos
 * сайт    - http://185.241.192.216:8081/
 * swagger - http://185.241.192.216:1323/swagger/index.html
 
-
+## Как генерить swagger
+* в комментариях перед ручками описать доку [в таком формате](https://github.com/swaggo/swag?tab=readme-ov-file#declarative-comments-format)
+* `swag init` в терминале в репозитории internal
+  * если будет ругаться на кастомные структуры, можно `swag init --parseDependency  --parseInternal -g main.go`
 
 ## Мини дока по репозиторию
 - `config`
     - в `config.yaml` настроечки: `server`, `database` и `filesPaths` для каких-то файлов на будущее
     - в `config.go` структура конфига и парсинг; парсит `viper`
-
 - `internal`
   - `main.go` - main.
   - `delivery` - общение с внешним миром
