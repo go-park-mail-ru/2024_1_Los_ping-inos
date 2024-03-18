@@ -7,6 +7,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"main.go/config"
+	_ "main.go/db"
 	"main.go/internal/delivery"
 	_ "main.go/internal/docs"
 	"main.go/internal/service"

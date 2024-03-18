@@ -19,36 +19,24 @@ import (
 // @Failure 401       {string} string
 // @Failure 405       {string} string
 // @Failure 500       {string} string
-func (deliver *Deliver) GetCardsHandler(mux *http.ServeMux) {
-	mux.HandleFunc("/cards",
-		func(respWriter http.ResponseWriter, request *http.Request) {
-			if request.Method == http.MethodOptions {
-				logrus.Info("Preflight request cards")
-				requests.SendResponse(respWriter, request, http.StatusOK, nil)
-				return
-			}
+func (deliver *Deliver) GetCardsHandler() func(http.ResponseWriter, *http.Request) {
+	return func(respWriter http.ResponseWriter, request *http.Request) {
+		session, err := request.Cookie("session_id")
+		if err != nil || session == nil { // не знаю, нужно ли, ведь мы же сюда без куки не можем попасть :hmm:
+			// TODO log
+			requests.SendResponse(respWriter, request, http.StatusForbidden, "authenticated without cookie????")
+			return
+		}
 
-			if request.Method != http.MethodGet {
-				requests.SendResponse(respWriter, request, http.StatusMethodNotAllowed, "method not allowed")
-				logrus.Info("wrong method")
-				return
-			}
+		cards, err := deliver.serv.GetCards(session.Value)
+		if err != nil {
+			requests.SendResponse(respWriter, request, http.StatusInternalServerError, err.Error())
+			return
+		}
 
-			session, err := request.Cookie("session_id") // проверка авторизации
-			if err != nil || session == nil || !deliver.auth.IsAuthenticated(session.Value) {
-				requests.SendResponse(respWriter, request, http.StatusForbidden, "forbidden")
-				return
-			}
-
-			cards, err := deliver.serv.GetCards(session.Value)
-			if err != nil {
-				requests.SendResponse(respWriter, request, http.StatusInternalServerError, err.Error())
-				return
-			}
-
-			requests.SendResponse(respWriter, request, http.StatusOK, cards)
-			logrus.Info("sent cards okok")
-		})
+		requests.SendResponse(respWriter, request, http.StatusOK, cards)
+		logrus.Info("sent cards okok")
+	}
 }
 
 func generateCookie(name, value string, expires time.Time, httpOnly bool) *http.Cookie {
@@ -59,11 +47,4 @@ func generateCookie(name, value string, expires time.Time, httpOnly bool) *http.
 		Expires:  expires,
 		HttpOnly: httpOnly,
 	}
-}
-
-func setLoginCookie(sessionID, name string, expires time.Time, writer http.ResponseWriter) {
-	cookie := generateCookie("session_id", sessionID, expires, true)
-	http.SetCookie(writer, cookie)
-	cookie = generateCookie("name", name, expires, false)
-	http.SetCookie(writer, cookie)
 }
