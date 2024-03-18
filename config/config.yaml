@@ -3,6 +3,7 @@ debug: true
 server: 
     host: "0.0.0.0"
     port: ":8080"
+    swaggerPort: ":8085"
     timeout: 5
 
 # TODO тут пока дефолтные настройки для локалки поставил, на деплое надо в .env прятать

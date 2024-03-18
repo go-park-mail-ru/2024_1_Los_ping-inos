@@ -1,0 +1,180 @@
+basePath: /
+definitions:
+  models.Person:
+    description: Информация об аккаунте пользователя
+    properties:
+      ID:
+        type: integer
+      birthday:
+        type: string
+      description:
+        type: string
+      gender:
+        type: string
+      name:
+        type: string
+      photo:
+        type: string
+      session_id:
+        type: string
+    type: object
+host: 185.241.192.216:8081
+info:
+  contact: {}
+  title: SportBro API
+  version: "0.1"
+paths:
+  /cards:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: cookie session_id
+        in: header
+        name: session_id
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Person'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "405":
+          description: Method Not Allowed
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Получить ленту
+      tags:
+      - Продукт
+  /isAuth:
+    get:
+      description: Проверка по session_id из куки (если она есть)
+      parameters:
+      - description: cookie session_id
+        in: header
+        name: session_id
+        type: string
+      responses:
+        "200":
+          description: OK
+        "403":
+          description: Forbidden
+      summary: Проверка авторизации пользователя
+      tags:
+      - Авторизация
+  /login:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - in: formData
+        name: email
+        type: string
+      - in: formData
+        name: password
+        type: string
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "405":
+          description: Method Not Allowed
+          schema:
+            type: string
+      summary: Залогинить пользователя
+      tags:
+      - Авторизация
+  /logout:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: cookie session_id
+        in: header
+        name: session_id
+        type: string
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "405":
+          description: Method Not Allowed
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Разлогин
+      tags:
+      - Авторизация
+  /registration:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - in: formData
+        name: birthday
+        type: string
+      - in: formData
+        name: email
+        type: string
+      - in: formData
+        name: gender
+        type: string
+      - in: formData
+        name: name
+        type: string
+      - in: formData
+        name: password
+        type: string
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "405":
+          description: Method Not Allowed
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Регистрация нового пользователя
+      tags:
+      - Регистрация
+swagger: "2.0"

@@ -8,6 +8,14 @@ import (
 	"net/http"
 )
 
+// IsAuthenticatedHandler godoc
+// @Summary Проверка авторизации пользователя
+// @Description Проверка по session_id из куки (если она есть)
+// @Tags    Авторизация
+// @Router  /isAuth [get]
+// @Param  session_id header string false "cookie session_id"
+// @Success 200
+// @Failure 403
 func (deliver *Deliver) IsAuthenticatedHandler(mux *http.ServeMux) {
 	mux.HandleFunc("/isAuth",
 		func(respWriter http.ResponseWriter, request *http.Request) {
@@ -20,6 +28,16 @@ func (deliver *Deliver) IsAuthenticatedHandler(mux *http.ServeMux) {
 		})
 }
 
+// LoginHandler godoc
+// @Summary Залогинить пользователя
+// @Tags    Авторизация
+// @Router  /login [post]
+// @Accept  json
+// @Param   userData  formData requests.LoginRequest true "user data"
+// @Success 200
+// @Failure 405       {string} string
+// @Failure 400       {string} string
+// @Failure 401       {string} string
 func (deliver *Deliver) LoginHandler(mux *http.ServeMux) {
 	mux.HandleFunc("/login",
 		func(w http.ResponseWriter, r *http.Request) {
@@ -65,7 +83,18 @@ func (deliver *Deliver) LoginHandler(mux *http.ServeMux) {
 		})
 }
 
-func (deliver *Deliver) GetRegistrationHandler(mux *http.ServeMux) {
+// RegistrationHandler godoc
+// @Summary Регистрация нового пользователя
+// @Tags    Регистрация
+// @Router  /registration [post]
+// @Accept  json
+// @Param   userData  formData requests.RegistrationRequest true "user data"
+// @Success 200
+// @Failure 405       {string} string
+// @Failure 400       {string} string
+// @Failure 401       {string} string
+// @Failure 500       {string} string
+func (deliver *Deliver) RegistrationHandler(mux *http.ServeMux) {
 	mux.HandleFunc("/registration",
 		func(w http.ResponseWriter, r *http.Request) {
 			if r.Method == http.MethodOptions {
@@ -117,7 +146,18 @@ func (deliver *Deliver) GetRegistrationHandler(mux *http.ServeMux) {
 		})
 }
 
-func (deliver *Deliver) GetLogoutHandler(mux *http.ServeMux) {
+// LogoutHandler godoc
+// @Summary Разлогин
+// @Tags    Авторизация
+// @Router  /logout [get]
+// @Accept  json
+// @Param   session_id header string false "cookie session_id"
+// @Success 200
+// @Failure 405       {string} string
+// @Failure 400       {string} string
+// @Failure 401       {string} string
+// @Failure 500       {string} string
+func (deliver *Deliver) LogoutHandler(mux *http.ServeMux) {
 	mux.HandleFunc("/logout",
 		func(w http.ResponseWriter, r *http.Request) {
 			if r.Method == http.MethodOptions {

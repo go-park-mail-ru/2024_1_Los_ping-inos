@@ -14,9 +14,10 @@ type Config struct {
 }
 
 type ServerConfig struct {
-	Host    string        `json:"host"`
-	Port    string        `json:"port"`
-	Timeout time.Duration `json:"timeout"`
+	Host        string        `json:"host"`
+	Port        string        `json:"port"`
+	SwaggerPort string        `json:"swaggerPort"`
+	Timeout     time.Duration `json:"timeout"`
 }
 
 type DatabaseConfig struct {
