@@ -115,6 +115,7 @@ func (api *AuthHandler) Logout(sessionID string) error {
 
 	err := api.dbReader.RemoveSession(sessionID)
 	if err != nil {
+		logrus.Info(err.Error())
 		return nil
 	}
 
