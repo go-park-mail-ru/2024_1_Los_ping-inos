@@ -7,6 +7,7 @@ import (
 
 	qb "github.com/Masterminds/squirrel"
 	"github.com/sirupsen/logrus"
+	. "main.go/config"
 	models "main.go/db"
 )
 
@@ -34,7 +35,7 @@ func (storage *PersonStorage) Get(filter *models.PersonGetFilter) ([]*models.Per
 
 	query := stBuilder.
 		Select("*").
-		From("person"). // TODO название таблиц в константы
+		From(PersonTableName).
 		Where(whereMap).
 		RunWith(storage.dbReader)
 
@@ -81,7 +82,7 @@ func (storage *PersonStorage) Update(person models.Person) error {
 		return err
 	}
 	query := stBuilder.
-		Update("person").
+		Update(PersonTableName).
 		SetMap(setMap).
 		Where(qb.Eq{"id": person.ID}).
 		RunWith(storage.dbReader)
@@ -98,7 +99,7 @@ func (storage *PersonStorage) Update(person models.Person) error {
 
 func (storage *PersonStorage) AddAccount(Name string, Birthday string, Gender string, Email string, Password string) error {
 	_, err := storage.dbReader.Exec(
-		"INSERT INTO person(name, birthday, email, password, gender) "+
+		"INSERT INTO person(name, birthday, email, password, gender) "+ // TODO PersonTableName
 			"VALUES ($1, $2, $3, $4, $5)", Name, Birthday, Email, Password, Gender)
 	if err != nil {
 		println(err.Error())

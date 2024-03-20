@@ -21,7 +21,6 @@ func New(pstor PersonStorage, istor InterestStorage) *Service {
 
 // GetCards - вернуть ленту пользователей, доступно только авторизованному пользователю
 func (service *Service) GetCards(sessionID string) (string, error) {
-
 	persons, err := service.personStorage.Get(nil)
 
 	if err != nil {

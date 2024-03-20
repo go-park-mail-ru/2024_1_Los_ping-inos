@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	qb "github.com/Masterminds/squirrel"
 	"github.com/sirupsen/logrus"
+	. "main.go/config"
 	models "main.go/db"
 )
 
@@ -22,7 +23,7 @@ func (storage *InterestStorage) Get() ([]*models.Interest, error) { // TODO до
 
 	query := stBuilder.
 		Select("*").
-		From("Interest").
+		From(InterestTableName).
 		RunWith(storage.dbReader)
 
 	rows, err := query.Query()

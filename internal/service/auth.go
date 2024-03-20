@@ -9,41 +9,37 @@ import (
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 	models "main.go/db"
-	"main.go/internal/types"
 )
 
 type AuthHandler struct {
-	sessions map[string]types.UserID
+	sessions *sync.Map
 	dbReader PersonStorage
-	mutex    *sync.RWMutex
 }
 
 func NewAuthHandler(dbReader PersonStorage) *AuthHandler {
 	return &AuthHandler{
-		sessions: make(map[string]types.UserID),
+		sessions: &sync.Map{},
 		dbReader: dbReader,
-		mutex:    &sync.RWMutex{},
 	}
 }
 
 func (api *AuthHandler) IsAuthenticated(sessionID string) bool {
-	// api.mutex.RLock()
-	if _, authorized := api.sessions[sessionID]; authorized { // смотрим, есть ли запись в кеше
+	if _, authorized := api.sessions.Load(sessionID); authorized { // смотрим, есть ли запись в кеше
+		logrus.Info("loaded ", sessionID)
 		return true
 	}
-	// api.mutex.RUnlock()
 
 	// если сейчас в кеше сессии нет, лезем смотреть в бд
 	sessions := make([]string, 1)
 	sessions[0] = sessionID
 	person, err := api.dbReader.Get(&models.PersonGetFilter{SessionID: sessions})
+	logrus.Info("person ", person[0].Name)
 	if err != nil || len(person) == 0 {
 		return false
 	}
 
-	// api.mutex.Lock()
-	api.sessions[sessionID] = person[0].ID // нашли - запоминаем в кеш, gonka, sessii ne doljni hranitsa v sql
-	// api.mutex.Unlock()
+	api.sessions.Store(sessionID, person[0].ID) // нашли - запоминаем в кеш, gonka, sessii ne doljni hranitsa v sql
+
 	return true
 }
 
@@ -71,7 +67,7 @@ func (api *AuthHandler) Login(email, password string) (string, string, error) {
 
 	SID := uuid.NewString()
 	logrus.Info("SID ", SID)
-	api.sessions[SID] = user.ID
+	api.sessions.Store(SID, user.ID)
 	user.SessionID = SID
 	err = api.dbReader.Update(*user)
 	logrus.Info("UPDATED")
@@ -83,18 +79,18 @@ func (api *AuthHandler) Login(email, password string) (string, string, error) {
 	return SID, user.Name, nil
 }
 
-func (api *AuthHandler) Registration(Name string, Birthday string, Gender string, Email string, Password string) (string, string, error) {
-	hashPassword, err := hashPassword(Password)
+func (api *AuthHandler) Registration(name string, birthday string, gender string, email string, password string) (string, string, error) {
+	hashedPassword, err := hashPassword(password)
 	if err != nil {
 		return "", "", errors.New("hash func error")
 	}
 
-	err = api.dbReader.AddAccount(Name, Birthday, Gender, Email, hashPassword)
+	err = api.dbReader.AddAccount(name, birthday, gender, email, hashedPassword)
 	if err != nil {
 		return "", "", err
 	}
 
-	SID, userName, err := api.Login(Email, Password)
+	SID, userName, err := api.Login(email, password)
 	if err != nil {
 		logrus.Info(err.Error())
 		return "", "", err
@@ -103,15 +99,11 @@ func (api *AuthHandler) Registration(Name string, Birthday string, Gender string
 }
 
 func (api *AuthHandler) Logout(sessionID string) error {
-	// api.mutex.RLock()
-	if _, ok := api.sessions[sessionID]; !ok {
+	if _, ok := api.sessions.Load(sessionID); !ok {
 		return errors.New("no session")
 	}
-	// api.mutex.RUnlock()
 
-	// api.mutex.Lock()
-	delete(api.sessions, sessionID)
-	// api.mutex.Unlock()
+	api.sessions.Delete(sessionID)
 
 	err := api.dbReader.RemoveSession(sessionID)
 	if err != nil {
@@ -122,7 +114,7 @@ func (api *AuthHandler) Logout(sessionID string) error {
 }
 
 func hashPassword(password string) (string, error) {
-	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14) // TODO подумать насчет константы
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
 	return string(bytes), err
 }
 
