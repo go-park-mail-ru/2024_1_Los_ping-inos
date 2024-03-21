@@ -188,6 +188,57 @@ const docTemplate = `{
                 }
             }
         },
+        "/me": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Продукт"
+                ],
+                "summary": "Получить имя пользователя по его session_id (для отображения в ленте)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "cookie session_id",
+                        "name": "session_id",
+                        "in": "header"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "405": {
+                        "description": "Method Not Allowed",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/registration": {
             "post": {
                 "consumes": [

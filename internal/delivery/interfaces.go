@@ -2,6 +2,7 @@ package delivery
 
 type Service interface {
 	GetCards(sessionID string) (string, error)
+	GetName(sessionID string) (string, error)
 	GetAllInterests() (string, error)
 }
 

@@ -33,11 +33,12 @@ func (api *AuthHandler) IsAuthenticated(sessionID string) bool {
 	sessions := make([]string, 1)
 	sessions[0] = sessionID
 	person, err := api.dbReader.Get(&models.PersonGetFilter{SessionID: sessions})
-	logrus.Info("person ", person[0].Name)
 	if err != nil || len(person) == 0 {
+		logrus.Info("no such person")
 		return false
 	}
 
+	logrus.Info("person ", person[0].Name)
 	api.sessions.Store(sessionID, person[0].ID) // нашли - запоминаем в кеш, gonka, sessii ne doljni hranitsa v sql
 
 	return true

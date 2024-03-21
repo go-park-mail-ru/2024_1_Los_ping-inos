@@ -40,6 +40,7 @@ func StartServer(deliver ...*Deliver) error {
 	rawMux.HandleFunc("/registration", deliver[0].RegistrationHandler())
 	rawMux.HandleFunc("/logout", deliver[0].LogoutHandler())
 	rawMux.HandleFunc("/isAuth", deliver[0].IsAuthenticatedHandler())
+	rawMux.HandleFunc("/me", deliver[0].GetUsername())
 
 	// обёртки миддлвар на методы и авторизованность
 	authHandler := IsAuthenticatedMiddleware(rawMux, deliver[0])
@@ -49,6 +50,7 @@ func StartServer(deliver ...*Deliver) error {
 	registrationHandler := AllowedMethodMiddleware(rawMux, map[string]struct{}{"GET": {}, "POST": {}})
 	logoutHandler := AllowedMethodMiddleware(authHandler, map[string]struct{}{"GET": {}})
 	isAuthHandler := AllowedMethodMiddleware(rawMux, map[string]struct{}{"GET": {}})
+	usernameHandler := AllowedMethodMiddleware(authHandler, map[string]struct{}{"GET": {}})
 
 	// сохранение обёрток
 	mux := http.NewServeMux()
@@ -57,6 +59,7 @@ func StartServer(deliver ...*Deliver) error {
 	mux.Handle("/registration", registrationHandler)
 	mux.Handle("/logout", logoutHandler)
 	mux.Handle("/isAuth", isAuthHandler)
+	mux.Handle("/me", usernameHandler)
 
 	server := http.Server{
 		Addr:         config.Cfg.Server.Host + config.Cfg.Server.Port,
