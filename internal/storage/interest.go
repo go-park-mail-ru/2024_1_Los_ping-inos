@@ -6,6 +6,7 @@ import (
 	"github.com/sirupsen/logrus"
 	. "main.go/config"
 	models "main.go/db"
+	. "main.go/internal/logs"
 )
 
 type InterestStorage struct {
@@ -18,7 +19,7 @@ func NewInterestStorage(dbReader *sql.DB) *InterestStorage {
 	}
 }
 
-func (storage *InterestStorage) Get() ([]*models.Interest, error) { // TODO добавить фильтры, когда продумаем интересы
+func (storage *InterestStorage) Get(requestID int64) ([]*models.Interest, error) { // TODO добавить фильтры, когда продумаем интересы
 	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
 
 	query := stBuilder.
@@ -26,11 +27,12 @@ func (storage *InterestStorage) Get() ([]*models.Interest, error) { // TODO до
 		From(InterestTableName).
 		RunWith(storage.dbReader)
 
+	Log.WithFields(logrus.Fields{RequestID: requestID}).Info("db update request to ", InterestTableName)
 	rows, err := query.Query()
 	defer rows.Close()
 
 	if err != nil {
-		logrus.Info("can't read Interests: ", err.Error())
+		Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("can't query: ", err.Error())
 		return nil, err
 	}
 
@@ -39,12 +41,13 @@ func (storage *InterestStorage) Get() ([]*models.Interest, error) { // TODO до
 		interest := &models.Interest{}
 		err = rows.Scan(&interest.ID, &interest.Name)
 		if err != nil {
-			logrus.Info("can't scan row ", err.Error())
+			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("can't scan row: ", err.Error())
 			return nil, err
 		}
 
 		interests = append(interests, interest)
 	}
 
+	Log.WithFields(logrus.Fields{RequestID: requestID}).Info("return interests")
 	return interests, nil
 }

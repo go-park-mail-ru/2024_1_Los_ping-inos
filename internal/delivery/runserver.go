@@ -1,21 +1,29 @@
 package delivery
 
 import (
+	"fmt"
 	"github.com/go-chi/chi"
-	"github.com/sirupsen/logrus"
 	httpSwagger "github.com/swaggo/http-swagger/v2"
 	"main.go/config"
+	. "main.go/internal/logs"
 	"net/http"
+	"sync/atomic"
 	"time"
 )
 
 type Deliver struct {
-	serv Service
-	auth Auth
+	serv          Service
+	auth          Auth
+	lastRequestID int64
 }
 
 func New(service Service, auth Auth) *Deliver {
 	return &Deliver{serv: service, auth: auth}
+}
+
+func (deliver *Deliver) nextRequest() int64 {
+	atomic.AddInt64(&deliver.lastRequestID, 1)
+	return deliver.lastRequestID
 }
 
 func runSwaggerServer() {
@@ -26,7 +34,7 @@ func runSwaggerServer() {
 	))
 	err := http.ListenAndServe(config.Cfg.Server.SwaggerPort, r)
 	if err != nil {
-		logrus.Info(err.Error())
+		Log.Warn(err.Error())
 	}
 }
 
@@ -68,7 +76,8 @@ func StartServer(deliver ...*Deliver) error {
 		WriteTimeout: config.Cfg.Server.Timeout * time.Second,
 	}
 
-	logrus.Printf("starting server at %v", server.Addr)
+	Log.Infof("started server at %v\n", server.Addr)
+	fmt.Printf("started server at %v\n", server.Addr)
 	err := server.ListenAndServe()
 	if err != nil {
 		return err

@@ -9,6 +9,7 @@ import (
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 	models "main.go/db"
+	. "main.go/internal/logs"
 )
 
 type AuthHandler struct {
@@ -23,32 +24,29 @@ func NewAuthHandler(dbReader PersonStorage) *AuthHandler {
 	}
 }
 
-func (api *AuthHandler) IsAuthenticated(sessionID string) bool {
+func (api *AuthHandler) IsAuthenticated(sessionID string, requestID int64) bool {
 	if _, authorized := api.sessions.Load(sessionID); authorized { // смотрим, есть ли запись в кеше
-		logrus.Info("loaded ", sessionID)
+		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("loaded session ", sessionID)
 		return true
 	}
 
 	// если сейчас в кеше сессии нет, лезем смотреть в бд
 	sessions := make([]string, 1)
 	sessions[0] = sessionID
-	person, err := api.dbReader.Get(&models.PersonGetFilter{SessionID: sessions})
+	person, err := api.dbReader.Get(requestID, &models.PersonGetFilter{SessionID: sessions})
 	if err != nil || len(person) == 0 {
-		logrus.Info("no such person")
 		return false
 	}
 
-	logrus.Info("person ", person[0].Name)
-	api.sessions.Store(sessionID, person[0].ID) // нашли - запоминаем в кеш, gonka, sessii ne doljni hranitsa v sql
-
+	api.sessions.Store(sessionID, person[0].ID) // нашли - запоминаем в кеш
 	return true
 }
 
 // Login - принимает email, пароль; возвращает ID сессии и ошибку
-func (api *AuthHandler) Login(email, password string) (string, string, error) {
+func (api *AuthHandler) Login(email, password string, requestID int64) (string, string, error) {
 	ems := make([]string, 1)
 	ems[0] = email
-	users, ok := api.dbReader.Get(&models.PersonGetFilter{Email: ems})
+	users, ok := api.dbReader.Get(requestID, &models.PersonGetFilter{Email: ems})
 	if ok != nil {
 		return "", "", ok
 	}
@@ -58,57 +56,52 @@ func (api *AuthHandler) Login(email, password string) (string, string, error) {
 	}
 
 	user := users[0]
-	logrus.Info("LOGIN USER ", user.Email)
 	err := checkPassword(user.Password, password)
 
 	if err != nil {
-		logrus.Info(err.Error())
-		return "", "", errors.New("wrong password")
+		return "", "", err
 	}
 
 	SID := uuid.NewString()
-	logrus.Info("SID ", SID)
 	api.sessions.Store(SID, user.ID)
 	user.SessionID = SID
-	err = api.dbReader.Update(*user)
-	logrus.Info("UPDATED")
+	err = api.dbReader.Update(requestID, *user)
 	if err != nil {
-		logrus.Info(err.Error())
-		return "", "", errors.New("can't write session to bd")
+		return "", "", err
 	}
 
 	return SID, user.Name, nil
 }
 
-func (api *AuthHandler) Registration(name string, birthday string, gender string, email string, password string) (string, string, error) {
+func (api *AuthHandler) Registration(name string, birthday string, gender string, email string, password string, requestID int64) (string, string, error) {
 	hashedPassword, err := hashPassword(password)
-	if err != nil {
-		return "", "", errors.New("hash func error")
-	}
-
-	err = api.dbReader.AddAccount(name, birthday, gender, email, hashedPassword)
 	if err != nil {
 		return "", "", err
 	}
 
-	SID, userName, err := api.Login(email, password)
+	err = api.dbReader.AddAccount(requestID, name, birthday, gender, email, hashedPassword)
 	if err != nil {
-		logrus.Info(err.Error())
+		return "", "", err
+	}
+
+	SID, userName, err := api.Login(email, password, requestID)
+	if err != nil {
 		return "", "", err
 	}
 	return SID, userName, nil
 }
 
-func (api *AuthHandler) Logout(sessionID string) error {
+func (api *AuthHandler) Logout(sessionID string, requestID int64) error {
 	if _, ok := api.sessions.Load(sessionID); !ok {
+		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("no session to logout")
 		return errors.New("no session")
 	}
 
 	api.sessions.Delete(sessionID)
 
-	err := api.dbReader.RemoveSession(sessionID)
+	err := api.dbReader.RemoveSession(requestID, sessionID)
 	if err != nil {
-		return nil
+		return err
 	}
 
 	return nil

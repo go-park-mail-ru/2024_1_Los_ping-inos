@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/sirupsen/logrus"
 	"io"
+	. "main.go/internal/logs"
 	requests "main.go/internal/pkg"
 	"net/http"
 	"time"
@@ -26,11 +27,19 @@ func setLoginCookie(sessionID, name string, expires time.Time, writer http.Respo
 // @Failure 403
 func (deliver *Deliver) IsAuthenticatedHandler() func(w http.ResponseWriter, r *http.Request) {
 	return func(respWriter http.ResponseWriter, request *http.Request) {
+		requestID := deliver.nextRequest()
+		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("auth check")
 		session, err := request.Cookie("session_id") // проверка авторизации
-		if err != nil || session == nil || !deliver.auth.IsAuthenticated(session.Value) {
+
+		if err != nil {
+			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("not authorized: ", err.Error())
+		}
+		if err != nil || session == nil || !deliver.auth.IsAuthenticated(session.Value, requestID) {
+			Log.WithFields(logrus.Fields{RequestID: requestID}).Info("not authorized")
 			requests.SendResponse(respWriter, request, http.StatusForbidden, nil)
 			return
 		}
+		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("authorized")
 		requests.SendResponse(respWriter, request, http.StatusOK, nil)
 	}
 }
@@ -47,34 +56,35 @@ func (deliver *Deliver) IsAuthenticatedHandler() func(w http.ResponseWriter, r *
 // @Failure 401       {string} string
 func (deliver *Deliver) LoginHandler() func(respWriter http.ResponseWriter, request *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
+		requestID := deliver.nextRequest()
+		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("login")
 		var request requests.LoginRequest
 
 		body, err := io.ReadAll(r.Body)
 		if err != nil {
+			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("bad body: ", err.Error())
 			requests.SendResponse(w, r, http.StatusBadRequest, err.Error())
-			logrus.Info("bad request")
 			return
 		}
 
 		err = json.Unmarshal(body, &request)
 		if err != nil {
+			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("can't unmarshal body: ", err.Error())
 			requests.SendResponse(w, r, http.StatusBadRequest, err.Error())
-			logrus.Info("can't unmarshall")
 			return
 		}
 
-		SID, userName, err := deliver.auth.Login(request.Email, request.Password)
-		logrus.Info("landing SID: ", SID)
+		SID, userName, err := deliver.auth.Login(request.Email, request.Password, requestID)
 		if err != nil {
+			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("can't login: ", err.Error())
 			requests.SendResponse(w, r, http.StatusUnauthorized, err.Error())
-			logrus.Info(err.Error())
 			return
 		}
 
 		setLoginCookie(SID, userName, oneDayExpiration, w)
 
+		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("login with SID: ", SID)
 		requests.SendResponse(w, r, http.StatusOK, nil)
-		logrus.Info("logined")
 	}
 }
 
@@ -91,12 +101,17 @@ func (deliver *Deliver) LoginHandler() func(respWriter http.ResponseWriter, requ
 // @Failure 500       {string} string
 func (deliver *Deliver) RegistrationHandler() func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
+		requestID := deliver.nextRequest()
+		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("registration")
+
 		if r.Method == http.MethodGet {
-			body, err := deliver.serv.GetAllInterests()
+			body, err := deliver.serv.GetAllInterests(requestID)
 			if err != nil {
+				Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("can't get interests: ", err.Error())
 				requests.SendResponse(w, r, http.StatusInternalServerError, err.Error())
 				return
 			}
+			Log.WithFields(logrus.Fields{RequestID: requestID}).Info("sent interests")
 			requests.SendResponse(w, r, http.StatusOK, body)
 			return
 		}
@@ -105,27 +120,27 @@ func (deliver *Deliver) RegistrationHandler() func(http.ResponseWriter, *http.Re
 
 		body, err := io.ReadAll(r.Body)
 		if err != nil {
+			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("bad body: ", err.Error())
 			requests.SendResponse(w, r, http.StatusBadRequest, err.Error())
-			logrus.Info("bad request")
 			return
 		}
 
 		err = json.Unmarshal(body, &request)
 		if err != nil {
+			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("can't unmarshal body: ", err.Error())
 			requests.SendResponse(w, r, http.StatusBadRequest, err.Error())
-			logrus.Info("can't unmarshall")
 			return
 		}
-		SID, userName, err := deliver.auth.Registration(request.Name, request.Birthday, request.Gender, request.Email, request.Password)
+		SID, userName, err := deliver.auth.Registration(request.Name, request.Birthday, request.Gender, request.Email, request.Password, requestID)
 		if err != nil {
-			requests.SendResponse(w, r, http.StatusBadRequest, err.Error())
-			logrus.Info("can't auth")
+			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("can't auth: ", err.Error())
+			requests.SendResponse(w, r, http.StatusBadRequest, err.Error()) //TODO 409
 		}
 
 		setLoginCookie(SID, userName, oneDayExpiration, w)
 
+		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("registered and logged with SID ", SID)
 		requests.SendResponse(w, r, http.StatusOK, nil)
-		logrus.Info("okok")
 	}
 }
 
@@ -142,23 +157,25 @@ func (deliver *Deliver) RegistrationHandler() func(http.ResponseWriter, *http.Re
 // @Failure 500       {string} string
 func (deliver *Deliver) LogoutHandler() func(respWriter http.ResponseWriter, request *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
+		requestID := deliver.nextRequest()
+		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("logout start")
 
 		session, err := r.Cookie("session_id")
 		if err != nil {
-			requests.SendResponse(w, r, http.StatusUnauthorized, nil)
-			logrus.Info("no cookie")
+			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("no cookie 0-0 ", err.Error())
+			requests.SendResponse(w, r, http.StatusUnauthorized, err.Error())
 			return
 		}
 
-		err = deliver.auth.Logout(session.Value)
+		err = deliver.auth.Logout(session.Value, requestID)
 		if err != nil {
-			requests.SendResponse(w, r, http.StatusBadRequest, nil)
-			logrus.Info("can't logout")
+			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("can't logout: ", err.Error())
+			requests.SendResponse(w, r, http.StatusBadRequest, err.Error())
 			return
 		}
 
 		setLoginCookie("", "", expiredYear, w)
-
+		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("logout end")
 		requests.SendResponse(w, r, http.StatusOK, nil)
 	}
 }

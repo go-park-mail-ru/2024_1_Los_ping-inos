@@ -3,7 +3,6 @@ package service
 import (
 	"encoding/json"
 	"errors"
-	"github.com/sirupsen/logrus"
 	models "main.go/db"
 )
 
@@ -20,27 +19,25 @@ func New(pstor PersonStorage, istor InterestStorage) *Service {
 	}
 }
 
-func (service *Service) GetName(sessionID string) (string, error) {
-	person, err := service.personStorage.Get(&models.PersonGetFilter{SessionID: []string{sessionID}})
+func (service *Service) GetName(sessionID string, requestID int64) (string, error) {
+	person, err := service.personStorage.Get(requestID, &models.PersonGetFilter{SessionID: []string{sessionID}})
 	if err != nil {
-		logrus.Info(err.Error())
 		return "", err
 	}
-	logrus.Info(len(person))
+
 	if person == nil || len(person) == 0 {
-		logrus.Info("No person with such session ID ", sessionID)
-		return "", err
+		return "", errors.New("no person with such sessionID")
 	}
 
 	return person[0].Name, err
 }
 
 // GetCards - вернуть ленту пользователей, доступно только авторизованному пользователю
-func (service *Service) GetCards(sessionID string) (string, error) {
-	persons, err := service.personStorage.Get(nil)
+func (service *Service) GetCards(sessionID string, requestID int64) (string, error) {
+	persons, err := service.personStorage.Get(requestID, nil)
 
 	if err != nil {
-		return "", errors.New("can't get users")
+		return "", err
 	}
 
 	i := 0
