@@ -171,3 +171,4 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+/logrus.log

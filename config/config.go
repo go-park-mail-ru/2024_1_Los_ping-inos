@@ -5,6 +5,9 @@ import (
 	"time"
 )
 
+const PersonTableName = "person"
+const InterestTableName = "interest"
+
 var Cfg Config
 
 type Config struct {

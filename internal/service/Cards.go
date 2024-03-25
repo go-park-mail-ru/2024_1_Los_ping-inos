@@ -19,13 +19,33 @@ func New(pstor PersonStorage, istor InterestStorage) *Service {
 	}
 }
 
-// GetCards - вернуть ленту пользователей, доступно только авторизованному пользователю
-func (service *Service) GetCards(sessionID string) (string, error) {
+func (service *Service) GetName(sessionID string, requestID int64) (string, error) {
+	person, err := service.personStorage.Get(requestID, &models.PersonGetFilter{SessionID: []string{sessionID}})
+	if err != nil {
+		return "", err
+	}
 
-	persons, err := service.personStorage.Get(nil)
+	if person == nil || len(person) == 0 {
+		return "", errors.New("no person with such sessionID")
+	}
+
+	return person[0].Name, err
+}
+
+// GetCards - вернуть ленту пользователей, доступно только авторизованному пользователю
+func (service *Service) GetCards(sessionID string, requestID int64) (string, error) {
+	persons, err := service.personStorage.Get(requestID, nil)
 
 	if err != nil {
-		return "", errors.New("can't get users")
+		return "", err
+	}
+
+	i := 0
+	for ; i < len(persons); i++ { // :eyes:
+		if persons[i].SessionID == sessionID {
+			persons = append(persons[:i], persons[i+1:]...)
+			break
+		}
 	}
 
 	res, _ := personsToJSON(persons)

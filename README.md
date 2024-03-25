@@ -3,7 +3,7 @@ Backend-репозиторий команды Los_ping-inos
 
 ## Ссылки
 * сайт    - http://185.241.192.216:8081/
-* swagger - http://185.241.192.216:1323/swagger/index.html
+* swagger - http://185.241.192.216:8085/swagger/index.html
 
 ## Как генерить swagger
 * в комментариях перед ручками описать доку [в таком формате](https://github.com/swaggo/swag?tab=readme-ov-file#declarative-comments-format)

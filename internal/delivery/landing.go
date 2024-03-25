@@ -5,8 +5,37 @@ import (
 	"time"
 
 	"github.com/sirupsen/logrus"
+	. "main.go/internal/logs"
 	requests "main.go/internal/pkg"
 )
+
+// GetUsername godoc
+// @Summary Получить имя пользователя по его session_id (для отображения в ленте)
+// @Tags Продукт
+// @Router  /me [get]
+// @Accept  json
+// @Param   session_id header string false "cookie session_id"
+// @Success 200		  {string}  string
+// @Failure 400       {string} string
+// @Failure 401       {string} string
+// @Failure 405       {string} string
+// @Failure 500       {string} string
+func (deliver *Deliver) GetUsername() func(w http.ResponseWriter, r *http.Request) {
+	return func(respWriter http.ResponseWriter, request *http.Request) {
+		requestID := deliver.nextRequest()
+		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("get username")
+
+		session, _ := request.Cookie("session_id") // возвращает только ErrNoCookie, так что обработка не нужна
+
+		name, err := deliver.serv.GetName(session.Value, requestID)
+		if err != nil {
+			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn(err.Error())
+			requests.SendResponse(respWriter, request, http.StatusInternalServerError, "can't get name")
+		}
+		requests.SendResponse(respWriter, request, http.StatusOK, name)
+		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("sent username")
+	}
+}
 
 // GetCardsHandler godoc
 // @Summary Получить ленту
@@ -19,36 +48,23 @@ import (
 // @Failure 401       {string} string
 // @Failure 405       {string} string
 // @Failure 500       {string} string
-func (deliver *Deliver) GetCardsHandler(mux *http.ServeMux) {
-	mux.HandleFunc("/cards",
-		func(respWriter http.ResponseWriter, request *http.Request) {
-			if request.Method == http.MethodOptions {
-				logrus.Info("Preflight request cards")
-				requests.SendResponse(respWriter, request, http.StatusOK, nil)
-				return
-			}
+func (deliver *Deliver) GetCardsHandler() func(http.ResponseWriter, *http.Request) {
+	return func(respWriter http.ResponseWriter, request *http.Request) {
+		requestID := deliver.nextRequest()
+		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("get cards request")
 
-			if request.Method != http.MethodGet {
-				requests.SendResponse(respWriter, request, http.StatusMethodNotAllowed, "method not allowed")
-				logrus.Info("wrong method")
-				return
-			}
+		session, _ := request.Cookie("session_id") // возвращает только ErrNoCookie, так что обработка не нужна
 
-			session, err := request.Cookie("session_id") // проверка авторизации
-			if err != nil || session == nil || !deliver.auth.IsAuthenticated(session.Value) {
-				requests.SendResponse(respWriter, request, http.StatusForbidden, "forbidden")
-				return
-			}
+		cards, err := deliver.serv.GetCards(session.Value, requestID)
+		if err != nil {
+			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn(err.Error())
+			requests.SendResponse(respWriter, request, http.StatusInternalServerError, err.Error())
+			return
+		}
 
-			cards, err := deliver.serv.GetCards(session.Value)
-			if err != nil {
-				requests.SendResponse(respWriter, request, http.StatusInternalServerError, err.Error())
-				return
-			}
-
-			requests.SendResponse(respWriter, request, http.StatusOK, cards)
-			logrus.Info("sent cards okok")
-		})
+		requests.SendResponse(respWriter, request, http.StatusOK, cards)
+		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("sent cards")
+	}
 }
 
 func generateCookie(name, value string, expires time.Time, httpOnly bool) *http.Cookie {
@@ -59,11 +75,4 @@ func generateCookie(name, value string, expires time.Time, httpOnly bool) *http.
 		Expires:  expires,
 		HttpOnly: httpOnly,
 	}
-}
-
-func setLoginCookie(sessionID, name string, expires time.Time, writer http.ResponseWriter) {
-	cookie := generateCookie("session_id", sessionID, expires, true)
-	http.SetCookie(writer, cookie)
-	cookie = generateCookie("name", name, expires, false)
-	http.SetCookie(writer, cookie)
 }

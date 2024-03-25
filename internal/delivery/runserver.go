@@ -1,22 +1,30 @@
 package delivery
 
 import (
+	"fmt"
+	"github.com/emirpasic/gods/sets/hashset"
 	"github.com/go-chi/chi"
-	"github.com/sirupsen/logrus"
 	httpSwagger "github.com/swaggo/http-swagger/v2"
 	"main.go/config"
-	_ "main.go/internal/docs"
+	. "main.go/internal/logs"
 	"net/http"
+	"sync/atomic"
 	"time"
 )
 
 type Deliver struct {
-	serv Service
-	auth Auth
+	serv          Service
+	auth          Auth
+	lastRequestID int64
 }
 
 func New(service Service, auth Auth) *Deliver {
 	return &Deliver{serv: service, auth: auth}
+}
+
+func (deliver *Deliver) nextRequest() int64 {
+	atomic.AddInt64(&deliver.lastRequestID, 1)
+	return deliver.lastRequestID
 }
 
 func runSwaggerServer() {
@@ -27,21 +35,40 @@ func runSwaggerServer() {
 	))
 	err := http.ListenAndServe(config.Cfg.Server.SwaggerPort, r)
 	if err != nil {
-		logrus.Info(err.Error())
+		Log.Warn(err.Error())
 	}
 }
 
 func StartServer(deliver ...*Deliver) error {
 	go runSwaggerServer()
 
-	mux := http.NewServeMux()
+	// "сырой" mux
+	rawMux := http.NewServeMux()
+	rawMux.HandleFunc("/cards", deliver[0].GetCardsHandler())
+	rawMux.HandleFunc("/login", deliver[0].LoginHandler())
+	rawMux.HandleFunc("/registration", deliver[0].RegistrationHandler())
+	rawMux.HandleFunc("/logout", deliver[0].LogoutHandler())
+	rawMux.HandleFunc("/isAuth", deliver[0].IsAuthenticatedHandler())
+	rawMux.HandleFunc("/me", deliver[0].GetUsername())
 
-	// тут хендлеры добавлять
-	deliver[0].GetCardsHandler(mux)
-	deliver[0].LoginHandler(mux)
-	deliver[0].RegistrationHandler(mux)
-	deliver[0].LogoutHandler(mux)
-	deliver[0].IsAuthenticatedHandler(mux)
+	// обёртки миддлвар на методы и авторизованность
+	authHandler := IsAuthenticatedMiddleware(rawMux, deliver[0])
+
+	cardsHandler := AllowedMethodMiddleware(authHandler, hashset.New("GET"))
+	loginHandler := AllowedMethodMiddleware(rawMux, hashset.New("POST"))
+	registrationHandler := AllowedMethodMiddleware(rawMux, hashset.New("GET", "POST"))
+	logoutHandler := AllowedMethodMiddleware(authHandler, hashset.New("GET"))
+	isAuthHandler := AllowedMethodMiddleware(rawMux, hashset.New("GET"))
+	usernameHandler := AllowedMethodMiddleware(authHandler, hashset.New("GET"))
+
+	// сохранение обёрток
+	mux := http.NewServeMux()
+	mux.Handle("/cards", cardsHandler)
+	mux.Handle("/login", loginHandler)
+	mux.Handle("/registration", registrationHandler)
+	mux.Handle("/logout", logoutHandler)
+	mux.Handle("/isAuth", isAuthHandler)
+	mux.Handle("/me", usernameHandler)
 
 	server := http.Server{
 		Addr:         config.Cfg.Server.Host + config.Cfg.Server.Port,
@@ -50,7 +77,8 @@ func StartServer(deliver ...*Deliver) error {
 		WriteTimeout: config.Cfg.Server.Timeout * time.Second,
 	}
 
-	logrus.Printf("starting server at %v", server.Addr)
+	Log.Infof("started server at %v", server.Addr)
+	fmt.Printf("started server at %v\n", server.Addr)
 	err := server.ListenAndServe()
 	if err != nil {
 		return err

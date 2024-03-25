@@ -1,13 +1,14 @@
 package delivery
 
 type Service interface {
-	GetCards(sessionID string) (string, error)
-	GetAllInterests() (string, error)
+	GetCards(sessionID string, reqID int64) (string, error)
+	GetName(sessionID string, reqID int64) (string, error)
+	GetAllInterests(reqID int64) (string, error)
 }
 
 type Auth interface {
-	IsAuthenticated(sessionID string) bool
-	Login(email, password string) (string, string, error)
-	Logout(sessionID string) error
-	Registration(Name string, Birthday string, Gender string, Email string, Password string) (string, string, error)
+	IsAuthenticated(sessionID string, reqID int64) bool
+	Login(email, password string, reqID int64) (string, error)
+	Logout(sessionID string, reqID int64) error
+	Registration(Name string, Birthday string, Gender string, Email string, Password string, reqID int64) (string, error)
 }
