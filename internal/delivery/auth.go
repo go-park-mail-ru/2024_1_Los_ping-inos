@@ -2,18 +2,18 @@ package delivery
 
 import (
 	"encoding/json"
+	"errors"
 	"github.com/sirupsen/logrus"
 	"io"
 	. "main.go/internal/logs"
 	requests "main.go/internal/pkg"
+	. "main.go/internal/types"
 	"net/http"
 	"time"
 )
 
-func setLoginCookie(sessionID, name string, expires time.Time, writer http.ResponseWriter) {
+func setLoginCookie(sessionID string, expires time.Time, writer http.ResponseWriter) {
 	cookie := generateCookie("session_id", sessionID, expires, true)
-	http.SetCookie(writer, cookie)
-	cookie = generateCookie("name", name, expires, false)
 	http.SetCookie(writer, cookie)
 }
 
@@ -74,14 +74,14 @@ func (deliver *Deliver) LoginHandler() func(respWriter http.ResponseWriter, requ
 			return
 		}
 
-		SID, userName, err := deliver.auth.Login(request.Email, request.Password, requestID)
+		SID, err := deliver.auth.Login(request.Email, request.Password, requestID)
 		if err != nil {
 			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("can't login: ", err.Error())
 			requests.SendResponse(w, r, http.StatusUnauthorized, err.Error())
 			return
 		}
 
-		setLoginCookie(SID, userName, oneDayExpiration, w)
+		setLoginCookie(SID, oneDayExpiration, w)
 
 		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("login with SID: ", SID)
 		requests.SendResponse(w, r, http.StatusOK, nil)
@@ -131,13 +131,17 @@ func (deliver *Deliver) RegistrationHandler() func(http.ResponseWriter, *http.Re
 			requests.SendResponse(w, r, http.StatusBadRequest, err.Error())
 			return
 		}
-		SID, userName, err := deliver.auth.Registration(request.Name, request.Birthday, request.Gender, request.Email, request.Password, requestID)
+		SID, err := deliver.auth.Registration(request.Name, request.Birthday, request.Gender, request.Email, request.Password, requestID)
 		if err != nil {
 			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("can't auth: ", err.Error())
-			requests.SendResponse(w, r, http.StatusBadRequest, err.Error()) //TODO 409
+			if errors.As(err, &ErrSeveralEmails) {
+				requests.SendResponse(w, r, http.StatusConflict, err.Error())
+			} else {
+				requests.SendResponse(w, r, http.StatusBadRequest, err.Error())
+			}
 		}
 
-		setLoginCookie(SID, userName, oneDayExpiration, w)
+		setLoginCookie(SID, oneDayExpiration, w)
 
 		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("registered and logged with SID ", SID)
 		requests.SendResponse(w, r, http.StatusOK, nil)
@@ -174,7 +178,7 @@ func (deliver *Deliver) LogoutHandler() func(respWriter http.ResponseWriter, req
 			return
 		}
 
-		setLoginCookie("", "", expiredYear, w)
+		setLoginCookie("", expiredYear, w)
 		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("logout end")
 		requests.SendResponse(w, r, http.StatusOK, nil)
 	}

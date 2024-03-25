@@ -2,6 +2,7 @@ package delivery
 
 import (
 	"fmt"
+	"github.com/emirpasic/gods/sets/hashset"
 	"github.com/go-chi/chi"
 	httpSwagger "github.com/swaggo/http-swagger/v2"
 	"main.go/config"
@@ -53,12 +54,12 @@ func StartServer(deliver ...*Deliver) error {
 	// обёртки миддлвар на методы и авторизованность
 	authHandler := IsAuthenticatedMiddleware(rawMux, deliver[0])
 
-	cardsHandler := AllowedMethodMiddleware(authHandler, map[string]struct{}{"GET": {}})
-	loginHandler := AllowedMethodMiddleware(rawMux, map[string]struct{}{"POST": {}})
-	registrationHandler := AllowedMethodMiddleware(rawMux, map[string]struct{}{"GET": {}, "POST": {}})
-	logoutHandler := AllowedMethodMiddleware(authHandler, map[string]struct{}{"GET": {}})
-	isAuthHandler := AllowedMethodMiddleware(rawMux, map[string]struct{}{"GET": {}})
-	usernameHandler := AllowedMethodMiddleware(authHandler, map[string]struct{}{"GET": {}})
+	cardsHandler := AllowedMethodMiddleware(authHandler, hashset.New("GET"))
+	loginHandler := AllowedMethodMiddleware(rawMux, hashset.New("POST"))
+	registrationHandler := AllowedMethodMiddleware(rawMux, hashset.New("GET", "POST"))
+	logoutHandler := AllowedMethodMiddleware(authHandler, hashset.New("GET"))
+	isAuthHandler := AllowedMethodMiddleware(rawMux, hashset.New("GET"))
+	usernameHandler := AllowedMethodMiddleware(authHandler, hashset.New("GET"))
 
 	// сохранение обёрток
 	mux := http.NewServeMux()
@@ -76,7 +77,7 @@ func StartServer(deliver ...*Deliver) error {
 		WriteTimeout: config.Cfg.Server.Timeout * time.Second,
 	}
 
-	Log.Infof("started server at %v\n", server.Addr)
+	Log.Infof("started server at %v", server.Addr)
 	fmt.Printf("started server at %v\n", server.Addr)
 	err := server.ListenAndServe()
 	if err != nil {

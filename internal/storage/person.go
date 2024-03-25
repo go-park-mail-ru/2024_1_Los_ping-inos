@@ -43,7 +43,7 @@ func (storage *PersonStorage) Get(requestID int64, filter *models.PersonGetFilte
 	rows, err := query.Query()
 
 	if err != nil {
-		Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("can't query: ", err.Error())
+		Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("db can't query: ", err.Error())
 		return nil, err
 	}
 	defer rows.Close()
@@ -56,14 +56,14 @@ func (storage *PersonStorage) Get(requestID int64, filter *models.PersonGetFilte
 			&person.Email, &person.Password, &person.CreatedAt, &person.Premium, &person.LikesLeft, &person.SessionID, &person.Gender)
 
 		if err != nil {
-			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("can't scan person: ", err.Error())
+			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("db can't scan person: ", err.Error())
 			return nil, err
 		}
 
 		persons = append(persons, person)
 	}
 
-	Log.WithFields(logrus.Fields{RequestID: requestID}).Info("returning records")
+	Log.WithFields(logrus.Fields{RequestID: requestID}).Info("db returning records")
 	return persons, nil
 }
 
@@ -92,10 +92,10 @@ func (storage *PersonStorage) Update(requestID int64, person models.Person) erro
 	rows, err := query.Query()
 	defer rows.Close()
 	if err != nil {
-		Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("can't query: ", err.Error())
+		Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("db can't query: ", err.Error())
 		return err
 	}
-	Log.WithFields(logrus.Fields{RequestID: requestID}).Info("person updated")
+	Log.WithFields(logrus.Fields{RequestID: requestID}).Info("db person updated")
 	return nil
 }
 
@@ -105,17 +105,17 @@ func (storage *PersonStorage) AddAccount(requestID int64, Name string, Birthday 
 		"INSERT INTO person(name, birthday, email, password, gender) "+ // TODO PersonTableName
 			"VALUES ($1, $2, $3, $4, $5)", Name, Birthday, Email, Password, Gender)
 	if err != nil {
-		Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("can't query: ", err.Error())
+		Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("db can't query: ", err.Error())
 
-		return fmt.Errorf("Create user %w", err)
+		return err
 	}
 
-	Log.WithFields(logrus.Fields{RequestID: requestID}).Info("created person")
+	Log.WithFields(logrus.Fields{RequestID: requestID}).Info("db created person")
 	return nil
 }
 
 func (storage *PersonStorage) RemoveSession(requestID int64, sid string) error {
-	Log.WithFields(logrus.Fields{RequestID: requestID}).Info("db update session_id request to ", PersonTableName)
+	Log.WithFields(logrus.Fields{RequestID: requestID}).Info("db remove session_id request to ", PersonTableName)
 	_, err := storage.dbReader.Exec(
 		"UPDATE person SET session_id = '' "+
 			"WHERE session_id = $1", sid)
@@ -123,7 +123,7 @@ func (storage *PersonStorage) RemoveSession(requestID int64, sid string) error {
 		Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("can't query: ", err.Error())
 		return fmt.Errorf("Remove sessions %w", err)
 	}
-
+	Log.WithFields(logrus.Fields{RequestID: requestID}).Info("db removed session_id ", PersonTableName)
 	return nil
 }
 

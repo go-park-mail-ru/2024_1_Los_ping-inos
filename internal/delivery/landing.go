@@ -25,12 +25,7 @@ func (deliver *Deliver) GetUsername() func(w http.ResponseWriter, r *http.Reques
 		requestID := deliver.nextRequest()
 		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("get username")
 
-		session, err := request.Cookie("session_id")
-		if err != nil || session == nil { // не знаю, нужно ли, ведь мы же сюда без куки не можем попасть :hmm:
-			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("unexpected situation: no cookie")
-			requests.SendResponse(respWriter, request, http.StatusForbidden, "authenticated without cookie????")
-			return
-		}
+		session, _ := request.Cookie("session_id") // возвращает только ErrNoCookie, так что обработка не нужна
 
 		name, err := deliver.serv.GetName(session.Value, requestID)
 		if err != nil {
@@ -58,12 +53,7 @@ func (deliver *Deliver) GetCardsHandler() func(http.ResponseWriter, *http.Reques
 		requestID := deliver.nextRequest()
 		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("get cards request")
 
-		session, err := request.Cookie("session_id")
-		if err != nil || session == nil { // не знаю, нужно ли, ведь мы же сюда без куки не можем попасть :hmm:
-			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("unexpected situation: no cookie")
-			requests.SendResponse(respWriter, request, http.StatusForbidden, "authenticated without cookie????")
-			return
-		}
+		session, _ := request.Cookie("session_id") // возвращает только ErrNoCookie, так что обработка не нужна
 
 		cards, err := deliver.serv.GetCards(session.Value, requestID)
 		if err != nil {
