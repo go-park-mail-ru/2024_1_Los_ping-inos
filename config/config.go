@@ -11,6 +11,7 @@ const InterestTableName = "interest"
 var Cfg Config
 
 type Config struct {
+	ApiPath    string
 	Server     ServerConfig     `json:"server"`
 	Database   DatabaseConfig   `json:"database"`
 	FilesPaths FilesPathsConfig `json:"filesPaths"`

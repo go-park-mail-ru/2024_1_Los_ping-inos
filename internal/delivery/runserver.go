@@ -42,14 +42,16 @@ func runSwaggerServer() {
 func StartServer(deliver ...*Deliver) error {
 	go runSwaggerServer()
 
+	var apiPath = config.Cfg.ApiPath
 	// "сырой" mux
 	rawMux := http.NewServeMux()
-	rawMux.HandleFunc("/cards", deliver[0].GetCardsHandler())
-	rawMux.HandleFunc("/login", deliver[0].LoginHandler())
-	rawMux.HandleFunc("/registration", deliver[0].RegistrationHandler())
-	rawMux.HandleFunc("/logout", deliver[0].LogoutHandler())
-	rawMux.HandleFunc("/isAuth", deliver[0].IsAuthenticatedHandler())
-	rawMux.HandleFunc("/me", deliver[0].GetUsername())
+	rawMux.HandleFunc(apiPath+"cards", deliver[0].GetCardsHandler())
+	rawMux.HandleFunc(apiPath+"login", deliver[0].LoginHandler())
+	rawMux.HandleFunc(apiPath+"registration", deliver[0].RegistrationHandler())
+	rawMux.HandleFunc(apiPath+"logout", deliver[0].LogoutHandler())
+	rawMux.HandleFunc(apiPath+"isAuth", deliver[0].IsAuthenticatedHandler())
+	rawMux.HandleFunc(apiPath+"me", deliver[0].GetUsername())
+	rawMux.HandleFunc(apiPath+"profile", deliver[0].UpdateProfile())
 
 	// обёртки миддлвар на методы и авторизованность
 	authHandler := IsAuthenticatedMiddleware(rawMux, deliver[0])
@@ -60,15 +62,17 @@ func StartServer(deliver ...*Deliver) error {
 	logoutHandler := AllowedMethodMiddleware(authHandler, hashset.New("GET"))
 	isAuthHandler := AllowedMethodMiddleware(rawMux, hashset.New("GET"))
 	usernameHandler := AllowedMethodMiddleware(authHandler, hashset.New("GET"))
+	profileUpdateHandler := AllowedMethodMiddleware(authHandler, hashset.New("POST"))
 
 	// сохранение обёрток
 	mux := http.NewServeMux()
-	mux.Handle("/cards", cardsHandler)
-	mux.Handle("/login", loginHandler)
-	mux.Handle("/registration", registrationHandler)
-	mux.Handle("/logout", logoutHandler)
-	mux.Handle("/isAuth", isAuthHandler)
-	mux.Handle("/me", usernameHandler)
+	mux.Handle(apiPath+"cards", cardsHandler)
+	mux.Handle(apiPath+"login", loginHandler)
+	mux.Handle(apiPath+"registration", registrationHandler)
+	mux.Handle(apiPath+"logout", logoutHandler)
+	mux.Handle(apiPath+"isAuth", isAuthHandler)
+	mux.Handle(apiPath+"me", usernameHandler)
+	mux.Handle(apiPath+"profile", profileUpdateHandler)
 
 	server := http.Server{
 		Addr:         config.Cfg.Server.Host + config.Cfg.Server.Port,

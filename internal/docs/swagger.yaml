@@ -1,4 +1,4 @@
-basePath: /
+basePath: /api/v1/
 definitions:
   models.Person:
     description: Информация об аккаунте пользователя
@@ -18,7 +18,7 @@ definitions:
       session_id:
         type: string
     type: object
-host: 185.241.192.216:8081
+host: 185.241.192.216:8085
 info:
   contact: {}
   title: SportBro API
@@ -168,6 +168,81 @@ paths:
       summary: Получить имя пользователя по его session_id (для отображения в ленте)
       tags:
       - Продукт
+  /profile:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: cookie session_id
+        in: header
+        name: session_id
+        type: string
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "405":
+          description: Method Not Allowed
+          schema:
+            type: string
+      summary: Получить профиль пользователя
+      tags:
+      - Профиль
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: cookie session_id
+        in: header
+        name: session_id
+        type: string
+      - in: formData
+        name: birthday
+        type: string
+      - in: formData
+        name: description
+        type: string
+      - collectionFormat: csv
+        in: formData
+        items:
+          type: string
+        name: interests
+        type: array
+      - in: formData
+        name: name
+        type: string
+      - in: formData
+        name: password
+        type: string
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "405":
+          description: Method Not Allowed
+          schema:
+            type: string
+        "409":
+          description: Conflict
+          schema:
+            type: string
+      summary: Обновить профиль пользователя (несколько полей)
+      tags:
+      - Профиль
   /registration:
     post:
       consumes:
@@ -182,6 +257,12 @@ paths:
       - in: formData
         name: gender
         type: string
+      - collectionFormat: csv
+        in: formData
+        items:
+          type: string
+        name: interests
+        type: array
       - in: formData
         name: name
         type: string
