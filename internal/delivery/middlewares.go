@@ -10,6 +10,10 @@ func IsAuthenticatedMiddleware(next http.Handler, deliver *Deliver) http.Handler
 	return http.HandlerFunc(func(respWriter http.ResponseWriter, request *http.Request) {
 		session, err := request.Cookie("session_id")                                         // проверка авторизации
 		if err != nil || session == nil || !deliver.auth.IsAuthenticated(session.Value, 0) { // я хз, как сделать один id у мидлвары и следующего обработчика
+			if err != nil { //TODO
+				println("err: ", err.Error())
+				println(session)
+			}
 			requests.SendResponse(respWriter, request, http.StatusUnauthorized, "unauthorized")
 			return
 		}

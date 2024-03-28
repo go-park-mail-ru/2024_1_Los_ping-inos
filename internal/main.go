@@ -18,8 +18,8 @@ const configPath = "config/config.yaml"
 
 // @title SportBro API
 // @version 0.1
-// @host  185.241.192.216:8081
-// @BasePath /
+// @host  185.241.192.216:8085
+// @BasePath /api/v1/
 func main() {
 	InitLog()
 
