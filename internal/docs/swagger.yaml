@@ -169,6 +169,36 @@ paths:
       tags:
       - Продукт
   /profile:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: cookie session_id
+        in: header
+        name: session_id
+        type: string
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "405":
+          description: Method Not Allowed
+          schema:
+            type: string
+        "409":
+          description: Conflict
+          schema:
+            type: string
+      summary: Удалить профиль пользователя
+      tags:
+      - Профиль
     get:
       consumes:
       - application/json
@@ -198,6 +228,7 @@ paths:
     post:
       consumes:
       - application/json
+      description: АХТУНГ АХТУНГ дата рождения передаётся в формате MM.DD.YYYY
       parameters:
       - description: cookie session_id
         in: header
@@ -247,6 +278,7 @@ paths:
     post:
       consumes:
       - application/json
+      description: АХТУНГ АХТУНГ дата рождения передаётся в формате MM.DD.YYYY
       parameters:
       - in: formData
         name: birthday
@@ -290,5 +322,5 @@ paths:
             type: string
       summary: Регистрация нового пользователя
       tags:
-      - Регистрация
+      - Профиль
 swagger: "2.0"

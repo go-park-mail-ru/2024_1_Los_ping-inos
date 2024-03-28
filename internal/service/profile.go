@@ -35,7 +35,7 @@ func (service *Service) UpdateProfile(sessionID, name, password, description, bi
 		person.Name = name
 	}
 	if birthday != "" {
-		person.Birthday, err = time.Parse("02.01.2006", birthday)
+		person.Birthday, err = time.Parse("01.02	.2006", birthday)
 	}
 	if description != "" {
 		person.Description = description
@@ -47,9 +47,15 @@ func (service *Service) UpdateProfile(sessionID, name, password, description, bi
 		}
 	}
 	if interests != nil {
+		// TODO
 		Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("profile update interest not implemented")
 	}
 	err = service.personStorage.Update(requestID, *person)
 
+	return err
+}
+
+func (service *Service) DeleteProfile(sessionID string, requestID int64) error {
+	err := service.personStorage.Delete(requestID, sessionID)
 	return err
 }

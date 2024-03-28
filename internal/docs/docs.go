@@ -281,6 +281,7 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "description": "АХТУНГ АХТУНГ дата рождения передаётся в формате MM.DD.YYYY",
                 "consumes": [
                     "application/json"
                 ],
@@ -354,15 +355,62 @@ const docTemplate = `{
                         }
                     }
                 }
-            }
-        },
-        "/registration": {
-            "post": {
+            },
+            "delete": {
                 "consumes": [
                     "application/json"
                 ],
                 "tags": [
-                    "Регистрация"
+                    "Профиль"
+                ],
+                "summary": "Удалить профиль пользователя",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "cookie session_id",
+                        "name": "session_id",
+                        "in": "header"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "405": {
+                        "description": "Method Not Allowed",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/registration": {
+            "post": {
+                "description": "АХТУНГ АХТУНГ дата рождения передаётся в формате MM.DD.YYYY",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Профиль"
                 ],
                 "summary": "Регистрация нового пользователя",
                 "parameters": [

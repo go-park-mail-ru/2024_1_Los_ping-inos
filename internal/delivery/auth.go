@@ -90,7 +90,8 @@ func (deliver *Deliver) LoginHandler() func(respWriter http.ResponseWriter, requ
 
 // RegistrationHandler godoc
 // @Summary Регистрация нового пользователя
-// @Tags    Регистрация
+// @Description АХТУНГ АХТУНГ дата рождения передаётся в формате MM.DD.YYYY
+// @Tags    Профиль
 // @Router  /registration [post]
 // @Accept  json
 // @Param   userData  formData requests.RegistrationRequest true "user data"

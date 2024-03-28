@@ -51,7 +51,7 @@ func StartServer(deliver ...*Deliver) error {
 	rawMux.HandleFunc(apiPath+"logout", deliver[0].LogoutHandler())
 	rawMux.HandleFunc(apiPath+"isAuth", deliver[0].IsAuthenticatedHandler())
 	rawMux.HandleFunc(apiPath+"me", deliver[0].GetUsername())
-	rawMux.HandleFunc(apiPath+"profile", deliver[0].UpdateProfile())
+	rawMux.HandleFunc(apiPath+"profile", deliver[0].ProfileHandlers())
 
 	// обёртки миддлвар на методы и авторизованность
 	authHandler := IsAuthenticatedMiddleware(rawMux, deliver[0])
@@ -62,7 +62,7 @@ func StartServer(deliver ...*Deliver) error {
 	logoutHandler := AllowedMethodMiddleware(authHandler, hashset.New("GET"))
 	isAuthHandler := AllowedMethodMiddleware(rawMux, hashset.New("GET"))
 	usernameHandler := AllowedMethodMiddleware(authHandler, hashset.New("GET"))
-	profileUpdateHandler := AllowedMethodMiddleware(authHandler, hashset.New("POST"))
+	profileHandler := AllowedMethodMiddleware(authHandler, hashset.New("GET", "POST", "DELETE"))
 
 	// сохранение обёрток
 	mux := http.NewServeMux()
@@ -72,7 +72,7 @@ func StartServer(deliver ...*Deliver) error {
 	mux.Handle(apiPath+"logout", logoutHandler)
 	mux.Handle(apiPath+"isAuth", isAuthHandler)
 	mux.Handle(apiPath+"me", usernameHandler)
-	mux.Handle(apiPath+"profile", profileUpdateHandler)
+	mux.Handle(apiPath+"profile", profileHandler)
 
 	server := http.Server{
 		Addr:         config.Cfg.Server.Host + config.Cfg.Server.Port,

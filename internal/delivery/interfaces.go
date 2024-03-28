@@ -7,6 +7,7 @@ type (
 		GetAllInterests(reqID int64) (string, error)
 		GetProfile(sessionID string, requestID int64) (string, error)
 		UpdateProfile(sessionID, name, password, description, birthday string, interests []string, requestID int64) error
+		DeleteProfile(sessionID string, requestID int64) error
 	}
 
 	Auth interface {
