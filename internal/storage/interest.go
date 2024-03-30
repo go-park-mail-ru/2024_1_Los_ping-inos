@@ -20,12 +20,25 @@ func NewInterestStorage(dbReader *sql.DB) *InterestStorage {
 	}
 }
 
-func (storage *InterestStorage) Get(requestID int64, ids []types.InterestID) ([]*models.Interest, error) {
+func processInterestIDFilter(filter *models.InterestGetFilter, whereMap *qb.And) {
+	if filter.ID != nil {
+		*whereMap = append(*whereMap, qb.Eq{"id": filter.ID})
+	}
+}
+
+func processInterestNameFilter(filter *models.InterestGetFilter, whereMap *qb.And) {
+	if filter.Name != nil {
+		*whereMap = append(*whereMap, qb.Eq{"name": filter.Name})
+	}
+}
+
+func (storage *InterestStorage) Get(requestID int64, filter *models.InterestGetFilter) ([]*models.Interest, error) {
 	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
 	whereMap := qb.And{}
-	if ids != nil {
-		whereMap = append(whereMap, qb.Eq{"id": ids})
-	}
+
+	processInterestIDFilter(filter, &whereMap)
+	processInterestNameFilter(filter, &whereMap)
+
 	query := stBuilder.
 		Select("*").
 		From(InterestTableName).
@@ -87,5 +100,44 @@ func (storage *InterestStorage) GetPersonInterests(requestID int64, personID typ
 		ids = append(ids, interestID)
 	}
 	Log.WithFields(logrus.Fields{RequestID: requestID}).Info("db got ", len(ids), " interest ids")
-	return storage.Get(requestID, ids)
+	return storage.Get(requestID, &models.InterestGetFilter{ID: ids})
+}
+
+func (storage *InterestStorage) CreatePersonInterests(requestID int64, personID types.UserID, interestID []types.InterestID) error {
+	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
+	Log.WithFields(logrus.Fields{RequestID: requestID}).Info("db add request to ", PersonInterestTableName)
+
+	for i := range interestID {
+		query := stBuilder.
+			Insert(PersonInterestTableName).
+			Columns("person_id", "interest_id").
+			Values(personID, interestID[i]).
+			RunWith(storage.dbReader)
+
+		_, err := query.Query()
+		if err != nil {
+			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("db insert can't query: ", err.Error())
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (storage *InterestStorage) DeletePersonInterests(requestID int64, personID types.UserID, interestID []types.InterestID) error {
+	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
+	Log.WithFields(logrus.Fields{RequestID: requestID}).Info("db delete request to ", PersonInterestTableName)
+	query := stBuilder.
+		Delete(PersonInterestTableName).
+		Where(qb.And{qb.Eq{"person_id": personID}, qb.Eq{"interest_id": interestID}}).
+		RunWith(storage.dbReader)
+
+	rows, err := query.Query()
+	defer rows.Close()
+	if err != nil {
+		Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("db delete can't query: ", err.Error())
+		return err
+	}
+	Log.WithFields(logrus.Fields{RequestID: requestID}).Info("db person interest deleted")
+	return nil
 }

@@ -14,6 +14,8 @@ type PersonStorage interface {
 }
 
 type InterestStorage interface {
-	Get(requestID int64, ids []types.InterestID) ([]*models.Interest, error)
+	Get(requestID int64, filter *models.InterestGetFilter) ([]*models.Interest, error)
 	GetPersonInterests(requestID int64, personID types.UserID) ([]*models.Interest, error)
+	CreatePersonInterests(requestID int64, personID types.UserID, interestID []types.InterestID) error
+	DeletePersonInterests(requestID int64, personID types.UserID, interestID []types.InterestID) error
 }

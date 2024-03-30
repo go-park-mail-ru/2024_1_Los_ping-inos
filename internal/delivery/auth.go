@@ -81,7 +81,7 @@ func (deliver *Deliver) LoginHandler() func(respWriter http.ResponseWriter, requ
 			return
 		}
 
-		setLoginCookie(SID, oneDayExpiration, w)
+		setLoginCookie(SID, oneDayExpiration(), w)
 
 		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("login with SID: ", SID)
 		requests.SendResponse(w, r, http.StatusOK, nil)
@@ -142,7 +142,7 @@ func (deliver *Deliver) RegistrationHandler() func(http.ResponseWriter, *http.Re
 			}
 		}
 
-		setLoginCookie(SID, oneDayExpiration, w)
+		setLoginCookie(SID, oneDayExpiration(), w)
 
 		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("registered and logged with SID ", SID)
 		requests.SendResponse(w, r, http.StatusOK, nil)

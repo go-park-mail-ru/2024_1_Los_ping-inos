@@ -32,9 +32,19 @@ type PersonGetFilter struct {
 	SessionID []string
 }
 
+type InterestGetFilter struct {
+	ID   []types.InterestID
+	Name []string
+}
+
 type Interest struct {
 	ID   types.InterestID
 	Name string
+}
+
+type PersonInterest struct {
+	PersonId   types.UserID
+	InterestID types.InterestID
 }
 
 type PersonWithInterests struct {

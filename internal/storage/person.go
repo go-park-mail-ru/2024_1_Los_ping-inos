@@ -155,7 +155,6 @@ func processEmailFilter(filter *models.PersonGetFilter, whereMap *qb.And) {
 	if filter.Email != nil {
 		*whereMap = append(*whereMap, qb.Eq{"email": filter.Email})
 	}
-
 }
 
 func processSessionIDFilter(filter *models.PersonGetFilter, whereMap *qb.And) {

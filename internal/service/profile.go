@@ -2,9 +2,9 @@ package service
 
 import (
 	"errors"
-	"github.com/sirupsen/logrus"
+	"github.com/emirpasic/gods/sets/hashset"
 	models "main.go/db"
-	. "main.go/internal/logs"
+	"main.go/internal/types"
 	"time"
 )
 
@@ -52,8 +52,10 @@ func (service *Service) UpdateProfile(sessionID, name, password, description, bi
 		}
 	}
 	if interests != nil {
-		// TODO
-		Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("profile update interest not implemented")
+		err = service.handleInterests(interests, person.ID, requestID)
+		if err != nil {
+			return err
+		}
 	}
 	err = service.personStorage.Update(requestID, *person)
 
@@ -63,4 +65,51 @@ func (service *Service) UpdateProfile(sessionID, name, password, description, bi
 func (service *Service) DeleteProfile(sessionID string, requestID int64) error {
 	err := service.personStorage.Delete(requestID, sessionID)
 	return err
+}
+
+func (service *Service) handleInterests(interests []string, personID types.UserID, requestID int64) error {
+	interestsBefore, err := service.interestStorage.GetPersonInterests(requestID, personID)
+	if err != nil {
+		return err
+	}
+
+	interestsAfter, err := service.interestStorage.Get(requestID, &models.InterestGetFilter{Name: interests})
+	if err != nil {
+		return err
+	}
+
+	beforeIDs := getInterestIDs(interestsBefore)
+	afterIDs := getInterestIDs(interestsAfter)
+
+	setBefore := hashset.New(beforeIDs...)
+	setAfter := hashset.New(afterIDs...)
+
+	ad := setAfter.Difference(setBefore).Values()
+	add := normalizeFromSet(ad)
+	err = service.interestStorage.CreatePersonInterests(requestID, personID, add)
+	if err != nil {
+		return err
+	}
+
+	del := setBefore.Difference(setAfter).Values()
+	delet := normalizeFromSet(del)
+	err = service.interestStorage.DeletePersonInterests(requestID, personID, delet)
+
+	return err
+}
+
+func normalizeFromSet(input []interface{}) []types.InterestID {
+	res := make([]types.InterestID, len(input))
+	for i := range input {
+		res[i] = input[i].(types.InterestID)
+	}
+	return res
+}
+
+func getInterestIDs(interests []*models.Interest) []interface{} {
+	res := make([]interface{}, len(interests))
+	for i := range interests {
+		res[i] = interests[i].ID
+	}
+	return res
 }
