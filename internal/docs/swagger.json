@@ -31,7 +31,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/models.Person"
+                                "$ref": "#/definitions/models.PersonWithInterests"
                             }
                         }
                     },
@@ -251,7 +251,10 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.PersonWithInterests"
+                        }
                     },
                     "400": {
                         "description": "Bad Request",
@@ -475,6 +478,17 @@
         }
     },
     "definitions": {
+        "models.Interest": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "models.Person": {
             "description": "Информация об аккаунте пользователя",
             "type": "object",
@@ -499,6 +513,20 @@
                 },
                 "session_id": {
                     "type": "string"
+                }
+            }
+        },
+        "models.PersonWithInterests": {
+            "type": "object",
+            "properties": {
+                "interests": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Interest"
+                    }
+                },
+                "person": {
+                    "$ref": "#/definitions/models.Person"
                 }
             }
         }

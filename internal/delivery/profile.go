@@ -28,7 +28,7 @@ func (deliver *Deliver) ProfileHandlers() func(http.ResponseWriter, *http.Reques
 // @Router  /profile [get]
 // @Accept  json
 // @Param   session_id header string false "cookie session_id"
-// @Success 200
+// @Success 200		  {object}  models.PersonWithInterests
 // @Failure 400       {string} string
 // @Failure 401       {string} string
 // @Failure 405       {string} string

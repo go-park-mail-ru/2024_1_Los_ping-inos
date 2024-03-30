@@ -36,3 +36,8 @@ type Interest struct {
 	ID   types.InterestID
 	Name string
 }
+
+type PersonWithInterests struct {
+	Person    *Person
+	Interests []*Interest
+}

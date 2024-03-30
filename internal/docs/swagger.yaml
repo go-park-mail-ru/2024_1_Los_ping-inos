@@ -1,5 +1,12 @@
 basePath: /api/v1/
 definitions:
+  models.Interest:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
   models.Person:
     description: Информация об аккаунте пользователя
     properties:
@@ -17,6 +24,15 @@ definitions:
         type: string
       session_id:
         type: string
+    type: object
+  models.PersonWithInterests:
+    properties:
+      interests:
+        items:
+          $ref: '#/definitions/models.Interest'
+        type: array
+      person:
+        $ref: '#/definitions/models.Person'
     type: object
 host: 185.241.192.216:8085
 info:
@@ -38,7 +54,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/models.Person'
+              $ref: '#/definitions/models.PersonWithInterests'
             type: array
         "400":
           description: Bad Request
@@ -210,6 +226,8 @@ paths:
       responses:
         "200":
           description: OK
+          schema:
+            $ref: '#/definitions/models.PersonWithInterests'
         "400":
           description: Bad Request
           schema:

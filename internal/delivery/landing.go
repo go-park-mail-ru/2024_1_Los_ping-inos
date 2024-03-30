@@ -43,7 +43,7 @@ func (deliver *Deliver) GetUsername() func(w http.ResponseWriter, r *http.Reques
 // @Router  /cards [get]
 // @Accept  json
 // @Param   session_id header string false "cookie session_id"
-// @Success 200		  {array}  models.Person
+// @Success 200		  {array}  models.PersonWithInterests
 // @Failure 400       {string} string
 // @Failure 401       {string} string
 // @Failure 405       {string} string

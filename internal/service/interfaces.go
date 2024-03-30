@@ -1,6 +1,9 @@
 package service
 
-import models "main.go/db"
+import (
+	models "main.go/db"
+	"main.go/internal/types"
+)
 
 type PersonStorage interface {
 	Get(requestID int64, filter *models.PersonGetFilter) ([]*models.Person, error)
@@ -11,5 +14,6 @@ type PersonStorage interface {
 }
 
 type InterestStorage interface {
-	Get(requestID int64) ([]*models.Interest, error)
+	Get(requestID int64, ids []types.InterestID) ([]*models.Interest, error)
+	GetPersonInterests(requestID int64, personID types.UserID) ([]*models.Interest, error)
 }

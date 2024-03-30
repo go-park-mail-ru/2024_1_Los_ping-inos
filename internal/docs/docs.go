@@ -38,7 +38,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/models.Person"
+                                "$ref": "#/definitions/models.PersonWithInterests"
                             }
                         }
                     },
@@ -258,7 +258,10 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.PersonWithInterests"
+                        }
                     },
                     "400": {
                         "description": "Bad Request",
@@ -482,6 +485,17 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "models.Interest": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "models.Person": {
             "description": "Информация об аккаунте пользователя",
             "type": "object",
@@ -506,6 +520,20 @@ const docTemplate = `{
                 },
                 "session_id": {
                     "type": "string"
+                }
+            }
+        },
+        "models.PersonWithInterests": {
+            "type": "object",
+            "properties": {
+                "interests": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Interest"
+                    }
+                },
+                "person": {
+                    "$ref": "#/definitions/models.Person"
                 }
             }
         }

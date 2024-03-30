@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	models "main.go/db"
+	. "main.go/internal/logs"
 )
 
 // Service - Обработчик всей логики
@@ -48,12 +49,35 @@ func (service *Service) GetCards(sessionID string, requestID int64) (string, err
 		}
 	}
 
-	res, _ := personsToJSON(persons)
+	interests := make([][]*models.Interest, len(persons))
+	for j := range persons {
+		interests[j], err = service.interestStorage.GetPersonInterests(requestID, persons[i].ID)
+		if err != nil {
+			return "", err
+		}
+	}
 
-	return res, nil
+	return personsToJSON(persons, interests)
 }
 
-func personsToJSON(persons []*models.Person) (string, error) {
-	res, err := json.Marshal(persons)
+func combinePersonsAndInterestsToCards(persons []*models.Person, interests [][]*models.Interest) []models.PersonWithInterests {
+	if len(persons) != len(interests) {
+		Log.Warn("can't create cards: different slices size")
+		return nil
+	}
+	res := make([]models.PersonWithInterests, len(persons))
+	for i := range persons {
+		res[i] = models.PersonWithInterests{Person: persons[i], Interests: interests[i]}
+	}
+	return res
+}
+
+func personsToJSON(persons []*models.Person, interests [][]*models.Interest) (string, error) {
+	combined := combinePersonsAndInterestsToCards(persons, interests)
+	if combined == nil {
+		return "", errors.New("can't create cards: different persons and interests sizes")
+	}
+	res, err := json.Marshal(combined)
+
 	return string(res), err
 }

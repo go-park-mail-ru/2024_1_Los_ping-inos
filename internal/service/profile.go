@@ -14,11 +14,16 @@ func (service *Service) GetProfile(sessionID string, requestID int64) (string, e
 		return "", err
 	}
 
-	if person == nil || len(person) == 0 {
+	if len(person) == 0 {
 		return "", errors.New("no person with such sessionID")
 	}
 
-	res, err := personsToJSON(person)
+	interests, err := service.interestStorage.GetPersonInterests(requestID, person[0].ID)
+	if err != nil {
+		return "", err
+	}
+
+	res, err := personsToJSON(person, [][]*models.Interest{interests})
 	if err != nil {
 		return "", err
 	}
@@ -35,7 +40,7 @@ func (service *Service) UpdateProfile(sessionID, name, password, description, bi
 		person.Name = name
 	}
 	if birthday != "" {
-		person.Birthday, err = time.Parse("01.02	.2006", birthday)
+		person.Birthday, err = time.Parse("01.02.2006", birthday)
 	}
 	if description != "" {
 		person.Description = description

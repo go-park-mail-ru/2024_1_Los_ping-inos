@@ -7,6 +7,7 @@ import (
 
 const PersonTableName = "person"
 const InterestTableName = "interest"
+const PersonInterestTableName = "person_interest"
 
 var Cfg Config
 
