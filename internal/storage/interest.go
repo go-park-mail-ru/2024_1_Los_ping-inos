@@ -36,6 +36,10 @@ func (storage *InterestStorage) Get(requestID int64, filter *models.InterestGetF
 	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
 	whereMap := qb.And{}
 
+	if filter == nil {
+		filter = &models.InterestGetFilter{}
+	}
+
 	processInterestIDFilter(filter, &whereMap)
 	processInterestNameFilter(filter, &whereMap)
 
