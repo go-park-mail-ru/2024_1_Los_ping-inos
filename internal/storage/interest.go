@@ -36,6 +36,10 @@ func (storage *InterestStorage) Get(requestID int64, filter *models.InterestGetF
 	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
 	whereMap := qb.And{}
 
+	if filter != nil && filter.ID == nil && filter.Name == nil {
+		return nil, nil
+	}
+
 	if filter == nil {
 		filter = &models.InterestGetFilter{}
 	}
@@ -91,10 +95,9 @@ func (storage *InterestStorage) GetPersonInterests(requestID int64, personID typ
 
 	var (
 		ids        []types.InterestID
-		personsID  types.InterestID
+		personsID  types.UserID
 		interestID types.InterestID
 	)
-
 	for rows.Next() {
 		err = rows.Scan(&personsID, &interestID)
 		if err != nil {

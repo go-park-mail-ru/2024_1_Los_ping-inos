@@ -41,6 +41,9 @@ func (service *Service) UpdateProfile(sessionID, name, password, description, bi
 	}
 	if birthday != "" {
 		person.Birthday, err = time.Parse("01.02.2006", birthday)
+		if err != nil {
+			return err
+		}
 	}
 	if description != "" {
 		person.Description = description
