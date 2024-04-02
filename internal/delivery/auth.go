@@ -140,6 +140,14 @@ func (deliver *Deliver) RegistrationHandler() func(http.ResponseWriter, *http.Re
 			} else {
 				requests.SendResponse(w, r, http.StatusBadRequest, err.Error())
 			}
+			return
+		}
+
+		err = deliver.serv.UpdateProfile(SID, "", "", "", "", request.Interests, requestID)
+		if err != nil {
+			Log.WithFields(logrus.Fields{RequestID: requestID}).Info("can't update interests: ", err.Error())
+			requests.SendResponse(w, r, http.StatusBadRequest, err.Error())
+			return
 		}
 
 		setLoginCookie(SID, oneDayExpiration(), w)
