@@ -31,8 +31,8 @@ func (service *Service) GetProfile(sessionID string, requestID int64) (string, e
 	return res, err
 }
 
-func (service *Service) UpdateProfile(profile requests.ProfileUpdateRequest, requestID int64) error {
-	persons, err := service.personStorage.Get(requestID, &models.PersonGetFilter{SessionID: []string{profile.SID}})
+func (service *Service) UpdateProfile(SID string, profile requests.ProfileUpdateRequest, requestID int64) error {
+	persons, err := service.personStorage.Get(requestID, &models.PersonGetFilter{SessionID: []string{SID}})
 	if err != nil {
 		return err
 	}
@@ -41,6 +41,9 @@ func (service *Service) UpdateProfile(profile requests.ProfileUpdateRequest, req
 		person.Name = profile.Name
 	}
 	if profile.Email != "" {
+		if err = checkPassword(person.Password, profile.OldPassword); err != nil {
+			return err
+		}
 		person.Email = profile.Email
 	}
 	if profile.Birthday != "" {

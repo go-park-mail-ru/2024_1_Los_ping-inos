@@ -310,6 +310,11 @@ const docTemplate = `{
                         "in": "formData"
                     },
                     {
+                        "type": "string",
+                        "name": "email",
+                        "in": "formData"
+                    },
+                    {
                         "type": "array",
                         "items": {
                             "type": "string"
@@ -321,6 +326,11 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "name": "name",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "name": "oldPassword",
                         "in": "formData"
                     },
                     {
@@ -509,6 +519,9 @@ const docTemplate = `{
                 "description": {
                     "type": "string"
                 },
+                "email": {
+                    "type": "string"
+                },
                 "gender": {
                     "type": "string"
                 },
@@ -524,6 +537,7 @@ const docTemplate = `{
             }
         },
         "models.PersonWithInterests": {
+            "description": "Информация в профиле пользователя (данные пользователя и его интересы)",
             "type": "object",
             "properties": {
                 "interests": {

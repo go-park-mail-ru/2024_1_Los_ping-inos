@@ -141,7 +141,7 @@ func (deliver *Deliver) RegistrationHandler() func(http.ResponseWriter, *http.Re
 			return
 		}
 		//TODO
-		err = deliver.serv.UpdateProfile(requests.ProfileUpdateRequest{SID: SID, Interests: request.Interests}, requestID)
+		err = deliver.serv.UpdateProfile(SID, requests.ProfileUpdateRequest{Interests: request.Interests}, requestID)
 		if err != nil {
 			Log.WithFields(logrus.Fields{RequestID: requestID}).Info("can't update interests: ", err.Error())
 			requests.SendResponse(w, r, http.StatusBadRequest, err.Error())

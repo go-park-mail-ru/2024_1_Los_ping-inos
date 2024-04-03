@@ -83,8 +83,8 @@ func (deliver *Deliver) UpdateProfile(respWriter http.ResponseWriter, request *h
 	}
 
 	session, _ := request.Cookie("session_id")
-	requestBody.SID = session.Value
-	err = deliver.serv.UpdateProfile(requestBody, requestID)
+
+	err = deliver.serv.UpdateProfile(session.Value, requestBody, requestID)
 	if err != nil {
 		Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("can't update profile: ", err.Error())
 		if errors.As(err, &types.DifferentPasswordsError) {

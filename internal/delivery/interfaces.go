@@ -10,7 +10,7 @@ type (
 		GetName(sessionID string, reqID int64) (string, error)
 		GetAllInterests(reqID int64) (string, error)
 		GetProfile(sessionID string, requestID int64) (string, error)
-		UpdateProfile(profile requests.ProfileUpdateRequest, requestID int64) error
+		UpdateProfile(SID string, profile requests.ProfileUpdateRequest, requestID int64) error
 		DeleteProfile(sessionID string, requestID int64) error
 	}
 
