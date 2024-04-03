@@ -6,6 +6,7 @@ import (
 	"io"
 	. "main.go/internal/logs"
 	requests "main.go/internal/pkg"
+	"main.go/internal/service"
 	"net/http"
 )
 
@@ -40,7 +41,7 @@ func (deliver *Deliver) ReadProfile(respWriter http.ResponseWriter, request *htt
 	profile, err := deliver.serv.GetProfile(session.Value, requestID)
 	if err != nil {
 		requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
-		Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("get profile err: ", err.Error())
+		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("get profile err: ", err.Error())
 		return
 	}
 
@@ -68,7 +69,7 @@ func (deliver *Deliver) UpdateProfile(respWriter http.ResponseWriter, request *h
 
 	body, err := io.ReadAll(request.Body)
 	if err != nil {
-		Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("bad body: ", err.Error())
+		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("bad body: ", err.Error())
 		requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
 		return
 	}
@@ -81,8 +82,9 @@ func (deliver *Deliver) UpdateProfile(respWriter http.ResponseWriter, request *h
 	}
 
 	session, _ := request.Cookie("session_id")
-	err = deliver.serv.UpdateProfile(session.Value, requestBody.Name, requestBody.Email, requestBody.Password, requestBody.Description,
-		requestBody.Birthday, requestBody.Interests, requestID)
+	err = deliver.serv.UpdateProfile(service.ProfileUpdate{session.Value, requestBody.Name,
+		requestBody.Email, requestBody.Password, requestBody.Description,
+		requestBody.Birthday, requestBody.Interests}, requestID)
 
 	if err != nil {
 		Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("can't update profile: ", err.Error())

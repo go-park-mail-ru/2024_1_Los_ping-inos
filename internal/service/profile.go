@@ -30,35 +30,35 @@ func (service *Service) GetProfile(sessionID string, requestID int64) (string, e
 	return res, err
 }
 
-func (service *Service) UpdateProfile(sessionID, name, email, password, description, birthday string, interests []string, requestID int64) error {
-	persons, err := service.personStorage.Get(requestID, &models.PersonGetFilter{SessionID: []string{sessionID}})
+func (service *Service) UpdateProfile(profile ProfileUpdate, requestID int64) error {
+	persons, err := service.personStorage.Get(requestID, &models.PersonGetFilter{SessionID: []string{profile.SessionID}})
 	if err != nil {
 		return err
 	}
 	person := persons[0]
-	if name != "" {
-		person.Name = name
+	if profile.Name != "" {
+		person.Name = profile.Name
 	}
-	if email != "" {
-		person.Email = email
+	if profile.Email != "" {
+		person.Email = profile.Email
 	}
-	if birthday != "" {
-		person.Birthday, err = time.Parse("01.02.2006", birthday)
+	if profile.Birthday != "" {
+		person.Birthday, err = time.Parse("01.02.2006", profile.Birthday)
 		if err != nil {
 			return err
 		}
 	}
-	if description != "" {
-		person.Description = description
+	if profile.Description != "" {
+		person.Description = profile.Description
 	}
-	if password != "" {
-		person.Password, err = hashPassword(password)
+	if profile.Password != "" {
+		person.Password, err = hashPassword(profile.Password)
 		if err != nil {
 			return err
 		}
 	}
-	if interests != nil {
-		err = service.handleInterests(interests, person.ID, requestID)
+	if profile.Interests != nil {
+		err = service.handleInterests(profile.Interests, person.ID, requestID)
 		if err != nil {
 			return err
 		}
