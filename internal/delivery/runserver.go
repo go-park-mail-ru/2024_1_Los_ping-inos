@@ -43,36 +43,30 @@ func StartServer(deliver ...*Deliver) error {
 	go runSwaggerServer()
 
 	var apiPath = config.Cfg.ApiPath
-	// "сырой" mux
-	rawMux := http.NewServeMux()
-	rawMux.HandleFunc(apiPath+"cards", deliver[0].GetCardsHandler())
-	rawMux.HandleFunc(apiPath+"login", deliver[0].LoginHandler())
-	rawMux.HandleFunc(apiPath+"registration", deliver[0].RegistrationHandler())
-	rawMux.HandleFunc(apiPath+"logout", deliver[0].LogoutHandler())
-	rawMux.HandleFunc(apiPath+"isAuth", deliver[0].IsAuthenticatedHandler())
-	rawMux.HandleFunc(apiPath+"me", deliver[0].GetUsername())
-	rawMux.HandleFunc(apiPath+"profile", deliver[0].ProfileHandlers())
 
-	// обёртки миддлвар на методы и авторизованность
-	authHandler := IsAuthenticatedMiddleware(rawMux, deliver[0])
-
-	cardsHandler := AllowedMethodMiddleware(authHandler, hashset.New("GET"))
-	loginHandler := AllowedMethodMiddleware(rawMux, hashset.New("POST"))
-	registrationHandler := AllowedMethodMiddleware(rawMux, hashset.New("GET", "POST"))
-	logoutHandler := AllowedMethodMiddleware(authHandler, hashset.New("GET"))
-	isAuthHandler := AllowedMethodMiddleware(rawMux, hashset.New("GET"))
-	usernameHandler := AllowedMethodMiddleware(authHandler, hashset.New("GET"))
-	profileHandler := AllowedMethodMiddleware(authHandler, hashset.New("GET", "POST", "DELETE"))
-
-	// сохранение обёрток
+	// роутер)0)
+	// структура: путь, цепочка миддлвар: авторизация(методы(функция-обработчик ручки))
 	mux := http.NewServeMux()
-	mux.Handle(apiPath+"cards", cardsHandler)
-	mux.Handle(apiPath+"login", loginHandler)
-	mux.Handle(apiPath+"registration", registrationHandler)
-	mux.Handle(apiPath+"logout", logoutHandler)
-	mux.Handle(apiPath+"isAuth", isAuthHandler)
-	mux.Handle(apiPath+"me", usernameHandler)
-	mux.Handle(apiPath+"profile", profileHandler)
+	mux.Handle(apiPath+"cards", AllowedMethodMiddleware(
+		IsAuthenticatedMiddleware(http.HandlerFunc(deliver[0].GetCardsHandler()), deliver[0]),
+		hashset.New("GET")))
+	mux.Handle(apiPath+"login", AllowedMethodMiddleware(
+		http.HandlerFunc(deliver[0].LoginHandler()),
+		hashset.New("POST")))
+	mux.Handle(apiPath+"registration", AllowedMethodMiddleware(
+		http.HandlerFunc(deliver[0].RegistrationHandler()),
+		hashset.New("GET", "POST")))
+	mux.Handle(apiPath+"logout", AllowedMethodMiddleware(
+		IsAuthenticatedMiddleware(http.HandlerFunc(deliver[0].LogoutHandler()), deliver[0]),
+		hashset.New("GET")))
+	mux.Handle(apiPath+"isAuth", AllowedMethodMiddleware(
+		http.HandlerFunc(deliver[0].IsAuthenticatedHandler()), hashset.New("GET")))
+	mux.Handle(apiPath+"me", AllowedMethodMiddleware(
+		IsAuthenticatedMiddleware(http.HandlerFunc(deliver[0].GetUsername()), deliver[0]),
+		hashset.New("GET")))
+	mux.Handle(apiPath+"profile", AllowedMethodMiddleware(
+		IsAuthenticatedMiddleware(http.HandlerFunc(deliver[0].ProfileHandlers()), deliver[0]),
+		hashset.New("GET", "POST", "DELETE")))
 
 	server := http.Server{
 		Addr:         config.Cfg.Server.Host + config.Cfg.Server.Port,
