@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/emirpasic/gods/sets/hashset"
 	models "main.go/db"
+	requests "main.go/internal/pkg"
 	"main.go/internal/types"
 	"time"
 )
@@ -30,8 +31,8 @@ func (service *Service) GetProfile(sessionID string, requestID int64) (string, e
 	return res, err
 }
 
-func (service *Service) UpdateProfile(profile ProfileUpdate, requestID int64) error {
-	persons, err := service.personStorage.Get(requestID, &models.PersonGetFilter{SessionID: []string{profile.SessionID}})
+func (service *Service) UpdateProfile(profile requests.ProfileUpdateRequest, requestID int64) error {
+	persons, err := service.personStorage.Get(requestID, &models.PersonGetFilter{SessionID: []string{profile.SID}})
 	if err != nil {
 		return err
 	}
@@ -52,6 +53,9 @@ func (service *Service) UpdateProfile(profile ProfileUpdate, requestID int64) er
 		person.Description = profile.Description
 	}
 	if profile.Password != "" {
+		if err = checkPassword(person.Password, profile.OldPassword); err != nil {
+			return err
+		}
 		person.Password, err = hashPassword(profile.Password)
 		if err != nil {
 			return err

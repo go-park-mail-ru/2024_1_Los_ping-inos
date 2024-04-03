@@ -7,7 +7,6 @@ import (
 	"io"
 	. "main.go/internal/logs"
 	requests "main.go/internal/pkg"
-	"main.go/internal/service"
 	. "main.go/internal/types"
 	"net/http"
 	"time"
@@ -134,7 +133,7 @@ func (deliver *Deliver) RegistrationHandler() func(http.ResponseWriter, *http.Re
 		SID, err := deliver.auth.Registration(request.Name, request.Birthday, request.Gender, request.Email, request.Password, requestID)
 		if err != nil {
 			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("can't auth: ", err.Error())
-			if errors.As(err, &ErrSeveralEmails) {
+			if errors.As(err, &SeveralEmailsError) {
 				requests.SendResponse(w, r, http.StatusConflict, err.Error())
 			} else {
 				requests.SendResponse(w, r, http.StatusBadRequest, err.Error())
@@ -142,7 +141,7 @@ func (deliver *Deliver) RegistrationHandler() func(http.ResponseWriter, *http.Re
 			return
 		}
 		//TODO
-		err = deliver.serv.UpdateProfile(service.ProfileUpdate{SessionID: SID, Interests: request.Interests}, requestID)
+		err = deliver.serv.UpdateProfile(requests.ProfileUpdateRequest{SID: SID, Interests: request.Interests}, requestID)
 		if err != nil {
 			Log.WithFields(logrus.Fields{RequestID: requestID}).Info("can't update interests: ", err.Error())
 			requests.SendResponse(w, r, http.StatusBadRequest, err.Error())

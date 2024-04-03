@@ -2,11 +2,12 @@ package delivery
 
 import (
 	"encoding/json"
+	"errors"
 	"github.com/sirupsen/logrus"
 	"io"
 	. "main.go/internal/logs"
 	requests "main.go/internal/pkg"
-	"main.go/internal/service"
+	"main.go/internal/types"
 	"net/http"
 )
 
@@ -82,13 +83,15 @@ func (deliver *Deliver) UpdateProfile(respWriter http.ResponseWriter, request *h
 	}
 
 	session, _ := request.Cookie("session_id")
-	err = deliver.serv.UpdateProfile(service.ProfileUpdate{session.Value, requestBody.Name,
-		requestBody.Email, requestBody.Password, requestBody.Description,
-		requestBody.Birthday, requestBody.Interests}, requestID)
-
+	requestBody.SID = session.Value
+	err = deliver.serv.UpdateProfile(requestBody, requestID)
 	if err != nil {
 		Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("can't update profile: ", err.Error())
-		requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
+		if errors.As(err, &types.DifferentPasswordsError) {
+			requests.SendResponse(respWriter, request, http.StatusConflict, err.Error())
+		} else {
+			requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
+		}
 		return
 	}
 
