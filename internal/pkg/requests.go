@@ -17,6 +17,7 @@ type (
 
 	ProfileUpdateRequest struct {
 		Name        string   `json:"name"`
+		Email       string   `json:"email"`
 		Birthday    string   `json:"birthday"`
 		Password    string   `json:"password"`
 		Description string   `json:"description"`

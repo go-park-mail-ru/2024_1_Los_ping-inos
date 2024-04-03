@@ -83,7 +83,7 @@ func (deliver *Deliver) UpdateProfile(respWriter http.ResponseWriter, request *h
 	}
 
 	session, _ := request.Cookie("session_id")
-	err = deliver.serv.UpdateProfile(session.Value, requestBody.Name, requestBody.Password, requestBody.Description,
+	err = deliver.serv.UpdateProfile(session.Value, requestBody.Name, requestBody.Email, requestBody.Password, requestBody.Description,
 		requestBody.Birthday, requestBody.Interests, requestID)
 
 	if err != nil {

@@ -30,7 +30,7 @@ func (service *Service) GetProfile(sessionID string, requestID int64) (string, e
 	return res, err
 }
 
-func (service *Service) UpdateProfile(sessionID, name, password, description, birthday string, interests []string, requestID int64) error {
+func (service *Service) UpdateProfile(sessionID, name, email, password, description, birthday string, interests []string, requestID int64) error {
 	persons, err := service.personStorage.Get(requestID, &models.PersonGetFilter{SessionID: []string{sessionID}})
 	if err != nil {
 		return err
@@ -38,6 +38,9 @@ func (service *Service) UpdateProfile(sessionID, name, password, description, bi
 	person := persons[0]
 	if name != "" {
 		person.Name = name
+	}
+	if email != "" {
+		person.Email = email
 	}
 	if birthday != "" {
 		person.Birthday, err = time.Parse("01.02.2006", birthday)
