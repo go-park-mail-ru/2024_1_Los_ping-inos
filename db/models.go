@@ -47,7 +47,9 @@ type PersonInterest struct {
 	InterestID types.InterestID
 }
 
+// PersonWithInterests model info
+// @Description Информация в профиле пользователя (данные пользователя и его интересы)
 type PersonWithInterests struct {
-	Person    *Person
-	Interests []*Interest
+	Person    *Person     `json:"person"`
+	Interests []*Interest `json:"interests"`
 }

@@ -102,9 +102,7 @@ func (deliver *Deliver) LoginHandler() func(respWriter http.ResponseWriter, requ
 // @Failure 500       {string} string
 func (deliver *Deliver) RegistrationHandler() func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		requestID := deliver.nextRequest()
-		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("registration")
-
+		requestID := r.Context().Value(RequestID).(int64)
 		if r.Method == http.MethodGet {
 			body, err := deliver.serv.GetAllInterests(requestID)
 			if err != nil {
@@ -170,8 +168,7 @@ func (deliver *Deliver) RegistrationHandler() func(http.ResponseWriter, *http.Re
 // @Failure 500       {string} string
 func (deliver *Deliver) LogoutHandler() func(respWriter http.ResponseWriter, request *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		requestID := deliver.nextRequest()
-		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("logout start")
+		requestID := r.Context().Value(RequestID).(int64)
 
 		session, err := r.Cookie("session_id")
 		if err != nil {

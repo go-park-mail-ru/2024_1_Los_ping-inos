@@ -45,28 +45,42 @@ func StartServer(deliver ...*Deliver) error {
 	var apiPath = config.Cfg.ApiPath
 
 	// роутер)0)
-	// структура: путь, цепочка миддлвар: авторизация(методы(функция-обработчик ручки))
+	// структура: путь, цепочка миддлвар: логирование(авторизация(методы(функция-обработчик ручки)))
 	mux := http.NewServeMux()
-	mux.Handle(apiPath+"cards", AllowedMethodMiddleware(
-		IsAuthenticatedMiddleware(http.HandlerFunc(deliver[0].GetCardsHandler()), deliver[0]),
-		hashset.New("GET")))
-	mux.Handle(apiPath+"login", AllowedMethodMiddleware(
-		http.HandlerFunc(deliver[0].LoginHandler()),
-		hashset.New("POST")))
-	mux.Handle(apiPath+"registration", AllowedMethodMiddleware(
-		http.HandlerFunc(deliver[0].RegistrationHandler()),
-		hashset.New("GET", "POST")))
-	mux.Handle(apiPath+"logout", AllowedMethodMiddleware(
-		IsAuthenticatedMiddleware(http.HandlerFunc(deliver[0].LogoutHandler()), deliver[0]),
-		hashset.New("GET")))
-	mux.Handle(apiPath+"isAuth", AllowedMethodMiddleware(
-		http.HandlerFunc(deliver[0].IsAuthenticatedHandler()), hashset.New("GET")))
-	mux.Handle(apiPath+"me", AllowedMethodMiddleware(
-		IsAuthenticatedMiddleware(http.HandlerFunc(deliver[0].GetUsername()), deliver[0]),
-		hashset.New("GET")))
-	mux.Handle(apiPath+"profile", AllowedMethodMiddleware(
-		IsAuthenticatedMiddleware(http.HandlerFunc(deliver[0].ProfileHandlers()), deliver[0]),
-		hashset.New("GET", "POST", "DELETE")))
+	mux.Handle(apiPath+"cards", RequestIDMiddleware(
+		AllowedMethodMiddleware(
+			IsAuthenticatedMiddleware(http.HandlerFunc(deliver[0].GetCardsHandler()), deliver[0]), hashset.New("GET")),
+		deliver[0], "get cards"))
+
+	mux.Handle(apiPath+"login", RequestIDMiddleware(
+		AllowedMethodMiddleware(
+			http.HandlerFunc(deliver[0].LoginHandler()), hashset.New("POST")),
+		deliver[0], "login"))
+
+	mux.Handle(apiPath+"registration", RequestIDMiddleware(
+		AllowedMethodMiddleware(
+			http.HandlerFunc(deliver[0].RegistrationHandler()), hashset.New("GET", "POST")),
+		deliver[0], "registration"))
+
+	mux.Handle(apiPath+"logout", RequestIDMiddleware(
+		AllowedMethodMiddleware(
+			IsAuthenticatedMiddleware(http.HandlerFunc(deliver[0].LogoutHandler()), deliver[0]), hashset.New("GET")),
+		deliver[0], "logout"))
+
+	mux.Handle(apiPath+"isAuth", RequestIDMiddleware(
+		AllowedMethodMiddleware(
+			http.HandlerFunc(deliver[0].IsAuthenticatedHandler()), hashset.New("GET")),
+		deliver[0], "authentication check"))
+
+	mux.Handle(apiPath+"me", RequestIDMiddleware(
+		AllowedMethodMiddleware(
+			IsAuthenticatedMiddleware(http.HandlerFunc(deliver[0].GetUsername()), deliver[0]), hashset.New("GET")),
+		deliver[0], "username (/me)"))
+
+	mux.Handle(apiPath+"profile", RequestIDMiddleware(
+		AllowedMethodMiddleware(
+			IsAuthenticatedMiddleware(http.HandlerFunc(deliver[0].ProfileHandlers()), deliver[0]), hashset.New("GET", "POST", "DELETE")),
+		deliver[0], "profile"))
 
 	server := http.Server{
 		Addr:         config.Cfg.Server.Host + config.Cfg.Server.Port,

@@ -33,8 +33,7 @@ func (deliver *Deliver) ProfileHandlers() func(http.ResponseWriter, *http.Reques
 // @Failure 401       {string} string
 // @Failure 405       {string} string
 func (deliver *Deliver) ReadProfile(respWriter http.ResponseWriter, request *http.Request) {
-	requestID := deliver.nextRequest()
-	Log.WithFields(logrus.Fields{RequestID: requestID}).Info("read profile request")
+	requestID := request.Context().Value(RequestID).(int64)
 
 	session, _ := request.Cookie("session_id")
 
@@ -63,8 +62,7 @@ func (deliver *Deliver) ReadProfile(respWriter http.ResponseWriter, request *htt
 // @Failure 405       {string} string
 // @Failure 409       {string} string // TODO
 func (deliver *Deliver) UpdateProfile(respWriter http.ResponseWriter, request *http.Request) {
-	requestID := deliver.nextRequest()
-	Log.WithFields(logrus.Fields{RequestID: requestID}).Info("update profile request")
+	requestID := request.Context().Value(RequestID).(int64)
 
 	var requestBody requests.ProfileUpdateRequest
 
@@ -108,8 +106,7 @@ func (deliver *Deliver) UpdateProfile(respWriter http.ResponseWriter, request *h
 // @Failure 405       {string} string
 // @Failure 409       {string} string // TODO
 func (deliver *Deliver) DeleteProfile(respWriter http.ResponseWriter, request *http.Request) {
-	requestID := deliver.nextRequest()
-	Log.WithFields(logrus.Fields{RequestID: requestID}).Info("delete profile request")
+	requestID := request.Context().Value(RequestID).(int64)
 
 	session, _ := request.Cookie("session_id")
 	err := deliver.serv.DeleteProfile(session.Value, requestID)
