@@ -82,7 +82,7 @@ func (storage *PersonStorage) Update(requestID int64, person models.Person) erro
 		Log.WithFields(logrus.Fields{RequestID: requestID}).Warn(err.Error())
 		return err
 	}
-
+	setMap["password"] = person.Password
 	query := stBuilder.
 		Update(PersonTableName).
 		SetMap(setMap).
