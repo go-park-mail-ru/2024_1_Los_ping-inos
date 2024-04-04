@@ -7,8 +7,10 @@ import (
 	"io"
 	. "main.go/internal/logs"
 	requests "main.go/internal/pkg"
+	"main.go/internal/service"
 	"main.go/internal/types"
 	"net/http"
+	"strconv"
 )
 
 func (deliver *Deliver) ProfileHandlers() func(http.ResponseWriter, *http.Request) {
@@ -30,16 +32,31 @@ func (deliver *Deliver) ProfileHandlers() func(http.ResponseWriter, *http.Reques
 // @Router  /profile [get]
 // @Accept  json
 // @Param   session_id header string false "cookie session_id"
+// @Param   id         query  string false "profile id to return (optional)"
 // @Success 200		  {object}  models.PersonWithInterests
 // @Failure 400       {string} string
 // @Failure 401       {string} string
 // @Failure 405       {string} string
 func (deliver *Deliver) ReadProfile(respWriter http.ResponseWriter, request *http.Request) {
+	var (
+		err     error
+		id      int
+		profile string
+	)
 	requestID := request.Context().Value(RequestID).(int64)
 
-	session, _ := request.Cookie("session_id")
+	if request.URL.Query().Has("id") { // просмотр профиля по id (чужой профиль из ленты)
+		id, err = strconv.Atoi(request.URL.Query().Get("id"))
+		if err != nil {
+			requests.SendResponse(respWriter, request, http.StatusInternalServerError, err.Error())
+			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("get profile err: ", err.Error())
+		}
+		profile, err = deliver.serv.GetProfile(service.ProfileGetParams{ID: []types.UserID{types.UserID(id)}}, requestID)
+	} else { // свой профиль
+		session, _ := request.Cookie("session_id")
+		profile, err = deliver.serv.GetProfile(service.ProfileGetParams{SessionID: []string{session.Value}}, requestID)
+	}
 
-	profile, err := deliver.serv.GetProfile(session.Value, requestID)
 	if err != nil {
 		requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
 		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("get profile err: ", err.Error())

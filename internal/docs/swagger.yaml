@@ -226,6 +226,10 @@ paths:
         in: header
         name: session_id
         type: string
+      - description: profile id to return (optional)
+        in: query
+        name: id
+        type: string
       responses:
         "200":
           description: OK

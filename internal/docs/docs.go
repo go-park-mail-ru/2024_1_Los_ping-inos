@@ -254,6 +254,12 @@ const docTemplate = `{
                         "description": "cookie session_id",
                         "name": "session_id",
                         "in": "header"
+                    },
+                    {
+                        "type": "string",
+                        "description": "profile id to return (optional)",
+                        "name": "id",
+                        "in": "query"
                     }
                 ],
                 "responses": {

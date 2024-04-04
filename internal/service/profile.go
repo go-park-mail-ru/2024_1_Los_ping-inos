@@ -9,8 +9,8 @@ import (
 	"time"
 )
 
-func (service *Service) GetProfile(sessionID string, requestID int64) (string, error) {
-	person, err := service.personStorage.Get(requestID, &models.PersonGetFilter{SessionID: []string{sessionID}})
+func (service *Service) GetProfile(params ProfileGetParams, requestID int64) (string, error) {
+	person, err := service.personStorage.Get(requestID, &models.PersonGetFilter{SessionID: params.SessionID, ID: params.ID})
 	if err != nil {
 		return "", err
 	}
