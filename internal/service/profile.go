@@ -16,7 +16,7 @@ func (service *Service) GetProfile(params ProfileGetParams, requestID int64) (st
 	}
 
 	if len(person) == 0 {
-		return "", errors.New("no person with such sessionID")
+		return "", errors.New("no such person")
 	}
 
 	interests, err := service.interestStorage.GetPersonInterests(requestID, person[0].ID)
