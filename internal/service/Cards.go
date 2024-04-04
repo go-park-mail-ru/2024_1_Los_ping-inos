@@ -35,7 +35,7 @@ func (service *Service) GetName(sessionID string, requestID int64) (string, erro
 	return person[0].Name, err
 }
 
-func (service *Service) GetId(sessionID string, requestID int64) (int, error) {
+func (service *Service) GetId(sessionID string, requestID int64) (int64, error) {
 	person, err := service.personStorage.Get(requestID, &models.PersonGetFilter{SessionID: []string{sessionID}})
 	if err != nil {
 		return 0, err
@@ -45,7 +45,7 @@ func (service *Service) GetId(sessionID string, requestID int64) (int, error) {
 		return 0, errors.New("no person with such sessionID")
 	}
 
-	return int(person[0].ID), err
+	return int64(person[0].ID), err
 }
 
 // GetCards - вернуть ленту пользователей, доступно только авторизованному пользователю

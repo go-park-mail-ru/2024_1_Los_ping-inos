@@ -13,12 +13,13 @@ import (
 	models "main.go/db"
 	. "main.go/internal/logs"
 	requests "main.go/internal/pkg"
+	"main.go/internal/types"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
+	v4 "github.com/aws/aws-sdk-go-v2/aws/signer/v4"
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	awsUpload "github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	serviceUpload "github.com/aws/aws-sdk-go/service/s3"
 )
@@ -34,10 +35,14 @@ func (deliver *Deliver) GetImageHandler() func(w http.ResponseWriter, r *http.Re
 		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("get user image")
 
 		userSession, _ := request.Cookie("session_id")
-		print(userSession.Value)
-		print(" - THIS IS SESSION ID")
+		userId, err := deliver.serv.GetId(userSession.Value, requestID)
+		if err != nil {
+			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn(err.Error())
+			requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
+			return
+		}
 
-		image, err := deliver.serv.GetImage(userSession.Value, requestID)
+		images, err := deliver.serv.GetImage(userId, requestID)
 		if err != nil {
 			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn(err.Error())
 			requests.SendResponse(respWriter, request, http.StatusInternalServerError, err.Error())
@@ -57,25 +62,27 @@ func (deliver *Deliver) GetImageHandler() func(w http.ResponseWriter, r *http.Re
 
 		presigner := s3.NewPresignClient(client)
 		bucketName := "los_ping"
-		objectKey := image
 		lifeTimeSeconds := int64(60)
 
-		fmt.Println("OBJECT KEY-", objectKey, "\n")
+		var req *v4.PresignedHTTPRequest
+		urls := make([]string, 0)
 
-		req, err := presigner.PresignGetObject(context.TODO(), &s3.GetObjectInput{
-			Bucket: aws.String(bucketName),
-			Key:    aws.String(objectKey),
-		}, func(opts *s3.PresignOptions) {
-			opts.Expires = time.Duration(lifeTimeSeconds * int64(time.Second))
-		})
-
-		if err != nil {
-			log.Printf("Couldn't get a presigned request to get %v:%v. Error: %v\n", bucketName, objectKey, err)
+		for _, image := range images {
+			objectKey := image.Url
+			req, err = presigner.PresignGetObject(context.TODO(), &s3.GetObjectInput{
+				Bucket: aws.String(bucketName),
+				Key:    aws.String(objectKey),
+			}, func(opts *s3.PresignOptions) {
+				opts.Expires = time.Duration(lifeTimeSeconds * int64(time.Second))
+			})
+			urls = append(urls, req.URL)
 		}
 
-		fmt.Printf("%s", req.URL)
+		if err != nil {
+			log.Printf("Couldn't get a presigned request to get %v. Error: %v\n", bucketName, err)
+		}
 
-		requests.SendResponse(respWriter, request, http.StatusOK, image)
+		requests.SendResponse(respWriter, request, http.StatusOK, urls)
 		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("sent image")
 	}
 }
@@ -100,22 +107,21 @@ func (deliver *Deliver) AddImageHandler() func(w http.ResponseWriter, r *http.Re
 		}
 		defer image.Close()
 
-		// fileType := handler.Header.Get("Content-Type")
-		// isValidImage := false
-		// for _, validType := range types.ValidImageTypes {
-		// 	if fileType == validType {
-		// 		isValidImage = true
-		// 		break
-		// 	}
-		// }
+		fileType := handler.Header.Get("Content-Type")
 
-		// print("777")
+		isValidImage := false
+		for _, validType := range types.ValidImageTypes {
+			if fileType == validType {
+				isValidImage = true
+				break
+			}
+		}
 
-		// if err != nil || handler == nil || image == nil || !isValidImage {
-		// 	Log.WithFields(logrus.Fields{RequestID: requestID}).Warn(err.Error())
-		// 	requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
-		// 	return
-		// }
+		if !isValidImage {
+			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("wrong format")
+			requests.SendResponse(respWriter, request, http.StatusBadRequest, "Wrong format")
+			return
+		}
 
 		user_session, _ := request.Cookie("session_id")
 
@@ -126,18 +132,10 @@ func (deliver *Deliver) AddImageHandler() func(w http.ResponseWriter, r *http.Re
 			return
 		}
 
-		fmt.Println("this is user id -", userId)
-
 		filename := fmt.Sprint(userId) + "/" + handler.Filename
-		if err != nil && handler != nil && image != nil {
-			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn(err.Error())
-			requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
-			return
-		}
 
 		sess, err := session.NewSession(&awsUpload.Config{
-			Region:      aws.String("ru-msk"),
-			Credentials: credentials.NewStaticCredentials("jFMjTLNLjWRqR6uyTdZYkT", "6BHRrZdvVntY2hVgkdppMphZbLSj5YXyoVq4GTCzBuZk", ""),
+			Region: aws.String("ru-msk"),
 		})
 		if err != nil {
 			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn(err.Error())
@@ -145,7 +143,7 @@ func (deliver *Deliver) AddImageHandler() func(w http.ResponseWriter, r *http.Re
 		}
 
 		userImage := models.Image{
-			UserId: user_session.Value,
+			UserId: userId,
 			Url:    filename,
 		}
 
@@ -163,8 +161,6 @@ func (deliver *Deliver) AddImageHandler() func(w http.ResponseWriter, r *http.Re
 			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn(err.Error())
 			return
 		}
-
-		//fmt.Printf("data: %v\n", userImage)
 
 		err = deliver.serv.AddImage(userImage, requestID)
 		if err != nil {

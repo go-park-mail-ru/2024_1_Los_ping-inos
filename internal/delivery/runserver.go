@@ -63,8 +63,8 @@ func StartServer(deliver ...*Deliver) error {
 	logoutHandler := AllowedMethodMiddleware(authHandler, hashset.New("GET"))
 	isAuthHandler := AllowedMethodMiddleware(rawMux, hashset.New("GET"))
 	usernameHandler := AllowedMethodMiddleware(authHandler, hashset.New("GET"))
-	getImageHandler := AllowedMethodMiddleware(rawMux, hashset.New("GET"))
-	addImageHandler := AllowedMethodMiddleware(rawMux, hashset.New("POST"))
+	getImageHandler := AllowedMethodMiddleware(authHandler, hashset.New("GET"))
+	addImageHandler := AllowedMethodMiddleware(authHandler, hashset.New("POST"))
 
 	// сохранение обёрток
 	mux := http.NewServeMux()

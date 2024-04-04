@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/sirupsen/logrus"
+
 	//. "main.go/config"
 	models "main.go/db"
 	. "main.go/internal/logs"
@@ -20,62 +21,51 @@ func NewImageStorage(dbReader *sql.DB) *ImageStorage {
 	}
 }
 
-func (storage *ImageStorage) Get(requestID int64, person models.Person) (*models.Image, error) {
-	//stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
+func (storage *ImageStorage) Get(requestID int64, userID int64) ([]models.Image, error) {
+	var images []models.Image
 
-	// query := stBuilder.
-	// 	Select("photo").
-	// 	From(PersonTableName).
-	// 	Where(qb.Eq{"id": person.ID}).
-	// 	RunWith(storage.dbReader)
+	query := "SELECT * FROM person_image WHERE person_id = $1"
 
-	// Log.WithFields(logrus.Fields{RequestID: requestID}).Info("db get request to ", PersonTableName)
-	// rows, err := query.Query()
-
-	// if err != nil {
-	// 	Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("db can't query: ", err.Error())
-	// 	return nil, err
-	// }
-	// defer rows.Close()
-
-	// image := &models.Image{}
-	// err = rows.Scan(&image.Url)
-
-	// if err != nil {
-	// 	Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("db can't scan person: ", err.Error())
-	// 	return nil, err
-	// }
-
-	// Log.WithFields(logrus.Fields{RequestID: requestID}).Info("db returning records")
-	// return image, nil
-
-	//image := qb.Select("photo").From(PersonTableName).Where(qb.Eq{"id": person.ID})
-
-	imageItem := &models.Image{}
-
-	//print(person.SessionID)
-
-	err := storage.dbReader.QueryRow(
-		`SELECT id, photo FROM person
-				WHERE person.session_id = $1`, person.SessionID).Scan(&imageItem.UserId, &imageItem.Url)
-
+	rows, err := storage.dbReader.Query(query, userID)
 	if err != nil {
-		Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("db can't scan person: ", err.Error())
-		return nil, err
+		return []models.Image{}, err
 	}
+	defer rows.Close()
 
-	return imageItem, nil
+	for rows.Next() {
+		var image models.Image
 
+		err := rows.Scan(&image.UserId, &image.Url)
+		if err != nil {
+			return []models.Image{}, err
+		}
+
+		images = append(images, image)
+	}
+	return images, nil
 }
 
 func (storage *ImageStorage) Add(requestID int64, image models.Image) error {
 	_, err := storage.dbReader.Exec(
 		"UPDATE person SET photo = $1 WHERE session_id = $2", image.Url, image.UserId)
-
 	if err != nil {
 		Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("can't query: ", err.Error())
 		return fmt.Errorf("Add img %w", err)
 	}
-	//Log.WithFields(logrus.Fields{RequestID: requestID}).Info("db added img ", PersonTableName)
+
+	_, err = storage.dbReader.Exec(
+		"INSERT INTO image (url) VALUES ($1)", image.Url)
+	if err != nil {
+		Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("can't query: ", err.Error())
+		return fmt.Errorf("Add img %w", err)
+	}
+
+	query := "INSERT INTO person_image (person_id, image_url) VALUES ($1, $2)"
+
+	_, err = storage.dbReader.Exec(query, image.UserId, image.Url)
+	if err != nil {
+		Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("can't query: ", err.Error())
+		return fmt.Errorf("Add img %w", err)
+	}
 	return nil
 }
