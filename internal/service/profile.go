@@ -24,6 +24,9 @@ func (service *Service) GetProfile(params ProfileGetParams, requestID int64) (st
 		return "", err
 	}
 
+	if params.ID != nil {
+		person[0].Email = ""
+	}
 	res, err := personsToJSON(person, [][]*models.Interest{interests})
 	if err != nil {
 		return "", err
