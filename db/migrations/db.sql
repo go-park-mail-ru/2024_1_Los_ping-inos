@@ -51,3 +51,11 @@ create table if not exists dislike (
   
   primary key(person_one_id, person_two_id)
 );
+
+create table if not exists person_image (
+	id serial primary key,
+	person_id serial not null references person(id)
+		on delete cascade
+		on update cascade,
+	image_url text not null
+);

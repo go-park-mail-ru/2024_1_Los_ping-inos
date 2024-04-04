@@ -12,3 +12,8 @@ type PersonStorage interface {
 type InterestStorage interface {
 	Get(requestID int64) ([]*models.Interest, error)
 }
+
+type ImageStorage interface {
+	Get(requestID int64, person models.Person) (*models.Image, error)
+	Add(requestID int64, image models.Image) error
+}

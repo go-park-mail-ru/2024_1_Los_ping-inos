@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+
 	qb "github.com/Masterminds/squirrel"
 	"github.com/sirupsen/logrus"
 	. "main.go/config"

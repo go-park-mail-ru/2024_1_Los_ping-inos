@@ -1,8 +1,9 @@
 package models
 
 import (
-	"main.go/internal/types"
 	"time"
+
+	"main.go/internal/types"
 )
 
 // Person model info
@@ -35,4 +36,9 @@ type PersonGetFilter struct {
 type Interest struct {
 	ID   types.InterestID
 	Name string
+}
+
+type Image struct {
+	UserId string
+	Url    string
 }

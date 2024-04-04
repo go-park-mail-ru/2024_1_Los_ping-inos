@@ -3,6 +3,12 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"log"
+
+	//"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/s3"
 	_ "github.com/lib/pq"
 	"github.com/spf13/viper"
 	"main.go/config"
@@ -14,7 +20,12 @@ import (
 	"main.go/internal/storage"
 )
 
-const configPath = "config/config.yaml"
+const configPath = "../config/config.yaml"
+
+const (
+	vkCloudHotboxEndpoint = "https://hb.vkcs.cloud"
+	defaultRegion         = "ru-msk"
+)
 
 // @title SportBro API
 // @version 0.1
@@ -42,11 +53,23 @@ func main() {
 	}
 	defer db.Close()
 
+	sess, _ := session.NewSession()
+	svc := s3.New(sess, aws.NewConfig().WithEndpoint(vkCloudHotboxEndpoint).WithRegion(defaultRegion))
+
+	if res, err := svc.ListBuckets(nil); err != nil {
+		log.Fatalf("Unable to list buckets, %v", err)
+	} else {
+		for _, b := range res.Buckets {
+			log.Printf("* %s created on %s \n", aws.StringValue(b.Name), aws.TimeValue(b.CreationDate))
+		}
+	}
+
 	personStore := storage.NewPersonStorage(db)
 	interestStore := storage.NewInterestStorage(db)
+	imageStore := storage.NewImageStorage(db)
 
 	auth := service.NewAuthHandler(personStore)
-	serv := service.New(personStore, interestStore)
+	serv := service.New(personStore, interestStore, imageStore)
 	deliver := delivery.New(serv, auth)
 	err = delivery.StartServer(deliver)
 	if err != nil {

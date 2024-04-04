@@ -2,14 +2,15 @@ package delivery
 
 import (
 	"fmt"
+	"net/http"
+	"sync/atomic"
+	"time"
+
 	"github.com/emirpasic/gods/sets/hashset"
 	"github.com/go-chi/chi"
 	httpSwagger "github.com/swaggo/http-swagger/v2"
 	"main.go/config"
 	. "main.go/internal/logs"
-	"net/http"
-	"sync/atomic"
-	"time"
 )
 
 type Deliver struct {
@@ -50,6 +51,8 @@ func StartServer(deliver ...*Deliver) error {
 	rawMux.HandleFunc("/logout", deliver[0].LogoutHandler())
 	rawMux.HandleFunc("/isAuth", deliver[0].IsAuthenticatedHandler())
 	rawMux.HandleFunc("/me", deliver[0].GetUsername())
+	rawMux.HandleFunc("/getImage", deliver[0].GetImageHandler())
+	rawMux.HandleFunc("/addImage", deliver[0].AddImageHandler())
 
 	// обёртки миддлвар на методы и авторизованность
 	authHandler := IsAuthenticatedMiddleware(rawMux, deliver[0])
@@ -60,6 +63,8 @@ func StartServer(deliver ...*Deliver) error {
 	logoutHandler := AllowedMethodMiddleware(authHandler, hashset.New("GET"))
 	isAuthHandler := AllowedMethodMiddleware(rawMux, hashset.New("GET"))
 	usernameHandler := AllowedMethodMiddleware(authHandler, hashset.New("GET"))
+	getImageHandler := AllowedMethodMiddleware(rawMux, hashset.New("GET"))
+	addImageHandler := AllowedMethodMiddleware(rawMux, hashset.New("POST"))
 
 	// сохранение обёрток
 	mux := http.NewServeMux()
@@ -69,6 +74,8 @@ func StartServer(deliver ...*Deliver) error {
 	mux.Handle("/logout", logoutHandler)
 	mux.Handle("/isAuth", isAuthHandler)
 	mux.Handle("/me", usernameHandler)
+	mux.Handle("/getImage", getImageHandler)
+	mux.Handle("/addImage", addImageHandler)
 
 	server := http.Server{
 		Addr:         config.Cfg.Server.Host + config.Cfg.Server.Port,

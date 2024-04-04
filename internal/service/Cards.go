@@ -3,6 +3,7 @@ package service
 import (
 	"encoding/json"
 	"errors"
+
 	models "main.go/db"
 )
 
@@ -10,12 +11,14 @@ import (
 type Service struct {
 	personStorage   PersonStorage
 	interestStorage InterestStorage
+	imageStorage    ImageStorage
 }
 
-func New(pstor PersonStorage, istor InterestStorage) *Service {
+func New(pstor PersonStorage, istor InterestStorage, imstor ImageStorage) *Service {
 	return &Service{
 		personStorage:   pstor,
 		interestStorage: istor,
+		imageStorage:    imstor,
 	}
 }
 
@@ -30,6 +33,19 @@ func (service *Service) GetName(sessionID string, requestID int64) (string, erro
 	}
 
 	return person[0].Name, err
+}
+
+func (service *Service) GetId(sessionID string, requestID int64) (int, error) {
+	person, err := service.personStorage.Get(requestID, &models.PersonGetFilter{SessionID: []string{sessionID}})
+	if err != nil {
+		return 0, err
+	}
+
+	if person == nil || len(person) == 0 {
+		return 0, errors.New("no person with such sessionID")
+	}
+
+	return int(person[0].ID), err
 }
 
 // GetCards - вернуть ленту пользователей, доступно только авторизованному пользователю
