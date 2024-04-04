@@ -39,6 +39,6 @@ type Interest struct {
 }
 
 type Image struct {
-	UserId string
-	Url    string
+	UserId int64  `json:"person_id"`
+	Url    string `json:"image_url"`
 }
