@@ -16,6 +16,8 @@ definitions:
         type: string
       description:
         type: string
+      email:
+        type: string
       gender:
         type: string
       name:
@@ -26,6 +28,7 @@ definitions:
         type: string
     type: object
   models.PersonWithInterests:
+    description: Информация в профиле пользователя (данные пользователя и его интересы)
     properties:
       interests:
         items:
@@ -223,6 +226,10 @@ paths:
         in: header
         name: session_id
         type: string
+      - description: profile id to return (optional)
+        in: query
+        name: id
+        type: string
       responses:
         "200":
           description: OK
@@ -258,6 +265,9 @@ paths:
       - in: formData
         name: description
         type: string
+      - in: formData
+        name: email
+        type: string
       - collectionFormat: csv
         in: formData
         items:
@@ -266,6 +276,9 @@ paths:
         type: array
       - in: formData
         name: name
+        type: string
+      - in: formData
+        name: oldPassword
         type: string
       - in: formData
         name: password

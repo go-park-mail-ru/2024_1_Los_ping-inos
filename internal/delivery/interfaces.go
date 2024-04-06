@@ -1,12 +1,17 @@
 package delivery
 
+import (
+	requests "main.go/internal/pkg"
+	"main.go/internal/service"
+)
+
 type (
 	Service interface {
 		GetCards(sessionID string, reqID int64) (string, error)
 		GetName(sessionID string, reqID int64) (string, error)
 		GetAllInterests(reqID int64) (string, error)
-		GetProfile(sessionID string, requestID int64) (string, error)
-		UpdateProfile(sessionID, name, password, description, birthday string, interests []string, requestID int64) error
+		GetProfile(params service.ProfileGetParams, requestID int64) (string, error)
+		UpdateProfile(SID string, profile requests.ProfileUpdateRequest, requestID int64) error
 		DeleteProfile(sessionID string, requestID int64) error
 	}
 

@@ -4,18 +4,19 @@ import (
 	"errors"
 	"github.com/emirpasic/gods/sets/hashset"
 	models "main.go/db"
+	requests "main.go/internal/pkg"
 	"main.go/internal/types"
 	"time"
 )
 
-func (service *Service) GetProfile(sessionID string, requestID int64) (string, error) {
-	person, err := service.personStorage.Get(requestID, &models.PersonGetFilter{SessionID: []string{sessionID}})
+func (service *Service) GetProfile(params ProfileGetParams, requestID int64) (string, error) {
+	person, err := service.personStorage.Get(requestID, &models.PersonGetFilter{SessionID: params.SessionID, ID: params.ID})
 	if err != nil {
 		return "", err
 	}
 
 	if len(person) == 0 {
-		return "", errors.New("no person with such sessionID")
+		return "", errors.New("no such person")
 	}
 
 	interests, err := service.interestStorage.GetPersonInterests(requestID, person[0].ID)
@@ -23,6 +24,9 @@ func (service *Service) GetProfile(sessionID string, requestID int64) (string, e
 		return "", err
 	}
 
+	if params.ID != nil {
+		person[0].Email = ""
+	}
 	res, err := personsToJSON(person, [][]*models.Interest{interests})
 	if err != nil {
 		return "", err
@@ -30,29 +34,41 @@ func (service *Service) GetProfile(sessionID string, requestID int64) (string, e
 	return res, err
 }
 
-func (service *Service) UpdateProfile(sessionID, name, password, description, birthday string, interests []string, requestID int64) error {
-	persons, err := service.personStorage.Get(requestID, &models.PersonGetFilter{SessionID: []string{sessionID}})
+func (service *Service) UpdateProfile(SID string, profile requests.ProfileUpdateRequest, requestID int64) error {
+	persons, err := service.personStorage.Get(requestID, &models.PersonGetFilter{SessionID: []string{SID}})
 	if err != nil {
 		return err
 	}
 	person := persons[0]
-	if name != "" {
-		person.Name = name
+	if profile.Name != "" {
+		person.Name = profile.Name
 	}
-	if birthday != "" {
-		person.Birthday, err = time.Parse("01.02.2006", birthday)
+	if profile.Email != "" {
+		if err = checkPassword(person.Password, profile.OldPassword); err != nil {
+			return err
+		}
+		person.Email = profile.Email
 	}
-	if description != "" {
-		person.Description = description
-	}
-	if password != "" {
-		person.Password, err = hashPassword(password)
+	if profile.Birthday != "" {
+		person.Birthday, err = time.Parse("01.02.2006", profile.Birthday)
 		if err != nil {
 			return err
 		}
 	}
-	if interests != nil {
-		err = service.handleInterests(interests, person.ID, requestID)
+	if profile.Description != "" {
+		person.Description = profile.Description
+	}
+	if profile.Password != "" {
+		if err = checkPassword(person.Password, profile.OldPassword); err != nil {
+			return err
+		}
+		person.Password, err = hashPassword(profile.Password)
+		if err != nil {
+			return err
+		}
+	}
+	if profile.Interests != nil {
+		err = service.handleInterests(profile.Interests, person.ID, requestID)
 		if err != nil {
 			return err
 		}

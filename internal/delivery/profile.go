@@ -2,11 +2,15 @@ package delivery
 
 import (
 	"encoding/json"
+	"errors"
 	"github.com/sirupsen/logrus"
 	"io"
 	. "main.go/internal/logs"
 	requests "main.go/internal/pkg"
+	"main.go/internal/service"
+	"main.go/internal/types"
 	"net/http"
+	"strconv"
 )
 
 func (deliver *Deliver) ProfileHandlers() func(http.ResponseWriter, *http.Request) {
@@ -28,20 +32,34 @@ func (deliver *Deliver) ProfileHandlers() func(http.ResponseWriter, *http.Reques
 // @Router  /profile [get]
 // @Accept  json
 // @Param   session_id header string false "cookie session_id"
+// @Param   id         query  string false "profile id to return (optional)"
 // @Success 200		  {object}  models.PersonWithInterests
 // @Failure 400       {string} string
 // @Failure 401       {string} string
 // @Failure 405       {string} string
 func (deliver *Deliver) ReadProfile(respWriter http.ResponseWriter, request *http.Request) {
-	requestID := deliver.nextRequest()
-	Log.WithFields(logrus.Fields{RequestID: requestID}).Info("read profile request")
+	var (
+		err     error
+		id      int
+		profile string
+	)
+	requestID := request.Context().Value(RequestID).(int64)
 
-	session, _ := request.Cookie("session_id")
+	if request.URL.Query().Has("id") { // просмотр профиля по id (чужой профиль из ленты)
+		id, err = strconv.Atoi(request.URL.Query().Get("id"))
+		if err != nil {
+			requests.SendResponse(respWriter, request, http.StatusInternalServerError, err.Error())
+			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("get profile err: ", err.Error())
+		}
+		profile, err = deliver.serv.GetProfile(service.ProfileGetParams{ID: []types.UserID{types.UserID(id)}}, requestID)
+	} else { // свой профиль
+		session, _ := request.Cookie("session_id")
+		profile, err = deliver.serv.GetProfile(service.ProfileGetParams{SessionID: []string{session.Value}}, requestID)
+	}
 
-	profile, err := deliver.serv.GetProfile(session.Value, requestID)
 	if err != nil {
 		requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
-		Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("get profile err: ", err.Error())
+		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("get profile err: ", err.Error())
 		return
 	}
 
@@ -63,14 +81,13 @@ func (deliver *Deliver) ReadProfile(respWriter http.ResponseWriter, request *htt
 // @Failure 405       {string} string
 // @Failure 409       {string} string // TODO
 func (deliver *Deliver) UpdateProfile(respWriter http.ResponseWriter, request *http.Request) {
-	requestID := deliver.nextRequest()
-	Log.WithFields(logrus.Fields{RequestID: requestID}).Info("update profile request")
+	requestID := request.Context().Value(RequestID).(int64)
 
 	var requestBody requests.ProfileUpdateRequest
 
 	body, err := io.ReadAll(request.Body)
 	if err != nil {
-		Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("bad body: ", err.Error())
+		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("bad body: ", err.Error())
 		requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
 		return
 	}
@@ -83,12 +100,15 @@ func (deliver *Deliver) UpdateProfile(respWriter http.ResponseWriter, request *h
 	}
 
 	session, _ := request.Cookie("session_id")
-	err = deliver.serv.UpdateProfile(session.Value, requestBody.Name, requestBody.Password, requestBody.Description,
-		requestBody.Birthday, requestBody.Interests, requestID)
 
+	err = deliver.serv.UpdateProfile(session.Value, requestBody, requestID)
 	if err != nil {
 		Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("can't update profile: ", err.Error())
-		requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
+		if errors.As(err, &types.DifferentPasswordsError) {
+			requests.SendResponse(respWriter, request, http.StatusConflict, err.Error())
+		} else {
+			requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
+		}
 		return
 	}
 
@@ -108,8 +128,7 @@ func (deliver *Deliver) UpdateProfile(respWriter http.ResponseWriter, request *h
 // @Failure 405       {string} string
 // @Failure 409       {string} string // TODO
 func (deliver *Deliver) DeleteProfile(respWriter http.ResponseWriter, request *http.Request) {
-	requestID := deliver.nextRequest()
-	Log.WithFields(logrus.Fields{RequestID: requestID}).Info("delete profile request")
+	requestID := request.Context().Value(RequestID).(int64)
 
 	session, _ := request.Cookie("session_id")
 	err := deliver.serv.DeleteProfile(session.Value, requestID)
