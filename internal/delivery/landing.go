@@ -22,8 +22,7 @@ import (
 // @Failure 500       {string} string
 func (deliver *Deliver) GetUsername() func(w http.ResponseWriter, r *http.Request) {
 	return func(respWriter http.ResponseWriter, request *http.Request) {
-		requestID := deliver.nextRequest()
-		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("get username")
+		requestID := request.Context().Value(RequestID).(int64)
 
 		session, _ := request.Cookie("session_id") // возвращает только ErrNoCookie, так что обработка не нужна
 
@@ -43,15 +42,14 @@ func (deliver *Deliver) GetUsername() func(w http.ResponseWriter, r *http.Reques
 // @Router  /cards [get]
 // @Accept  json
 // @Param   session_id header string false "cookie session_id"
-// @Success 200		  {array}  models.Person
+// @Success 200		  {array}  models.PersonWithInterests
 // @Failure 400       {string} string
 // @Failure 401       {string} string
 // @Failure 405       {string} string
 // @Failure 500       {string} string
 func (deliver *Deliver) GetCardsHandler() func(http.ResponseWriter, *http.Request) {
 	return func(respWriter http.ResponseWriter, request *http.Request) {
-		requestID := deliver.nextRequest()
-		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("get cards request")
+		requestID := request.Context().Value(RequestID).(int64)
 
 		session, _ := request.Cookie("session_id") // возвращает только ErrNoCookie, так что обработка не нужна
 

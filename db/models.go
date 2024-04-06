@@ -14,7 +14,7 @@ type Person struct {
 	Description string       `json:"description"`
 	Location    string       `json:"-"`
 	Photo       string       `json:"photo"`
-	Email       string       `json:"-"`
+	Email       string       `json:"email"`
 	Password    string       `json:"-"`
 	Gender      string       `json:"gender"`
 	CreatedAt   time.Time    `json:"-"`
@@ -32,7 +32,24 @@ type PersonGetFilter struct {
 	SessionID []string
 }
 
+type InterestGetFilter struct {
+	ID   []types.InterestID
+	Name []string
+}
+
 type Interest struct {
 	ID   types.InterestID
 	Name string
+}
+
+type PersonInterest struct {
+	PersonId   types.UserID
+	InterestID types.InterestID
+}
+
+// PersonWithInterests model info
+// @Description Информация в профиле пользователя (данные пользователя и его интересы)
+type PersonWithInterests struct {
+	Person    *Person     `json:"person"`
+	Interests []*Interest `json:"interests"`
 }

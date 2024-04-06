@@ -81,7 +81,7 @@ func (deliver *Deliver) LoginHandler() func(respWriter http.ResponseWriter, requ
 			return
 		}
 
-		setLoginCookie(SID, oneDayExpiration, w)
+		setLoginCookie(SID, oneDayExpiration(), w)
 
 		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("login with SID: ", SID)
 		requests.SendResponse(w, r, http.StatusOK, nil)
@@ -90,7 +90,8 @@ func (deliver *Deliver) LoginHandler() func(respWriter http.ResponseWriter, requ
 
 // RegistrationHandler godoc
 // @Summary Регистрация нового пользователя
-// @Tags    Регистрация
+// @Description АХТУНГ АХТУНГ дата рождения передаётся в формате MM.DD.YYYY
+// @Tags    Профиль
 // @Router  /registration [post]
 // @Accept  json
 // @Param   userData  formData requests.RegistrationRequest true "user data"
@@ -101,9 +102,7 @@ func (deliver *Deliver) LoginHandler() func(respWriter http.ResponseWriter, requ
 // @Failure 500       {string} string
 func (deliver *Deliver) RegistrationHandler() func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		requestID := deliver.nextRequest()
-		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("registration")
-
+		requestID := r.Context().Value(RequestID).(int64)
 		if r.Method == http.MethodGet {
 			body, err := deliver.serv.GetAllInterests(requestID)
 			if err != nil {
@@ -134,14 +133,22 @@ func (deliver *Deliver) RegistrationHandler() func(http.ResponseWriter, *http.Re
 		SID, err := deliver.auth.Registration(request.Name, request.Birthday, request.Gender, request.Email, request.Password, requestID)
 		if err != nil {
 			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("can't auth: ", err.Error())
-			if errors.As(err, &ErrSeveralEmails) {
+			if errors.As(err, &SeveralEmailsError) {
 				requests.SendResponse(w, r, http.StatusConflict, err.Error())
 			} else {
 				requests.SendResponse(w, r, http.StatusBadRequest, err.Error())
 			}
+			return
+		}
+		//TODO
+		err = deliver.serv.UpdateProfile(SID, requests.ProfileUpdateRequest{Interests: request.Interests}, requestID)
+		if err != nil {
+			Log.WithFields(logrus.Fields{RequestID: requestID}).Info("can't update interests: ", err.Error())
+			requests.SendResponse(w, r, http.StatusBadRequest, err.Error())
+			return
 		}
 
-		setLoginCookie(SID, oneDayExpiration, w)
+		setLoginCookie(SID, oneDayExpiration(), w)
 
 		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("registered and logged with SID ", SID)
 		requests.SendResponse(w, r, http.StatusOK, nil)
@@ -161,8 +168,7 @@ func (deliver *Deliver) RegistrationHandler() func(http.ResponseWriter, *http.Re
 // @Failure 500       {string} string
 func (deliver *Deliver) LogoutHandler() func(respWriter http.ResponseWriter, request *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		requestID := deliver.nextRequest()
-		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("logout start")
+		requestID := r.Context().Value(RequestID).(int64)
 
 		session, err := r.Cookie("session_id")
 		if err != nil {

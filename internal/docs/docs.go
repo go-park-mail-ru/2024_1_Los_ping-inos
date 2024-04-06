@@ -38,7 +38,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/models.Person"
+                                "$ref": "#/definitions/models.PersonWithInterests"
                             }
                         }
                     },
@@ -239,13 +239,197 @@ const docTemplate = `{
                 }
             }
         },
-        "/registration": {
-            "post": {
+        "/profile": {
+            "get": {
                 "consumes": [
                     "application/json"
                 ],
                 "tags": [
-                    "Регистрация"
+                    "Профиль"
+                ],
+                "summary": "Получить профиль пользователя",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "cookie session_id",
+                        "name": "session_id",
+                        "in": "header"
+                    },
+                    {
+                        "type": "string",
+                        "description": "profile id to return (optional)",
+                        "name": "id",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.PersonWithInterests"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "405": {
+                        "description": "Method Not Allowed",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "АХТУНГ АХТУНГ дата рождения передаётся в формате MM.DD.YYYY",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Профиль"
+                ],
+                "summary": "Обновить профиль пользователя (несколько полей)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "cookie session_id",
+                        "name": "session_id",
+                        "in": "header"
+                    },
+                    {
+                        "type": "string",
+                        "name": "birthday",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "name": "description",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "name": "email",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "csv",
+                        "name": "interests",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "name": "name",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "name": "oldPassword",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "name": "password",
+                        "in": "formData"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "405": {
+                        "description": "Method Not Allowed",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Профиль"
+                ],
+                "summary": "Удалить профиль пользователя",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "cookie session_id",
+                        "name": "session_id",
+                        "in": "header"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "405": {
+                        "description": "Method Not Allowed",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/registration": {
+            "post": {
+                "description": "АХТУНГ АХТУНГ дата рождения передаётся в формате MM.DD.YYYY",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Профиль"
                 ],
                 "summary": "Регистрация нового пользователя",
                 "parameters": [
@@ -262,6 +446,15 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "name": "gender",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "csv",
+                        "name": "interests",
                         "in": "formData"
                     },
                     {
@@ -308,6 +501,17 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "models.Interest": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "models.Person": {
             "description": "Информация об аккаунте пользователя",
             "type": "object",
@@ -319,6 +523,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "description": {
+                    "type": "string"
+                },
+                "email": {
                     "type": "string"
                 },
                 "gender": {
@@ -334,6 +541,21 @@ const docTemplate = `{
                     "type": "string"
                 }
             }
+        },
+        "models.PersonWithInterests": {
+            "description": "Информация в профиле пользователя (данные пользователя и его интересы)",
+            "type": "object",
+            "properties": {
+                "interests": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Interest"
+                    }
+                },
+                "person": {
+                    "$ref": "#/definitions/models.Person"
+                }
+            }
         }
     }
 }`
@@ -341,8 +563,8 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "0.1",
-	Host:             "185.241.192.216:8081",
-	BasePath:         "/",
+	Host:             "185.241.192.216:8085",
+	BasePath:         "/api/v1/",
 	Schemes:          []string{},
 	Title:            "SportBro API",
 	Description:      "",

@@ -1,5 +1,12 @@
-basePath: /
+basePath: /api/v1/
 definitions:
+  models.Interest:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
   models.Person:
     description: Информация об аккаунте пользователя
     properties:
@@ -8,6 +15,8 @@ definitions:
       birthday:
         type: string
       description:
+        type: string
+      email:
         type: string
       gender:
         type: string
@@ -18,7 +27,17 @@ definitions:
       session_id:
         type: string
     type: object
-host: 185.241.192.216:8081
+  models.PersonWithInterests:
+    description: Информация в профиле пользователя (данные пользователя и его интересы)
+    properties:
+      interests:
+        items:
+          $ref: '#/definitions/models.Interest'
+        type: array
+      person:
+        $ref: '#/definitions/models.Person'
+    type: object
+host: 185.241.192.216:8085
 info:
   contact: {}
   title: SportBro API
@@ -38,7 +57,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/models.Person'
+              $ref: '#/definitions/models.PersonWithInterests'
             type: array
         "400":
           description: Bad Request
@@ -168,10 +187,129 @@ paths:
       summary: Получить имя пользователя по его session_id (для отображения в ленте)
       tags:
       - Продукт
+  /profile:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: cookie session_id
+        in: header
+        name: session_id
+        type: string
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "405":
+          description: Method Not Allowed
+          schema:
+            type: string
+        "409":
+          description: Conflict
+          schema:
+            type: string
+      summary: Удалить профиль пользователя
+      tags:
+      - Профиль
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: cookie session_id
+        in: header
+        name: session_id
+        type: string
+      - description: profile id to return (optional)
+        in: query
+        name: id
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.PersonWithInterests'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "405":
+          description: Method Not Allowed
+          schema:
+            type: string
+      summary: Получить профиль пользователя
+      tags:
+      - Профиль
+    post:
+      consumes:
+      - application/json
+      description: АХТУНГ АХТУНГ дата рождения передаётся в формате MM.DD.YYYY
+      parameters:
+      - description: cookie session_id
+        in: header
+        name: session_id
+        type: string
+      - in: formData
+        name: birthday
+        type: string
+      - in: formData
+        name: description
+        type: string
+      - in: formData
+        name: email
+        type: string
+      - collectionFormat: csv
+        in: formData
+        items:
+          type: string
+        name: interests
+        type: array
+      - in: formData
+        name: name
+        type: string
+      - in: formData
+        name: oldPassword
+        type: string
+      - in: formData
+        name: password
+        type: string
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "405":
+          description: Method Not Allowed
+          schema:
+            type: string
+        "409":
+          description: Conflict
+          schema:
+            type: string
+      summary: Обновить профиль пользователя (несколько полей)
+      tags:
+      - Профиль
   /registration:
     post:
       consumes:
       - application/json
+      description: АХТУНГ АХТУНГ дата рождения передаётся в формате MM.DD.YYYY
       parameters:
       - in: formData
         name: birthday
@@ -182,6 +320,12 @@ paths:
       - in: formData
         name: gender
         type: string
+      - collectionFormat: csv
+        in: formData
+        items:
+          type: string
+        name: interests
+        type: array
       - in: formData
         name: name
         type: string
@@ -209,5 +353,5 @@ paths:
             type: string
       summary: Регистрация нового пользователя
       tags:
-      - Регистрация
+      - Профиль
 swagger: "2.0"
