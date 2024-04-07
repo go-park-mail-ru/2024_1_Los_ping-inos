@@ -1,5 +1,7 @@
 package requests
 
+import "main.go/internal/types"
+
 type (
 	LoginRequest struct {
 		Email    string `json:"email"`
@@ -23,5 +25,9 @@ type (
 		OldPassword string   `json:"oldPassword"`
 		Description string   `json:"description"`
 		Interests   []string `json:"interests"`
+	}
+
+	CreateLikeRequest struct {
+		Profile2 types.UserID `json:"profile2"`
 	}
 )

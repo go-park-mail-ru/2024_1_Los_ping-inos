@@ -34,11 +34,18 @@ func (deliver *Deliver) IsAuthenticatedHandler() func(w http.ResponseWriter, r *
 		if err != nil {
 			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("not authorized: ", err.Error())
 		}
-		if err != nil || session == nil || !deliver.auth.IsAuthenticated(session.Value, requestID) {
+		if err != nil || session == nil {
 			Log.WithFields(logrus.Fields{RequestID: requestID}).Info("not authorized")
 			requests.SendResponse(respWriter, request, http.StatusForbidden, nil)
 			return
 		}
+		_, ok := deliver.auth.IsAuthenticated(session.Value, requestID);
+		if !ok {
+			Log.WithFields(logrus.Fields{RequestID: requestID}).Info("not authorized")
+			requests.SendResponse(respWriter, request, http.StatusForbidden, nil)
+			return
+		}
+
 		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("authorized")
 		requests.SendResponse(respWriter, request, http.StatusOK, nil)
 	}

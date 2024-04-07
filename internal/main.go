@@ -44,9 +44,10 @@ func main() {
 
 	personStore := storage.NewPersonStorage(db)
 	interestStore := storage.NewInterestStorage(db)
+	likeStore := storage.NewLikeStorage(db)
 
 	auth := service.NewAuthHandler(personStore)
-	serv := service.New(personStore, interestStore)
+	serv := service.New(personStore, interestStore, likeStore)
 	deliver := delivery.New(serv, auth)
 	err = delivery.StartServer(deliver)
 	if err != nil {

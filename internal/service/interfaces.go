@@ -19,3 +19,8 @@ type InterestStorage interface {
 	CreatePersonInterests(requestID int64, personID types.UserID, interestID []types.InterestID) error
 	DeletePersonInterests(requestID int64, personID types.UserID, interestID []types.InterestID) error
 }
+
+type LikeStorage interface {
+	Get(requestID int64, filter *models.LikeGetFilter) ([]*models.Like, error)
+	Create(requestID int64, person1ID, person2ID types.UserID) error
+}

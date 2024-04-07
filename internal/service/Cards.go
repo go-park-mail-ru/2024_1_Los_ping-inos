@@ -11,12 +11,14 @@ import (
 type Service struct {
 	personStorage   PersonStorage
 	interestStorage InterestStorage
+	likeStorage     LikeStorage
 }
 
-func New(pstor PersonStorage, istor InterestStorage) *Service {
+func New(pstor PersonStorage, istor InterestStorage, lstor LikeStorage) *Service {
 	return &Service{
 		personStorage:   pstor,
 		interestStorage: istor,
+		likeStorage:     lstor,
 	}
 }
 

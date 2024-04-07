@@ -82,6 +82,11 @@ func StartServer(deliver ...*Deliver) error {
 			IsAuthenticatedMiddleware(http.HandlerFunc(deliver[0].ProfileHandlers()), deliver[0]), hashset.New("GET", "POST", "DELETE")),
 		deliver[0], "profile"))
 
+	mux.Handle(apiPath+"like", RequestIDMiddleware(
+		AllowedMethodMiddleware(
+			IsAuthenticatedMiddleware(http.HandlerFunc(deliver[0].CreateLike()), deliver[0]), hashset.New("POST")),
+		deliver[0], "like"))
+
 	server := http.Server{
 		Addr:         config.Cfg.Server.Host + config.Cfg.Server.Port,
 		Handler:      mux,
