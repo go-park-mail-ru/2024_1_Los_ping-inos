@@ -79,3 +79,32 @@ func (storage *LikeStorage) Create(requestID int64, person1ID, person2ID types.U
 	}
 	return err
 }
+
+func (storage *LikeStorage) GetMatch(requestID int64, person1ID types.UserID) ([]types.UserID, error) {
+	Log.WithFields(logrus.Fields{RequestID: requestID}).Info("db create request to ", LikeTableName)
+	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
+
+	query := stBuilder.Select("t1.person_two_id").
+		From(LikeTableName + "t1").
+		InnerJoin(LikeTableName + "t2 ON t1.person_one_id = t2.person_two_id AND t1.person_two_id = t2.person_one_id").
+		Where(qb.Eq{"t1.person_one_id": person1ID}).
+		RunWith(storage.dbReader)
+
+	rows, err := query.Query()
+	if err != nil {
+		Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("db can't query:  ", err.Error())
+		return nil, err
+	}
+
+	res := make([]types.UserID, 0)
+	var scan types.UserID
+	for rows.Next() {
+		err = rows.Scan(&scan)
+		if err != nil {
+			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("db can't scan:  ", err.Error())
+			return nil, err
+		}
+		res = append(res, scan)
+	}
+	return res, nil
+}

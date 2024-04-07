@@ -23,4 +23,5 @@ type InterestStorage interface {
 type LikeStorage interface {
 	Get(requestID int64, filter *models.LikeGetFilter) ([]*models.Like, error)
 	Create(requestID int64, person1ID, person2ID types.UserID) error
+	GetMatch(requestID int64, person1ID types.UserID) ([]types.UserID, error)
 }

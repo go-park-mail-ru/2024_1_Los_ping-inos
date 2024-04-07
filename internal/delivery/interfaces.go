@@ -15,6 +15,7 @@ type (
 		UpdateProfile(SID string, profile requests.ProfileUpdateRequest, requestID int64) error
 		DeleteProfile(sessionID string, requestID int64) error
 		CreateLike(profile1, profile2 types.UserID, requestID int64) error
+		GetMatches(profile types.UserID, requestID int64) (string, error)
 	}
 
 	Auth interface {

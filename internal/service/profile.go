@@ -10,24 +10,27 @@ import (
 )
 
 func (service *Service) GetProfile(params ProfileGetParams, requestID int64) (string, error) {
-	person, err := service.personStorage.Get(requestID, &models.PersonGetFilter{SessionID: params.SessionID, ID: params.ID})
+	persons, err := service.personStorage.Get(requestID, &models.PersonGetFilter{SessionID: params.SessionID, ID: params.ID})
 	if err != nil {
 		return "", err
 	}
 
-	if len(person) == 0 {
+	if len(persons) == 0 {
 		return "", errors.New("no such person")
 	}
 
-	interests, err := service.interestStorage.GetPersonInterests(requestID, person[0].ID)
-	if err != nil {
-		return "", err
+	interests := make([][]*models.Interest, len(persons))
+	for i := range persons {
+		interests[i], err = service.interestStorage.GetPersonInterests(requestID, persons[i].ID)
+		if err != nil {
+			return "", err
+		}
 	}
 
 	if params.ID != nil {
-		person[0].Email = ""
+		persons[0].Email = ""
 	}
-	res, err := personsToJSON(person, [][]*models.Interest{interests})
+	res, err := personsToJSON(persons, interests)
 	if err != nil {
 		return "", err
 	}
