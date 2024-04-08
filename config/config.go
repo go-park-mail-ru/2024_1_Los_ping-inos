@@ -13,8 +13,6 @@ const LikeTableName = "\"like\""
 
 const RequestUserID = "userID"
 
-const RequestUserID = "userID"
-
 var Cfg Config
 
 type Config struct {

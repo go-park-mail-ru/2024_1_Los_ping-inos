@@ -23,6 +23,7 @@ import (
 	awsUpload "github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	serviceUpload "github.com/aws/aws-sdk-go/service/s3"
+	. "main.go/config"
 )
 
 const (
@@ -32,16 +33,9 @@ const (
 
 func (deliver *Deliver) GetImageHandler() func(w http.ResponseWriter, r *http.Request) {
 	return func(respWriter http.ResponseWriter, request *http.Request) {
-		requestID := deliver.nextRequest()
-		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("get user image")
+		requestID := request.Context().Value(RequestID).(int64)
 
-		userSession, _ := request.Cookie("session_id")
-		userId, err := deliver.serv.GetId(userSession.Value, requestID)
-		if err != nil {
-			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn(err.Error())
-			requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
-			return
-		}
+		userId := int64(request.Context().Value(RequestUserID).(types.UserID))
 
 		images, err := deliver.serv.GetImage(userId, requestID)
 		if err != nil {
@@ -90,8 +84,7 @@ func (deliver *Deliver) GetImageHandler() func(w http.ResponseWriter, r *http.Re
 
 func (deliver *Deliver) AddImageHandler() func(w http.ResponseWriter, r *http.Request) {
 	return func(respWriter http.ResponseWriter, request *http.Request) {
-		requestID := deliver.nextRequest()
-		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("get upload image")
+		requestID := request.Context().Value(RequestID).(int64)
 
 		err := request.ParseMultipartForm(10 << 20)
 		if err != nil {
@@ -124,9 +117,7 @@ func (deliver *Deliver) AddImageHandler() func(w http.ResponseWriter, r *http.Re
 			return
 		}
 
-		user_session, _ := request.Cookie("session_id")
-
-		userId, err := deliver.serv.GetId(user_session.Value, requestID)
+		userId := int64(request.Context().Value(RequestUserID).(types.UserID))
 		if err != nil {
 			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn(err.Error())
 			requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
