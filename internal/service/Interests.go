@@ -5,7 +5,7 @@ import (
 )
 
 func (service *Service) GetAllInterests(requestID int64) (string, error) {
-	interests, err := service.interestStorage.Get(requestID)
+	interests, err := service.interestStorage.Get(requestID, nil)
 	if err != nil {
 		return "", err
 	}

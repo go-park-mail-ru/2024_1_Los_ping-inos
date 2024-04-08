@@ -8,6 +8,10 @@ import (
 
 const PersonTableName = "person"
 const InterestTableName = "interest"
+const PersonInterestTableName = "person_interest"
+const LikeTableName = "\"like\""
+
+const RequestUserID = "userID"
 
 const RequestUserID = "userID"
 

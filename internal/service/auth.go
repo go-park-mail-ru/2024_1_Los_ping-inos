@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"main.go/internal/types"
 	"sync"
 
 	"github.com/sirupsen/logrus"
@@ -24,10 +25,10 @@ func NewAuthHandler(dbReader PersonStorage) *AuthHandler {
 	}
 }
 
-func (api *AuthHandler) IsAuthenticated(sessionID string, requestID int64) bool {
-	if _, authorized := api.sessions.Load(sessionID); authorized { // смотрим, есть ли запись в кеше
+func (api *AuthHandler) IsAuthenticated(sessionID string, requestID int64) (types.UserID, bool) {
+	if id, authorized := api.sessions.Load(sessionID); authorized { // смотрим, есть ли запись в кеше
 		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("loaded session ", sessionID)
-		return true
+		return id.(types.UserID), true
 	}
 
 	// если сейчас в кеше сессии нет, лезем смотреть в бд
@@ -35,11 +36,11 @@ func (api *AuthHandler) IsAuthenticated(sessionID string, requestID int64) bool 
 	sessions[0] = sessionID
 	person, err := api.dbReader.Get(requestID, &models.PersonGetFilter{SessionID: sessions})
 	if err != nil || len(person) == 0 {
-		return false
+		return -1, false
 	}
 
 	api.sessions.Store(sessionID, person[0].ID) // нашли - запоминаем в кеш
-	return true
+	return person[0].ID, true
 }
 
 // Login - принимает email, пароль; возвращает ID сессии и ошибку

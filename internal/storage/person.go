@@ -44,7 +44,7 @@ func (storage *PersonStorage) Get(requestID int64, filter *models.PersonGetFilte
 	rows, err := query.Query()
 
 	if err != nil {
-		Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("db can't query: ", err.Error())
+		Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("db read can't query: ", err.Error())
 		return nil, err
 	}
 	defer rows.Close()
@@ -83,7 +83,7 @@ func (storage *PersonStorage) Update(requestID int64, person models.Person) erro
 		Log.WithFields(logrus.Fields{RequestID: requestID}).Warn(err.Error())
 		return err
 	}
-
+	setMap["password"] = person.Password
 	query := stBuilder.
 		Update(PersonTableName).
 		SetMap(setMap).
@@ -93,10 +93,28 @@ func (storage *PersonStorage) Update(requestID int64, person models.Person) erro
 	rows, err := query.Query()
 	defer rows.Close()
 	if err != nil {
-		Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("db can't query: ", err.Error())
+		Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("db update can't query: ", err.Error())
 		return err
 	}
 	Log.WithFields(logrus.Fields{RequestID: requestID}).Info("db person updated")
+	return nil
+}
+
+func (storage *PersonStorage) Delete(requestID int64, sessionID string) error {
+	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
+	Log.WithFields(logrus.Fields{RequestID: requestID}).Info("db delete request to ", PersonTableName)
+	query := stBuilder.
+		Delete(PersonTableName).
+		Where(qb.Eq{"session_id": sessionID}).
+		RunWith(storage.dbReader)
+
+	rows, err := query.Query()
+	defer rows.Close()
+	if err != nil {
+		Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("db delete can't query: ", err.Error())
+		return err
+	}
+	Log.WithFields(logrus.Fields{RequestID: requestID}).Info("db person deleted")
 	return nil
 }
 
@@ -138,7 +156,6 @@ func processEmailFilter(filter *models.PersonGetFilter, whereMap *qb.And) {
 	if filter.Email != nil {
 		*whereMap = append(*whereMap, qb.Eq{"email": filter.Email})
 	}
-
 }
 
 func processSessionIDFilter(filter *models.PersonGetFilter, whereMap *qb.And) {

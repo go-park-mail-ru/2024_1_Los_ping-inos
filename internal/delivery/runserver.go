@@ -45,6 +45,8 @@ func StartServer(deliver ...*Deliver) error {
 
 	var apiPath = config.Cfg.ApiPath
 
+	// роутер)0)
+	// структура: путь, цепочка миддлвар: логирование(авторизация(методы(функция-обработчик ручки)))
 	mux := http.NewServeMux()
 	mux.Handle(apiPath+"cards", RequestIDMiddleware(
 		AllowedMethodMiddleware(
@@ -85,6 +87,21 @@ func StartServer(deliver ...*Deliver) error {
 		AllowedMethodMiddleware(
 			IsAuthenticatedMiddleware(http.HandlerFunc(deliver[0].AddImageHandler()), deliver[0]), hashset.New("POST")),
 		deliver[0], "username (/me)"))
+
+	mux.Handle(apiPath+"profile", RequestIDMiddleware(
+		AllowedMethodMiddleware(
+			IsAuthenticatedMiddleware(http.HandlerFunc(deliver[0].ProfileHandlers()), deliver[0]), hashset.New("GET", "POST", "DELETE")),
+		deliver[0], "profile"))
+
+	mux.Handle(apiPath+"like", RequestIDMiddleware(
+		AllowedMethodMiddleware(
+			IsAuthenticatedMiddleware(http.HandlerFunc(deliver[0].CreateLike()), deliver[0]), hashset.New("POST")),
+		deliver[0], "like"))
+
+	mux.Handle(apiPath+"matches", RequestIDMiddleware(
+		AllowedMethodMiddleware(
+			IsAuthenticatedMiddleware(http.HandlerFunc(deliver[0].GetMatches()), deliver[0]), hashset.New("GET")),
+		deliver[0], "matches"))
 
 	server := http.Server{
 		Addr:         config.Cfg.Server.Host + config.Cfg.Server.Port,

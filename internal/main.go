@@ -29,8 +29,8 @@ const (
 
 // @title SportBro API
 // @version 0.1
-// @host  185.241.192.216:8081
-// @BasePath /
+// @host  185.241.192.216:8085
+// @BasePath /api/v1/
 func main() {
 	InitLog()
 
@@ -66,10 +66,12 @@ func main() {
 
 	personStore := storage.NewPersonStorage(db)
 	interestStore := storage.NewInterestStorage(db)
-	imageStore := storage.NewImageStorage(db)
+  imageStore := storage.NewImageStorage(db)
+  likeStore := storage.NewLikeStorage(db)
 
 	auth := service.NewAuthHandler(personStore)
-	serv := service.New(personStore, interestStore, imageStore)
+	serv := service.New(personStore, interestStore, imageStore, likeStore)
+
 	deliver := delivery.New(serv, auth)
 	err = delivery.StartServer(deliver)
 	if err != nil {
