@@ -864,3 +864,192 @@ time="2024-04-05T02:47:06+03:00" level=info msg="get upload image" requestID=3
 time="2024-04-05T02:47:06+03:00" level=info msg="db get request to person" requestID=3
 time="2024-04-05T02:47:06+03:00" level=info msg="db returning records" requestID=3
 time="2024-04-05T02:47:07+03:00" level=info msg="image added" requestID=3
+time="2024-04-06T16:33:28+03:00" level=fatal msg="dial tcp: lookup db on 172.27.224.1:53: no such host"
+time="2024-04-06T16:34:11+03:00" level=fatal msg="1 error(s) decoding:\n\n* cannot parse 'Database.Port' as int: strconv.ParseInt: parsing \"postgres\": invalid syntax"
+time="2024-04-06T16:34:23+03:00" level=fatal msg="1 error(s) decoding:\n\n* cannot parse 'Database.Port' as int: strconv.ParseInt: parsing \"postgres\": invalid syntax"
+time="2024-04-06T16:34:42+03:00" level=fatal msg="1 error(s) decoding:\n\n* cannot parse 'Database.Port' as int: strconv.ParseInt: parsing \"postgres\": invalid syntax"
+time="2024-04-06T16:35:16+03:00" level=fatal msg="1 error(s) decoding:\n\n* cannot parse 'Database.Port' as int: strconv.ParseInt: parsing \"postgresql\": invalid syntax"
+time="2024-04-06T16:36:01+03:00" level=fatal msg="1 error(s) decoding:\n\n* cannot parse 'Database.Port' as int: strconv.ParseInt: parsing \"postgresql\": invalid syntax"
+time="2024-04-06T16:36:32+03:00" level=fatal msg="1 error(s) decoding:\n\n* cannot parse 'Database.Port' as int: strconv.ParseInt: parsing \"postgres\": invalid syntax"
+time="2024-04-06T16:38:56+03:00" level=fatal msg="1 error(s) decoding:\n\n* cannot parse 'Database.Port' as int: strconv.ParseInt: parsing \"postgresql\": invalid syntax"
+time="2024-04-06T16:39:59+03:00" level=info msg="started server at 0.0.0.0:8080"
+time="2024-04-06T16:40:23+03:00" level=info msg="db get request to person" requestID=0
+time="2024-04-06T16:40:23+03:00" level=info msg="db returning records" requestID=0
+time="2024-04-06T16:40:23+03:00" level=info msg="get user image" requestID=1
+time="2024-04-06T16:40:23+03:00" level=info msg="db get request to person" requestID=1
+time="2024-04-06T16:40:23+03:00" level=info msg="db returning records" requestID=1
+time="2024-04-06T16:40:23+03:00" level=info msg="sent image" requestID=1
+time="2024-04-06T16:41:52+03:00" level=info msg="loaded session 520c8558-7390-44b9-af39-82c7a4f507e7" requestID=0
+time="2024-04-06T16:41:52+03:00" level=info msg="get user image" requestID=2
+time="2024-04-06T16:41:52+03:00" level=info msg="db get request to person" requestID=2
+time="2024-04-06T16:41:52+03:00" level=info msg="db returning records" requestID=2
+time="2024-04-06T16:41:52+03:00" level=info msg="sent image" requestID=2
+time="2024-04-06T17:29:13+03:00" level=info msg="loaded session 520c8558-7390-44b9-af39-82c7a4f507e7" requestID=0
+time="2024-04-06T17:29:13+03:00" level=info msg="get user image" requestID=3
+time="2024-04-06T17:29:13+03:00" level=info msg="db get request to person" requestID=3
+time="2024-04-06T17:29:13+03:00" level=info msg="db returning records" requestID=3
+time="2024-04-06T17:29:13+03:00" level=info msg="sent image" requestID=3
+time="2024-04-07T16:34:24+03:00" level=info msg="started server at 0.0.0.0:8080"
+time="2024-04-07T16:34:48+03:00" level=info msg="db get request to person" requestID=0
+time="2024-04-07T16:34:48+03:00" level=info msg="db returning records" requestID=0
+time="2024-04-07T16:34:48+03:00" level=info msg="get user image" requestID=1
+time="2024-04-07T16:34:48+03:00" level=info msg="db get request to person" requestID=1
+time="2024-04-07T16:34:48+03:00" level=info msg="db returning records" requestID=1
+time="2024-04-07T16:34:48+03:00" level=info msg="sent image" requestID=1
+time="2024-04-07T16:36:08+03:00" level=info msg="loaded session 520c8558-7390-44b9-af39-82c7a4f507e7" requestID=0
+time="2024-04-07T16:36:08+03:00" level=info msg="get user image" requestID=2
+time="2024-04-07T16:36:08+03:00" level=info msg="db get request to person" requestID=2
+time="2024-04-07T16:36:08+03:00" level=info msg="db returning records" requestID=2
+time="2024-04-07T16:36:08+03:00" level=info msg="sent image" requestID=2
+time="2024-04-07T16:36:55+03:00" level=info msg="loaded session 520c8558-7390-44b9-af39-82c7a4f507e7" requestID=0
+time="2024-04-07T16:36:55+03:00" level=info msg="get user image" requestID=3
+time="2024-04-07T16:36:55+03:00" level=info msg="db get request to person" requestID=3
+time="2024-04-07T16:36:55+03:00" level=info msg="db returning records" requestID=3
+time="2024-04-07T16:36:55+03:00" level=info msg="sent image" requestID=3
+time="2024-04-07T16:42:02+03:00" level=info msg="started server at 0.0.0.0:8080"
+time="2024-04-07T16:42:58+03:00" level=info msg="db get request to person" requestID=0
+time="2024-04-07T16:42:58+03:00" level=info msg="db returning records" requestID=0
+time="2024-04-07T16:42:58+03:00" level=info msg="get upload image" requestID=1
+time="2024-04-07T16:42:58+03:00" level=info msg="db get request to person" requestID=1
+time="2024-04-07T16:42:58+03:00" level=info msg="db returning records" requestID=1
+time="2024-04-07T16:42:58+03:00" level=info msg="image added" requestID=1
+time="2024-04-07T16:44:45+03:00" level=info msg="db get request to person" requestID=0
+time="2024-04-07T16:44:45+03:00" level=info msg="db returning records" requestID=0
+time="2024-04-07T16:44:45+03:00" level=info msg="get upload image" requestID=2
+time="2024-04-07T16:44:45+03:00" level=info msg="db get request to person" requestID=2
+time="2024-04-07T16:44:45+03:00" level=info msg="db returning records" requestID=2
+time="2024-04-07T16:44:45+03:00" level=warning msg="can't query: pq: duplicate key value violates unique constraint \"image_pkey\"" requestID=2
+time="2024-04-07T16:44:45+03:00" level=warning msg="Add img pq: duplicate key value violates unique constraint \"image_pkey\"" requestID=2
+time="2024-04-07T16:45:26+03:00" level=info msg="loaded session 520c8558-7390-44b9-af39-82c7a4f507e7" requestID=0
+time="2024-04-07T16:45:26+03:00" level=info msg="get upload image" requestID=3
+time="2024-04-07T16:45:26+03:00" level=info msg="db get request to person" requestID=3
+time="2024-04-07T16:45:26+03:00" level=info msg="db returning records" requestID=3
+time="2024-04-07T16:45:26+03:00" level=warning msg="can't query: pq: duplicate key value violates unique constraint \"image_pkey\"" requestID=3
+time="2024-04-07T16:45:26+03:00" level=warning msg="Add img pq: duplicate key value violates unique constraint \"image_pkey\"" requestID=3
+time="2024-04-07T16:45:40+03:00" level=info msg="loaded session 520c8558-7390-44b9-af39-82c7a4f507e7" requestID=0
+time="2024-04-07T16:45:40+03:00" level=info msg="get upload image" requestID=4
+time="2024-04-07T16:45:40+03:00" level=info msg="db get request to person" requestID=4
+time="2024-04-07T16:45:40+03:00" level=info msg="db returning records" requestID=4
+time="2024-04-07T16:45:40+03:00" level=warning msg="can't query: pq: duplicate key value violates unique constraint \"image_pkey\"" requestID=4
+time="2024-04-07T16:45:40+03:00" level=warning msg="Add img pq: duplicate key value violates unique constraint \"image_pkey\"" requestID=4
+time="2024-04-07T16:46:10+03:00" level=info msg="loaded session 520c8558-7390-44b9-af39-82c7a4f507e7" requestID=0
+time="2024-04-07T16:46:10+03:00" level=info msg="get user image" requestID=5
+time="2024-04-07T16:46:10+03:00" level=info msg="db get request to person" requestID=5
+time="2024-04-07T16:46:10+03:00" level=info msg="db returning records" requestID=5
+time="2024-04-07T16:46:10+03:00" level=info msg="sent image" requestID=5
+time="2024-04-07T16:47:03+03:00" level=info msg="loaded session 520c8558-7390-44b9-af39-82c7a4f507e7" requestID=0
+time="2024-04-07T16:47:03+03:00" level=info msg="get user image" requestID=6
+time="2024-04-07T16:47:03+03:00" level=info msg="db get request to person" requestID=6
+time="2024-04-07T16:47:03+03:00" level=info msg="db returning records" requestID=6
+time="2024-04-07T16:47:03+03:00" level=info msg="sent image" requestID=6
+time="2024-04-08T18:54:59+03:00" level=info msg="started server at 0.0.0.0:8080"
+time="2024-04-08T18:55:12+03:00" level=info msg="db get request to person" requestID=0
+time="2024-04-08T18:55:12+03:00" level=info msg="db returning records" requestID=0
+time="2024-04-08T18:55:12+03:00" level=info msg="get user image" requestID=1
+time="2024-04-08T18:55:12+03:00" level=info msg="db get request to person" requestID=1
+time="2024-04-08T18:55:12+03:00" level=info msg="db returning records" requestID=1
+time="2024-04-08T18:55:12+03:00" level=info msg="sent image" requestID=1
+time="2024-04-08T18:55:50+03:00" level=info msg="loaded session 520c8558-7390-44b9-af39-82c7a4f507e7" requestID=0
+time="2024-04-08T18:55:50+03:00" level=info msg="get upload image" requestID=2
+time="2024-04-08T18:55:50+03:00" level=info msg="db get request to person" requestID=2
+time="2024-04-08T18:55:50+03:00" level=info msg="db returning records" requestID=2
+time="2024-04-08T18:55:50+03:00" level=info msg="image added" requestID=2
+time="2024-04-08T18:56:51+03:00" level=info msg="loaded session 520c8558-7390-44b9-af39-82c7a4f507e7" requestID=0
+time="2024-04-08T18:56:51+03:00" level=info msg="get upload image" requestID=3
+time="2024-04-08T18:56:51+03:00" level=info msg="db get request to person" requestID=3
+time="2024-04-08T18:56:51+03:00" level=info msg="db returning records" requestID=3
+time="2024-04-08T18:56:51+03:00" level=warning msg="can't query: pq: duplicate key value violates unique constraint \"image_pkey\"" requestID=3
+time="2024-04-08T18:56:51+03:00" level=warning msg="Add img pq: duplicate key value violates unique constraint \"image_pkey\"" requestID=3
+time="2024-04-08T18:57:35+03:00" level=info msg="loaded session 520c8558-7390-44b9-af39-82c7a4f507e7" requestID=0
+time="2024-04-08T18:57:35+03:00" level=info msg="get upload image" requestID=4
+time="2024-04-08T18:57:35+03:00" level=info msg="db get request to person" requestID=4
+time="2024-04-08T18:57:35+03:00" level=info msg="db returning records" requestID=4
+time="2024-04-08T18:57:35+03:00" level=warning msg="can't query: pq: duplicate key value violates unique constraint \"image_pkey\"" requestID=4
+time="2024-04-08T18:57:35+03:00" level=warning msg="Add img pq: duplicate key value violates unique constraint \"image_pkey\"" requestID=4
+time="2024-04-08T18:58:22+03:00" level=info msg="loaded session 520c8558-7390-44b9-af39-82c7a4f507e7" requestID=0
+time="2024-04-08T18:58:22+03:00" level=info msg="get upload image" requestID=5
+time="2024-04-08T18:58:22+03:00" level=info msg="db get request to person" requestID=5
+time="2024-04-08T18:58:22+03:00" level=info msg="db returning records" requestID=5
+time="2024-04-08T18:58:22+03:00" level=info msg="image added" requestID=5
+time="2024-04-08T18:58:41+03:00" level=info msg="loaded session 520c8558-7390-44b9-af39-82c7a4f507e7" requestID=0
+time="2024-04-08T18:58:41+03:00" level=info msg="get upload image" requestID=6
+time="2024-04-08T18:58:41+03:00" level=info msg="db get request to person" requestID=6
+time="2024-04-08T18:58:41+03:00" level=info msg="db returning records" requestID=6
+time="2024-04-08T18:58:42+03:00" level=warning msg="can't query: pq: duplicate key value violates unique constraint \"image_pkey\"" requestID=6
+time="2024-04-08T18:58:42+03:00" level=warning msg="Add img pq: duplicate key value violates unique constraint \"image_pkey\"" requestID=6
+time="2024-04-08T18:59:07+03:00" level=info msg="loaded session 520c8558-7390-44b9-af39-82c7a4f507e7" requestID=0
+time="2024-04-08T18:59:07+03:00" level=info msg="get upload image" requestID=7
+time="2024-04-08T18:59:07+03:00" level=info msg="db get request to person" requestID=7
+time="2024-04-08T18:59:07+03:00" level=info msg="db returning records" requestID=7
+time="2024-04-08T18:59:07+03:00" level=warning msg="can't query: pq: duplicate key value violates unique constraint \"image_pkey\"" requestID=7
+time="2024-04-08T18:59:07+03:00" level=warning msg="Add img pq: duplicate key value violates unique constraint \"image_pkey\"" requestID=7
+time="2024-04-08T18:59:35+03:00" level=info msg="loaded session 520c8558-7390-44b9-af39-82c7a4f507e7" requestID=0
+time="2024-04-08T18:59:35+03:00" level=info msg="get upload image" requestID=8
+time="2024-04-08T18:59:35+03:00" level=info msg="db get request to person" requestID=8
+time="2024-04-08T18:59:35+03:00" level=info msg="db returning records" requestID=8
+time="2024-04-08T18:59:35+03:00" level=info msg="image added" requestID=8
+time="2024-04-08T19:00:34+03:00" level=info msg="started server at 0.0.0.0:8080"
+time="2024-04-08T19:00:34+03:00" level=fatal msg="server error: listen tcp 0.0.0.0:8080: bind: address already in use"
+time="2024-04-08T19:00:43+03:00" level=info msg="started server at 0.0.0.0:8080"
+time="2024-04-08T19:00:43+03:00" level=fatal msg="server error: listen tcp 0.0.0.0:8080: bind: address already in use"
+time="2024-04-08T19:00:43+03:00" level=warning msg="listen tcp :8085: bind: address already in use"
+time="2024-04-08T19:02:04+03:00" level=info msg="started server at 0.0.0.0:8080"
+time="2024-04-08T19:02:04+03:00" level=fatal msg="server error: listen tcp 0.0.0.0:8080: bind: address already in use"
+time="2024-04-08T19:02:04+03:00" level=warning msg="listen tcp :8085: bind: address already in use"
+time="2024-04-08T19:03:17+03:00" level=info msg="started server at 0.0.0.0:8080"
+time="2024-04-08T19:03:42+03:00" level=info msg="db get request to person" requestID=0
+time="2024-04-08T19:03:42+03:00" level=info msg="db returning records" requestID=0
+time="2024-04-08T19:03:42+03:00" level=info msg="get upload image" requestID=1
+time="2024-04-08T19:03:42+03:00" level=info msg="db get request to person" requestID=1
+time="2024-04-08T19:03:42+03:00" level=info msg="db returning records" requestID=1
+time="2024-04-08T19:03:42+03:00" level=info msg="image added" requestID=1
+time="2024-04-08T19:14:50+03:00" level=info msg="started server at 0.0.0.0:8080"
+time="2024-04-08T19:15:10+03:00" level=info msg="username (/me) request" requestID=1
+time="2024-04-08T19:15:10+03:00" level=info msg="db get request to person" requestID=0
+time="2024-04-08T19:15:10+03:00" level=info msg="db returning records" requestID=0
+time="2024-04-08T19:15:10+03:00" level=info msg="get user image" requestID=2
+time="2024-04-08T19:15:10+03:00" level=info msg="db get request to person" requestID=2
+time="2024-04-08T19:15:10+03:00" level=info msg="db returning records" requestID=2
+time="2024-04-08T19:15:10+03:00" level=info msg="sent image" requestID=2
+time="2024-04-08T19:15:21+03:00" level=info msg="username (/me) request" requestID=3
+time="2024-04-08T19:15:24+03:00" level=info msg="username (/me) request" requestID=4
+time="2024-04-08T19:15:24+03:00" level=info msg="loaded session 520c8558-7390-44b9-af39-82c7a4f507e7" requestID=0
+time="2024-04-08T19:15:24+03:00" level=info msg="get upload image" requestID=5
+time="2024-04-08T19:15:24+03:00" level=warning msg="request Content-Type isn't multipart/form-data" requestID=5
+time="2024-04-08T19:17:45+03:00" level=info msg="started server at 0.0.0.0:8080"
+time="2024-04-08T19:18:31+03:00" level=info msg="* los_ping created on 2024-03-30 19:50:58.734 +0000 UTC \n"
+time="2024-04-08T19:18:31+03:00" level=info msg="started server at 0.0.0.0:8080"
+time="2024-04-08T19:24:33+03:00" level=info msg="* los_ping created on 2024-03-30 19:50:58.734 +0000 UTC \n"
+time="2024-04-08T19:24:33+03:00" level=info msg="started server at 0.0.0.0:8080"
+time="2024-04-08T19:25:08+03:00" level=info msg="username (/me) request" requestID=1
+time="2024-04-08T19:25:08+03:00" level=info msg="db get request to person" requestID=0
+time="2024-04-08T19:25:08+03:00" level=info msg="db returning records" requestID=0
+time="2024-04-08T19:25:08+03:00" level=info msg="get upload image" requestID=2
+time="2024-04-08T19:25:08+03:00" level=info msg="db get request to person" requestID=2
+time="2024-04-08T19:25:08+03:00" level=info msg="db returning records" requestID=2
+time="2024-04-08T19:25:08+03:00" level=warning msg="can't query: pq: duplicate key value violates unique constraint \"image_pkey\"" requestID=2
+time="2024-04-08T19:25:08+03:00" level=warning msg="Add img pq: duplicate key value violates unique constraint \"image_pkey\"" requestID=2
+time="2024-04-08T19:26:12+03:00" level=info msg="* los_ping created on 2024-03-30 19:50:58.734 +0000 UTC \n"
+time="2024-04-08T19:26:12+03:00" level=info msg="started server at 0.0.0.0:8080"
+time="2024-04-08T19:26:26+03:00" level=info msg="username (/me) request" requestID=1
+time="2024-04-08T19:26:26+03:00" level=info msg="db get request to person" requestID=0
+time="2024-04-08T19:26:26+03:00" level=info msg="db returning records" requestID=0
+time="2024-04-08T19:26:26+03:00" level=info msg="get upload image" requestID=2
+time="2024-04-08T19:26:26+03:00" level=info msg="db get request to person" requestID=2
+time="2024-04-08T19:26:26+03:00" level=info msg="db returning records" requestID=2
+time="2024-04-08T19:26:26+03:00" level=info msg="image added" requestID=2
+time="2024-04-08T19:27:03+03:00" level=info msg="* los_ping created on 2024-03-30 19:50:58.734 +0000 UTC \n"
+time="2024-04-08T19:27:03+03:00" level=info msg="started server at 0.0.0.0:8080"
+time="2024-04-08T19:27:22+03:00" level=info msg="username (/me) request" requestID=1
+time="2024-04-08T19:27:22+03:00" level=info msg="db get request to person" requestID=0
+time="2024-04-08T19:27:22+03:00" level=info msg="db returning records" requestID=0
+time="2024-04-08T19:27:22+03:00" level=info msg="get upload image" requestID=2
+time="2024-04-08T19:27:22+03:00" level=info msg="db get request to person" requestID=2
+time="2024-04-08T19:27:22+03:00" level=info msg="db returning records" requestID=2
+time="2024-04-08T19:27:23+03:00" level=info msg="image added" requestID=2
+time="2024-04-08T19:27:36+03:00" level=info msg="username (/me) request" requestID=3
+time="2024-04-08T19:27:36+03:00" level=info msg="loaded session 520c8558-7390-44b9-af39-82c7a4f507e7" requestID=0
+time="2024-04-08T19:27:36+03:00" level=info msg="get upload image" requestID=4
+time="2024-04-08T19:27:36+03:00" level=info msg="db get request to person" requestID=4
+time="2024-04-08T19:27:36+03:00" level=info msg="db returning records" requestID=4
+time="2024-04-08T19:27:36+03:00" level=info msg="image added" requestID=4

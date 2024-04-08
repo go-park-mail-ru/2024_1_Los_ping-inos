@@ -3,7 +3,6 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"log"
 
 	//"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go/aws"
@@ -13,6 +12,7 @@ import (
 	"github.com/spf13/viper"
 	"main.go/config"
 	_ "main.go/db"
+
 	"main.go/internal/delivery"
 	_ "main.go/internal/docs"
 	. "main.go/internal/logs"
@@ -57,10 +57,10 @@ func main() {
 	svc := s3.New(sess, aws.NewConfig().WithEndpoint(vkCloudHotboxEndpoint).WithRegion(defaultRegion))
 
 	if res, err := svc.ListBuckets(nil); err != nil {
-		log.Fatalf("Unable to list buckets, %v", err)
+		Log.Fatalf("Unable to list buckets, %v", err)
 	} else {
 		for _, b := range res.Buckets {
-			log.Printf("* %s created on %s \n", aws.StringValue(b.Name), aws.TimeValue(b.CreationDate))
+			Log.Infof("* %s created on %s \n", aws.StringValue(b.Name), aws.TimeValue(b.CreationDate))
 		}
 	}
 

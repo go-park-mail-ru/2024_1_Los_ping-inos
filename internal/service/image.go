@@ -7,7 +7,6 @@ import (
 )
 
 func (service *Service) GetImage(userID int64, requestID int64) ([]models.Image, error) {
-	//print(sessionID, "SEESION IS")
 	images, err := service.imageStorage.Get(requestID, userID)
 	if err != nil {
 		return nil, err

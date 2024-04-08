@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"math/rand"
 	"net/http"
 	"os"
 	"time"
@@ -132,7 +133,9 @@ func (deliver *Deliver) AddImageHandler() func(w http.ResponseWriter, r *http.Re
 			return
 		}
 
-		filename := fmt.Sprint(userId) + "/" + handler.Filename
+		filename := fmt.Sprint(userId) + "/" + fmt.Sprint(rand.Int()) + handler.Filename
+
+		objectURL := "https://los_ping.hb.ru-msk.vkcs.cloud/" + filename
 
 		sess, err := session.NewSession(&awsUpload.Config{
 			Region: aws.String("ru-msk"),
@@ -154,9 +157,11 @@ func (deliver *Deliver) AddImageHandler() func(w http.ResponseWriter, r *http.Re
 			Bucket: aws.String(bucket),
 			Key:    aws.String(filename),
 			Body:   image,
+			ACL:    aws.String("public-read"),
 		}
 
 		_, err = svc.PutObject(params)
+
 		if err != nil {
 			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn(err.Error())
 			return
@@ -170,7 +175,7 @@ func (deliver *Deliver) AddImageHandler() func(w http.ResponseWriter, r *http.Re
 		}
 
 		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("image added")
-		requests.SendResponse(respWriter, request, http.StatusOK, nil)
+		requests.SendResponse(respWriter, request, http.StatusOK, objectURL)
 
 	}
 }
