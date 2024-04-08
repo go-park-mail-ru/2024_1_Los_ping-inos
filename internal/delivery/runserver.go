@@ -2,14 +2,15 @@ package delivery
 
 import (
 	"fmt"
+	"net/http"
+	"sync/atomic"
+	"time"
+
 	"github.com/emirpasic/gods/sets/hashset"
 	"github.com/go-chi/chi"
 	httpSwagger "github.com/swaggo/http-swagger/v2"
 	"main.go/config"
 	. "main.go/internal/logs"
-	"net/http"
-	"sync/atomic"
-	"time"
 )
 
 type Deliver struct {
@@ -75,6 +76,16 @@ func StartServer(deliver ...*Deliver) error {
 	mux.Handle(apiPath+"me", RequestIDMiddleware(
 		AllowedMethodMiddleware(
 			IsAuthenticatedMiddleware(http.HandlerFunc(deliver[0].GetUsername()), deliver[0]), hashset.New("GET")),
+		deliver[0], "username (/me)"))
+
+	mux.Handle(apiPath+"getImage", RequestIDMiddleware(
+		AllowedMethodMiddleware(
+			IsAuthenticatedMiddleware(http.HandlerFunc(deliver[0].GetImageHandler()), deliver[0]), hashset.New("GET")),
+		deliver[0], "username (/me)"))
+
+	mux.Handle(apiPath+"addImage", RequestIDMiddleware(
+		AllowedMethodMiddleware(
+			IsAuthenticatedMiddleware(http.HandlerFunc(deliver[0].AddImageHandler()), deliver[0]), hashset.New("POST")),
 		deliver[0], "username (/me)"))
 
 	mux.Handle(apiPath+"profile", RequestIDMiddleware(

@@ -2,6 +2,7 @@ package storage
 
 import (
 	"database/sql"
+
 	qb "github.com/Masterminds/squirrel"
 	"github.com/sirupsen/logrus"
 	. "main.go/config"

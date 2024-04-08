@@ -2,12 +2,12 @@ package delivery
 
 import (
 	"context"
+	"net/http"
 	"github.com/emirpasic/gods/sets/hashset"
 	"github.com/sirupsen/logrus"
 	. "main.go/config"
 	. "main.go/internal/logs"
 	requests "main.go/internal/pkg"
-	"net/http"
 )
 
 func IsAuthenticatedMiddleware(next http.Handler, deliver *Deliver) http.Handler {

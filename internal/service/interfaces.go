@@ -25,3 +25,8 @@ type LikeStorage interface {
 	Create(requestID int64, person1ID, person2ID types.UserID) error
 	GetMatch(requestID int64, person1ID types.UserID) ([]types.UserID, error)
 }
+
+type ImageStorage interface {
+	Get(requestID int64, userID int64) ([]models.Image, error)
+	Add(requestID int64, image models.Image) error
+}

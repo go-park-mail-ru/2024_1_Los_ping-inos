@@ -1,14 +1,17 @@
 package config
 
 import (
-	"github.com/spf13/viper"
 	"time"
+
+	"github.com/spf13/viper"
 )
 
 const PersonTableName = "person"
 const InterestTableName = "interest"
 const PersonInterestTableName = "person_interest"
 const LikeTableName = "\"like\""
+
+const RequestUserID = "userID"
 
 const RequestUserID = "userID"
 
@@ -34,6 +37,12 @@ type DatabaseConfig struct {
 	Database string `json:"database"`
 	User     string `json:"username"`
 	Password string `json:"password"`
+}
+
+type AwsConfig struct {
+	Id     string `json:"key_id"`
+	Access string `json:"key_access"`
+	Region string `json:"region"`
 }
 
 type FilesPathsConfig struct {
@@ -74,6 +83,18 @@ func LoadConfig(path string) (*Config, error) {
 		return nil, err
 	}
 	err = viper.BindEnv("database.dbname", "DB_NAME")
+	if err != nil {
+		return nil, err
+	}
+	err = viper.BindEnv("aws.key_id", "AWS_ACCESS_KEY_ID")
+	if err != nil {
+		return nil, err
+	}
+	err = viper.BindEnv("aws.key_access", "AWS_SECRET_ACCESS_KEY")
+	if err != nil {
+		return nil, err
+	}
+	err = viper.BindEnv("aws.region", "AWS_DEFAULT_REGION")
 	if err != nil {
 		return nil, err
 	}

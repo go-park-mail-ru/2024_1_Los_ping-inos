@@ -1,8 +1,9 @@
 package models
 
 import (
-	"main.go/internal/types"
 	"time"
+
+	"main.go/internal/types"
 )
 
 type (
@@ -64,4 +65,9 @@ type (
 		Person    *Person     `json:"person"`
 		Interests []*Interest `json:"interests"`
 	}
+  
+  Image struct {
+	  UserId int64  `json:"person_id"`
+	  Url    string `json:"image_url"`
+  }
 )

@@ -3,10 +3,16 @@ package main
 import (
 	"database/sql"
 	"fmt"
+
+	//"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/s3"
 	_ "github.com/lib/pq"
 	"github.com/spf13/viper"
 	"main.go/config"
 	_ "main.go/db"
+
 	"main.go/internal/delivery"
 	_ "main.go/internal/docs"
 	. "main.go/internal/logs"
@@ -14,7 +20,12 @@ import (
 	"main.go/internal/storage"
 )
 
-const configPath = "config/config.yaml"
+const configPath = "../config/config.yaml"
+
+const (
+	vkCloudHotboxEndpoint = "https://hb.vkcs.cloud"
+	defaultRegion         = "ru-msk"
+)
 
 // @title SportBro API
 // @version 0.1
@@ -42,12 +53,25 @@ func main() {
 	}
 	defer db.Close()
 
+	sess, _ := session.NewSession()
+	svc := s3.New(sess, aws.NewConfig().WithEndpoint(vkCloudHotboxEndpoint).WithRegion(defaultRegion))
+
+	if res, err := svc.ListBuckets(nil); err != nil {
+		Log.Fatalf("Unable to list buckets, %v", err)
+	} else {
+		for _, b := range res.Buckets {
+			Log.Infof("* %s created on %s \n", aws.StringValue(b.Name), aws.TimeValue(b.CreationDate))
+		}
+	}
+
 	personStore := storage.NewPersonStorage(db)
 	interestStore := storage.NewInterestStorage(db)
-	likeStore := storage.NewLikeStorage(db)
+  imageStore := storage.NewImageStorage(db)
+  likeStore := storage.NewLikeStorage(db)
 
 	auth := service.NewAuthHandler(personStore)
-	serv := service.New(personStore, interestStore, likeStore)
+	serv := service.New(personStore, interestStore, imageStore, likeStore)
+
 	deliver := delivery.New(serv, auth)
 	err = delivery.StartServer(deliver)
 	if err != nil {
