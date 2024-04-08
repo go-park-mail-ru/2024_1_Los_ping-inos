@@ -7,7 +7,7 @@ RUN go mod download
 
 COPY ./ ./
 
-WORKDIR /app/internal/app
+WORKDIR /app/internal
 
 RUN CGO_ENABLED=0 GOOS=linux go build -o /docker-gs-ping
 

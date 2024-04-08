@@ -20,7 +20,7 @@ import (
 	"main.go/internal/storage"
 )
 
-const configPath = "../config/config.yaml"
+const configPath = "config/config.yaml"
 
 const (
 	vkCloudHotboxEndpoint = "https://hb.vkcs.cloud"
@@ -66,8 +66,8 @@ func main() {
 
 	personStore := storage.NewPersonStorage(db)
 	interestStore := storage.NewInterestStorage(db)
-  imageStore := storage.NewImageStorage(db)
-  likeStore := storage.NewLikeStorage(db)
+	imageStore := storage.NewImageStorage(db)
+	likeStore := storage.NewLikeStorage(db)
 
 	auth := service.NewAuthHandler(personStore)
 	serv := service.New(personStore, interestStore, imageStore, likeStore)
