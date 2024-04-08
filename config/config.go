@@ -9,9 +9,12 @@ import (
 const PersonTableName = "person"
 const InterestTableName = "interest"
 
+const RequestUserID = "userID"
+
 var Cfg Config
 
 type Config struct {
+	ApiPath    string
 	Server     ServerConfig     `json:"server"`
 	Database   DatabaseConfig   `json:"database"`
 	FilesPaths FilesPathsConfig `json:"filesPaths"`
