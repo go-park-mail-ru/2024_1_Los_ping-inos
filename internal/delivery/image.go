@@ -2,8 +2,10 @@ package delivery
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"log"
 	"math/rand"
 	"net/http"
@@ -60,7 +62,8 @@ func (deliver *Deliver) GetImageHandler() func(w http.ResponseWriter, r *http.Re
 		lifeTimeSeconds := int64(60)
 
 		var req *v4.PresignedHTTPRequest
-		urls := make([]string, 0)
+		//urls := make([]string, 0)
+		url := make(map[string][]map[string]string)
 
 		for _, image := range images {
 			objectKey := image.Url
@@ -70,14 +73,19 @@ func (deliver *Deliver) GetImageHandler() func(w http.ResponseWriter, r *http.Re
 			}, func(opts *s3.PresignOptions) {
 				opts.Expires = time.Duration(lifeTimeSeconds * int64(time.Second))
 			})
-			urls = append(urls, req.URL)
+			newImage := map[string]string{
+				"cell": image.CellNumber,
+				"url":  req.URL,
+			}
+			//urls = append(urls, req.URL)
+			url["photo"] = append(url["photo"], newImage)
 		}
 
 		if err != nil {
 			log.Printf("Couldn't get a presigned request to get %v. Error: %v\n", bucketName, err)
 		}
 
-		requests.SendResponse(respWriter, request, http.StatusOK, urls)
+		requests.SendResponse(respWriter, request, http.StatusOK, url)
 		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("sent image")
 	}
 }
@@ -85,6 +93,7 @@ func (deliver *Deliver) GetImageHandler() func(w http.ResponseWriter, r *http.Re
 func (deliver *Deliver) AddImageHandler() func(w http.ResponseWriter, r *http.Request) {
 	return func(respWriter http.ResponseWriter, request *http.Request) {
 		requestID := request.Context().Value(RequestID).(int64)
+		//var r requests.ImageAddRequest
 
 		err := request.ParseMultipartForm(10 << 20)
 		if err != nil {
@@ -92,6 +101,8 @@ func (deliver *Deliver) AddImageHandler() func(w http.ResponseWriter, r *http.Re
 			requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
 			return
 		}
+
+		cell := request.FormValue("cell")
 
 		image, handler, err := request.FormFile("image")
 		if err != nil && errors.Is(err, http.ErrMissingFile) {
@@ -124,8 +135,7 @@ func (deliver *Deliver) AddImageHandler() func(w http.ResponseWriter, r *http.Re
 			return
 		}
 
-		filename := fmt.Sprint(userId) + "/" + fmt.Sprint(rand.Int()) + handler.Filename
-
+		filename := fmt.Sprint(userId) + "/" + fmt.Sprint(cell) + "/" + fmt.Sprint(rand.Int()) + handler.Filename
 		objectURL := "https://los_ping.hb.ru-msk.vkcs.cloud/" + filename
 
 		sess, err := session.NewSession(&awsUpload.Config{
@@ -137,8 +147,16 @@ func (deliver *Deliver) AddImageHandler() func(w http.ResponseWriter, r *http.Re
 		}
 
 		userImage := models.Image{
-			UserId: userId,
-			Url:    filename,
+			UserId:     userId,
+			Url:        filename,
+			CellNumber: cell,
+		}
+
+		err = deliver.serv.AddImage(userImage, requestID)
+		if err != nil {
+			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn(err.Error())
+			requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
+			return
 		}
 
 		svc := serviceUpload.New(sess, awsUpload.NewConfig().WithEndpoint(vkCloudHotboxEndpoint).WithRegion(defaultRegion))
@@ -152,21 +170,83 @@ func (deliver *Deliver) AddImageHandler() func(w http.ResponseWriter, r *http.Re
 		}
 
 		_, err = svc.PutObject(params)
-
 		if err != nil {
 			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn(err.Error())
-			return
-		}
-
-		err = deliver.serv.AddImage(userImage, requestID)
-		if err != nil {
-			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn(err.Error())
-			requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
 			return
 		}
 
 		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("image added")
 		requests.SendResponse(respWriter, request, http.StatusOK, objectURL)
 
+	}
+}
+
+func (deliver *Deliver) DeleteImageHandler() func(w http.ResponseWriter, r *http.Request) {
+	return func(respWriter http.ResponseWriter, request *http.Request) {
+		requestID := deliver.nextRequest()
+		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("delete image")
+		userId := int64(request.Context().Value(RequestUserID).(types.UserID))
+		var r requests.ImageRequest
+
+		body, err := io.ReadAll(request.Body)
+		if err != nil {
+			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("bad body: ", err.Error())
+			requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
+			return
+		}
+
+		err = json.Unmarshal(body, &r)
+		if err != nil {
+			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("can't unmarshal body: ", err.Error())
+			requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
+			return
+		}
+
+		userImage := models.Image{
+			UserId:     userId,
+			CellNumber: r.CellNumber,
+		}
+
+		err = deliver.serv.DeleteImage(userImage, requestID)
+		if err != nil {
+			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn(err.Error())
+			requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
+			return
+		}
+
+		sess, err := session.NewSession(&awsUpload.Config{
+			Region: aws.String("ru-msk"),
+		})
+		if err != nil {
+			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn(err.Error())
+			return
+		}
+
+		svc := serviceUpload.New(sess, awsUpload.NewConfig().WithEndpoint(vkCloudHotboxEndpoint).WithRegion(defaultRegion))
+		bucket := "los_ping"
+		key := fmt.Sprint(userId) + "/" + r.CellNumber + "/"
+
+		input := &serviceUpload.ListObjectsV2Input{
+			Bucket: aws.String(bucket),
+			Prefix: aws.String(key),
+		}
+		result, err := svc.ListObjectsV2(input)
+		if err != nil {
+			log.Fatalf("Unable to list objects in directory %q, %v\n", key, err)
+		}
+
+		for _, obj := range result.Contents {
+			if _, err := svc.DeleteObject(&serviceUpload.DeleteObjectInput{
+				Bucket: aws.String(bucket),
+				Key:    obj.Key,
+			}); err != nil {
+				log.Fatalf("Unable to delete object %q from bucket %q, %v\n", key, bucket, err)
+			} else {
+				log.Printf("Object %q deleted from bucket %q\n", key, bucket)
+			}
+		}
+
+		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("image added")
+		requests.SendResponse(respWriter, request, http.StatusOK, nil)
 	}
 }

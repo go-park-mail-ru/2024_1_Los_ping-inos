@@ -1065,3 +1065,303 @@ time="2024-04-09T15:49:04+03:00" level=info msg="get user image" requestID=3
 time="2024-04-09T15:49:04+03:00" level=info msg="db get request to person" requestID=3
 time="2024-04-09T15:49:04+03:00" level=info msg="db returning records" requestID=3
 time="2024-04-09T15:49:04+03:00" level=info msg="sent image" requestID=3
+time="2024-04-09T21:44:41+03:00" level=fatal msg="open config/config.yaml: no such file or directory"
+time="2024-04-09T21:45:05+03:00" level=info msg="started server at 0.0.0.0:8080"
+time="2024-04-09T22:15:13+03:00" level=info msg="started server at 0.0.0.0:8080"
+time="2024-04-09T22:15:50+03:00" level=info msg="started server at 0.0.0.0:8080"
+time="2024-04-09T22:17:37+03:00" level=info msg="username (/me) request" requestID=1
+time="2024-04-09T22:17:37+03:00" level=info msg="methods checked" requestID=1
+time="2024-04-09T22:17:37+03:00" level=info msg="db get request to person" requestID=1
+time="2024-04-09T22:17:37+03:00" level=info msg="db returning records" requestID=1
+time="2024-04-09T22:17:37+03:00" level=info msg=authorized requestID=1
+time="2024-04-09T22:17:37+03:00" level=warning msg="can't unmarshal body: invalid character '-' in numeric literal" requestID=1
+time="2024-04-09T22:18:38+03:00" level=info msg="started server at 0.0.0.0:8080"
+time="2024-04-09T22:18:41+03:00" level=info msg="username (/me) request" requestID=1
+time="2024-04-09T22:18:41+03:00" level=info msg="methods checked" requestID=1
+time="2024-04-09T22:18:41+03:00" level=info msg="db get request to person" requestID=1
+time="2024-04-09T22:18:41+03:00" level=info msg="db returning records" requestID=1
+time="2024-04-09T22:18:41+03:00" level=info msg=authorized requestID=1
+time="2024-04-09T22:18:41+03:00" level=warning msg="can't unmarshal body: invalid character '-' in numeric literal" requestID=1
+time="2024-04-09T22:18:56+03:00" level=info msg="username (/me) request" requestID=2
+time="2024-04-09T22:18:56+03:00" level=info msg="methods checked" requestID=2
+time="2024-04-09T22:18:56+03:00" level=info msg="loaded session 520c8558-7390-44b9-af39-82c7a4f507e7" requestID=2
+time="2024-04-09T22:18:56+03:00" level=info msg=authorized requestID=2
+time="2024-04-09T22:18:56+03:00" level=warning msg="can't unmarshal body: invalid character '-' in numeric literal" requestID=2
+time="2024-04-09T22:18:57+03:00" level=info msg="username (/me) request" requestID=3
+time="2024-04-09T22:18:57+03:00" level=info msg="methods checked" requestID=3
+time="2024-04-09T22:18:57+03:00" level=info msg="loaded session 520c8558-7390-44b9-af39-82c7a4f507e7" requestID=3
+time="2024-04-09T22:18:57+03:00" level=info msg=authorized requestID=3
+time="2024-04-09T22:18:57+03:00" level=warning msg="can't unmarshal body: invalid character '-' in numeric literal" requestID=3
+time="2024-04-09T22:19:01+03:00" level=info msg="username (/me) request" requestID=4
+time="2024-04-09T22:19:01+03:00" level=info msg="methods checked" requestID=4
+time="2024-04-09T22:19:01+03:00" level=info msg="loaded session 520c8558-7390-44b9-af39-82c7a4f507e7" requestID=4
+time="2024-04-09T22:19:01+03:00" level=info msg=authorized requestID=4
+time="2024-04-09T22:19:01+03:00" level=warning msg="can't unmarshal body: invalid character '-' in numeric literal" requestID=4
+time="2024-04-09T22:20:45+03:00" level=info msg="started server at 0.0.0.0:8080"
+time="2024-04-09T22:20:52+03:00" level=info msg="username (/me) request" requestID=1
+time="2024-04-09T22:20:52+03:00" level=info msg="methods checked" requestID=1
+time="2024-04-09T22:20:52+03:00" level=info msg="db get request to person" requestID=1
+time="2024-04-09T22:20:52+03:00" level=info msg="db returning records" requestID=1
+time="2024-04-09T22:20:52+03:00" level=info msg=authorized requestID=1
+time="2024-04-09T22:20:52+03:00" level=warning msg="can't unmarshal body: invalid character '-' in numeric literal" requestID=1
+time="2024-04-09T22:21:58+03:00" level=info msg="username (/me) request" requestID=2
+time="2024-04-09T22:21:58+03:00" level=info msg="methods checked" requestID=2
+time="2024-04-09T22:21:58+03:00" level=info msg="loaded session 520c8558-7390-44b9-af39-82c7a4f507e7" requestID=2
+time="2024-04-09T22:21:58+03:00" level=info msg=authorized requestID=2
+time="2024-04-09T22:21:58+03:00" level=warning msg="can't unmarshal body: json: cannot unmarshal string into Go struct field ImageAddRequest.cell of type int8" requestID=2
+time="2024-04-09T22:22:09+03:00" level=info msg="username (/me) request" requestID=3
+time="2024-04-09T22:22:09+03:00" level=info msg="methods checked" requestID=3
+time="2024-04-09T22:22:09+03:00" level=info msg="loaded session 520c8558-7390-44b9-af39-82c7a4f507e7" requestID=3
+time="2024-04-09T22:22:09+03:00" level=info msg=authorized requestID=3
+time="2024-04-09T22:22:09+03:00" level=warning msg="request Content-Type isn't multipart/form-data" requestID=3
+time="2024-04-09T22:22:22+03:00" level=info msg="username (/me) request" requestID=4
+time="2024-04-09T22:22:22+03:00" level=info msg="methods checked" requestID=4
+time="2024-04-09T22:22:22+03:00" level=info msg="loaded session 520c8558-7390-44b9-af39-82c7a4f507e7" requestID=4
+time="2024-04-09T22:22:22+03:00" level=info msg=authorized requestID=4
+time="2024-04-09T22:22:22+03:00" level=warning msg="can't unmarshal body: invalid character '-' in numeric literal" requestID=4
+time="2024-04-09T22:24:36+03:00" level=info msg="username (/me) request" requestID=5
+time="2024-04-09T22:24:36+03:00" level=info msg="method not allowed" requestID=5
+time="2024-04-09T22:24:40+03:00" level=info msg="username (/me) request" requestID=6
+time="2024-04-09T22:24:40+03:00" level=info msg="methods checked" requestID=6
+time="2024-04-09T22:24:40+03:00" level=info msg="loaded session 520c8558-7390-44b9-af39-82c7a4f507e7" requestID=6
+time="2024-04-09T22:24:40+03:00" level=info msg=authorized requestID=6
+time="2024-04-09T22:24:40+03:00" level=warning msg="can't unmarshal body: invalid character '-' in numeric literal" requestID=6
+time="2024-04-09T22:37:14+03:00" level=info msg="started server at 0.0.0.0:8080"
+time="2024-04-09T22:37:17+03:00" level=info msg="username (/me) request" requestID=1
+time="2024-04-09T22:37:17+03:00" level=info msg="methods checked" requestID=1
+time="2024-04-09T22:37:17+03:00" level=info msg="db get request to person" requestID=1
+time="2024-04-09T22:37:17+03:00" level=info msg="db returning records" requestID=1
+time="2024-04-09T22:37:17+03:00" level=info msg=authorized requestID=1
+time="2024-04-09T22:37:18+03:00" level=info msg="image added" requestID=1
+time="2024-04-09T22:38:10+03:00" level=info msg="username (/me) request" requestID=2
+time="2024-04-09T22:38:10+03:00" level=info msg="methods checked" requestID=2
+time="2024-04-09T22:38:10+03:00" level=info msg="loaded session 520c8558-7390-44b9-af39-82c7a4f507e7" requestID=2
+time="2024-04-09T22:38:10+03:00" level=info msg=authorized requestID=2
+time="2024-04-09T22:38:10+03:00" level=warning msg="can't query: pq: duplicate key value violates unique constraint \"person_image_pkey\"" requestID=2
+time="2024-04-09T22:38:10+03:00" level=warning msg="Add img pq: duplicate key value violates unique constraint \"person_image_pkey\"" requestID=2
+time="2024-04-09T22:41:12+03:00" level=info msg="started server at 0.0.0.0:8080"
+time="2024-04-09T22:41:15+03:00" level=info msg="username (/me) request" requestID=1
+time="2024-04-09T22:41:15+03:00" level=info msg="methods checked" requestID=1
+time="2024-04-09T22:41:15+03:00" level=info msg="db get request to person" requestID=1
+time="2024-04-09T22:41:15+03:00" level=info msg="db returning records" requestID=1
+time="2024-04-09T22:41:15+03:00" level=info msg=authorized requestID=1
+time="2024-04-09T22:41:15+03:00" level=warning msg="can't query: pq: duplicate key value violates unique constraint \"person_image_pkey\"" requestID=1
+time="2024-04-09T22:41:15+03:00" level=warning msg="Add img pq: duplicate key value violates unique constraint \"person_image_pkey\"" requestID=1
+time="2024-04-09T22:41:30+03:00" level=info msg="username (/me) request" requestID=2
+time="2024-04-09T22:41:30+03:00" level=info msg="methods checked" requestID=2
+time="2024-04-09T22:41:30+03:00" level=info msg="loaded session 520c8558-7390-44b9-af39-82c7a4f507e7" requestID=2
+time="2024-04-09T22:41:30+03:00" level=info msg=authorized requestID=2
+time="2024-04-09T22:41:30+03:00" level=warning msg="can't query: pq: duplicate key value violates unique constraint \"person_image_pkey\"" requestID=2
+time="2024-04-09T22:41:30+03:00" level=warning msg="Add img pq: duplicate key value violates unique constraint \"person_image_pkey\"" requestID=2
+time="2024-04-09T22:43:10+03:00" level=info msg="started server at 0.0.0.0:8080"
+time="2024-04-09T22:43:15+03:00" level=info msg="username (/me) request" requestID=1
+time="2024-04-09T22:43:15+03:00" level=info msg="methods checked" requestID=1
+time="2024-04-09T22:43:15+03:00" level=info msg="db get request to person" requestID=1
+time="2024-04-09T22:43:15+03:00" level=info msg="db returning records" requestID=1
+time="2024-04-09T22:43:15+03:00" level=info msg=authorized requestID=1
+time="2024-04-09T22:43:15+03:00" level=info msg="image added" requestID=1
+time="2024-04-09T22:43:16+03:00" level=info msg="username (/me) request" requestID=2
+time="2024-04-09T22:43:16+03:00" level=info msg="methods checked" requestID=2
+time="2024-04-09T22:43:16+03:00" level=info msg="loaded session 520c8558-7390-44b9-af39-82c7a4f507e7" requestID=2
+time="2024-04-09T22:43:16+03:00" level=info msg=authorized requestID=2
+time="2024-04-09T22:43:16+03:00" level=warning msg="can't query: pq: duplicate key value violates unique constraint \"person_image_pkey\"" requestID=2
+time="2024-04-09T22:43:16+03:00" level=warning msg="Add img pq: duplicate key value violates unique constraint \"person_image_pkey\"" requestID=2
+time="2024-04-09T22:43:21+03:00" level=info msg="username (/me) request" requestID=3
+time="2024-04-09T22:43:21+03:00" level=info msg="methods checked" requestID=3
+time="2024-04-09T22:43:21+03:00" level=info msg="loaded session 520c8558-7390-44b9-af39-82c7a4f507e7" requestID=3
+time="2024-04-09T22:43:21+03:00" level=info msg=authorized requestID=3
+time="2024-04-09T22:43:21+03:00" level=warning msg="can't query: pq: duplicate key value violates unique constraint \"person_image_pkey\"" requestID=3
+time="2024-04-09T22:43:21+03:00" level=warning msg="Add img pq: duplicate key value violates unique constraint \"person_image_pkey\"" requestID=3
+time="2024-04-09T22:43:23+03:00" level=info msg="username (/me) request" requestID=4
+time="2024-04-09T22:43:23+03:00" level=info msg="methods checked" requestID=4
+time="2024-04-09T22:43:23+03:00" level=info msg="loaded session 520c8558-7390-44b9-af39-82c7a4f507e7" requestID=4
+time="2024-04-09T22:43:23+03:00" level=info msg=authorized requestID=4
+time="2024-04-09T22:43:23+03:00" level=warning msg="can't query: pq: duplicate key value violates unique constraint \"person_image_pkey\"" requestID=4
+time="2024-04-09T22:43:23+03:00" level=warning msg="Add img pq: duplicate key value violates unique constraint \"person_image_pkey\"" requestID=4
+time="2024-04-09T22:44:45+03:00" level=info msg="username (/me) request" requestID=5
+time="2024-04-09T22:44:45+03:00" level=info msg="methods checked" requestID=5
+time="2024-04-09T22:44:45+03:00" level=info msg="loaded session 520c8558-7390-44b9-af39-82c7a4f507e7" requestID=5
+time="2024-04-09T22:44:45+03:00" level=info msg=authorized requestID=5
+time="2024-04-09T22:44:45+03:00" level=info msg="Get request to person_image" requestID=5
+time="2024-04-09T22:44:45+03:00" level=warning msg="sql: expected 3 destination arguments in Scan, not 2" requestID=5
+time="2024-04-09T22:44:59+03:00" level=info msg="username (/me) request" requestID=6
+time="2024-04-09T22:44:59+03:00" level=info msg="methods checked" requestID=6
+time="2024-04-09T22:44:59+03:00" level=info msg="loaded session 520c8558-7390-44b9-af39-82c7a4f507e7" requestID=6
+time="2024-04-09T22:44:59+03:00" level=info msg=authorized requestID=6
+time="2024-04-09T22:44:59+03:00" level=info msg="Get request to person_image" requestID=6
+time="2024-04-09T22:44:59+03:00" level=warning msg="sql: expected 3 destination arguments in Scan, not 2" requestID=6
+time="2024-04-09T22:46:11+03:00" level=info msg="started server at 0.0.0.0:8080"
+time="2024-04-09T22:46:23+03:00" level=info msg="username (/me) request" requestID=1
+time="2024-04-09T22:46:23+03:00" level=info msg="methods checked" requestID=1
+time="2024-04-09T22:46:23+03:00" level=info msg="db get request to person" requestID=1
+time="2024-04-09T22:46:23+03:00" level=info msg="db returning records" requestID=1
+time="2024-04-09T22:46:23+03:00" level=info msg=authorized requestID=1
+time="2024-04-09T22:46:23+03:00" level=info msg="Get request to person_image" requestID=1
+time="2024-04-09T22:46:23+03:00" level=info msg="Return 1 images" requestID=1
+time="2024-04-09T22:46:23+03:00" level=info msg="sent image" requestID=1
+time="2024-04-09T22:47:03+03:00" level=info msg="username (/me) request" requestID=2
+time="2024-04-09T22:47:03+03:00" level=info msg="methods checked" requestID=2
+time="2024-04-09T22:47:03+03:00" level=info msg="loaded session 520c8558-7390-44b9-af39-82c7a4f507e7" requestID=2
+time="2024-04-09T22:47:03+03:00" level=info msg=authorized requestID=2
+time="2024-04-09T22:47:04+03:00" level=info msg="image added" requestID=2
+time="2024-04-09T22:47:06+03:00" level=info msg="username (/me) request" requestID=3
+time="2024-04-09T22:47:06+03:00" level=info msg="methods checked" requestID=3
+time="2024-04-09T22:47:06+03:00" level=info msg="loaded session 520c8558-7390-44b9-af39-82c7a4f507e7" requestID=3
+time="2024-04-09T22:47:06+03:00" level=info msg=authorized requestID=3
+time="2024-04-09T22:47:06+03:00" level=info msg="image added" requestID=3
+time="2024-04-09T22:47:08+03:00" level=info msg="username (/me) request" requestID=4
+time="2024-04-09T22:47:08+03:00" level=info msg="methods checked" requestID=4
+time="2024-04-09T22:47:08+03:00" level=info msg="loaded session 520c8558-7390-44b9-af39-82c7a4f507e7" requestID=4
+time="2024-04-09T22:47:08+03:00" level=info msg=authorized requestID=4
+time="2024-04-09T22:47:08+03:00" level=info msg="Get request to person_image" requestID=4
+time="2024-04-09T22:47:08+03:00" level=info msg="Return 3 images" requestID=4
+time="2024-04-09T22:47:08+03:00" level=info msg="sent image" requestID=4
+time="2024-04-09T22:55:47+03:00" level=info msg="started server at 0.0.0.0:8080"
+time="2024-04-09T22:55:54+03:00" level=info msg="username (/me) request" requestID=1
+time="2024-04-09T22:55:54+03:00" level=info msg="methods checked" requestID=1
+time="2024-04-09T22:55:54+03:00" level=info msg="db get request to person" requestID=1
+time="2024-04-09T22:55:54+03:00" level=info msg="db returning records" requestID=1
+time="2024-04-09T22:55:54+03:00" level=info msg=authorized requestID=1
+time="2024-04-09T22:55:54+03:00" level=info msg="Get request to person_image" requestID=1
+time="2024-04-09T22:55:54+03:00" level=info msg="Return 3 images" requestID=1
+time="2024-04-09T22:58:00+03:00" level=info msg="started server at 0.0.0.0:8080"
+time="2024-04-09T22:58:04+03:00" level=info msg="username (/me) request" requestID=1
+time="2024-04-09T22:58:04+03:00" level=info msg="methods checked" requestID=1
+time="2024-04-09T22:58:04+03:00" level=info msg="db get request to person" requestID=1
+time="2024-04-09T22:58:04+03:00" level=info msg="db returning records" requestID=1
+time="2024-04-09T22:58:04+03:00" level=info msg=authorized requestID=1
+time="2024-04-09T22:58:04+03:00" level=info msg="Get request to person_image" requestID=1
+time="2024-04-09T22:58:04+03:00" level=info msg="Return 3 images" requestID=1
+time="2024-04-09T22:58:04+03:00" level=info msg="sent image" requestID=1
+time="2024-04-09T23:42:00+03:00" level=info msg="started server at 0.0.0.0:8080"
+time="2024-04-09T23:42:06+03:00" level=info msg="username (/me) request" requestID=1
+time="2024-04-09T23:42:06+03:00" level=info msg="methods checked" requestID=1
+time="2024-04-09T23:42:06+03:00" level=info msg="db get request to person" requestID=1
+time="2024-04-09T23:42:06+03:00" level=info msg="db returning records" requestID=1
+time="2024-04-09T23:42:06+03:00" level=info msg=authorized requestID=1
+time="2024-04-09T23:42:06+03:00" level=info msg="Get request to person_image" requestID=1
+time="2024-04-09T23:42:06+03:00" level=info msg="Return 3 images" requestID=1
+time="2024-04-09T23:42:06+03:00" level=info msg="sent image" requestID=1
+time="2024-04-09T23:54:54+03:00" level=info msg="started server at 0.0.0.0:8080"
+time="2024-04-09T23:55:26+03:00" level=info msg="delete image request" requestID=1
+time="2024-04-09T23:55:26+03:00" level=info msg="methods checked" requestID=1
+time="2024-04-09T23:55:26+03:00" level=info msg="db get request to person" requestID=1
+time="2024-04-09T23:55:26+03:00" level=info msg="db returning records" requestID=1
+time="2024-04-09T23:55:26+03:00" level=info msg=authorized requestID=1
+time="2024-04-09T23:55:26+03:00" level=warning msg="request Content-Type isn't multipart/form-data" requestID=1
+time="2024-04-09T23:57:03+03:00" level=info msg="delete image request" requestID=2
+time="2024-04-09T23:57:03+03:00" level=info msg="methods checked" requestID=2
+time="2024-04-09T23:57:03+03:00" level=info msg="loaded session 520c8558-7390-44b9-af39-82c7a4f507e7" requestID=2
+time="2024-04-09T23:57:03+03:00" level=info msg=authorized requestID=2
+time="2024-04-09T23:57:03+03:00" level=warning msg="request Content-Type isn't multipart/form-data" requestID=2
+time="2024-04-09T23:58:00+03:00" level=info msg="started server at 0.0.0.0:8080"
+time="2024-04-09T23:58:03+03:00" level=info msg="delete image request" requestID=1
+time="2024-04-09T23:58:03+03:00" level=info msg="methods checked" requestID=1
+time="2024-04-09T23:58:03+03:00" level=info msg="db get request to person" requestID=1
+time="2024-04-09T23:58:03+03:00" level=info msg="db returning records" requestID=1
+time="2024-04-09T23:58:03+03:00" level=info msg=authorized requestID=1
+time="2024-04-09T23:58:03+03:00" level=info msg="delete image" requestID=2
+time="2024-04-09T23:58:46+03:00" level=info msg="started server at 0.0.0.0:8080"
+time="2024-04-09T23:58:48+03:00" level=info msg="delete image request" requestID=1
+time="2024-04-09T23:58:48+03:00" level=info msg="methods checked" requestID=1
+time="2024-04-09T23:58:48+03:00" level=info msg="db get request to person" requestID=1
+time="2024-04-09T23:58:48+03:00" level=info msg="db returning records" requestID=1
+time="2024-04-09T23:58:48+03:00" level=info msg=authorized requestID=1
+time="2024-04-09T23:58:48+03:00" level=info msg="delete image" requestID=2
+time="2024-04-09T23:59:17+03:00" level=info msg="started server at 0.0.0.0:8080"
+time="2024-04-10T00:00:08+03:00" level=info msg="delete image request" requestID=1
+time="2024-04-10T00:00:08+03:00" level=info msg="methods checked" requestID=1
+time="2024-04-10T00:00:08+03:00" level=info msg="db get request to person" requestID=1
+time="2024-04-10T00:00:08+03:00" level=info msg="db returning records" requestID=1
+time="2024-04-10T00:00:08+03:00" level=info msg=authorized requestID=1
+time="2024-04-10T00:00:08+03:00" level=info msg="delete image" requestID=2
+time="2024-04-10T00:00:09+03:00" level=info msg="image added" requestID=2
+time="2024-04-10T00:00:24+03:00" level=info msg="get images request" requestID=3
+time="2024-04-10T00:00:24+03:00" level=info msg="methods checked" requestID=3
+time="2024-04-10T00:00:24+03:00" level=info msg="loaded session 520c8558-7390-44b9-af39-82c7a4f507e7" requestID=3
+time="2024-04-10T00:00:24+03:00" level=info msg=authorized requestID=3
+time="2024-04-10T00:00:24+03:00" level=info msg="Get request to person_image" requestID=3
+time="2024-04-10T00:00:24+03:00" level=info msg="Return 3 images" requestID=3
+time="2024-04-10T00:00:24+03:00" level=info msg="sent image" requestID=3
+time="2024-04-10T00:01:02+03:00" level=info msg="started server at 0.0.0.0:8080"
+time="2024-04-10T00:01:05+03:00" level=info msg="delete image request" requestID=1
+time="2024-04-10T00:01:05+03:00" level=info msg="methods checked" requestID=1
+time="2024-04-10T00:01:05+03:00" level=info msg="db get request to person" requestID=1
+time="2024-04-10T00:01:05+03:00" level=info msg="db returning records" requestID=1
+time="2024-04-10T00:01:05+03:00" level=info msg=authorized requestID=1
+time="2024-04-10T00:01:05+03:00" level=info msg="delete image" requestID=2
+time="2024-04-10T00:01:07+03:00" level=info msg="image added" requestID=2
+time="2024-04-10T00:01:13+03:00" level=info msg="get images request" requestID=3
+time="2024-04-10T00:01:13+03:00" level=info msg="methods checked" requestID=3
+time="2024-04-10T00:01:13+03:00" level=info msg="loaded session 520c8558-7390-44b9-af39-82c7a4f507e7" requestID=3
+time="2024-04-10T00:01:13+03:00" level=info msg=authorized requestID=3
+time="2024-04-10T00:01:13+03:00" level=info msg="Get request to person_image" requestID=3
+time="2024-04-10T00:01:13+03:00" level=info msg="Return 3 images" requestID=3
+time="2024-04-10T00:01:13+03:00" level=info msg="sent image" requestID=3
+time="2024-04-10T00:01:14+03:00" level=info msg="get images request" requestID=4
+time="2024-04-10T00:01:14+03:00" level=info msg="methods checked" requestID=4
+time="2024-04-10T00:01:14+03:00" level=info msg="loaded session 520c8558-7390-44b9-af39-82c7a4f507e7" requestID=4
+time="2024-04-10T00:01:14+03:00" level=info msg=authorized requestID=4
+time="2024-04-10T00:01:14+03:00" level=info msg="Get request to person_image" requestID=4
+time="2024-04-10T00:01:14+03:00" level=info msg="Return 3 images" requestID=4
+time="2024-04-10T00:01:14+03:00" level=info msg="sent image" requestID=4
+time="2024-04-10T00:01:15+03:00" level=info msg="get images request" requestID=5
+time="2024-04-10T00:01:15+03:00" level=info msg="methods checked" requestID=5
+time="2024-04-10T00:01:15+03:00" level=info msg="loaded session 520c8558-7390-44b9-af39-82c7a4f507e7" requestID=5
+time="2024-04-10T00:01:15+03:00" level=info msg=authorized requestID=5
+time="2024-04-10T00:01:15+03:00" level=info msg="Get request to person_image" requestID=5
+time="2024-04-10T00:01:15+03:00" level=info msg="Return 3 images" requestID=5
+time="2024-04-10T00:01:15+03:00" level=info msg="sent image" requestID=5
+time="2024-04-10T00:01:15+03:00" level=info msg="get images request" requestID=6
+time="2024-04-10T00:01:15+03:00" level=info msg="methods checked" requestID=6
+time="2024-04-10T00:01:15+03:00" level=info msg="loaded session 520c8558-7390-44b9-af39-82c7a4f507e7" requestID=6
+time="2024-04-10T00:01:15+03:00" level=info msg=authorized requestID=6
+time="2024-04-10T00:01:15+03:00" level=info msg="Get request to person_image" requestID=6
+time="2024-04-10T00:01:15+03:00" level=info msg="Return 3 images" requestID=6
+time="2024-04-10T00:01:15+03:00" level=info msg="sent image" requestID=6
+time="2024-04-10T00:01:15+03:00" level=info msg="get images request" requestID=7
+time="2024-04-10T00:01:15+03:00" level=info msg="methods checked" requestID=7
+time="2024-04-10T00:01:15+03:00" level=info msg="loaded session 520c8558-7390-44b9-af39-82c7a4f507e7" requestID=7
+time="2024-04-10T00:01:15+03:00" level=info msg=authorized requestID=7
+time="2024-04-10T00:01:15+03:00" level=info msg="Get request to person_image" requestID=7
+time="2024-04-10T00:01:15+03:00" level=info msg="Return 3 images" requestID=7
+time="2024-04-10T00:01:15+03:00" level=info msg="sent image" requestID=7
+time="2024-04-10T00:01:15+03:00" level=info msg="get images request" requestID=8
+time="2024-04-10T00:01:15+03:00" level=info msg="methods checked" requestID=8
+time="2024-04-10T00:01:15+03:00" level=info msg="loaded session 520c8558-7390-44b9-af39-82c7a4f507e7" requestID=8
+time="2024-04-10T00:01:15+03:00" level=info msg=authorized requestID=8
+time="2024-04-10T00:01:15+03:00" level=info msg="Get request to person_image" requestID=8
+time="2024-04-10T00:01:15+03:00" level=info msg="Return 3 images" requestID=8
+time="2024-04-10T00:01:15+03:00" level=info msg="sent image" requestID=8
+time="2024-04-10T00:10:52+03:00" level=info msg="started server at 0.0.0.0:8080"
+time="2024-04-10T00:11:00+03:00" level=info msg="add images request" requestID=1
+time="2024-04-10T00:11:00+03:00" level=info msg="methods checked" requestID=1
+time="2024-04-10T00:11:00+03:00" level=info msg="db get request to person" requestID=1
+time="2024-04-10T00:11:00+03:00" level=info msg="db returning records" requestID=1
+time="2024-04-10T00:11:00+03:00" level=info msg=authorized requestID=1
+time="2024-04-10T00:11:00+03:00" level=warning msg="can't query: pq: duplicate key value violates unique constraint \"person_image_pkey\"" requestID=1
+time="2024-04-10T00:11:00+03:00" level=warning msg="Add img pq: duplicate key value violates unique constraint \"person_image_pkey\"" requestID=1
+time="2024-04-10T00:11:16+03:00" level=info msg="add images request" requestID=2
+time="2024-04-10T00:11:16+03:00" level=info msg="methods checked" requestID=2
+time="2024-04-10T00:11:16+03:00" level=info msg="loaded session 520c8558-7390-44b9-af39-82c7a4f507e7" requestID=2
+time="2024-04-10T00:11:16+03:00" level=info msg=authorized requestID=2
+time="2024-04-10T00:11:16+03:00" level=info msg="image added" requestID=2
+time="2024-04-10T00:11:30+03:00" level=info msg="delete image request" requestID=3
+time="2024-04-10T00:11:30+03:00" level=info msg="methods checked" requestID=3
+time="2024-04-10T00:11:30+03:00" level=info msg="loaded session 520c8558-7390-44b9-af39-82c7a4f507e7" requestID=3
+time="2024-04-10T00:11:30+03:00" level=info msg=authorized requestID=3
+time="2024-04-10T00:11:30+03:00" level=info msg="delete image" requestID=4
+time="2024-04-10T00:11:30+03:00" level=info msg="image added" requestID=4
+time="2024-04-10T00:15:00+03:00" level=info msg="add images request" requestID=5
+time="2024-04-10T00:15:00+03:00" level=info msg="methods checked" requestID=5
+time="2024-04-10T00:15:00+03:00" level=info msg="loaded session 520c8558-7390-44b9-af39-82c7a4f507e7" requestID=5
+time="2024-04-10T00:15:00+03:00" level=info msg=authorized requestID=5
+time="2024-04-10T00:15:00+03:00" level=info msg="image added" requestID=5
+time="2024-04-10T00:18:29+03:00" level=info msg="started server at 0.0.0.0:8080"
+time="2024-04-10T00:18:36+03:00" level=info msg="delete image request" requestID=1
+time="2024-04-10T00:18:36+03:00" level=info msg="methods checked" requestID=1
+time="2024-04-10T00:18:36+03:00" level=info msg="db get request to person" requestID=1
+time="2024-04-10T00:18:36+03:00" level=info msg="db returning records" requestID=1
+time="2024-04-10T00:18:36+03:00" level=info msg=authorized requestID=1
+time="2024-04-10T00:18:36+03:00" level=info msg="delete image" requestID=2
+time="2024-04-10T00:18:37+03:00" level=info msg="image added" requestID=2

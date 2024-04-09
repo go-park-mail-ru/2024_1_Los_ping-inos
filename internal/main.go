@@ -16,12 +16,7 @@ import (
 	"main.go/internal/storage"
 )
 
-const configPath = "config/config.yaml"
-
-const (
-	vkCloudHotboxEndpoint = "https://hb.vkcs.cloud"
-	defaultRegion         = "ru-msk"
-)
+const configPath = "../config/config.yaml"
 
 // @title SportBro API
 // @version 0.1
@@ -48,18 +43,6 @@ func main() {
 		Log.Fatal(err)
 	}
 	defer db.Close()
-
-	//sess, _ := session.NewSession()
-	//svc := s3.New(sess, aws.NewConfig().WithEndpoint(vkCloudHotboxEndpoint).WithRegion(defaultRegion))
-	//
-	//if res, err := svc.ListBuckets(nil); err != nil {
-	//	println(err.Error())
-	//	Log.Fatalf("Unable to list buckets, %v", err)
-	//} else {
-	//	for _, b := range res.Buckets {
-	//		Log.Infof("* %s created on %s \n", aws.StringValue(b.Name), aws.TimeValue(b.CreationDate))
-	//	}
-	//}
 
 	personStore := storage.NewPersonStorage(db)
 	interestStore := storage.NewInterestStorage(db)

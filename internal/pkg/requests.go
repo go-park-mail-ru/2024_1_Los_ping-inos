@@ -31,7 +31,7 @@ type (
 		Profile2 types.UserID `json:"profile2"`
 	}
 
-	ImageDeleteRequest struct {
-		URL string `json:"image"`
+	ImageRequest struct {
+		CellNumber string `json:"cell"`
 	}
 )
