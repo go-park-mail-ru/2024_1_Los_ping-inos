@@ -39,7 +39,7 @@ func (deliver *Deliver) IsAuthenticatedHandler() func(w http.ResponseWriter, r *
 			requests.SendResponse(respWriter, request, http.StatusForbidden, nil)
 			return
 		}
-		_, ok := deliver.auth.IsAuthenticated(session.Value, requestID);
+		_, ok := deliver.auth.IsAuthenticated(session.Value, requestID)
 		if !ok {
 			Log.WithFields(logrus.Fields{RequestID: requestID}).Info("not authorized")
 			requests.SendResponse(respWriter, request, http.StatusForbidden, nil)
@@ -81,7 +81,7 @@ func (deliver *Deliver) LoginHandler() func(respWriter http.ResponseWriter, requ
 			return
 		}
 
-		SID, err := deliver.auth.Login(request.Email, request.Password, requestID)
+		SID, UID, err := deliver.auth.Login(request.Email, request.Password, requestID)
 		if err != nil {
 			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("can't login: ", err.Error())
 			requests.SendResponse(w, r, http.StatusUnauthorized, err.Error())
@@ -89,9 +89,9 @@ func (deliver *Deliver) LoginHandler() func(respWriter http.ResponseWriter, requ
 		}
 
 		setLoginCookie(SID, oneDayExpiration(), w)
-
+		tok, err := CreateCSRFToken(SID, UID, oneDayExpiration().Unix())
 		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("login with SID: ", SID)
-		requests.SendResponse(w, r, http.StatusOK, nil)
+		requests.SendResponse(w, r, http.StatusOK, tok)
 	}
 }
 
@@ -137,7 +137,7 @@ func (deliver *Deliver) RegistrationHandler() func(http.ResponseWriter, *http.Re
 			requests.SendResponse(w, r, http.StatusBadRequest, err.Error())
 			return
 		}
-		SID, err := deliver.auth.Registration(request.Name, request.Birthday, request.Gender, request.Email, request.Password, requestID)
+		SID, UID, err := deliver.auth.Registration(request.Name, request.Birthday, request.Gender, request.Email, request.Password, requestID)
 		if err != nil {
 			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("can't auth: ", err.Error())
 			if errors.As(err, &SeveralEmailsError) {
@@ -156,9 +156,9 @@ func (deliver *Deliver) RegistrationHandler() func(http.ResponseWriter, *http.Re
 		}
 
 		setLoginCookie(SID, oneDayExpiration(), w)
-
+		tok, err := CreateCSRFToken(SID, UID, oneDayExpiration().Unix())
 		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("registered and logged with SID ", SID)
-		requests.SendResponse(w, r, http.StatusOK, nil)
+		requests.SendResponse(w, r, http.StatusOK, tok)
 	}
 }
 
