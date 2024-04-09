@@ -22,6 +22,7 @@ func NewImageStorage(dbReader *sql.DB) *ImageStorage {
 }
 
 func (storage *ImageStorage) Get(requestID int64, userID int64) ([]models.Image, error) {
+	Log.WithFields(logrus.Fields{RequestID: requestID}).Info("Get request to person_image")
 	var images []models.Image
 
 	query := "SELECT * FROM person_image WHERE person_id = $1"
@@ -42,6 +43,7 @@ func (storage *ImageStorage) Get(requestID int64, userID int64) ([]models.Image,
 
 		images = append(images, image)
 	}
+	Log.WithFields(logrus.Fields{RequestID: requestID}).Info("Return ", len(images), " images")
 	return images, nil
 }
 

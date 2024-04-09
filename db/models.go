@@ -59,15 +59,16 @@ type (
 		InterestID types.InterestID
 	}
 
-	// PersonWithInterests model info
+	// Card model info
 	// @Description Информация в профиле пользователя (данные пользователя и его интересы)
-	PersonWithInterests struct {
+	Card struct {
 		Person    *Person     `json:"person"`
 		Interests []*Interest `json:"interests"`
+		Photo     []string    `json:"photo"`
 	}
-  
-  Image struct {
-	  UserId int64  `json:"person_id"`
-	  Url    string `json:"image_url"`
-  }
+
+	Image struct {
+		UserId int64  `json:"person_id"`
+		Url    string `json:"image_url"`
+	}
 )

@@ -19,18 +19,15 @@ func (service *Service) GetProfile(params ProfileGetParams, requestID int64) (st
 		return "", errors.New("no such person")
 	}
 
-	interests := make([][]*models.Interest, len(persons))
-	for i := range persons {
-		interests[i], err = service.interestStorage.GetPersonInterests(requestID, persons[i].ID)
-		if err != nil {
-			return "", err
-		}
+	interests, images, err := service.getUserCards(persons, requestID)
+	if err != nil {
+		return "", err
 	}
 
 	if params.ID != nil {
 		persons[0].Email = ""
 	}
-	res, err := personsToJSON(persons, interests)
+	res, err := personsToJSON(persons, interests, images)
 	if err != nil {
 		return "", err
 	}
