@@ -8,7 +8,7 @@ server:
 
 # TODO тут пока дефолтные настройки для локалки поставил, на деплое надо в .env прятать
 database:
-  host: "db"
+  host: "localhost"
   port: "5432"
   dbname: "tpTinder"
   user: "postgres"

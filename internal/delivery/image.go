@@ -28,7 +28,7 @@ import (
 
 const (
 	vkCloudHotboxEndpoint = "https://hb.ru-msk.vkcs.cloud"
-	defaultRegion         = "us-east-1"
+	defaultRegion         = "ru-msk"
 )
 
 func (deliver *Deliver) GetImageHandler() func(w http.ResponseWriter, r *http.Request) {
