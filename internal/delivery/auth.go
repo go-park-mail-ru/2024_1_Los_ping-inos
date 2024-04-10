@@ -97,7 +97,8 @@ func (deliver *Deliver) LoginHandler() func(respWriter http.ResponseWriter, requ
 		}
 		w.Header().Set("csrft", tok)
 		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("login with SID: ", SID)
-		requests.SendResponse(w, r, http.StatusOK, requests.CSRFTokenResponse{tok})
+		tmp, _ := json.Marshal(requests.CSRFTokenResponse{tok})
+		requests.SendResponse(w, r, http.StatusOK, string(tmp))
 	}
 }
 
@@ -170,7 +171,8 @@ func (deliver *Deliver) RegistrationHandler() func(http.ResponseWriter, *http.Re
 		}
 		w.Header().Set("csrft", tok)
 		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("registered and logged with SID ", SID)
-		requests.SendResponse(w, r, http.StatusOK, requests.CSRFTokenResponse{tok})
+		tmp, _ := json.Marshal(requests.CSRFTokenResponse{tok})
+		requests.SendResponse(w, r, http.StatusOK, string(tmp))
 	}
 }
 
