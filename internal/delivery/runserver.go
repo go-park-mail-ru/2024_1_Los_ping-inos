@@ -90,7 +90,7 @@ func StartServer(deliver ...*Deliver) error {
 
 	mux.Handle(apiPath+"deleteImage", RequestIDMiddleware(
 		AllowedMethodMiddleware(
-      IsAuthenticatedMiddleware(CSRFMiddleware(http.HandlerFunc(deliver[0].DeleteImageHandler())), deliver[0]), hashset.New("POST")),
+			IsAuthenticatedMiddleware(CSRFMiddleware(http.HandlerFunc(deliver[0].DeleteImageHandler())), deliver[0]), hashset.New("POST")),
 		deliver[0], "delete image"))
 
 	mux.Handle(apiPath+"profile", RequestIDMiddleware(
@@ -107,6 +107,11 @@ func StartServer(deliver ...*Deliver) error {
 		AllowedMethodMiddleware(
 			IsAuthenticatedMiddleware(http.HandlerFunc(deliver[0].GetMatches()), deliver[0]), hashset.New("GET")),
 		deliver[0], "matches"))
+
+	mux.Handle(apiPath+"dislike", RequestIDMiddleware(
+		AllowedMethodMiddleware(
+			IsAuthenticatedMiddleware(CSRFMiddleware(http.HandlerFunc(deliver[0].CreateDislike())), deliver[0]), hashset.New("POST")),
+		deliver[0], "dislike"))
 
 	server := http.Server{
 		Addr:         config.Cfg.Server.Host + config.Cfg.Server.Port,
