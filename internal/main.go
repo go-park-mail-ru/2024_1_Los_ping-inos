@@ -16,7 +16,7 @@ import (
 	"main.go/internal/storage"
 )
 
-const configPath = "../config/config.yaml"
+const configPath = "config/config.yaml"
 
 // @title SportBro API
 // @version 0.1
