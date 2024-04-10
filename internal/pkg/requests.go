@@ -34,4 +34,8 @@ type (
 	ImageRequest struct {
 		CellNumber string `json:"cell"`
 	}
+
+	CSRFTokenResponse struct {
+		Csrft string `json:"csrft"`
+	}
 )
