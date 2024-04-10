@@ -36,18 +36,25 @@ func (deliver *Deliver) IsAuthenticatedHandler() func(w http.ResponseWriter, r *
 		}
 		if err != nil || session == nil {
 			Log.WithFields(logrus.Fields{RequestID: requestID}).Info("not authorized")
-			requests.SendResponse(respWriter, request, http.StatusForbidden, nil)
+			requests.SendResponse(respWriter, request, http.StatusUnauthorized, nil)
 			return
 		}
-		_, ok := deliver.auth.IsAuthenticated(session.Value, requestID)
+		UID, ok := deliver.auth.IsAuthenticated(session.Value, requestID)
 		if !ok {
 			Log.WithFields(logrus.Fields{RequestID: requestID}).Info("not authorized")
-			requests.SendResponse(respWriter, request, http.StatusForbidden, nil)
+			requests.SendResponse(respWriter, request, http.StatusUnauthorized, nil)
 			return
 		}
 
 		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("authorized")
-		requests.SendResponse(respWriter, request, http.StatusOK, nil)
+		tok, err := CreateCSRFToken(session.Value, UID, oneDayExpiration().Unix())
+		if err != nil {
+			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("can't generate csrf: ", err.Error())
+			requests.SendResponse(respWriter, request, http.StatusInternalServerError, err.Error())
+			return
+		}
+		tmp, _ := json.Marshal(requests.CSRFTokenResponse{tok}) // TODO
+		requests.SendResponse(respWriter, request, http.StatusOK, string(tmp))
 	}
 }
 
@@ -97,7 +104,7 @@ func (deliver *Deliver) LoginHandler() func(respWriter http.ResponseWriter, requ
 		}
 		w.Header().Set("csrft", tok)
 		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("login with SID: ", SID)
-		tmp, _ := json.Marshal(requests.CSRFTokenResponse{tok})
+		tmp, _ := json.Marshal(requests.CSRFTokenResponse{tok}) // TODO
 		requests.SendResponse(w, r, http.StatusOK, string(tmp))
 	}
 }
