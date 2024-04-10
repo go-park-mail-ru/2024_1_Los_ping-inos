@@ -122,11 +122,13 @@ func (storage *InterestStorage) CreatePersonInterests(requestID int64, personID 
 			Values(personID, interestID[i]).
 			RunWith(storage.dbReader)
 
-		_, err := query.Query()
+		rows, err := query.Query()
 		if err != nil {
 			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("db insert can't query: ", err.Error())
+			rows.Close()
 			return err
 		}
+		rows.Close()
 	}
 
 	return nil

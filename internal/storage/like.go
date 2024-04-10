@@ -73,7 +73,8 @@ func (storage *LikeStorage) Create(requestID int64, person1ID, person2ID types.U
 		Values(person1ID, person2ID).
 		RunWith(storage.dbReader)
 
-	_, err := query.Query()
+	rows, err := query.Query()
+	defer rows.Close()
 	if err != nil {
 		Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("db can't create like: ", err.Error())
 	}
@@ -91,6 +92,7 @@ func (storage *LikeStorage) GetMatch(requestID int64, person1ID types.UserID) ([
 		RunWith(storage.dbReader)
 
 	rows, err := query.Query()
+	defer rows.Close()
 	if err != nil {
 		Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("db can't query:  ", err.Error())
 		return nil, err
