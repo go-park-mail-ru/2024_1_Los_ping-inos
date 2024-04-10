@@ -81,7 +81,7 @@ func (storage *LikeStorage) Create(requestID int64, person1ID, person2ID types.U
 }
 
 func (storage *LikeStorage) GetMatch(requestID int64, person1ID types.UserID) ([]types.UserID, error) {
-	Log.WithFields(logrus.Fields{RequestID: requestID}).Info("db create request to ", LikeTableName)
+	Log.WithFields(logrus.Fields{RequestID: requestID}).Info("db get request to ", LikeTableName)
 	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
 
 	query := stBuilder.Select("t1.person_two_id").

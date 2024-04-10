@@ -11,6 +11,9 @@ func (service *Service) GetMatches(profile types.UserID, requestID int64) (strin
 	if err != nil {
 		return "", err
 	}
+	if len(ids) == 0 {
+		return "[]", nil
+	}
 
 	return service.GetProfile(ProfileGetParams{ID: ids}, requestID)
 }
