@@ -20,12 +20,13 @@ type (
 		GetImage(userID int64, requestID int64) ([]models.Image, error)
 		AddImage(userImage models.Image, requestID int64) error
 		DeleteImage(userImage models.Image, requestID int64) error
+
 	}
 
 	Auth interface {
 		IsAuthenticated(sessionID string, reqID int64) (types.UserID, bool)
-		Login(email, password string, reqID int64) (string, error)
+		Login(email, password string, reqID int64) (string, types.UserID, error)
 		Logout(sessionID string, reqID int64) error
-		Registration(Name string, Birthday string, Gender string, Email string, Password string, reqID int64) (string, error)
+		Registration(Name string, Birthday string, Gender string, Email string, Password string, reqID int64) (string, types.UserID, error)
 	}
 )

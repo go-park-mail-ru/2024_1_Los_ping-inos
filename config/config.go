@@ -12,6 +12,7 @@ const PersonInterestTableName = "person_interest"
 const LikeTableName = "\"like\""
 
 const RequestUserID = "userID"
+const RequestSID = "SID"
 
 var Cfg Config
 

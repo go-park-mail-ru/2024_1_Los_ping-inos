@@ -44,23 +44,23 @@ func (api *AuthHandler) IsAuthenticated(sessionID string, requestID int64) (type
 }
 
 // Login - принимает email, пароль; возвращает ID сессии и ошибку
-func (api *AuthHandler) Login(email, password string, requestID int64) (string, error) {
+func (api *AuthHandler) Login(email, password string, requestID int64) (string, types.UserID, error) {
 	ems := make([]string, 1)
 	ems[0] = email
 	users, ok := api.dbReader.Get(requestID, &models.PersonGetFilter{Email: ems})
 	if ok != nil {
-		return "", ok
+		return "", -1, ok
 	}
 
 	if len(users) == 0 {
-		return "", errors.New("no such person")
+		return "", -1, errors.New("no such person")
 	}
 
 	user := users[0]
 	err := checkPassword(user.Password, password)
 
 	if err != nil {
-		return "", err
+		return "", -1, err
 	}
 
 	SID := uuid.NewString()
@@ -68,28 +68,28 @@ func (api *AuthHandler) Login(email, password string, requestID int64) (string, 
 	user.SessionID = SID
 	err = api.dbReader.Update(requestID, *user)
 	if err != nil {
-		return "", err
+		return "", -1, err
 	}
 
-	return SID, nil
+	return SID, user.ID, nil
 }
 
-func (api *AuthHandler) Registration(name string, birthday string, gender string, email string, password string, requestID int64) (string, error) {
+func (api *AuthHandler) Registration(name string, birthday string, gender string, email string, password string, requestID int64) (string, types.UserID, error) {
 	hashedPassword, err := hashPassword(password)
 	if err != nil {
-		return "", err
+		return "", -1, err
 	}
 
 	err = api.dbReader.AddAccount(requestID, name, birthday, gender, email, hashedPassword)
 	if err != nil {
-		return "", err
+		return "", -1, err
 	}
 
-	SID, err := api.Login(email, password, requestID)
+	SID, UID, err := api.Login(email, password, requestID)
 	if err != nil {
-		return "", err
+		return "", -1, err
 	}
-	return SID, nil
+	return SID, UID, nil
 }
 
 func (api *AuthHandler) Logout(sessionID string, requestID int64) error {
