@@ -27,3 +27,12 @@ func (service *Service) AddImage(userImage models.Image, requestID int64) error 
 
 	return nil
 }
+
+func (service *Service) DeleteImage(userImage models.Image, requestID int64) error {
+	err := service.imageStorage.Delete(requestID, userImage)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

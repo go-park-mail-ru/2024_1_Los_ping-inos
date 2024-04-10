@@ -30,4 +30,8 @@ type (
 	CreateLikeRequest struct {
 		Profile2 types.UserID `json:"profile2"`
 	}
+
+	ImageRequest struct {
+		CellNumber string `json:"cell"`
+	}
 )

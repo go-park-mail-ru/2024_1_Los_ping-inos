@@ -81,12 +81,17 @@ func StartServer(deliver ...*Deliver) error {
 	mux.Handle(apiPath+"getImage", RequestIDMiddleware(
 		AllowedMethodMiddleware(
 			IsAuthenticatedMiddleware(http.HandlerFunc(deliver[0].GetImageHandler()), deliver[0]), hashset.New("GET")),
-		deliver[0], "username (/me)"))
+		deliver[0], "get images"))
 
 	mux.Handle(apiPath+"addImage", RequestIDMiddleware(
 		AllowedMethodMiddleware(
 			IsAuthenticatedMiddleware(CSRFMiddleware(http.HandlerFunc(deliver[0].AddImageHandler())), deliver[0]), hashset.New("POST")),
 		deliver[0], "username (/me)"))
+
+	mux.Handle(apiPath+"deleteImage", RequestIDMiddleware(
+		AllowedMethodMiddleware(
+      IsAuthenticatedMiddleware(CSRFMiddleware(http.HandlerFunc(deliver[0].DeleteImageHandler())), deliver[0]), hashset.New("POST")),
+		deliver[0], "delete image"))
 
 	mux.Handle(apiPath+"profile", RequestIDMiddleware(
 		AllowedMethodMiddleware(

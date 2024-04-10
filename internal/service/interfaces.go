@@ -29,4 +29,5 @@ type LikeStorage interface {
 type ImageStorage interface {
 	Get(requestID int64, userID int64) ([]models.Image, error)
 	Add(requestID int64, image models.Image) error
+	Delete(requestID int64, image models.Image) error
 }

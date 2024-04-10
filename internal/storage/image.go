@@ -36,7 +36,7 @@ func (storage *ImageStorage) Get(requestID int64, userID int64) ([]models.Image,
 	for rows.Next() {
 		var image models.Image
 
-		err := rows.Scan(&image.UserId, &image.Url)
+		err := rows.Scan(&image.UserId, &image.Url, &image.CellNumber)
 		if err != nil {
 			return []models.Image{}, err
 		}
@@ -48,23 +48,20 @@ func (storage *ImageStorage) Get(requestID int64, userID int64) ([]models.Image,
 }
 
 func (storage *ImageStorage) Add(requestID int64, image models.Image) error {
-	_, err := storage.dbReader.Exec(
-		"UPDATE person SET photo = $1 WHERE session_id = $2", image.Url, image.UserId)
+	query := "INSERT INTO person_image (person_id, image_url, cell_number) VALUES ($1, $2, $3)"
+
+	_, err := storage.dbReader.Exec(query, image.UserId, image.Url, image.CellNumber)
 	if err != nil {
 		Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("can't query: ", err.Error())
 		return fmt.Errorf("Add img %w", err)
 	}
+	return nil
+}
 
-	_, err = storage.dbReader.Exec(
-		"INSERT INTO image (url) VALUES ($1)", image.Url)
-	if err != nil {
-		Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("can't query: ", err.Error())
-		return fmt.Errorf("Add img %w", err)
-	}
+func (storage *ImageStorage) Delete(requestID int64, image models.Image) error {
+	query := "DELETE FROM person_image WHERE person_id = $1 AND cell_number = $2"
 
-	query := "INSERT INTO person_image (person_id, image_url) VALUES ($1, $2)"
-
-	_, err = storage.dbReader.Exec(query, image.UserId, image.Url)
+	_, err := storage.dbReader.Exec(query, image.UserId, image.CellNumber)
 	if err != nil {
 		Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("can't query: ", err.Error())
 		return fmt.Errorf("Add img %w", err)

@@ -1,7 +1,7 @@
 package delivery
 
 import (
-	"main.go/db"
+	models "main.go/db"
 	requests "main.go/internal/pkg"
 	"main.go/internal/service"
 	"main.go/internal/types"
@@ -19,6 +19,8 @@ type (
 		GetMatches(profile types.UserID, requestID int64) (string, error)
 		GetImage(userID int64, requestID int64) ([]models.Image, error)
 		AddImage(userImage models.Image, requestID int64) error
+		DeleteImage(userImage models.Image, requestID int64) error
+
 	}
 
 	Auth interface {
