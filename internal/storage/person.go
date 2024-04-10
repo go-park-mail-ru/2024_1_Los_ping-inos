@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"main.go/internal/types"
 
 	qb "github.com/Masterminds/squirrel"
 	"github.com/sirupsen/logrus"
@@ -43,6 +44,48 @@ func (storage *PersonStorage) Get(requestID int64, filter *models.PersonGetFilte
 	Log.WithFields(logrus.Fields{RequestID: requestID}).Info("db get request to ", PersonTableName)
 	rows, err := query.Query()
 
+	if err != nil {
+		Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("db read can't query: ", err.Error())
+		return nil, err
+	}
+	defer rows.Close()
+
+	persons := make([]*models.Person, 0)
+
+	for rows.Next() {
+		person := &models.Person{}
+		err = rows.Scan(&person.ID, &person.Name, &person.Birthday, &person.Description, &person.Location, &person.Photo,
+			&person.Email, &person.Password, &person.CreatedAt, &person.Premium, &person.LikesLeft, &person.SessionID, &person.Gender)
+
+		if err != nil {
+			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("db can't scan person: ", err.Error())
+			return nil, err
+		}
+
+		persons = append(persons, person)
+	}
+
+	Log.WithFields(logrus.Fields{RequestID: requestID}).Info("db returning records")
+	return persons, nil
+}
+
+func (storage *PersonStorage) GetFeed(requestID int64, filter types.UserID) ([]*models.Person, error) {
+	likes := &LikeStorage{dbReader: storage.dbReader}
+	ids, err := likes.Get(requestID, &models.LikeGetFilter{Person1: &filter})
+	if err != nil {
+		return nil, err
+	}
+	ids = append(ids, filter)
+
+	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
+	Log.WithFields(logrus.Fields{RequestID: requestID}).Info("db get request to ", PersonTableName)
+	query := stBuilder.
+		Select("*").
+		From(PersonTableName).
+		Where(qb.NotEq{"id": ids}).
+		RunWith(storage.dbReader)
+
+	rows, err := query.Query()
 	if err != nil {
 		Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("db read can't query: ", err.Error())
 		return nil, err

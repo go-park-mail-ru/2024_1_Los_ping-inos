@@ -20,10 +20,10 @@ func NewLikeStorage(dbReader *sql.DB) *LikeStorage {
 	}
 }
 
-func (storage *LikeStorage) Get(requestID int64, filter *models.LikeGetFilter) ([]*models.Like, error) {
+func (storage *LikeStorage) Get(requestID int64, filter *models.LikeGetFilter) ([]types.UserID, error) {
 	Log.WithFields(logrus.Fields{RequestID: requestID}).Info("db get request to ", LikeTableName)
 	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
-	whereMap := qb.And{}
+	whereMap := qb.Or{}
 
 	if filter == nil {
 		filter = &models.LikeGetFilter{}
@@ -31,9 +31,6 @@ func (storage *LikeStorage) Get(requestID int64, filter *models.LikeGetFilter) (
 
 	if filter.Person1 != nil {
 		whereMap = append(whereMap, qb.Eq{"person_one_id": filter.Person1})
-	}
-	if filter.Person2 != nil {
-		whereMap = append(whereMap, qb.Eq{"person_two_id": filter.Person2})
 	}
 
 	query := stBuilder.
@@ -49,15 +46,15 @@ func (storage *LikeStorage) Get(requestID int64, filter *models.LikeGetFilter) (
 	}
 	defer rows.Close()
 
-	res := make([]*models.Like, 0)
+	res := make([]types.UserID, 0)
 	var tmp models.Like
 	for rows.Next() {
-		err = rows.Scan(&tmp)
+		err = rows.Scan(&tmp.Person1, &tmp.Person2)
 		if err != nil {
 			Log.WithFields(logrus.Fields{RequestID: requestID}).Info("db can't scan: ", err.Error())
 			return nil, err
 		}
-		res = append(res, &tmp)
+		res = append(res, tmp.Person2)
 	}
 
 	return res, nil

@@ -7,6 +7,7 @@ import (
 
 type PersonStorage interface {
 	Get(requestID int64, filter *models.PersonGetFilter) ([]*models.Person, error)
+	GetFeed(requestID int64, filter types.UserID) ([]*models.Person, error)
 	AddAccount(requestID int64, Name string, Birhday string, Gender string, Email string, Password string) error
 	Update(requestID int64, person models.Person) error
 	RemoveSession(requestID int64, sid string) error
@@ -21,7 +22,7 @@ type InterestStorage interface {
 }
 
 type LikeStorage interface {
-	Get(requestID int64, filter *models.LikeGetFilter) ([]*models.Like, error)
+	Get(requestID int64, filter *models.LikeGetFilter) ([]types.UserID, error)
 	Create(requestID int64, person1ID, person2ID types.UserID) error
 	GetMatch(requestID int64, person1ID types.UserID) ([]types.UserID, error)
 }

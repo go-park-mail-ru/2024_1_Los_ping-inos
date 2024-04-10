@@ -41,7 +41,6 @@ type (
 
 	LikeGetFilter struct {
 		Person1 *types.UserID
-		Person2 *types.UserID
 	}
 
 	Like struct {

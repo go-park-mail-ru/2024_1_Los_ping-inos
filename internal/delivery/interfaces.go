@@ -9,7 +9,7 @@ import (
 
 type (
 	Service interface {
-		GetCards(sessionID string, reqID int64) (string, error)
+		GetCards(userID types.UserID, reqID int64) (string, error)
 		GetName(sessionID string, reqID int64) (string, error)
 		GetAllInterests(reqID int64) (string, error)
 		GetProfile(params service.ProfileGetParams, requestID int64) (string, error)
@@ -20,7 +20,6 @@ type (
 		GetImage(userID int64, requestID int64) ([]models.Image, error)
 		AddImage(userImage models.Image, requestID int64) error
 		DeleteImage(userImage models.Image, requestID int64) error
-
 	}
 
 	Auth interface {

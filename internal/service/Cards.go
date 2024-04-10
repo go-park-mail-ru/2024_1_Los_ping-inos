@@ -3,6 +3,7 @@ package service
 import (
 	"encoding/json"
 	"errors"
+	"main.go/internal/types"
 
 	models "main.go/db"
 	. "main.go/internal/logs"
@@ -39,19 +40,11 @@ func (service *Service) GetName(sessionID string, requestID int64) (string, erro
 }
 
 // GetCards - вернуть ленту пользователей, доступно только авторизованному пользователю
-func (service *Service) GetCards(sessionID string, requestID int64) (string, error) {
-	persons, err := service.personStorage.Get(requestID, nil)
+func (service *Service) GetCards(userID types.UserID, requestID int64) (string, error) {
+	persons, err := service.personStorage.GetFeed(requestID, userID)
 
 	if err != nil {
 		return "", err
-	}
-
-	i := 0
-	for ; i < len(persons); i++ { // :eyes:
-		if persons[i].SessionID == sessionID {
-			persons = append(persons[:i], persons[i+1:]...)
-			break
-		}
 	}
 
 	interests, images, err := service.getUserCards(persons, requestID)

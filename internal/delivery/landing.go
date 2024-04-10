@@ -1,12 +1,13 @@
 package delivery
 
 import (
-	"net/http"
-	"time"
-
 	"github.com/sirupsen/logrus"
+	. "main.go/config"
 	. "main.go/internal/logs"
 	requests "main.go/internal/pkg"
+	"main.go/internal/types"
+	"net/http"
+	"time"
 )
 
 // GetUsername godoc
@@ -51,9 +52,7 @@ func (deliver *Deliver) GetCardsHandler() func(http.ResponseWriter, *http.Reques
 	return func(respWriter http.ResponseWriter, request *http.Request) {
 		requestID := request.Context().Value(RequestID).(int64)
 
-		session, _ := request.Cookie("session_id") // возвращает только ErrNoCookie, так что обработка не нужна
-
-		cards, err := deliver.serv.GetCards(session.Value, requestID)
+		cards, err := deliver.serv.GetCards(request.Context().Value(RequestUserID).(types.UserID), requestID)
 		if err != nil {
 			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn(err.Error())
 			requests.SendResponse(respWriter, request, http.StatusInternalServerError, err.Error())
