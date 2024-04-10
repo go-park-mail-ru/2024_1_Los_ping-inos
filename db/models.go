@@ -63,7 +63,10 @@ type (
 	Card struct {
 		Person    *Person     `json:"person"`
 		Interests []*Interest `json:"interests"`
-		Photo     []string    `json:"photo"`
+		Photo     []struct {
+			Cell string `json:"cell"`
+			Url  string `json:"url"`
+		} `json:"photo"`
 	}
 
 	Image struct {
