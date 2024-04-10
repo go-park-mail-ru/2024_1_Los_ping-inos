@@ -148,7 +148,7 @@ func (deliver *Deliver) AddImageHandler() func(w http.ResponseWriter, r *http.Re
 
 		userImage := models.Image{
 			UserId:     userId,
-			Url:        filename,
+			Url:        objectURL,
 			CellNumber: cell,
 		}
 
