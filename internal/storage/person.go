@@ -13,6 +13,10 @@ import (
 	. "main.go/internal/logs"
 )
 
+const (
+	personFields = "id, name, birthday, description, location, photo, email, password, createdAt, premium, likesLeft, sessionID, gender"
+)
+
 type PersonStorage struct {
 	dbReader *sql.DB
 }
@@ -36,7 +40,7 @@ func (storage *PersonStorage) Get(requestID int64, filter *models.PersonGetFilte
 	processSessionIDFilter(filter, &whereMap)
 
 	query := stBuilder.
-		Select("*").
+		Select(personFields).
 		From(PersonTableName).
 		Where(whereMap).
 		RunWith(storage.dbReader)
@@ -80,7 +84,7 @@ func (storage *PersonStorage) GetFeed(requestID int64, filter types.UserID) ([]*
 	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
 	Log.WithFields(logrus.Fields{RequestID: requestID}).Info("db get request to ", PersonTableName)
 	query := stBuilder.
-		Select("*").
+		Select(personFields).
 		From(PersonTableName).
 		Where(qb.NotEq{"id": ids}).
 		RunWith(storage.dbReader)

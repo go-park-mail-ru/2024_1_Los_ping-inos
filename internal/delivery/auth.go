@@ -53,7 +53,7 @@ func (deliver *Deliver) IsAuthenticatedHandler() func(w http.ResponseWriter, r *
 			requests.SendResponse(respWriter, request, http.StatusInternalServerError, err.Error())
 			return
 		}
-		requests.SendResponse(respWriter, request, http.StatusOK, tok)
+		requests.SendResponse(respWriter, request, http.StatusOK, requests.CSRFTokenResponse{Csrft: tok})
 	}
 }
 
@@ -103,7 +103,7 @@ func (deliver *Deliver) LoginHandler() func(respWriter http.ResponseWriter, requ
 		}
 		w.Header().Set("csrft", tok)
 		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("login with SID: ", SID)
-		requests.SendResponse(w, r, http.StatusOK, tok)
+		requests.SendResponse(w, r, http.StatusOK, requests.CSRFTokenResponse{Csrft: tok})
 	}
 }
 
@@ -170,14 +170,13 @@ func (deliver *Deliver) RegistrationHandler() func(http.ResponseWriter, *http.Re
 		setLoginCookie(SID, oneDayExpiration(), w)
 		tok, err := CreateCSRFToken(SID, UID, oneDayExpiration().Unix())
 		if err != nil {
-			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("can't generate csrf: ", err.Error())
+			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("can't generate csrf token: ", err.Error())
 			requests.SendResponse(w, r, http.StatusInternalServerError, err.Error())
 			return
 		}
 		w.Header().Set("csrft", tok)
 		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("registered and logged with SID ", SID)
-		tmp, _ := json.Marshal(requests.CSRFTokenResponse{tok})
-		requests.SendResponse(w, r, http.StatusOK, string(tmp))
+		requests.SendResponse(w, r, http.StatusOK, requests.CSRFTokenResponse{Csrft: tok})
 	}
 }
 

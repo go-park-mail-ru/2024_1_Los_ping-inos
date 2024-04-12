@@ -11,6 +11,10 @@ import (
 	. "main.go/internal/logs"
 )
 
+const (
+	personImageFields = "person_id, image_url, cell_number"
+)
+
 type ImageStorage struct {
 	dbReader *sql.DB
 }
@@ -25,7 +29,7 @@ func (storage *ImageStorage) Get(requestID int64, userID int64) ([]models.Image,
 	Log.WithFields(logrus.Fields{RequestID: requestID}).Info("Get request to person_image")
 	var images []models.Image
 
-	query := "SELECT * FROM person_image WHERE person_id = $1"
+	query := "SELECT" + personImageFields + " FROM person_image WHERE person_id = $1"
 
 	rows, err := storage.dbReader.Query(query, userID)
 	if err != nil {

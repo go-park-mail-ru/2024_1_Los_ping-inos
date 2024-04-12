@@ -11,6 +11,10 @@ import (
 	"main.go/internal/types"
 )
 
+const (
+	interestFields = "id, name"
+)
+
 type InterestStorage struct {
 	dbReader *sql.DB
 }
@@ -49,7 +53,7 @@ func (storage *InterestStorage) Get(requestID int64, filter *models.InterestGetF
 	processInterestNameFilter(filter, &whereMap)
 
 	query := stBuilder.
-		Select("*").
+		Select(interestFields).
 		From(InterestTableName).
 		Where(whereMap).
 		RunWith(storage.dbReader)
@@ -82,7 +86,7 @@ func (storage *InterestStorage) Get(requestID int64, filter *models.InterestGetF
 func (storage *InterestStorage) GetPersonInterests(requestID int64, personID types.UserID) ([]*models.Interest, error) {
 	Log.WithFields(logrus.Fields{RequestID: requestID}).Info("db get request to ", PersonInterestTableName)
 	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
-	query := stBuilder.Select("*").
+	query := stBuilder.Select(interestFields).
 		From(PersonInterestTableName).
 		Where(qb.Eq{"person_id": personID}).
 		RunWith(storage.dbReader)

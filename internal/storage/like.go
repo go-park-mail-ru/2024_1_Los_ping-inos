@@ -10,6 +10,10 @@ import (
 	"main.go/internal/types"
 )
 
+const (
+	likeFields = "person_one_id, person_two_id"
+)
+
 type LikeStorage struct {
 	dbReader *sql.DB
 }
@@ -34,7 +38,7 @@ func (storage *LikeStorage) Get(requestID int64, filter *models.LikeGetFilter) (
 	}
 
 	query := stBuilder.
-		Select("*").
+		Select(likeFields).
 		From(LikeTableName).
 		Where(whereMap).
 		RunWith(storage.dbReader)
