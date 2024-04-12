@@ -26,20 +26,10 @@ func NewAuthHandler(dbReader PersonStorage) *AuthHandler {
 }
 
 func (api *AuthHandler) IsAuthenticated(sessionID string, requestID int64) (types.UserID, bool) {
-	if id, authorized := api.sessions.Load(sessionID); authorized { // смотрим, есть ли запись в кеше
-		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("loaded session ", sessionID)
-		return id.(types.UserID), true
-	}
-
-	// если сейчас в кеше сессии нет, лезем смотреть в бд
-	sessions := make([]string, 1)
-	sessions[0] = sessionID
-	person, err := api.dbReader.Get(requestID, &models.PersonGetFilter{SessionID: sessions})
+	person, err := api.dbReader.Get(requestID, &models.PersonGetFilter{SessionID: []string{sessionID}})
 	if err != nil || len(person) == 0 {
 		return -1, false
 	}
-
-	api.sessions.Store(sessionID, person[0].ID) // нашли - запоминаем в кеш
 	return person[0].ID, true
 }
 
@@ -64,7 +54,6 @@ func (api *AuthHandler) Login(email, password string, requestID int64) (string, 
 	}
 
 	SID := uuid.NewString()
-	api.sessions.Store(SID, user.ID)
 	user.SessionID = SID
 	err = api.dbReader.Update(requestID, *user)
 	if err != nil {
