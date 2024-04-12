@@ -9,17 +9,17 @@ import (
 
 type (
 	Service interface {
-		GetCards(userID types.UserID, reqID int64) (string, error)
-		GetName(sessionID string, reqID int64) (string, error)
-		GetAllInterests(reqID int64) (string, error)
-		GetProfile(params service.ProfileGetParams, requestID int64) (string, error)
-		UpdateProfile(SID string, profile requests.ProfileUpdateRequest, requestID int64) error
-		DeleteProfile(sessionID string, requestID int64) error
-		CreateLike(profile1, profile2 types.UserID, requestID int64) error
-		GetMatches(profile types.UserID, requestID int64) (string, error)
-		GetImage(userID int64, requestID int64) ([]models.Image, error)
-		AddImage(userImage models.Image, requestID int64) error
-		DeleteImage(userImage models.Image, requestID int64) error
+		GetCards(userID types.UserID, reqID int64) ([]models.Card, error) //
+		GetName(sessionID string, reqID int64) (string, error)            //
+		GetAllInterests(reqID int64) ([]*models.Interest, error)          //
+		GetProfile(params service.ProfileGetParams, requestID int64) ([]models.Card, error)
+		UpdateProfile(SID string, profile requests.ProfileUpdateRequest, requestID int64) error //
+		DeleteProfile(sessionID string, requestID int64) error                                  //
+		CreateLike(profile1, profile2 types.UserID, requestID int64) error                      //
+		GetMatches(profile types.UserID, requestID int64) ([]models.Card, error)
+		GetImage(userID int64, requestID int64) ([]models.Image, error) //
+		AddImage(userImage models.Image, requestID int64) error         //
+		DeleteImage(userImage models.Image, requestID int64) error      //
 	}
 
 	Auth interface {

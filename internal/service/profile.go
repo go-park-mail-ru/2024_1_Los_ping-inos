@@ -9,29 +9,33 @@ import (
 	"time"
 )
 
-func (service *Service) GetProfile(params ProfileGetParams, requestID int64) (string, error) {
+func (service *Service) GetProfile(params ProfileGetParams, requestID int64) ([]models.Card, error) {
 	persons, err := service.personStorage.Get(requestID, &models.PersonGetFilter{SessionID: params.SessionID, ID: params.ID})
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	if len(persons) == 0 {
-		return "", errors.New("no such person")
+		return nil, errors.New("no such person")
 	}
 
 	interests, images, err := service.getUserCards(persons, requestID)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	if params.ID != nil {
+	if params.ID != nil { // сокрытие email'a чужого профиля
 		persons[0].Email = ""
 	}
-	res, err := personsToJSON(persons, interests, images)
+
+	profile := combineToCards(persons, interests, images)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-	return res, err
+
+	profile[0].Email = persons[0].Email
+
+	return profile, err
 }
 
 func (service *Service) UpdateProfile(SID string, profile requests.ProfileUpdateRequest, requestID int64) error {

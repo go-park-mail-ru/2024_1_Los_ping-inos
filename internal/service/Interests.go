@@ -1,19 +1,9 @@
 package service
 
 import (
-	"encoding/json"
+	models "main.go/db"
 )
 
-func (service *Service) GetAllInterests(requestID int64) (string, error) {
-	interests, err := service.interestStorage.Get(requestID, nil)
-	if err != nil {
-		return "", err
-	}
-
-	res, err := json.Marshal(interests)
-	if err != nil {
-		return "", err
-	}
-
-	return string(res), nil
+func (service *Service) GetAllInterests(requestID int64) ([]*models.Interest, error) {
+	return service.interestStorage.Get(requestID, nil)
 }

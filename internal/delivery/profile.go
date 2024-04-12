@@ -5,6 +5,7 @@ import (
 	"errors"
 	"github.com/sirupsen/logrus"
 	"io"
+	models "main.go/db"
 	. "main.go/internal/logs"
 	requests "main.go/internal/pkg"
 	"main.go/internal/service"
@@ -41,8 +42,9 @@ func (deliver *Deliver) ReadProfile(respWriter http.ResponseWriter, request *htt
 	var (
 		err     error
 		id      int
-		profile string
+		profile []models.Card
 	)
+
 	requestID := request.Context().Value(RequestID).(int64)
 
 	if request.URL.Query().Has("id") { // просмотр профиля по id (чужой профиль из ленты)
@@ -63,7 +65,7 @@ func (deliver *Deliver) ReadProfile(respWriter http.ResponseWriter, request *htt
 		return
 	}
 
-	requests.SendResponse(respWriter, request, http.StatusOK, profile)
+	requests.SendResponse(respWriter, request, http.StatusOK, profile[0])
 	Log.WithFields(logrus.Fields{RequestID: requestID}).Info("get profile sent response")
 }
 
