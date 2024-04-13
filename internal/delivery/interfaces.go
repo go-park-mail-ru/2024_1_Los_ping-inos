@@ -1,6 +1,7 @@
 package delivery
 
 import (
+	"context"
 	models "main.go/db"
 	requests "main.go/internal/pkg"
 	"main.go/internal/service"
@@ -9,23 +10,23 @@ import (
 
 type (
 	Service interface {
-		GetCards(userID types.UserID, reqID int64) ([]models.Card, error) //
-		GetName(sessionID string, reqID int64) (string, error)            //
-		GetAllInterests(reqID int64) ([]*models.Interest, error)          //
-		GetProfile(params service.ProfileGetParams, requestID int64) ([]models.Card, error)
-		UpdateProfile(SID string, profile requests.ProfileUpdateRequest, requestID int64) error //
-		DeleteProfile(sessionID string, requestID int64) error                                  //
-		CreateLike(profile1, profile2 types.UserID, requestID int64) error                      //
-		GetMatches(profile types.UserID, requestID int64) ([]models.Card, error)
-		GetImage(userID int64, requestID int64) ([]models.Image, error) //
-		AddImage(userImage models.Image, requestID int64) error         //
-		DeleteImage(userImage models.Image, requestID int64) error      //
+		GetCards(userID types.UserID, ctx context.Context) ([]models.Card, error) //
+		GetName(sessionID string, ctx context.Context) (string, error)            //
+		GetAllInterests(ctx context.Context) ([]*models.Interest, error)          //
+		GetProfile(params service.ProfileGetParams, ctx context.Context) ([]models.Card, error)
+		UpdateProfile(SID string, profile requests.ProfileUpdateRequest, ctx context.Context) error //
+		DeleteProfile(sessionID string, ctx context.Context) error                                  //
+		CreateLike(profile1, profile2 types.UserID, ctx context.Context) error                      //
+		GetMatches(profile types.UserID, ctx context.Context) ([]models.Card, error)
+		GetImage(userID int64, ctx context.Context) ([]models.Image, error) //
+		AddImage(userImage models.Image, ctx context.Context) error         //
+		DeleteImage(userImage models.Image, ctx context.Context) error      //
 	}
 
 	Auth interface {
-		IsAuthenticated(sessionID string, reqID int64) (types.UserID, bool)
-		Login(email, password string, reqID int64) (string, types.UserID, error)
-		Logout(sessionID string, reqID int64) error
-		Registration(Name string, Birthday string, Gender string, Email string, Password string, reqID int64) (string, types.UserID, error)
+		IsAuthenticated(sessionID string, ctx context.Context) (types.UserID, bool)
+		Login(email, password string, ctx context.Context) (string, types.UserID, error)
+		Logout(sessionID string, ctx context.Context) error
+		Registration(Name string, Birthday string, Gender string, Email string, Password string, ctx context.Context) (string, types.UserID, error)
 	}
 )

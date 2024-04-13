@@ -1,10 +1,10 @@
 package service
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	models "main.go/db"
-	. "main.go/internal/logs"
 	"main.go/internal/types"
 )
 
@@ -25,8 +25,8 @@ func New(pstor PersonStorage, istor InterestStorage, imstor ImageStorage, lstor 
 	}
 }
 
-func (service *Service) GetName(sessionID string, requestID int64) (string, error) {
-	person, err := service.personStorage.Get(requestID, &models.PersonGetFilter{SessionID: []string{sessionID}})
+func (service *Service) GetName(sessionID string, ctx context.Context) (string, error) {
+	person, err := service.personStorage.Get(ctx, &models.PersonGetFilter{SessionID: []string{sessionID}})
 	if err != nil {
 		return "", err
 	}
@@ -39,14 +39,14 @@ func (service *Service) GetName(sessionID string, requestID int64) (string, erro
 }
 
 // GetCards - вернуть ленту пользователей, доступно только авторизованному пользователю
-func (service *Service) GetCards(userID types.UserID, requestID int64) ([]models.Card, error) {
-	persons, err := service.personStorage.GetFeed(requestID, userID)
+func (service *Service) GetCards(userID types.UserID, ctx context.Context) ([]models.Card, error) {
+	persons, err := service.personStorage.GetFeed(ctx, userID)
 
 	if err != nil {
 		return nil, err
 	}
 
-	interests, images, err := service.getUserCards(persons, requestID)
+	interests, images, err := service.getUserCards(persons, ctx)
 
 	if err != nil {
 		return nil, err
@@ -55,16 +55,16 @@ func (service *Service) GetCards(userID types.UserID, requestID int64) ([]models
 	return combineToCards(persons, interests, images), nil
 }
 
-func (service *Service) getUserCards(persons []*models.Person, requestID int64) ([][]*models.Interest, [][]models.Image, error) {
+func (service *Service) getUserCards(persons []*models.Person, ctx context.Context) ([][]*models.Interest, [][]models.Image, error) {
 	var err error
 	interests := make([][]*models.Interest, len(persons))
 	images := make([][]models.Image, len(persons))
 	for j := range persons {
-		interests[j], err = service.interestStorage.GetPersonInterests(requestID, persons[j].ID)
+		interests[j], err = service.interestStorage.GetPersonInterests(ctx, persons[j].ID)
 		if err != nil {
 			return nil, nil, err
 		}
-		images[j], err = service.imageStorage.Get(requestID, int64(persons[j].ID))
+		images[j], err = service.imageStorage.Get(ctx, int64(persons[j].ID))
 		fmt.Printf("%v", images[j])
 		if err != nil {
 			return nil, nil, err
@@ -75,7 +75,6 @@ func (service *Service) getUserCards(persons []*models.Person, requestID int64) 
 
 func combineToCards(persons []*models.Person, interests [][]*models.Interest, images [][]models.Image) []models.Card {
 	if len(persons) != len(interests) || len(persons) != len(images) {
-		Log.Warn("can't create cards: different slices size")
 		return nil
 	}
 

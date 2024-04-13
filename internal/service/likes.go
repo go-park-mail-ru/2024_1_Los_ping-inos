@@ -1,16 +1,17 @@
 package service
 
 import (
+	"context"
 	models "main.go/db"
 	"main.go/internal/types"
 )
 
-func (service *Service) CreateLike(profile1, profile2 types.UserID, requestID int64) error {
-	return service.likeStorage.Create(requestID, profile1, profile2)
+func (service *Service) CreateLike(profile1, profile2 types.UserID, ctx context.Context) error {
+	return service.likeStorage.Create(ctx, profile1, profile2)
 }
 
-func (service *Service) GetMatches(profile types.UserID, requestID int64) ([]models.Card, error) {
-	ids, err := service.likeStorage.GetMatch(requestID, profile)
+func (service *Service) GetMatches(profile types.UserID, ctx context.Context) ([]models.Card, error) {
+	ids, err := service.likeStorage.GetMatch(ctx, profile)
 	if err != nil {
 		return nil, err
 	}
@@ -18,5 +19,5 @@ func (service *Service) GetMatches(profile types.UserID, requestID int64) ([]mod
 		return nil, nil
 	}
 
-	return service.GetProfile(ProfileGetParams{ID: ids}, requestID)
+	return service.GetProfile(ProfileGetParams{ID: ids}, ctx)
 }

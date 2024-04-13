@@ -35,13 +35,12 @@ const (
 
 func (deliver *Deliver) GetImageHandler() func(w http.ResponseWriter, r *http.Request) {
 	return func(respWriter http.ResponseWriter, request *http.Request) {
-		requestID := request.Context().Value(RequestID).(int64)
-
+		logger := request.Context().Value(Logg).(Log)
 		userId := int64(request.Context().Value(RequestUserID).(types.UserID))
 
-		images, err := deliver.serv.GetImage(userId, requestID)
+		images, err := deliver.serv.GetImage(userId, request.Context())
 		if err != nil {
-			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn(err.Error())
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn(err.Error())
 			requests.SendResponse(respWriter, request, http.StatusInternalServerError, err.Error())
 			return
 		}
@@ -86,18 +85,17 @@ func (deliver *Deliver) GetImageHandler() func(w http.ResponseWriter, r *http.Re
 		}
 
 		requests.SendResponse(respWriter, request, http.StatusOK, url)
-		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("sent image")
+		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("sent image")
 	}
 }
 
 func (deliver *Deliver) AddImageHandler() func(w http.ResponseWriter, r *http.Request) {
 	return func(respWriter http.ResponseWriter, request *http.Request) {
-		requestID := request.Context().Value(RequestID).(int64)
-		//var r requests.ImageAddRequest
+		logger := request.Context().Value(Logg).(Log)
 
 		err := request.ParseMultipartForm(10 << 20)
 		if err != nil {
-			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn(err.Error())
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn(err.Error())
 			requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
 			return
 		}
@@ -106,7 +104,7 @@ func (deliver *Deliver) AddImageHandler() func(w http.ResponseWriter, r *http.Re
 
 		image, handler, err := request.FormFile("image")
 		if err != nil && errors.Is(err, http.ErrMissingFile) {
-			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn(err.Error())
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn(err.Error())
 			requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
 			return
 		}
@@ -123,14 +121,14 @@ func (deliver *Deliver) AddImageHandler() func(w http.ResponseWriter, r *http.Re
 		}
 
 		if !isValidImage {
-			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("wrong format")
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("wrong format")
 			requests.SendResponse(respWriter, request, http.StatusBadRequest, "Wrong format")
 			return
 		}
 
 		userId := int64(request.Context().Value(RequestUserID).(types.UserID))
 		if err != nil {
-			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn(err.Error())
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn(err.Error())
 			requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
 			return
 		}
@@ -142,7 +140,7 @@ func (deliver *Deliver) AddImageHandler() func(w http.ResponseWriter, r *http.Re
 			Region: aws.String("ru-msk"),
 		})
 		if err != nil {
-			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn(err.Error())
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn(err.Error())
 			return
 		}
 
@@ -152,9 +150,9 @@ func (deliver *Deliver) AddImageHandler() func(w http.ResponseWriter, r *http.Re
 			CellNumber: cell,
 		}
 
-		err = deliver.serv.AddImage(userImage, requestID)
+		err = deliver.serv.AddImage(userImage, request.Context())
 		if err != nil {
-			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn(err.Error())
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn(err.Error())
 			requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
 			return
 		}
@@ -171,11 +169,11 @@ func (deliver *Deliver) AddImageHandler() func(w http.ResponseWriter, r *http.Re
 
 		_, err = svc.PutObject(params)
 		if err != nil {
-			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn(err.Error())
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn(err.Error())
 			return
 		}
 
-		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("image added")
+		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("image added")
 		requests.SendResponse(respWriter, request, http.StatusOK, objectURL)
 
 	}
@@ -183,21 +181,21 @@ func (deliver *Deliver) AddImageHandler() func(w http.ResponseWriter, r *http.Re
 
 func (deliver *Deliver) DeleteImageHandler() func(w http.ResponseWriter, r *http.Request) {
 	return func(respWriter http.ResponseWriter, request *http.Request) {
-		requestID := deliver.nextRequest()
-		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("delete image")
+		logger := request.Context().Value(Logg).(Log)
+		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("delete image")
 		userId := int64(request.Context().Value(RequestUserID).(types.UserID))
 		var r requests.ImageRequest
 
 		body, err := io.ReadAll(request.Body)
 		if err != nil {
-			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("bad body: ", err.Error())
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("bad body: ", err.Error())
 			requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
 			return
 		}
 
 		err = json.Unmarshal(body, &r)
 		if err != nil {
-			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("can't unmarshal body: ", err.Error())
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't unmarshal body: ", err.Error())
 			requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
 			return
 		}
@@ -207,9 +205,9 @@ func (deliver *Deliver) DeleteImageHandler() func(w http.ResponseWriter, r *http
 			CellNumber: r.CellNumber,
 		}
 
-		err = deliver.serv.DeleteImage(userImage, requestID)
+		err = deliver.serv.DeleteImage(userImage, request.Context())
 		if err != nil {
-			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn(err.Error())
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn(err.Error())
 			requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
 			return
 		}
@@ -218,7 +216,7 @@ func (deliver *Deliver) DeleteImageHandler() func(w http.ResponseWriter, r *http
 			Region: aws.String("ru-msk"),
 		})
 		if err != nil {
-			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn(err.Error())
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn(err.Error())
 			return
 		}
 
@@ -246,7 +244,7 @@ func (deliver *Deliver) DeleteImageHandler() func(w http.ResponseWriter, r *http
 			}
 		}
 
-		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("image added")
+		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("image added")
 		requests.SendResponse(respWriter, request, http.StatusOK, nil)
 	}
 }

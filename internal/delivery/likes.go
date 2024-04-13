@@ -24,11 +24,11 @@ import (
 // @Failure 405       {string} string
 func (deliver *Deliver) CreateLike() func(respWriter http.ResponseWriter, request *http.Request) {
 	return func(respWriter http.ResponseWriter, request *http.Request) {
-		requestID := request.Context().Value(RequestID).(int64)
+		logger := request.Context().Value(Logg).(Log)
 
 		body, err := io.ReadAll(request.Body)
 		if err != nil { // TODO эти два блока вынести в отдельную функцию и напихать её во все ручки
-			Log.WithFields(logrus.Fields{RequestID: requestID}).Info("bad body: ", err.Error())
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("bad body: ", err.Error())
 			requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
 			return
 		}
@@ -36,20 +36,20 @@ func (deliver *Deliver) CreateLike() func(respWriter http.ResponseWriter, reques
 		var requestBody requests.CreateLikeRequest
 		err = json.Unmarshal(body, &requestBody)
 		if err != nil {
-			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("can't unmarshal body: ", err.Error())
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't unmarshal body: ", err.Error())
 			requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
 			return
 		}
 
-		err = deliver.serv.CreateLike(request.Context().Value(RequestUserID).(types.UserID), requestBody.Profile2, requestID)
+		err = deliver.serv.CreateLike(request.Context().Value(RequestUserID).(types.UserID), requestBody.Profile2, request.Context())
 		if err != nil {
-			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("can't update profile: ", err.Error())
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't update profile: ", err.Error())
 			requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
 			return
 		}
 
 		requests.SendResponse(respWriter, request, http.StatusOK, nil)
-		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("create like sent response")
+		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("create like sent response")
 	}
 }
 
@@ -65,16 +65,16 @@ func (deliver *Deliver) CreateLike() func(respWriter http.ResponseWriter, reques
 // @Failure 405        {string} string
 func (deliver *Deliver) GetMatches() func(respWriter http.ResponseWriter, request *http.Request) {
 	return func(respWriter http.ResponseWriter, request *http.Request) {
-		requestID := request.Context().Value(RequestID).(int64)
+		logger := request.Context().Value(Logg).(Log)
 		userID := request.Context().Value(RequestUserID).(types.UserID)
-		matches, err := deliver.serv.GetMatches(userID, requestID)
+		matches, err := deliver.serv.GetMatches(userID, request.Context())
 		if err != nil {
-			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("can't get matches: ", err.Error())
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't get matches: ", err.Error())
 			requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
 			return
 		}
 
 		requests.SendResponse(respWriter, request, http.StatusOK, matches)
-		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("get matches sent response")
+		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("get matches sent response")
 	}
 }

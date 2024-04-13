@@ -5,6 +5,7 @@ import (
 	"errors"
 	"github.com/sirupsen/logrus"
 	"io"
+	"main.go/config"
 	models "main.go/db"
 	. "main.go/internal/logs"
 	requests "main.go/internal/pkg"
@@ -45,28 +46,28 @@ func (deliver *Deliver) ReadProfile(respWriter http.ResponseWriter, request *htt
 		profile []models.Card
 	)
 
-	requestID := request.Context().Value(RequestID).(int64)
+	logger := request.Context().Value(Logg).(Log)
 
 	if request.URL.Query().Has("id") { // просмотр профиля по id (чужой профиль из ленты)
 		id, err = strconv.Atoi(request.URL.Query().Get("id"))
 		if err != nil {
 			requests.SendResponse(respWriter, request, http.StatusInternalServerError, err.Error())
-			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("get profile err: ", err.Error())
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("get profile err: ", err.Error())
 		}
-		profile, err = deliver.serv.GetProfile(service.ProfileGetParams{ID: []types.UserID{types.UserID(id)}}, requestID)
+		profile, err = deliver.serv.GetProfile(service.ProfileGetParams{ID: []types.UserID{types.UserID(id)}}, request.Context())
 	} else { // свой профиль
 		session, _ := request.Cookie("session_id")
-		profile, err = deliver.serv.GetProfile(service.ProfileGetParams{SessionID: []string{session.Value}}, requestID)
+		profile, err = deliver.serv.GetProfile(service.ProfileGetParams{SessionID: []string{session.Value}}, request.Context())
 	}
 
 	if err != nil {
 		requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
-		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("get profile err: ", err.Error())
+		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("get profile err: ", err.Error())
 		return
 	}
 
 	requests.SendResponse(respWriter, request, http.StatusOK, profile[0])
-	Log.WithFields(logrus.Fields{RequestID: requestID}).Info("get profile sent response")
+	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("get profile sent response")
 }
 
 // UpdateProfile godoc
@@ -83,29 +84,29 @@ func (deliver *Deliver) ReadProfile(respWriter http.ResponseWriter, request *htt
 // @Failure 405       {string} string
 // @Failure 409       {string} string // TODO
 func (deliver *Deliver) UpdateProfile(respWriter http.ResponseWriter, request *http.Request) {
-	requestID := request.Context().Value(RequestID).(int64)
+	logger := request.Context().Value(Logg).(Log)
 
 	var requestBody requests.ProfileUpdateRequest
 
 	body, err := io.ReadAll(request.Body)
 	if err != nil {
-		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("bad body: ", err.Error())
+		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("bad body: ", err.Error())
 		requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	err = json.Unmarshal(body, &requestBody)
 	if err != nil {
-		Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("can't unmarshal body: ", err.Error())
+		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't unmarshal body: ", err.Error())
 		requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	session, _ := request.Cookie("session_id")
 
-	err = deliver.serv.UpdateProfile(session.Value, requestBody, requestID)
+	err = deliver.serv.UpdateProfile(session.Value, requestBody, request.Context())
 	if err != nil {
-		Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("can't update profile: ", err.Error())
+		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't update profile: ", err.Error())
 		if errors.As(err, &types.DifferentPasswordsError) {
 			requests.SendResponse(respWriter, request, http.StatusConflict, err.Error())
 		} else {
@@ -115,7 +116,7 @@ func (deliver *Deliver) UpdateProfile(respWriter http.ResponseWriter, request *h
 	}
 
 	requests.SendResponse(respWriter, request, http.StatusOK, nil)
-	Log.WithFields(logrus.Fields{RequestID: requestID}).Info("update profile sent response")
+	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("update profile sent response")
 }
 
 // DeleteProfile godoc
@@ -130,18 +131,17 @@ func (deliver *Deliver) UpdateProfile(respWriter http.ResponseWriter, request *h
 // @Failure 405       {string} string
 // @Failure 409       {string} string // TODO
 func (deliver *Deliver) DeleteProfile(respWriter http.ResponseWriter, request *http.Request) {
-	requestID := request.Context().Value(RequestID).(int64)
+	logger := request.Context().Value(Logg).(Log)
 
-	session, _ := request.Cookie("session_id")
-	err := deliver.serv.DeleteProfile(session.Value, requestID)
+	err := deliver.serv.DeleteProfile(request.Context().Value(config.RequestSID).(string), request.Context())
 
 	if err != nil {
-		Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("can't delete: ", err.Error())
+		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't delete: ", err.Error())
 		requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	setLoginCookie("", expiredYear, respWriter)
-	Log.WithFields(logrus.Fields{RequestID: requestID}).Info("deleted profile")
+	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("deleted profile")
 	requests.SendResponse(respWriter, request, http.StatusOK, nil)
 }

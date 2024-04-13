@@ -1,34 +1,35 @@
 package service
 
 import (
+	"context"
 	models "main.go/db"
 	"main.go/internal/types"
 )
 
 type PersonStorage interface {
-	Get(requestID int64, filter *models.PersonGetFilter) ([]*models.Person, error)
-	GetFeed(requestID int64, filter types.UserID) ([]*models.Person, error)
-	AddAccount(requestID int64, Name string, Birhday string, Gender string, Email string, Password string) error
-	Update(requestID int64, person models.Person) error
-	RemoveSession(requestID int64, sid string) error
-	Delete(requestID int64, sessionID string) error
+	Get(ctx context.Context, filter *models.PersonGetFilter) ([]*models.Person, error)
+	GetFeed(ctx context.Context, filter types.UserID) ([]*models.Person, error)
+	AddAccount(ctx context.Context, Name string, Birhday string, Gender string, Email string, Password string) error
+	Update(ctx context.Context, person models.Person) error
+	RemoveSession(ctx context.Context, sid string) error
+	Delete(ctx context.Context, sessionID string) error
 }
 
 type InterestStorage interface {
-	Get(requestID int64, filter *models.InterestGetFilter) ([]*models.Interest, error)
-	GetPersonInterests(requestID int64, personID types.UserID) ([]*models.Interest, error)
-	CreatePersonInterests(requestID int64, personID types.UserID, interestID []types.InterestID) error
-	DeletePersonInterests(requestID int64, personID types.UserID, interestID []types.InterestID) error
+	Get(ctx context.Context, filter *models.InterestGetFilter) ([]*models.Interest, error)
+	GetPersonInterests(ctx context.Context, personID types.UserID) ([]*models.Interest, error)
+	CreatePersonInterests(ctx context.Context, personID types.UserID, interestID []types.InterestID) error
+	DeletePersonInterests(ctx context.Context, personID types.UserID, interestID []types.InterestID) error
 }
 
 type LikeStorage interface {
-	Get(requestID int64, filter *models.LikeGetFilter) ([]types.UserID, error)
-	Create(requestID int64, person1ID, person2ID types.UserID) error
-	GetMatch(requestID int64, person1ID types.UserID) ([]types.UserID, error)
+	Get(ctx context.Context, filter *models.LikeGetFilter) ([]types.UserID, error)
+	Create(ctx context.Context, person1ID, person2ID types.UserID) error
+	GetMatch(ctx context.Context, person1ID types.UserID) ([]types.UserID, error)
 }
 
 type ImageStorage interface {
-	Get(requestID int64, userID int64) ([]models.Image, error)
-	Add(requestID int64, image models.Image) error
-	Delete(requestID int64, image models.Image) error
+	Get(ctx context.Context, userID int64) ([]models.Image, error)
+	Add(ctx context.Context, image models.Image) error
+	Delete(ctx context.Context, image models.Image) error
 }

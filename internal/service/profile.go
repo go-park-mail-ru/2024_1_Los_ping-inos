@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"errors"
 	"github.com/emirpasic/gods/sets/hashset"
 	models "main.go/db"
@@ -9,8 +10,8 @@ import (
 	"time"
 )
 
-func (service *Service) GetProfile(params ProfileGetParams, requestID int64) ([]models.Card, error) {
-	persons, err := service.personStorage.Get(requestID, &models.PersonGetFilter{SessionID: params.SessionID, ID: params.ID})
+func (service *Service) GetProfile(params ProfileGetParams, ctx context.Context) ([]models.Card, error) {
+	persons, err := service.personStorage.Get(ctx, &models.PersonGetFilter{SessionID: params.SessionID, ID: params.ID})
 	if err != nil {
 		return nil, err
 	}
@@ -19,7 +20,7 @@ func (service *Service) GetProfile(params ProfileGetParams, requestID int64) ([]
 		return nil, errors.New("no such person")
 	}
 
-	interests, images, err := service.getUserCards(persons, requestID)
+	interests, images, err := service.getUserCards(persons, ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -38,8 +39,8 @@ func (service *Service) GetProfile(params ProfileGetParams, requestID int64) ([]
 	return profile, err
 }
 
-func (service *Service) UpdateProfile(SID string, profile requests.ProfileUpdateRequest, requestID int64) error {
-	persons, err := service.personStorage.Get(requestID, &models.PersonGetFilter{SessionID: []string{SID}})
+func (service *Service) UpdateProfile(SID string, profile requests.ProfileUpdateRequest, ctx context.Context) error {
+	persons, err := service.personStorage.Get(ctx, &models.PersonGetFilter{SessionID: []string{SID}})
 	if err != nil {
 		return err
 	}
@@ -72,28 +73,28 @@ func (service *Service) UpdateProfile(SID string, profile requests.ProfileUpdate
 		}
 	}
 	if profile.Interests != nil {
-		err = service.handleInterests(profile.Interests, person.ID, requestID)
+		err = service.handleInterests(profile.Interests, person.ID, ctx)
 		if err != nil {
 			return err
 		}
 	}
-	err = service.personStorage.Update(requestID, *person)
+	err = service.personStorage.Update(ctx, *person)
 
 	return err
 }
 
-func (service *Service) DeleteProfile(sessionID string, requestID int64) error {
-	err := service.personStorage.Delete(requestID, sessionID)
+func (service *Service) DeleteProfile(sessionID string, ctx context.Context) error {
+	err := service.personStorage.Delete(ctx, sessionID)
 	return err
 }
 
-func (service *Service) handleInterests(interests []string, personID types.UserID, requestID int64) error {
-	interestsBefore, err := service.interestStorage.GetPersonInterests(requestID, personID)
+func (service *Service) handleInterests(interests []string, personID types.UserID, ctx context.Context) error {
+	interestsBefore, err := service.interestStorage.GetPersonInterests(ctx, personID)
 	if err != nil {
 		return err
 	}
 
-	interestsAfter, err := service.interestStorage.Get(requestID, &models.InterestGetFilter{Name: interests})
+	interestsAfter, err := service.interestStorage.Get(ctx, &models.InterestGetFilter{Name: interests})
 	if err != nil {
 		return err
 	}
@@ -106,14 +107,14 @@ func (service *Service) handleInterests(interests []string, personID types.UserI
 
 	ad := setAfter.Difference(setBefore).Values()
 	add := normalizeFromSet(ad)
-	err = service.interestStorage.CreatePersonInterests(requestID, personID, add)
+	err = service.interestStorage.CreatePersonInterests(ctx, personID, add)
 	if err != nil {
 		return err
 	}
 
 	del := setBefore.Difference(setAfter).Values()
 	delet := normalizeFromSet(del)
-	err = service.interestStorage.DeletePersonInterests(requestID, personID, delet)
+	err = service.interestStorage.DeletePersonInterests(ctx, personID, delet)
 
 	return err
 }

@@ -15,20 +15,22 @@ const CSRFHeader = "csrft"
 
 func IsAuthenticatedMiddleware(next http.Handler, deliver *Deliver) http.Handler {
 	return http.HandlerFunc(func(respWriter http.ResponseWriter, request *http.Request) {
+		log := request.Context().Value(Logg).(Log)
+
 		session, err := request.Cookie("session_id") // проверка авторизации
 		if err != nil || session == nil {
-			Log.WithFields(logrus.Fields{RequestID: request.Context().Value(RequestID)}).Info("unauthorized")
+			log.Logger.WithFields(logrus.Fields{RequestID: log.RequestID}).Info("unauthorized")
 			requests.SendResponse(respWriter, request, http.StatusUnauthorized, "unauthorized")
 			return
 		}
-		id, authorized := deliver.auth.IsAuthenticated(session.Value, request.Context().Value(RequestID).(int64))
+		id, authorized := deliver.auth.IsAuthenticated(session.Value, request.Context())
 
 		if !authorized {
-			Log.WithFields(logrus.Fields{RequestID: request.Context().Value(RequestID)}).Info("unauthorized")
+			log.Logger.WithFields(logrus.Fields{RequestID: log.RequestID}).Info("unauthorized")
 			requests.SendResponse(respWriter, request, http.StatusUnauthorized, "unauthorized")
 			return
 		}
-		Log.WithFields(logrus.Fields{RequestID: request.Context().Value(RequestID)}).Info("authorized")
+		log.Logger.WithFields(logrus.Fields{RequestID: log.RequestID}).Info("authorized")
 		contexted := request.WithContext(context.WithValue(request.Context(), RequestUserID, id))
 		contexted = request.WithContext(context.WithValue(contexted.Context(), RequestSID, session.Value))
 		next.ServeHTTP(respWriter, contexted)
@@ -37,33 +39,36 @@ func IsAuthenticatedMiddleware(next http.Handler, deliver *Deliver) http.Handler
 
 func AllowedMethodMiddleware(next http.Handler, methods *hashset.Set) http.Handler {
 	return http.HandlerFunc(func(respWriter http.ResponseWriter, request *http.Request) {
+		log := request.Context().Value(Logg).(Log)
+
 		if request.Method == http.MethodOptions {
-			Log.WithFields(logrus.Fields{RequestID: request.Context().Value(RequestID)}).Info("preflight")
+			log.Logger.WithFields(logrus.Fields{RequestID: log.RequestID}).Info("preflight")
 			requests.SendResponse(respWriter, request, http.StatusOK, nil)
 			return
 		}
 
 		if !methods.Contains(request.Method) {
-			Log.WithFields(logrus.Fields{RequestID: request.Context().Value(RequestID)}).Info("method not allowed")
+			log.Logger.WithFields(logrus.Fields{RequestID: log.RequestID}).Info("method not allowed")
 			requests.SendResponse(respWriter, request, http.StatusMethodNotAllowed, "method not allowed")
 			return
 		}
-		Log.WithFields(logrus.Fields{RequestID: request.Context().Value(RequestID)}).Info("methods checked")
+		log.Logger.WithFields(logrus.Fields{RequestID: log.RequestID}).Info("methods checked")
 		next.ServeHTTP(respWriter, request)
 	})
 }
 
-func RequestIDMiddleware(next http.Handler, deliver *Deliver, msg string) http.Handler {
+func RequestIDMiddleware(next http.Handler, deliver *Deliver, msg string, logger Log) http.Handler {
 	return http.HandlerFunc(func(respWriter http.ResponseWriter, request *http.Request) {
-		requestID := deliver.nextRequest()
-		contexted := request.WithContext(context.WithValue(context.Background(), RequestID, requestID))
-		Log.WithFields(logrus.Fields{RequestID: requestID}).Info(msg + " request")
+		logger.RequestID = deliver.nextRequest()
+		contexted := request.WithContext(context.WithValue(context.Background(), Logg, logger))
+		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info(msg + " request")
 		next.ServeHTTP(respWriter, contexted)
 	})
 }
 
 func CSRFMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(respWriter http.ResponseWriter, request *http.Request) {
+		log := request.Context().Value(Logg).(Log)
 		if request.Method == http.MethodGet {
 			next.ServeHTTP(respWriter, request)
 			return
@@ -72,7 +77,7 @@ func CSRFMiddleware(next http.Handler) http.Handler {
 		if correct, err := CheckCSRFToken(request.Context().Value(RequestSID).(string),
 			request.Context().Value(RequestUserID).(types.UserID), tok); !correct || err != nil {
 
-			Log.WithFields(logrus.Fields{RequestID: request.Context().Value(RequestID)}).Info("CSRF not correct")
+			log.Logger.WithFields(logrus.Fields{RequestID: log.RequestID}).Info("CSRF not correct")
 			requests.SendResponse(respWriter, request, http.StatusForbidden, "CSRF not correct")
 			return
 		}

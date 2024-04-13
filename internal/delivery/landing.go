@@ -23,17 +23,15 @@ import (
 // @Failure 500       {string} string
 func (deliver *Deliver) GetUsername() func(w http.ResponseWriter, r *http.Request) {
 	return func(respWriter http.ResponseWriter, request *http.Request) {
-		requestID := request.Context().Value(RequestID).(int64)
+		logger := request.Context().Value(Logg).(Log)
 
-		session, _ := request.Cookie("session_id") // возвращает только ErrNoCookie, так что обработка не нужна
-
-		name, err := deliver.serv.GetName(session.Value, requestID)
+		name, err := deliver.serv.GetName(request.Context().Value(RequestSID).(string), request.Context())
 		if err != nil {
-			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn(err.Error())
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn(err.Error())
 			requests.SendResponse(respWriter, request, http.StatusInternalServerError, "can't get name")
 		}
 		requests.SendResponse(respWriter, request, http.StatusOK, name)
-		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("sent username")
+		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("sent username")
 	}
 }
 
@@ -50,17 +48,17 @@ func (deliver *Deliver) GetUsername() func(w http.ResponseWriter, r *http.Reques
 // @Failure 500       {string} string
 func (deliver *Deliver) GetCardsHandler() func(http.ResponseWriter, *http.Request) {
 	return func(respWriter http.ResponseWriter, request *http.Request) {
-		requestID := request.Context().Value(RequestID).(int64)
+		logger := request.Context().Value(Logg).(Log)
 
-		cards, err := deliver.serv.GetCards(request.Context().Value(RequestUserID).(types.UserID), requestID)
+		cards, err := deliver.serv.GetCards(request.Context().Value(RequestUserID).(types.UserID), request.Context())
 		if err != nil {
-			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn(err.Error())
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn(err.Error())
 			requests.SendResponse(respWriter, request, http.StatusInternalServerError, err.Error())
 			return
 		}
 
 		requests.SendResponse(respWriter, request, http.StatusOK, cards)
-		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("sent cards")
+		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("sent cards")
 	}
 }
 

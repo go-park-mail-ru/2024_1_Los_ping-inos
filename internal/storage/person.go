@@ -1,6 +1,7 @@
 package storage
 
 import (
+	"context"
 	"database/sql"
 	"encoding/json"
 	"fmt"
@@ -27,7 +28,8 @@ func NewPersonStorage(dbReader *sql.DB) *PersonStorage {
 	}
 }
 
-func (storage *PersonStorage) Get(requestID int64, filter *models.PersonGetFilter) ([]*models.Person, error) {
+func (storage *PersonStorage) Get(ctx context.Context, filter *models.PersonGetFilter) ([]*models.Person, error) {
+	logger := ctx.Value(Logg).(Log)
 	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
 	whereMap := qb.And{}
 
@@ -45,11 +47,11 @@ func (storage *PersonStorage) Get(requestID int64, filter *models.PersonGetFilte
 		Where(whereMap).
 		RunWith(storage.dbReader)
 
-	Log.WithFields(logrus.Fields{RequestID: requestID}).Info("db get request to ", PersonTableName)
+	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db get request to ", PersonTableName)
 	rows, err := query.Query()
 
 	if err != nil {
-		Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("db read can't query: ", err.Error())
+		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("db read can't query: ", err.Error())
 		return nil, err
 	}
 	defer rows.Close()
@@ -62,27 +64,28 @@ func (storage *PersonStorage) Get(requestID int64, filter *models.PersonGetFilte
 			&person.Email, &person.Password, &person.CreatedAt, &person.Premium, &person.LikesLeft, &person.SessionID, &person.Gender)
 
 		if err != nil {
-			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("db can't scan person: ", err.Error())
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("db can't scan person: ", err.Error())
 			return nil, err
 		}
 
 		persons = append(persons, person)
 	}
 
-	Log.WithFields(logrus.Fields{RequestID: requestID}).Info("db returning records")
+	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db returning records")
 	return persons, nil
 }
 
-func (storage *PersonStorage) GetFeed(requestID int64, filter types.UserID) ([]*models.Person, error) {
+func (storage *PersonStorage) GetFeed(ctx context.Context, filter types.UserID) ([]*models.Person, error) {
+	logger := ctx.Value(Logg).(Log)
 	likes := &LikeStorage{dbReader: storage.dbReader}
-	ids, err := likes.Get(requestID, &models.LikeGetFilter{Person1: &filter})
+	ids, err := likes.Get(ctx, &models.LikeGetFilter{Person1: &filter})
 	if err != nil {
 		return nil, err
 	}
 	ids = append(ids, filter)
 
 	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
-	Log.WithFields(logrus.Fields{RequestID: requestID}).Info("db get request to ", PersonTableName)
+	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db get request to ", PersonTableName)
 	query := stBuilder.
 		Select(personFields).
 		From(PersonTableName).
@@ -91,7 +94,7 @@ func (storage *PersonStorage) GetFeed(requestID int64, filter types.UserID) ([]*
 
 	rows, err := query.Query()
 	if err != nil {
-		Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("db read can't query: ", err.Error())
+		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("db read can't query: ", err.Error())
 		return nil, err
 	}
 	defer rows.Close()
@@ -104,30 +107,31 @@ func (storage *PersonStorage) GetFeed(requestID int64, filter types.UserID) ([]*
 			&person.Email, &person.Password, &person.CreatedAt, &person.Premium, &person.LikesLeft, &person.SessionID, &person.Gender)
 
 		if err != nil {
-			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("db can't scan person: ", err.Error())
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("db can't scan person: ", err.Error())
 			return nil, err
 		}
 
 		persons = append(persons, person)
 	}
 
-	Log.WithFields(logrus.Fields{RequestID: requestID}).Info("db returning records")
+	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db returning records")
 	return persons, nil
 }
 
-func (storage *PersonStorage) Update(requestID int64, person models.Person) error {
+func (storage *PersonStorage) Update(ctx context.Context, person models.Person) error {
+	logger := ctx.Value(Logg).(Log)
 	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
 	setMap := make(map[string]interface{})
-	Log.WithFields(logrus.Fields{RequestID: requestID}).Info("db update request to ", PersonTableName)
+	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db update request to ", PersonTableName)
 
 	tmp, err := json.Marshal(person)
 	if err != nil {
-		Log.WithFields(logrus.Fields{RequestID: requestID}).Warn(err.Error())
+		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn(err.Error())
 		return err
 	}
 	err = json.Unmarshal(tmp, &setMap)
 	if err != nil {
-		Log.WithFields(logrus.Fields{RequestID: requestID}).Warn(err.Error())
+		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn(err.Error())
 		return err
 	}
 	setMap["password"] = person.Password
@@ -140,16 +144,17 @@ func (storage *PersonStorage) Update(requestID int64, person models.Person) erro
 	rows, err := query.Query()
 	defer rows.Close()
 	if err != nil {
-		Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("db update can't query: ", err.Error())
+		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("db update can't query: ", err.Error())
 		return err
 	}
-	Log.WithFields(logrus.Fields{RequestID: requestID}).Info("db person updated")
+	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db person updated")
 	return nil
 }
 
-func (storage *PersonStorage) Delete(requestID int64, sessionID string) error {
+func (storage *PersonStorage) Delete(ctx context.Context, sessionID string) error {
+	logger := ctx.Value(Logg).(Log)
 	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
-	Log.WithFields(logrus.Fields{RequestID: requestID}).Info("db delete request to ", PersonTableName)
+	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db delete request to ", PersonTableName)
 	query := stBuilder.
 		Delete(PersonTableName).
 		Where(qb.Eq{"session_id": sessionID}).
@@ -158,38 +163,40 @@ func (storage *PersonStorage) Delete(requestID int64, sessionID string) error {
 	rows, err := query.Query()
 	defer rows.Close()
 	if err != nil {
-		Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("db delete can't query: ", err.Error())
+		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("db delete can't query: ", err.Error())
 		return err
 	}
-	Log.WithFields(logrus.Fields{RequestID: requestID}).Info("db person deleted")
+	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db person deleted")
 	return nil
 }
 
-func (storage *PersonStorage) AddAccount(requestID int64, Name string, Birthday string, Gender string, Email string, Password string) error {
-	Log.WithFields(logrus.Fields{RequestID: requestID}).Info("db create request to ", PersonTableName)
+func (storage *PersonStorage) AddAccount(ctx context.Context, Name string, Birthday string, Gender string, Email string, Password string) error {
+	logger := ctx.Value(Logg).(Log)
+	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db create request to ", PersonTableName)
 	_, err := storage.dbReader.Exec(
 		"INSERT INTO person(name, birthday, email, password, gender) "+ // TODO PersonTableName
 			"VALUES ($1, $2, $3, $4, $5)", Name, Birthday, Email, Password, Gender)
 	if err != nil {
-		Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("db can't query: ", err.Error())
+		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("db can't query: ", err.Error())
 
 		return err
 	}
 
-	Log.WithFields(logrus.Fields{RequestID: requestID}).Info("db created person")
+	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db created person")
 	return nil
 }
 
-func (storage *PersonStorage) RemoveSession(requestID int64, sid string) error {
-	Log.WithFields(logrus.Fields{RequestID: requestID}).Info("db remove session_id request to ", PersonTableName)
+func (storage *PersonStorage) RemoveSession(ctx context.Context, sid string) error {
+	logger := ctx.Value(Logg).(Log)
+	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db remove session_id request to ", PersonTableName)
 	_, err := storage.dbReader.Exec(
 		"UPDATE person SET session_id = '' "+
 			"WHERE session_id = $1", sid)
 	if err != nil {
-		Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("can't query: ", err.Error())
+		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't query: ", err.Error())
 		return fmt.Errorf("Remove sessions %w", err)
 	}
-	Log.WithFields(logrus.Fields{RequestID: requestID}).Info("db removed session_id ", PersonTableName)
+	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db removed session_id ", PersonTableName)
 	return nil
 }
 

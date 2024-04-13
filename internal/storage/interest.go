@@ -1,6 +1,7 @@
 package storage
 
 import (
+	"context"
 	"database/sql"
 
 	qb "github.com/Masterminds/squirrel"
@@ -37,7 +38,8 @@ func processInterestNameFilter(filter *models.InterestGetFilter, whereMap *qb.An
 	}
 }
 
-func (storage *InterestStorage) Get(requestID int64, filter *models.InterestGetFilter) ([]*models.Interest, error) {
+func (storage *InterestStorage) Get(ctx context.Context, filter *models.InterestGetFilter) ([]*models.Interest, error) {
+	logger := ctx.Value(Logg).(Log)
 	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
 	whereMap := qb.And{}
 
@@ -58,12 +60,12 @@ func (storage *InterestStorage) Get(requestID int64, filter *models.InterestGetF
 		Where(whereMap).
 		RunWith(storage.dbReader)
 
-	Log.WithFields(logrus.Fields{RequestID: requestID}).Info("db get request to ", InterestTableName)
+	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db get request to ", InterestTableName)
 	rows, err := query.Query()
 	defer rows.Close()
 
 	if err != nil {
-		Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("can't query: ", err.Error())
+		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't query: ", err.Error())
 		return nil, err
 	}
 
@@ -72,19 +74,20 @@ func (storage *InterestStorage) Get(requestID int64, filter *models.InterestGetF
 		interest := &models.Interest{}
 		err = rows.Scan(&interest.ID, &interest.Name)
 		if err != nil {
-			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("can't scan row: ", err.Error())
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't scan row: ", err.Error())
 			return nil, err
 		}
 
 		interests = append(interests, interest)
 	}
 
-	Log.WithFields(logrus.Fields{RequestID: requestID}).Info("return ", len(interests), " interests")
+	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("return ", len(interests), " interests")
 	return interests, nil
 }
 
-func (storage *InterestStorage) GetPersonInterests(requestID int64, personID types.UserID) ([]*models.Interest, error) {
-	Log.WithFields(logrus.Fields{RequestID: requestID}).Info("db get request to ", PersonInterestTableName)
+func (storage *InterestStorage) GetPersonInterests(ctx context.Context, personID types.UserID) ([]*models.Interest, error) {
+	logger := ctx.Value(Logg).(Log)
+	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db get request to ", PersonInterestTableName)
 	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
 	query := stBuilder.Select(interestFields).
 		From(PersonInterestTableName).
@@ -93,7 +96,7 @@ func (storage *InterestStorage) GetPersonInterests(requestID int64, personID typ
 
 	rows, err := query.Query()
 	if err != nil {
-		Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("db can't query: ", err.Error())
+		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("db can't query: ", err.Error())
 		return nil, err
 	}
 	defer rows.Close()
@@ -106,18 +109,19 @@ func (storage *InterestStorage) GetPersonInterests(requestID int64, personID typ
 	for rows.Next() {
 		err = rows.Scan(&personsID, &interestID)
 		if err != nil {
-			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("db person_interest can't scan: ", err.Error())
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("db person_interest can't scan: ", err.Error())
 			return nil, err
 		}
 		ids = append(ids, interestID)
 	}
-	Log.WithFields(logrus.Fields{RequestID: requestID}).Info("db got ", len(ids), " interest ids")
-	return storage.Get(requestID, &models.InterestGetFilter{ID: ids})
+	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db got ", len(ids), " interest ids")
+	return storage.Get(ctx, &models.InterestGetFilter{ID: ids})
 }
 
-func (storage *InterestStorage) CreatePersonInterests(requestID int64, personID types.UserID, interestID []types.InterestID) error {
+func (storage *InterestStorage) CreatePersonInterests(ctx context.Context, personID types.UserID, interestID []types.InterestID) error {
+	logger := ctx.Value(Logg).(Log)
 	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
-	Log.WithFields(logrus.Fields{RequestID: requestID}).Info("db add request to ", PersonInterestTableName)
+	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db add request to ", PersonInterestTableName)
 
 	for i := range interestID {
 		query := stBuilder.
@@ -128,7 +132,7 @@ func (storage *InterestStorage) CreatePersonInterests(requestID int64, personID 
 
 		rows, err := query.Query()
 		if err != nil {
-			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("db insert can't query: ", err.Error())
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("db insert can't query: ", err.Error())
 			rows.Close()
 			return err
 		}
@@ -138,9 +142,10 @@ func (storage *InterestStorage) CreatePersonInterests(requestID int64, personID 
 	return nil
 }
 
-func (storage *InterestStorage) DeletePersonInterests(requestID int64, personID types.UserID, interestID []types.InterestID) error {
+func (storage *InterestStorage) DeletePersonInterests(ctx context.Context, personID types.UserID, interestID []types.InterestID) error {
+	logger := ctx.Value(Logg).(Log)
 	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
-	Log.WithFields(logrus.Fields{RequestID: requestID}).Info("db delete request to ", PersonInterestTableName)
+	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db delete request to ", PersonInterestTableName)
 	query := stBuilder.
 		Delete(PersonInterestTableName).
 		Where(qb.And{qb.Eq{"person_id": personID}, qb.Eq{"interest_id": interestID}}).
@@ -149,9 +154,9 @@ func (storage *InterestStorage) DeletePersonInterests(requestID int64, personID 
 	rows, err := query.Query()
 	defer rows.Close()
 	if err != nil {
-		Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("db delete can't query: ", err.Error())
+		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("db delete can't query: ", err.Error())
 		return err
 	}
-	Log.WithFields(logrus.Fields{RequestID: requestID}).Info("db person interest deleted")
+	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db person interest deleted")
 	return nil
 }

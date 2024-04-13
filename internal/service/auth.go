@@ -1,16 +1,14 @@
 package service
 
 import (
+	"context"
 	"errors"
 	"main.go/internal/types"
 	"sync"
 
-	"github.com/sirupsen/logrus"
-
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 	models "main.go/db"
-	. "main.go/internal/logs"
 )
 
 type AuthHandler struct {
@@ -25,8 +23,8 @@ func NewAuthHandler(dbReader PersonStorage) *AuthHandler {
 	}
 }
 
-func (api *AuthHandler) IsAuthenticated(sessionID string, requestID int64) (types.UserID, bool) {
-	person, err := api.dbReader.Get(requestID, &models.PersonGetFilter{SessionID: []string{sessionID}})
+func (api *AuthHandler) IsAuthenticated(sessionID string, ctx context.Context) (types.UserID, bool) {
+	person, err := api.dbReader.Get(ctx, &models.PersonGetFilter{SessionID: []string{sessionID}})
 	if err != nil || len(person) == 0 {
 		return -1, false
 	}
@@ -34,10 +32,10 @@ func (api *AuthHandler) IsAuthenticated(sessionID string, requestID int64) (type
 }
 
 // Login - принимает email, пароль; возвращает ID сессии и ошибку
-func (api *AuthHandler) Login(email, password string, requestID int64) (string, types.UserID, error) {
+func (api *AuthHandler) Login(email, password string, ctx context.Context) (string, types.UserID, error) {
 	ems := make([]string, 1)
 	ems[0] = email
-	users, ok := api.dbReader.Get(requestID, &models.PersonGetFilter{Email: ems})
+	users, ok := api.dbReader.Get(ctx, &models.PersonGetFilter{Email: ems})
 	if ok != nil {
 		return "", -1, ok
 	}
@@ -55,7 +53,7 @@ func (api *AuthHandler) Login(email, password string, requestID int64) (string, 
 
 	SID := uuid.NewString()
 	user.SessionID = SID
-	err = api.dbReader.Update(requestID, *user)
+	err = api.dbReader.Update(ctx, *user)
 	if err != nil {
 		return "", -1, err
 	}
@@ -63,33 +61,26 @@ func (api *AuthHandler) Login(email, password string, requestID int64) (string, 
 	return SID, user.ID, nil
 }
 
-func (api *AuthHandler) Registration(name string, birthday string, gender string, email string, password string, requestID int64) (string, types.UserID, error) {
+func (api *AuthHandler) Registration(name string, birthday string, gender string, email string, password string, ctx context.Context) (string, types.UserID, error) {
 	hashedPassword, err := hashPassword(password)
 	if err != nil {
 		return "", -1, err
 	}
 
-	err = api.dbReader.AddAccount(requestID, name, birthday, gender, email, hashedPassword)
+	err = api.dbReader.AddAccount(ctx, name, birthday, gender, email, hashedPassword)
 	if err != nil {
 		return "", -1, err
 	}
 
-	SID, UID, err := api.Login(email, password, requestID)
+	SID, UID, err := api.Login(email, password, ctx)
 	if err != nil {
 		return "", -1, err
 	}
 	return SID, UID, nil
 }
 
-func (api *AuthHandler) Logout(sessionID string, requestID int64) error {
-	if _, ok := api.sessions.Load(sessionID); !ok {
-		Log.WithFields(logrus.Fields{RequestID: requestID}).Info("no session to logout")
-		return errors.New("no session")
-	}
-
-	api.sessions.Delete(sessionID)
-
-	err := api.dbReader.RemoveSession(requestID, sessionID)
+func (api *AuthHandler) Logout(sessionID string, ctx context.Context) error {
+	err := api.dbReader.RemoveSession(ctx, sessionID)
 	if err != nil {
 		return err
 	}

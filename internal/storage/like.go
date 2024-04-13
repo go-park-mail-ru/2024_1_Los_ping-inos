@@ -1,6 +1,7 @@
 package storage
 
 import (
+	"context"
 	"database/sql"
 	qb "github.com/Masterminds/squirrel"
 	"github.com/sirupsen/logrus"
@@ -24,8 +25,9 @@ func NewLikeStorage(dbReader *sql.DB) *LikeStorage {
 	}
 }
 
-func (storage *LikeStorage) Get(requestID int64, filter *models.LikeGetFilter) ([]types.UserID, error) {
-	Log.WithFields(logrus.Fields{RequestID: requestID}).Info("db get request to ", LikeTableName)
+func (storage *LikeStorage) Get(ctx context.Context, filter *models.LikeGetFilter) ([]types.UserID, error) {
+	logger := ctx.Value(Logg).(Log)
+	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db get request to ", LikeTableName)
 	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
 	whereMap := qb.Or{}
 
@@ -45,7 +47,7 @@ func (storage *LikeStorage) Get(requestID int64, filter *models.LikeGetFilter) (
 
 	rows, err := query.Query()
 	if err != nil {
-		Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("db can't query: ", err.Error())
+		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("db can't query: ", err.Error())
 		return nil, err
 	}
 	defer rows.Close()
@@ -55,7 +57,7 @@ func (storage *LikeStorage) Get(requestID int64, filter *models.LikeGetFilter) (
 	for rows.Next() {
 		err = rows.Scan(&tmp.Person1, &tmp.Person2)
 		if err != nil {
-			Log.WithFields(logrus.Fields{RequestID: requestID}).Info("db can't scan: ", err.Error())
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db can't scan: ", err.Error())
 			return nil, err
 		}
 		res = append(res, tmp.Person2)
@@ -64,8 +66,9 @@ func (storage *LikeStorage) Get(requestID int64, filter *models.LikeGetFilter) (
 	return res, nil
 }
 
-func (storage *LikeStorage) Create(requestID int64, person1ID, person2ID types.UserID) error {
-	Log.WithFields(logrus.Fields{RequestID: requestID}).Info("db create request to ", LikeTableName)
+func (storage *LikeStorage) Create(ctx context.Context, person1ID, person2ID types.UserID) error {
+	logger := ctx.Value(Logg).(Log)
+	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db create request to ", LikeTableName)
 	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
 
 	query := stBuilder.
@@ -77,13 +80,14 @@ func (storage *LikeStorage) Create(requestID int64, person1ID, person2ID types.U
 	rows, err := query.Query()
 	defer rows.Close()
 	if err != nil {
-		Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("db can't create like: ", err.Error())
+		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("db can't create like: ", err.Error())
 	}
 	return err
 }
 
-func (storage *LikeStorage) GetMatch(requestID int64, person1ID types.UserID) ([]types.UserID, error) {
-	Log.WithFields(logrus.Fields{RequestID: requestID}).Info("db get request to ", LikeTableName)
+func (storage *LikeStorage) GetMatch(ctx context.Context, person1ID types.UserID) ([]types.UserID, error) {
+	logger := ctx.Value(Logg).(Log)
+	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db get request to ", LikeTableName)
 	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
 
 	query := stBuilder.Select("t1.person_two_id").
@@ -95,7 +99,7 @@ func (storage *LikeStorage) GetMatch(requestID int64, person1ID types.UserID) ([
 	rows, err := query.Query()
 	defer rows.Close()
 	if err != nil {
-		Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("db can't query:  ", err.Error())
+		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("db can't query:  ", err.Error())
 		return nil, err
 	}
 
@@ -104,7 +108,7 @@ func (storage *LikeStorage) GetMatch(requestID int64, person1ID types.UserID) ([
 	for rows.Next() {
 		err = rows.Scan(&scan)
 		if err != nil {
-			Log.WithFields(logrus.Fields{RequestID: requestID}).Warn("db can't scan:  ", err.Error())
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("db can't scan:  ", err.Error())
 			return nil, err
 		}
 		res = append(res, scan)
