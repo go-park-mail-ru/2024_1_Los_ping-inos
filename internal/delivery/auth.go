@@ -27,7 +27,7 @@ func setLoginCookie(sessionID string, expires time.Time, writer http.ResponseWri
 // @Failure 403
 func (deliver *Deliver) IsAuthenticatedHandler() func(w http.ResponseWriter, r *http.Request) {
 	return func(respWriter http.ResponseWriter, request *http.Request) {
-		logger := request.Context().Value(Logg).(Log)
+		logger := request.Context().Value(Logg).(*Log)
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("auth check")
 		session, err := request.Cookie("session_id") // проверка авторизации
 
@@ -69,7 +69,7 @@ func (deliver *Deliver) IsAuthenticatedHandler() func(w http.ResponseWriter, r *
 // @Failure 401       {string} string
 func (deliver *Deliver) LoginHandler() func(respWriter http.ResponseWriter, request *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		logger := r.Context().Value(Logg).(Log)
+		logger := r.Context().Value(Logg).(*Log)
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("login")
 		var request requests.LoginRequest
 
@@ -121,7 +121,7 @@ func (deliver *Deliver) LoginHandler() func(respWriter http.ResponseWriter, requ
 // @Failure 500       {string} string
 func (deliver *Deliver) RegistrationHandler() func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		logger := r.Context().Value(Logg).(Log)
+		logger := r.Context().Value(Logg).(*Log)
 		if r.Method == http.MethodGet {
 			body, err := deliver.serv.GetAllInterests(r.Context())
 			if err != nil {
@@ -193,7 +193,7 @@ func (deliver *Deliver) RegistrationHandler() func(http.ResponseWriter, *http.Re
 // @Failure 500       {string} string
 func (deliver *Deliver) LogoutHandler() func(respWriter http.ResponseWriter, request *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		logger := r.Context().Value(Logg).(Log)
+		logger := r.Context().Value(Logg).(*Log)
 
 		session, err := r.Cookie("session_id")
 		if err != nil {

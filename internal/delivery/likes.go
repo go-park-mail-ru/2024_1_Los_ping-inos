@@ -24,7 +24,7 @@ import (
 // @Failure 405       {string} string
 func (deliver *Deliver) CreateLike() func(respWriter http.ResponseWriter, request *http.Request) {
 	return func(respWriter http.ResponseWriter, request *http.Request) {
-		logger := request.Context().Value(Logg).(Log)
+		logger := request.Context().Value(Logg).(*Log)
 
 		body, err := io.ReadAll(request.Body)
 		if err != nil { // TODO эти два блока вынести в отдельную функцию и напихать её во все ручки
@@ -65,7 +65,7 @@ func (deliver *Deliver) CreateLike() func(respWriter http.ResponseWriter, reques
 // @Failure 405        {string} string
 func (deliver *Deliver) GetMatches() func(respWriter http.ResponseWriter, request *http.Request) {
 	return func(respWriter http.ResponseWriter, request *http.Request) {
-		logger := request.Context().Value(Logg).(Log)
+		logger := request.Context().Value(Logg).(*Log)
 		userID := request.Context().Value(RequestUserID).(types.UserID)
 		matches, err := deliver.serv.GetMatches(userID, request.Context())
 		if err != nil {

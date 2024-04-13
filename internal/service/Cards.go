@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"errors"
-	"fmt"
 	models "main.go/db"
 	"main.go/internal/types"
 )
@@ -65,7 +64,6 @@ func (service *Service) getUserCards(persons []*models.Person, ctx context.Conte
 			return nil, nil, err
 		}
 		images[j], err = service.imageStorage.Get(ctx, int64(persons[j].ID))
-		fmt.Printf("%v", images[j])
 		if err != nil {
 			return nil, nil, err
 		}

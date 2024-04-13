@@ -23,11 +23,11 @@ const configPath = "config/config.yaml"
 // @host  185.241.192.216:8085
 // @BasePath /api/v1/
 func main() {
-	InitLog()
+	logger := InitLog()
 
 	_, err := config.LoadConfig(configPath)
 	if err != nil {
-		Log.Fatal(err)
+		logger.Logger.Fatal(err)
 	}
 	psqInfo := fmt.Sprintf("host=%s port=%s user=%s "+
 		"password=%s dbname=%s sslmode=disable",
@@ -36,11 +36,11 @@ func main() {
 
 	db, err := sql.Open("postgres", psqInfo)
 	if err != nil {
-		Log.Fatalf("can't open db: %v", err.Error())
+		logger.Logger.Fatalf("can't open db: %v", err.Error())
 	}
 	if err = db.Ping(); err != nil {
 		println(err.Error())
-		Log.Fatal(err)
+		logger.Logger.Fatal(err)
 	}
 	defer db.Close()
 
@@ -53,8 +53,8 @@ func main() {
 	serv := service.New(personStore, interestStore, imageStore, likeStore)
 
 	deliver := delivery.New(serv, auth)
-	err = delivery.StartServer(deliver)
+	err = delivery.StartServer(logger, deliver)
 	if err != nil {
-		Log.Fatalf("server error: %v", err.Error())
+		logger.Logger.Fatalf("server error: %v", err.Error())
 	}
 }

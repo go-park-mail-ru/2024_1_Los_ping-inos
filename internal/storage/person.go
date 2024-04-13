@@ -15,7 +15,7 @@ import (
 )
 
 const (
-	personFields = "id, name, birthday, description, location, photo, email, password, createdAt, premium, likesLeft, sessionID, gender"
+	personFields = "id, name, birthday, description, location, photo, email, password, created_at, premium, likes_left, session_id, gender"
 )
 
 type PersonStorage struct {
@@ -29,7 +29,7 @@ func NewPersonStorage(dbReader *sql.DB) *PersonStorage {
 }
 
 func (storage *PersonStorage) Get(ctx context.Context, filter *models.PersonGetFilter) ([]*models.Person, error) {
-	logger := ctx.Value(Logg).(Log)
+	logger := ctx.Value(Logg).(*Log)
 	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
 	whereMap := qb.And{}
 
@@ -76,7 +76,7 @@ func (storage *PersonStorage) Get(ctx context.Context, filter *models.PersonGetF
 }
 
 func (storage *PersonStorage) GetFeed(ctx context.Context, filter types.UserID) ([]*models.Person, error) {
-	logger := ctx.Value(Logg).(Log)
+	logger := ctx.Value(Logg).(*Log)
 	likes := &LikeStorage{dbReader: storage.dbReader}
 	ids, err := likes.Get(ctx, &models.LikeGetFilter{Person1: &filter})
 	if err != nil {
@@ -119,7 +119,7 @@ func (storage *PersonStorage) GetFeed(ctx context.Context, filter types.UserID) 
 }
 
 func (storage *PersonStorage) Update(ctx context.Context, person models.Person) error {
-	logger := ctx.Value(Logg).(Log)
+	logger := ctx.Value(Logg).(*Log)
 	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
 	setMap := make(map[string]interface{})
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db update request to ", PersonTableName)
@@ -152,7 +152,7 @@ func (storage *PersonStorage) Update(ctx context.Context, person models.Person) 
 }
 
 func (storage *PersonStorage) Delete(ctx context.Context, sessionID string) error {
-	logger := ctx.Value(Logg).(Log)
+	logger := ctx.Value(Logg).(*Log)
 	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db delete request to ", PersonTableName)
 	query := stBuilder.
@@ -171,7 +171,7 @@ func (storage *PersonStorage) Delete(ctx context.Context, sessionID string) erro
 }
 
 func (storage *PersonStorage) AddAccount(ctx context.Context, Name string, Birthday string, Gender string, Email string, Password string) error {
-	logger := ctx.Value(Logg).(Log)
+	logger := ctx.Value(Logg).(*Log)
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db create request to ", PersonTableName)
 	_, err := storage.dbReader.Exec(
 		"INSERT INTO person(name, birthday, email, password, gender) "+ // TODO PersonTableName
@@ -187,7 +187,7 @@ func (storage *PersonStorage) AddAccount(ctx context.Context, Name string, Birth
 }
 
 func (storage *PersonStorage) RemoveSession(ctx context.Context, sid string) error {
-	logger := ctx.Value(Logg).(Log)
+	logger := ctx.Value(Logg).(*Log)
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db remove session_id request to ", PersonTableName)
 	_, err := storage.dbReader.Exec(
 		"UPDATE person SET session_id = '' "+

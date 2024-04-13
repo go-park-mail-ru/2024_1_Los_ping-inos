@@ -15,7 +15,7 @@ const CSRFHeader = "csrft"
 
 func IsAuthenticatedMiddleware(next http.Handler, deliver *Deliver) http.Handler {
 	return http.HandlerFunc(func(respWriter http.ResponseWriter, request *http.Request) {
-		log := request.Context().Value(Logg).(Log)
+		log := request.Context().Value(Logg).(*Log)
 
 		session, err := request.Cookie("session_id") // проверка авторизации
 		if err != nil || session == nil {
@@ -39,7 +39,7 @@ func IsAuthenticatedMiddleware(next http.Handler, deliver *Deliver) http.Handler
 
 func AllowedMethodMiddleware(next http.Handler, methods *hashset.Set) http.Handler {
 	return http.HandlerFunc(func(respWriter http.ResponseWriter, request *http.Request) {
-		log := request.Context().Value(Logg).(Log)
+		log := request.Context().Value(Logg).(*Log)
 
 		if request.Method == http.MethodOptions {
 			log.Logger.WithFields(logrus.Fields{RequestID: log.RequestID}).Info("preflight")
@@ -57,7 +57,7 @@ func AllowedMethodMiddleware(next http.Handler, methods *hashset.Set) http.Handl
 	})
 }
 
-func RequestIDMiddleware(next http.Handler, deliver *Deliver, msg string, logger Log) http.Handler {
+func RequestIDMiddleware(next http.Handler, deliver *Deliver, msg string, logger *Log) http.Handler {
 	return http.HandlerFunc(func(respWriter http.ResponseWriter, request *http.Request) {
 		logger.RequestID = deliver.nextRequest()
 		contexted := request.WithContext(context.WithValue(context.Background(), Logg, logger))
@@ -68,7 +68,7 @@ func RequestIDMiddleware(next http.Handler, deliver *Deliver, msg string, logger
 
 func CSRFMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(respWriter http.ResponseWriter, request *http.Request) {
-		log := request.Context().Value(Logg).(Log)
+		log := request.Context().Value(Logg).(*Log)
 		if request.Method == http.MethodGet {
 			next.ServeHTTP(respWriter, request)
 			return

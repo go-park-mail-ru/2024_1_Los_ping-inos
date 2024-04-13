@@ -23,7 +23,7 @@ import (
 // @Failure 500       {string} string
 func (deliver *Deliver) GetUsername() func(w http.ResponseWriter, r *http.Request) {
 	return func(respWriter http.ResponseWriter, request *http.Request) {
-		logger := request.Context().Value(Logg).(Log)
+		logger := request.Context().Value(Logg).(*Log)
 
 		name, err := deliver.serv.GetName(request.Context().Value(RequestSID).(string), request.Context())
 		if err != nil {
@@ -48,7 +48,7 @@ func (deliver *Deliver) GetUsername() func(w http.ResponseWriter, r *http.Reques
 // @Failure 500       {string} string
 func (deliver *Deliver) GetCardsHandler() func(http.ResponseWriter, *http.Request) {
 	return func(respWriter http.ResponseWriter, request *http.Request) {
-		logger := request.Context().Value(Logg).(Log)
+		logger := request.Context().Value(Logg).(*Log)
 
 		cards, err := deliver.serv.GetCards(request.Context().Value(RequestUserID).(types.UserID), request.Context())
 		if err != nil {

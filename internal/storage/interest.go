@@ -13,7 +13,8 @@ import (
 )
 
 const (
-	interestFields = "id, name"
+	interestFields       = "id, name"
+	personInterestFields = "person_id, interest_id"
 )
 
 type InterestStorage struct {
@@ -39,7 +40,7 @@ func processInterestNameFilter(filter *models.InterestGetFilter, whereMap *qb.An
 }
 
 func (storage *InterestStorage) Get(ctx context.Context, filter *models.InterestGetFilter) ([]*models.Interest, error) {
-	logger := ctx.Value(Logg).(Log)
+	logger := ctx.Value(Logg).(*Log)
 	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
 	whereMap := qb.And{}
 
@@ -86,10 +87,11 @@ func (storage *InterestStorage) Get(ctx context.Context, filter *models.Interest
 }
 
 func (storage *InterestStorage) GetPersonInterests(ctx context.Context, personID types.UserID) ([]*models.Interest, error) {
-	logger := ctx.Value(Logg).(Log)
+	logger := ctx.Value(Logg).(*Log)
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db get request to ", PersonInterestTableName)
 	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
-	query := stBuilder.Select(interestFields).
+	query := stBuilder.
+		Select(personInterestFields).
 		From(PersonInterestTableName).
 		Where(qb.Eq{"person_id": personID}).
 		RunWith(storage.dbReader)
@@ -119,7 +121,7 @@ func (storage *InterestStorage) GetPersonInterests(ctx context.Context, personID
 }
 
 func (storage *InterestStorage) CreatePersonInterests(ctx context.Context, personID types.UserID, interestID []types.InterestID) error {
-	logger := ctx.Value(Logg).(Log)
+	logger := ctx.Value(Logg).(*Log)
 	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db add request to ", PersonInterestTableName)
 
@@ -143,7 +145,7 @@ func (storage *InterestStorage) CreatePersonInterests(ctx context.Context, perso
 }
 
 func (storage *InterestStorage) DeletePersonInterests(ctx context.Context, personID types.UserID, interestID []types.InterestID) error {
-	logger := ctx.Value(Logg).(Log)
+	logger := ctx.Value(Logg).(*Log)
 	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db delete request to ", PersonInterestTableName)
 	query := stBuilder.

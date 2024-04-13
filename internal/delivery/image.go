@@ -35,7 +35,7 @@ const (
 
 func (deliver *Deliver) GetImageHandler() func(w http.ResponseWriter, r *http.Request) {
 	return func(respWriter http.ResponseWriter, request *http.Request) {
-		logger := request.Context().Value(Logg).(Log)
+		logger := request.Context().Value(Logg).(*Log)
 		userId := int64(request.Context().Value(RequestUserID).(types.UserID))
 
 		images, err := deliver.serv.GetImage(userId, request.Context())
@@ -91,7 +91,7 @@ func (deliver *Deliver) GetImageHandler() func(w http.ResponseWriter, r *http.Re
 
 func (deliver *Deliver) AddImageHandler() func(w http.ResponseWriter, r *http.Request) {
 	return func(respWriter http.ResponseWriter, request *http.Request) {
-		logger := request.Context().Value(Logg).(Log)
+		logger := request.Context().Value(Logg).(*Log)
 
 		err := request.ParseMultipartForm(10 << 20)
 		if err != nil {
@@ -181,7 +181,7 @@ func (deliver *Deliver) AddImageHandler() func(w http.ResponseWriter, r *http.Re
 
 func (deliver *Deliver) DeleteImageHandler() func(w http.ResponseWriter, r *http.Request) {
 	return func(respWriter http.ResponseWriter, request *http.Request) {
-		logger := request.Context().Value(Logg).(Log)
+		logger := request.Context().Value(Logg).(*Log)
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("delete image")
 		userId := int64(request.Context().Value(RequestUserID).(types.UserID))
 		var r requests.ImageRequest

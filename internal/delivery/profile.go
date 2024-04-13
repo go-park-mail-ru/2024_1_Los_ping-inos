@@ -46,7 +46,7 @@ func (deliver *Deliver) ReadProfile(respWriter http.ResponseWriter, request *htt
 		profile []models.Card
 	)
 
-	logger := request.Context().Value(Logg).(Log)
+	logger := request.Context().Value(Logg).(*Log)
 
 	if request.URL.Query().Has("id") { // просмотр профиля по id (чужой профиль из ленты)
 		id, err = strconv.Atoi(request.URL.Query().Get("id"))
@@ -84,7 +84,7 @@ func (deliver *Deliver) ReadProfile(respWriter http.ResponseWriter, request *htt
 // @Failure 405       {string} string
 // @Failure 409       {string} string // TODO
 func (deliver *Deliver) UpdateProfile(respWriter http.ResponseWriter, request *http.Request) {
-	logger := request.Context().Value(Logg).(Log)
+	logger := request.Context().Value(Logg).(*Log)
 
 	var requestBody requests.ProfileUpdateRequest
 
@@ -131,7 +131,7 @@ func (deliver *Deliver) UpdateProfile(respWriter http.ResponseWriter, request *h
 // @Failure 405       {string} string
 // @Failure 409       {string} string // TODO
 func (deliver *Deliver) DeleteProfile(respWriter http.ResponseWriter, request *http.Request) {
-	logger := request.Context().Value(Logg).(Log)
+	logger := request.Context().Value(Logg).(*Log)
 
 	err := deliver.serv.DeleteProfile(request.Context().Value(config.RequestSID).(string), request.Context())
 

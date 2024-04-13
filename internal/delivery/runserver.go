@@ -28,7 +28,7 @@ func (deliver *Deliver) nextRequest() int64 {
 	return deliver.lastRequestID
 }
 
-func runSwaggerServer() {
+func runSwaggerServer(logger *Log) {
 	r := chi.NewRouter()
 
 	r.Get("/swagger/*", httpSwagger.Handler(
@@ -36,12 +36,12 @@ func runSwaggerServer() {
 	))
 	err := http.ListenAndServe(config.Cfg.Server.SwaggerPort, r)
 	if err != nil {
-		Log.Warn(err.Error())
+		logger.Logger.Warn(err.Error())
 	}
 }
 
-func StartServer(deliver ...*Deliver) error {
-	go runSwaggerServer()
+func StartServer(logger *Log, deliver ...*Deliver) error {
+	go runSwaggerServer(logger)
 
 	var apiPath = config.Cfg.ApiPath
 
@@ -51,67 +51,67 @@ func StartServer(deliver ...*Deliver) error {
 	mux.Handle(apiPath+"cards", RequestIDMiddleware(
 		AllowedMethodMiddleware(
 			IsAuthenticatedMiddleware(http.HandlerFunc(deliver[0].GetCardsHandler()), deliver[0]), hashset.New("GET")),
-		deliver[0], "get cards"))
+		deliver[0], "get cards", logger))
 
 	mux.Handle(apiPath+"login", RequestIDMiddleware(
 		AllowedMethodMiddleware(
 			http.HandlerFunc(deliver[0].LoginHandler()), hashset.New("POST")),
-		deliver[0], "login"))
+		deliver[0], "login", logger))
 
 	mux.Handle(apiPath+"registration", RequestIDMiddleware(
 		AllowedMethodMiddleware(
 			http.HandlerFunc(deliver[0].RegistrationHandler()), hashset.New("GET", "POST")),
-		deliver[0], "registration"))
+		deliver[0], "registration", logger))
 
 	mux.Handle(apiPath+"logout", RequestIDMiddleware(
 		AllowedMethodMiddleware(
 			IsAuthenticatedMiddleware(http.HandlerFunc(deliver[0].LogoutHandler()), deliver[0]), hashset.New("GET")),
-		deliver[0], "logout"))
+		deliver[0], "logout", logger))
 
 	mux.Handle(apiPath+"isAuth", RequestIDMiddleware(
 		AllowedMethodMiddleware(
 			http.HandlerFunc(deliver[0].IsAuthenticatedHandler()), hashset.New("GET")),
-		deliver[0], "authentication check"))
+		deliver[0], "authentication check", logger))
 
 	mux.Handle(apiPath+"me", RequestIDMiddleware(
 		AllowedMethodMiddleware(
 			IsAuthenticatedMiddleware(http.HandlerFunc(deliver[0].GetUsername()), deliver[0]), hashset.New("GET")),
-		deliver[0], "username (/me)"))
+		deliver[0], "username (/me)", logger))
 
 	mux.Handle(apiPath+"getImage", RequestIDMiddleware(
 		AllowedMethodMiddleware(
 			IsAuthenticatedMiddleware(http.HandlerFunc(deliver[0].GetImageHandler()), deliver[0]), hashset.New("GET")),
-		deliver[0], "get images"))
+		deliver[0], "get images", logger))
 
 	mux.Handle(apiPath+"addImage", RequestIDMiddleware(
 		AllowedMethodMiddleware(
 			IsAuthenticatedMiddleware(CSRFMiddleware(http.HandlerFunc(deliver[0].AddImageHandler())), deliver[0]), hashset.New("POST")),
-		deliver[0], "username (/me)"))
+		deliver[0], "username (/me)", logger))
 
 	mux.Handle(apiPath+"deleteImage", RequestIDMiddleware(
 		AllowedMethodMiddleware(
 			IsAuthenticatedMiddleware(CSRFMiddleware(http.HandlerFunc(deliver[0].DeleteImageHandler())), deliver[0]), hashset.New("POST")),
-		deliver[0], "delete image"))
+		deliver[0], "delete image", logger))
 
 	mux.Handle(apiPath+"profile", RequestIDMiddleware(
 		AllowedMethodMiddleware(
 			IsAuthenticatedMiddleware(CSRFMiddleware(http.HandlerFunc(deliver[0].ProfileHandlers())), deliver[0]), hashset.New("GET", "POST", "DELETE")),
-		deliver[0], "profile"))
+		deliver[0], "profile", logger))
 
 	mux.Handle(apiPath+"like", RequestIDMiddleware(
 		AllowedMethodMiddleware(
 			IsAuthenticatedMiddleware(CSRFMiddleware(http.HandlerFunc(deliver[0].CreateLike())), deliver[0]), hashset.New("POST")),
-		deliver[0], "like"))
+		deliver[0], "like", logger))
 
 	mux.Handle(apiPath+"matches", RequestIDMiddleware(
 		AllowedMethodMiddleware(
 			IsAuthenticatedMiddleware(http.HandlerFunc(deliver[0].GetMatches()), deliver[0]), hashset.New("GET")),
-		deliver[0], "matches"))
+		deliver[0], "matches", logger))
 
 	mux.Handle(apiPath+"dislike", RequestIDMiddleware(
 		AllowedMethodMiddleware(
 			IsAuthenticatedMiddleware(CSRFMiddleware(http.HandlerFunc(deliver[0].CreateDislike())), deliver[0]), hashset.New("POST")),
-		deliver[0], "dislike"))
+		deliver[0], "dislike", logger))
 
 	server := http.Server{
 		Addr:         config.Cfg.Server.Host + config.Cfg.Server.Port,
@@ -120,7 +120,7 @@ func StartServer(deliver ...*Deliver) error {
 		WriteTimeout: config.Cfg.Server.Timeout * time.Second,
 	}
 
-	Log.Infof("started server at %v", server.Addr)
+	logger.Logger.Infof("started server at %v", server.Addr)
 	fmt.Printf("started server at %v\n", server.Addr)
 	err := server.ListenAndServe()
 	if err != nil {
