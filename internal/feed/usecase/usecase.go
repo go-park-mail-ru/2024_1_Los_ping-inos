@@ -78,7 +78,7 @@ func combineToCards(persons []*feed.Person, interests [][]*feed.Interest, images
 
 	res := make([]feed.Card, len(persons))
 	for i := range persons {
-		res[i] = feed.Card{Name: persons[i].Name, Birthday: persons[i].Birthday, Description: persons[i].Description,
+		res[i] = feed.Card{ID: persons[i].ID, Name: persons[i].Name, Birthday: persons[i].Birthday, Description: persons[i].Description,
 			Interests: interests[i], Photos: photos[i]}
 	}
 	return res

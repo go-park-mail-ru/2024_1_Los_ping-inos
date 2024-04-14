@@ -28,6 +28,7 @@ type (
 	// @Description Информация в профиле пользователя (данные пользователя и его интересы)
 	// имя возраст описание интересы фотографии
 	Card struct {
+		ID          types.UserID  `json:"id"`
 		Name        string        `json:"name"`
 		Birthday    time.Time     `json:"birthday"`
 		Description string        `json:"description"`
