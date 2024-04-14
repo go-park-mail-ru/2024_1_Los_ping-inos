@@ -1,1 +1,48 @@
-[![](https://mermaid.ink/img/pako:eNq1VMGO2jAQ_RXL5yyCACHJrdLSKqJsEWwvVaTIG88GaxM7sk13aRaptx77Bf2Mldqq6jeEP6oToIUUFvXQHBzlvZeZN56xCxwLCtjHIC8ZSSTJQo7MMxlOZ2-u0OPjxYUotl_RZDocB2_HyEdzovZ1v5lig1YP47qHGEWTUQPLQSrBI0O93KMo0VAvkdJEAkXHKOAU6IZYHfg8k1fDg0acZNAIesOknlOyRA0pBRVLlmsmeINJRUyOwJARljawnCh1LyTdg1kGprosR7EEk59GRDeMp-wOVJTC7R6RVGVLtX0fK_-wTcH4xavhkSZt8OJkOyYj66AlNR1DmkZ8kd2ANAIU4vJL-bP8UT6tP6L15_Wn8qn8Vn4vv4a4UT7LSALRQqbPGL4MZq-DUeU1xAlohQinKGHvQe3C7RQnXAsOJ51vJfpeNCVHvZwx8t9cBFfXw-lwdt1s4g72EVMN5b9N-7Oj8ifLX9NyKtuZgTELSDPmJ8oNObZwBtIcGGqunTp4iPUcjF1cbT8l8q7a9JXRkYUWsyWPsa_lAiy8yKtju72osH9LUmXQnHDsF_gB-52223I7bcfuOrbbcxyna-El9nteq9e3-16_63Xa_cHAXVn4gxAmQqdle7bjtl1DOv1Bt-dZGCjTQo4312J9O9Yp3tU_VD5WvwB7S4z0?type=png)](https://mermaid.live/edit#pako:eNq1VMGO2jAQ_RXL5yyCACHJrdLSKqJsEWwvVaTIG88GaxM7sk13aRaptx77Bf2Mldqq6jeEP6oToIUUFvXQHBzlvZeZN56xCxwLCtjHIC8ZSSTJQo7MMxlOZ2-u0OPjxYUotl_RZDocB2_HyEdzovZ1v5lig1YP47qHGEWTUQPLQSrBI0O93KMo0VAvkdJEAkXHKOAU6IZYHfg8k1fDg0acZNAIesOknlOyRA0pBRVLlmsmeINJRUyOwJARljawnCh1LyTdg1kGprosR7EEk59GRDeMp-wOVJTC7R6RVGVLtX0fK_-wTcH4xavhkSZt8OJkOyYj66AlNR1DmkZ8kd2ANAIU4vJL-bP8UT6tP6L15_Wn8qn8Vn4vv4a4UT7LSALRQqbPGL4MZq-DUeU1xAlohQinKGHvQe3C7RQnXAsOJ51vJfpeNCVHvZwx8t9cBFfXw-lwdt1s4g72EVMN5b9N-7Oj8ifLX9NyKtuZgTELSDPmJ8oNObZwBtIcGGqunTp4iPUcjF1cbT8l8q7a9JXRkYUWsyWPsa_lAiy8yKtju72osH9LUmXQnHDsF_gB-52223I7bcfuOrbbcxyna-El9nteq9e3-16_63Xa_cHAXVn4gxAmQqdle7bjtl1DOv1Bt-dZGCjTQo4312J9O9Yp3tU_VD5WvwB7S4z0)
+```mermaid
+erDiagram
+    PERSON ||--o{ PERSON_PREMIUM : has
+    PERSON_PREMIUM {
+        int4 id PK
+        int4 person_id FK
+        date date_stared 
+        date date_ended
+    }
+    PERSON {
+        int4 id PK
+        text name
+        date birthday 
+        text description
+        text location
+        text email
+        text password
+        timestamp created_at
+        int4 likes_left
+        genders gender
+    }
+    PERSON ||--o{ PERSON_IMAGE : has
+    PERSON_IMAGE {
+        int4 id PK
+        int4 person_id FK
+        int4 cell_number "Номер ячейки"
+        text image_url
+    }
+    PERSON ||--o{ DISLIKE : "gets and gives"
+    DISLIKE {
+        int4 person_one_id PK, FK
+        int4 person_two_id PK, FK
+    }
+    PERSON ||--o{ LIKE : "gets and gives"
+    LIKE {
+        int4 person_one_id PK, FK
+        int4 person_two_id PK, FK
+    }
+    INTEREST ||--o{ PERSON_INTEREST : is
+    INTEREST {
+        int4 id PK
+        text name
+    }
+    PERSON ||--o{ PERSON_INTEREST : has
+    PERSON_INTEREST {
+        int4 person_id PK, FK
+        int4 interest_id PK, FK
+    }
