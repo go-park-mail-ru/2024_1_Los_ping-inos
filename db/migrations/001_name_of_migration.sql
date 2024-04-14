@@ -57,8 +57,8 @@ create table if not exists dislike (
 
 CREATE TABLE IF NOT EXISTS person_image (
     person_id int generated always as IDENTITY REFERENCES person(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    image_url text NOT NULL,
-    cell_number int not null DEFAULT '1',
+    image_url text not null,
+    cell_number int not null,
     PRIMARY KEY (person_id, cell_number)
 );
 
