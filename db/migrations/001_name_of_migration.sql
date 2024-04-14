@@ -1,8 +1,4 @@
 -- Write your migrate up statements here
-CREATE TYPE genders AS ENUM (
-	'male',
-	'female');
-
 CREATE TABLE IF NOT EXISTS person (
   id INT generated always as IDENTITY PRIMARY KEY,
   name TEXT NOT NULL,
@@ -14,7 +10,8 @@ CREATE TABLE IF NOT EXISTS person (
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   premium BOOLEAN NOT NULL DEFAULT FALSE,
   likes_left INTEGER NOT NULL DEFAULT '10',
-  gender genders NOT NULL
+  gender text not null,
+  check(gender = 'male' or gender = 'female')
 );
 
 create table if not exists interest (
