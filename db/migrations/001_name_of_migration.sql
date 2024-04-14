@@ -16,7 +16,8 @@ CREATE TABLE IF NOT EXISTS person (
 
 create table if not exists interest (
   id int generated always as IDENTITY PRIMARY KEY,
-  name text not null
+  name text not null,
+  unique(name)
 );
 
 create table if not exists person_interest (
