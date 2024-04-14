@@ -46,4 +46,26 @@ type (
 		ID   []types.InterestID
 		Name []string
 	}
+
+	Profile struct {
+		ID          types.UserID  `json:"-"`
+		Name        string        `json:"name"`
+		Birthday    time.Time     `json:"birthday"`
+		Description string        `json:"description"`
+		Email       string        `json:"email"`
+		Interests   []*Interest   `json:"interests"`
+		Photos      []ImageToSend `json:"photos"`
+		CSRFT       string        `json:"csrft"`
+	}
+
+	Image struct {
+		UserId     int64  `json:"person_id"`
+		Url        string `json:"image_url"`
+		CellNumber string `json:"cell"`
+	}
+
+	ImageToSend struct {
+		Cell string `json:"cell"`
+		Url  string `json:"url"`
+	}
 )

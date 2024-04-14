@@ -99,7 +99,7 @@ func (deliver *AuthHandler) LoginHandler() func(respWriter http.ResponseWriter, 
 			return
 		}
 
-		SID, UID, err := deliver.UseCase.Login(request.Email, request.Password, r.Context())
+		prof, SID, err := deliver.UseCase.Login(request.Email, request.Password, r.Context())
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't login: ", err.Error())
 			requests.SendResponse(w, r, http.StatusUnauthorized, err.Error())
@@ -107,7 +107,7 @@ func (deliver *AuthHandler) LoginHandler() func(respWriter http.ResponseWriter, 
 		}
 
 		setLoginCookie(SID, oneDayExpiration(), w)
-		tok, err := requests.CreateCSRFToken(SID, UID, oneDayExpiration().Unix())
+		tok, err := requests.CreateCSRFToken(SID, prof.ID, oneDayExpiration().Unix())
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't generate csrf token: ", err.Error())
 			requests.SendResponse(w, r, http.StatusInternalServerError, err.Error())
@@ -115,7 +115,8 @@ func (deliver *AuthHandler) LoginHandler() func(respWriter http.ResponseWriter, 
 		}
 		w.Header().Set("csrft", tok)
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("login with SID: ", SID)
-		requests.SendResponse(w, r, http.StatusOK, requests.CSRFTokenResponse{Csrft: tok})
+		prof.CSRFT = tok
+		requests.SendResponse(w, r, http.StatusOK, prof)
 	}
 }
 
@@ -161,7 +162,7 @@ func (deliver *AuthHandler) RegistrationHandler() func(http.ResponseWriter, *htt
 			requests.SendResponse(w, r, http.StatusBadRequest, err.Error())
 			return
 		}
-		SID, UID, err := deliver.UseCase.Registration(auth.RegitstrationBody{request.Name, request.Birthday,
+		prof, SID, err := deliver.UseCase.Registration(auth.RegitstrationBody{request.Name, request.Birthday,
 			request.Gender, request.Email, request.Password, request.Interests}, r.Context())
 
 		if err != nil {
@@ -180,15 +181,16 @@ func (deliver *AuthHandler) RegistrationHandler() func(http.ResponseWriter, *htt
 		}
 
 		setLoginCookie(SID, oneDayExpiration(), w)
-		tok, err := requests.CreateCSRFToken(SID, UID, oneDayExpiration().Unix())
+		tok, err := requests.CreateCSRFToken(SID, prof.ID, oneDayExpiration().Unix())
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't generate csrf token: ", err.Error())
 			requests.SendResponse(w, r, http.StatusInternalServerError, err.Error())
 			return
 		}
 		w.Header().Set("csrft", tok)
+		prof.CSRFT = tok
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("registered and logged with SID ", SID)
-		requests.SendResponse(w, r, http.StatusOK, requests.CSRFTokenResponse{Csrft: tok})
+		requests.SendResponse(w, r, http.StatusOK, prof)
 	}
 }
 

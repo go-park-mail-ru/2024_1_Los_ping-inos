@@ -8,9 +8,9 @@ import (
 type (
 	IUseCase interface {
 		IsAuthenticated(sessionID string, ctx context.Context) (types.UserID, bool)
-		Login(email, password string, ctx context.Context) (string, types.UserID, error)
+		Login(email, password string, ctx context.Context) (*Profile, string, error)
 		Logout(sessionID string, ctx context.Context) error
-		Registration(body RegitstrationBody, ctx context.Context) (string, types.UserID, error)
+		Registration(body RegitstrationBody, ctx context.Context) (*Profile, string, error)
 		GetAllInterests(ctx context.Context) ([]*Interest, error)
 		GetName(sessionID string, ctx context.Context) (string, error)
 	}
@@ -24,5 +24,10 @@ type (
 	InterestStorage interface {
 		Get(ctx context.Context, filter *InterestGetFilter) ([]*Interest, error)
 		CreatePersonInterests(ctx context.Context, personID types.UserID, interestID []types.InterestID) error
+		GetPersonInterests(ctx context.Context, personID types.UserID) ([]*Interest, error)
+	}
+
+	ImageStorage interface {
+		Get(ctx context.Context, userID int64) ([]Image, error)
 	}
 )

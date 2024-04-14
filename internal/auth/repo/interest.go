@@ -14,6 +14,7 @@ const (
 	PersonInterestTableName = "person_interest"
 	interestFields          = "id, name"
 	InterestTableName       = "interest"
+	personInterestFields    = "person_id, interest_id"
 )
 
 type InterestStorage struct {
@@ -41,7 +42,6 @@ func (storage *InterestStorage) CreatePersonInterests(ctx context.Context, perso
 		rows, err := query.Query()
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("db insert can't query: ", err.Error())
-			rows.Close()
 			return err
 		}
 		rows.Close()
@@ -107,4 +107,38 @@ func processInterestNameFilter(filter *auth.InterestGetFilter, whereMap *qb.And)
 	if filter.Name != nil {
 		*whereMap = append(*whereMap, qb.Eq{"name": filter.Name})
 	}
+}
+
+func (storage *InterestStorage) GetPersonInterests(ctx context.Context, personID types.UserID) ([]*auth.Interest, error) {
+	logger := ctx.Value(Logg).(*Log)
+	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db get request to ", PersonInterestTableName)
+	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
+	query := stBuilder.
+		Select(personInterestFields).
+		From(PersonInterestTableName).
+		Where(qb.Eq{"person_id": personID}).
+		RunWith(storage.dbReader)
+
+	rows, err := query.Query()
+	if err != nil {
+		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("db can't query: ", err.Error())
+		return nil, err
+	}
+	defer rows.Close()
+
+	var (
+		ids        []types.InterestID
+		personsID  types.UserID
+		interestID types.InterestID
+	)
+	for rows.Next() {
+		err = rows.Scan(&personsID, &interestID)
+		if err != nil {
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("db person_interest can't scan: ", err.Error())
+			return nil, err
+		}
+		ids = append(ids, interestID)
+	}
+	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db got ", len(ids), " interest ids")
+	return storage.Get(ctx, &auth.InterestGetFilter{ID: ids})
 }

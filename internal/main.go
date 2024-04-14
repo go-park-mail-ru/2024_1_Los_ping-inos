@@ -80,7 +80,7 @@ func main() {
 	imageStorage := imageRepo.NewImageStorage(db)
 
 	delivers := make([]interface{}, 4)
-	delivers[authDeliver] = authDelivery.NewAuthHandler(authUsecase.NewAuthUseCase(authRepo.NewAuthPostgresStorage(db), authRepo.NewInterestStorage(db)))
+	delivers[authDeliver] = authDelivery.NewAuthHandler(authUsecase.NewAuthUseCase(authRepo.NewAuthPostgresStorage(db), authRepo.NewInterestStorage(db), authRepo.NewImageStorage(db)))
 	delivers[profileDeliver] = profileDelivery.NewProfileDeliver(profileUsecase.NewProfileUseCase(profilePStorage, profileIntStorage, profileImgStorage, profileLStorage))
 	delivers[feedDeliver] = feedDelivery.NewFeedDelivery(feedUsecase.New(feedPStorage, feedIntStorage, feedImgStorage, feedLStorage))
 	delivers[imageDeliver] = imageDelivery.NewImageDelivery(imageUsecase.NewImageUseCase(imageStorage))
