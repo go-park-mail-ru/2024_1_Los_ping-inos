@@ -61,8 +61,7 @@ CREATE TABLE IF NOT EXISTS person_image (
 	on delete cascade
 	on update cascade,
     image_url text not null,
-    cell_number int not null,
-    PRIMARY KEY (person_id, cell_number)
+    cell_number int not null
 );
 
 CREATE TABLE IF NOT EXISTS person_premium (
