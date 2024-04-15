@@ -175,7 +175,7 @@ func combineToCards(persons []*auth.Person, interests [][]*auth.Interest, images
 	res := make([]auth.Profile, len(persons))
 	for i := range persons {
 		res[i] = auth.Profile{ID: persons[i].ID, Name: persons[i].Name, Birthday: persons[i].Birthday, Description: persons[i].Description,
-			Interests: interests[i], Photos: photos[i]}
+			Email: persons[i].Email, Interests: interests[i], Photos: photos[i]}
 	}
 	return res
 }
