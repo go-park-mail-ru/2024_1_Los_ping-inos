@@ -1,12 +1,14 @@
 package usecase
 
 import (
+	"cmp"
 	"context"
 	"errors"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 	"main.go/internal/auth"
 	"main.go/internal/types"
+	"slices"
 )
 
 type UseCase struct {
@@ -174,6 +176,9 @@ func combineToCards(persons []*auth.Person, interests [][]*auth.Interest, images
 
 	res := make([]auth.Profile, len(persons))
 	for i := range persons {
+		slices.SortFunc(photos[i], func(a, b auth.ImageToSend) int { // TODO
+			return cmp.Compare(a.Cell, b.Cell)
+		})
 		res[i] = auth.Profile{ID: persons[i].ID, Name: persons[i].Name, Birthday: persons[i].Birthday, Description: persons[i].Description,
 			Email: persons[i].Email, Interests: interests[i], Photos: photos[i]}
 	}

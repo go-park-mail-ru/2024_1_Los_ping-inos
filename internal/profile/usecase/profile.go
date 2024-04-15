@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"cmp"
 	"context"
 	"errors"
 	"github.com/emirpasic/gods/sets/hashset"
@@ -8,6 +9,7 @@ import (
 	requests "main.go/internal/pkg"
 	"main.go/internal/profile"
 	"main.go/internal/types"
+	"slices"
 	"time"
 )
 
@@ -142,7 +144,7 @@ func (service *UseCase) GetMatches(prof types.UserID, ctx context.Context) ([]pr
 		return nil, err
 	}
 	if len(ids) == 0 {
-		return nil, nil
+		return make([]profile.Card, 0), nil
 	}
 
 	return service.GetProfile(profile.ProfileGetParams{ID: ids}, ctx)
@@ -183,6 +185,9 @@ func combineToCards(persons []*profile.Person, interests [][]*profile.Interest, 
 
 	res := make([]profile.Card, len(persons))
 	for i := range persons {
+		slices.SortFunc(photos[i], func(a, b profile.ImageToSend) int { // TODO
+			return cmp.Compare(a.Cell, b.Cell)
+		})
 		res[i] = profile.Card{ID: persons[i].ID, Name: persons[i].Name, Birthday: persons[i].Birthday, Description: persons[i].Description,
 			Interests: interests[i], Photos: photos[i]}
 	}
