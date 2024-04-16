@@ -28,7 +28,7 @@ type (
 	}
 
 	CreateLikeRequest struct {
-		Profile2 types.UserID `json:"profile2"`
+		Profile2 types.UserID `json:"id"`
 	}
 
 	ImageRequest struct {
