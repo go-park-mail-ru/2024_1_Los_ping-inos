@@ -20,6 +20,7 @@
 
 # Go workspace file
 go.work
+main
 
 ### GoLand ###
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio, WebStorm and Rider
@@ -172,3 +173,4 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 /logrus.log
+.env

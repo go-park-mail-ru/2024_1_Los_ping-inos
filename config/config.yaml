@@ -13,5 +13,10 @@ database:
   dbname: "tpTinder"
   user: "postgres"
   password: "postgres"
+
+aws:
+  key_id: ""
+  key_access: ""
+  region: ""
   
 filesPaths:
