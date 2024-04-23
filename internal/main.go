@@ -20,10 +20,6 @@ import (
 	_ "main.go/internal/docs"
 	. "main.go/internal/logs"
 
-	profileDelivery "main.go/internal/profile/delivery"
-	profileRepo "main.go/internal/profile/repo"
-	profileUsecase "main.go/internal/profile/usecase"
-
 	feedDelivery "main.go/internal/feed/delivery"
 	feedRepo "main.go/internal/feed/repo"
 	feedUsecase "main.go/internal/feed/usecase"
@@ -67,11 +63,6 @@ func main() {
 	}
 	defer db.Close()
 
-	profilePStorage := profileRepo.NewPersonStorage(db)
-	profileLStorage := profileRepo.NewLikeStorage(db)
-	profileImgStorage := profileRepo.NewImageStorage(db)
-	profileIntStorage := profileRepo.NewInterestStorage(db)
-
 	feedPStorage := feedRepo.NewPersonStorage(db)
 	feedLStorage := feedRepo.NewLikeStorage(db)
 	feedImgStorage := feedRepo.NewImageStorage(db)
@@ -80,8 +71,7 @@ func main() {
 	imageStorage := imageRepo.NewImageStorage(db)
 
 	delivers := make([]interface{}, 4)
-	delivers[authDeliver] = authDelivery.NewAuthHandler(authUsecase.NewAuthUseCase(authRepo.NewAuthPostgresStorage(db), authRepo.NewInterestStorage(db), authRepo.NewImageStorage(db)))
-	delivers[profileDeliver] = profileDelivery.NewProfileDeliver(profileUsecase.NewProfileUseCase(profilePStorage, profileIntStorage, profileImgStorage, profileLStorage))
+	delivers[authDeliver] = authDelivery.NewAuthHandler(authUsecase.NewAuthUseCase(authRepo.NewAuthPersonStorage(db), authRepo.NewInterestStorage(db), authRepo.NewImageStorage(db)))
 	delivers[feedDeliver] = feedDelivery.NewFeedDelivery(feedUsecase.New(feedPStorage, feedIntStorage, feedImgStorage, feedLStorage))
 	delivers[imageDeliver] = imageDelivery.NewImageDelivery(imageUsecase.NewImageUseCase(imageStorage))
 
@@ -112,7 +102,6 @@ func StartServer(logger *Log, deliver []interface{}) error {
 	authDel := deliver[authDeliver].(*authDelivery.AuthHandler)
 	feedDel := deliver[feedDeliver].(*feedDelivery.FeedHandler)
 	imageDel := deliver[imageDeliver].(*imageDelivery.ImageHandler)
-	profileDel := deliver[profileDeliver].(*profileDelivery.ProfileHandler)
 
 	// роутер)0)
 	// структура: путь, цепочка миддлвар: логирование -> методы -> [авторизация -> [CSRF]] -> функция-обработчик ручки
@@ -164,7 +153,7 @@ func StartServer(logger *Log, deliver []interface{}) error {
 
 	mux.Handle(apiPath+"profile", RequestIDMiddleware(
 		AllowedMethodMiddleware(
-			IsAuthenticatedMiddleware(CSRFMiddleware(http.HandlerFunc(profileDel.ProfileHandlers())), authResolver), hashset.New("GET", "POST", "DELETE")),
+			IsAuthenticatedMiddleware(CSRFMiddleware(http.HandlerFunc(authDel.ProfileHandlers())), authResolver), hashset.New("GET", "POST", "DELETE")),
 		"profile", logger))
 
 	mux.Handle(apiPath+"like", RequestIDMiddleware(
@@ -174,7 +163,7 @@ func StartServer(logger *Log, deliver []interface{}) error {
 
 	mux.Handle(apiPath+"matches", RequestIDMiddleware(
 		AllowedMethodMiddleware(
-			IsAuthenticatedMiddleware(http.HandlerFunc(profileDel.GetMatches()), authResolver), hashset.New("GET")),
+			IsAuthenticatedMiddleware(http.HandlerFunc(authDel.GetMatches()), authResolver), hashset.New("GET")),
 		"matches", logger))
 
 	mux.Handle(apiPath+"dislike", RequestIDMiddleware(

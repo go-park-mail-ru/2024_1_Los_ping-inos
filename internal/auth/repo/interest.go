@@ -142,3 +142,22 @@ func (storage *InterestStorage) GetPersonInterests(ctx context.Context, personID
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db got ", len(ids), " interest ids")
 	return storage.Get(ctx, &auth.InterestGetFilter{ID: ids})
 }
+
+func (storage *InterestStorage) DeletePersonInterests(ctx context.Context, personID types.UserID, interestID []types.InterestID) error {
+	logger := ctx.Value(Logg).(*Log)
+	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
+	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db delete request to ", PersonInterestTableName)
+	query := stBuilder.
+		Delete(PersonInterestTableName).
+		Where(qb.And{qb.Eq{"person_id": personID}, qb.Eq{"interest_id": interestID}}).
+		RunWith(storage.dbReader)
+
+	rows, err := query.Query()
+	defer rows.Close()
+	if err != nil {
+		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("db delete can't query: ", err.Error())
+		return err
+	}
+	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db person interest deleted")
+	return nil
+}

@@ -31,6 +31,11 @@ type (
 		SessionID   string       `json:"session_id"`
 	}
 
+	ProfileGetParams struct {
+		ID        []types.UserID
+		SessionID []string
+	}
+
 	PersonGetFilter struct {
 		ID        []types.UserID
 		Email     []string
@@ -67,5 +72,15 @@ type (
 	ImageToSend struct {
 		Cell string `json:"cell"`
 		Url  string `json:"url"`
+	}
+
+	ProfileUpdateRequest struct {
+		Name        string   `json:"name"`
+		Email       string   `json:"email"`
+		Birthday    string   `json:"birthday"`
+		Password    string   `json:"password"`
+		OldPassword string   `json:"oldPassword"`
+		Description string   `json:"description"`
+		Interests   []string `json:"interests"`
 	}
 )

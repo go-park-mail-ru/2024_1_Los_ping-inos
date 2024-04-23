@@ -12,21 +12,21 @@ import (
 )
 
 type UseCase struct {
-	dbReader        auth.PostgresRepo
+	personStorage   auth.PersonStorage
 	interestStorage auth.InterestStorage
 	imageStorage    auth.ImageStorage
 }
 
-func NewAuthUseCase(dbReader auth.PostgresRepo, istore auth.InterestStorage, imgStore auth.ImageStorage) *UseCase {
+func NewAuthUseCase(dbReader auth.PersonStorage, istore auth.InterestStorage, imgStore auth.ImageStorage) *UseCase {
 	return &UseCase{
-		dbReader:        dbReader,
+		personStorage:   dbReader,
 		interestStorage: istore,
 		imageStorage:    imgStore,
 	}
 }
 
-func (api *UseCase) IsAuthenticated(sessionID string, ctx context.Context) (types.UserID, bool) {
-	person, err := api.dbReader.Get(ctx, &auth.PersonGetFilter{SessionID: []string{sessionID}})
+func (service *UseCase) IsAuthenticated(sessionID string, ctx context.Context) (types.UserID, bool) {
+	person, err := service.personStorage.Get(ctx, &auth.PersonGetFilter{SessionID: []string{sessionID}})
 	if err != nil || len(person) == 0 {
 		return -1, false
 	}
@@ -34,10 +34,10 @@ func (api *UseCase) IsAuthenticated(sessionID string, ctx context.Context) (type
 }
 
 // Login - принимает email, пароль; возвращает ID сессии и ошибку
-func (api *UseCase) Login(email, password string, ctx context.Context) (*auth.Profile, string, error) {
+func (service *UseCase) Login(email, password string, ctx context.Context) (*auth.Profile, string, error) {
 	ems := make([]string, 1)
 	ems[0] = email
-	users, ok := api.dbReader.Get(ctx, &auth.PersonGetFilter{Email: ems})
+	users, ok := service.personStorage.Get(ctx, &auth.PersonGetFilter{Email: ems})
 	if ok != nil {
 		return nil, "", ok
 	}
@@ -55,12 +55,12 @@ func (api *UseCase) Login(email, password string, ctx context.Context) (*auth.Pr
 
 	SID := uuid.NewString()
 	user.SessionID = SID
-	err = api.dbReader.Update(ctx, *user)
+	err = service.personStorage.Update(ctx, *user)
 	if err != nil {
 		return nil, "", err
 	}
 
-	interests, images, err := api.getUserCards(users, ctx)
+	interests, images, err := service.getUserCards(users, ctx)
 	if err != nil {
 		return nil, "", err
 	}
@@ -68,31 +68,31 @@ func (api *UseCase) Login(email, password string, ctx context.Context) (*auth.Pr
 	return &profiles[0], SID, nil
 }
 
-func (api *UseCase) GetAllInterests(ctx context.Context) ([]*auth.Interest, error) {
-	return api.interestStorage.Get(ctx, nil)
+func (service *UseCase) GetAllInterests(ctx context.Context) ([]*auth.Interest, error) {
+	return service.interestStorage.Get(ctx, nil)
 }
 
-func (api *UseCase) Registration(body auth.RegitstrationBody, ctx context.Context) (*auth.Profile, string, error) {
+func (service *UseCase) Registration(body auth.RegitstrationBody, ctx context.Context) (*auth.Profile, string, error) {
 	hashedPassword, err := hashPassword(body.Password)
 	if err != nil {
 		return nil, "", err
 	}
 
-	err = api.dbReader.AddAccount(ctx, body.Name, body.Birthday, body.Gender, body.Email, hashedPassword)
+	err = service.personStorage.AddAccount(ctx, body.Name, body.Birthday, body.Gender, body.Email, hashedPassword)
 	if err != nil {
 		return nil, "", err
 	}
 
-	prof, SID, err := api.Login(body.Email, body.Password, ctx)
+	prof, SID, err := service.Login(body.Email, body.Password, ctx)
 	if err != nil {
 		return nil, "", err
 	}
 
-	interests, err := api.interestStorage.Get(ctx, &auth.InterestGetFilter{Name: body.Interests})
+	interests, err := service.interestStorage.Get(ctx, &auth.InterestGetFilter{Name: body.Interests})
 	if err != nil {
 		return nil, "", err
 	}
-	err = api.interestStorage.CreatePersonInterests(ctx, prof.ID, getInterestIDs(interests))
+	err = service.interestStorage.CreatePersonInterests(ctx, prof.ID, getInterestIDs(interests))
 	if err != nil {
 		return nil, "", err
 	}
@@ -101,8 +101,8 @@ func (api *UseCase) Registration(body auth.RegitstrationBody, ctx context.Contex
 	return prof, SID, nil
 }
 
-func (api *UseCase) GetName(sessionID string, ctx context.Context) (string, error) {
-	person, err := api.dbReader.Get(ctx, &auth.PersonGetFilter{SessionID: []string{sessionID}})
+func (service *UseCase) GetName(sessionID string, ctx context.Context) (string, error) {
+	person, err := service.personStorage.Get(ctx, &auth.PersonGetFilter{SessionID: []string{sessionID}})
 	if err != nil {
 		return "", err
 	}
@@ -122,8 +122,8 @@ func getInterestIDs(interests []*auth.Interest) []types.InterestID {
 	return res
 }
 
-func (api *UseCase) Logout(sessionID string, ctx context.Context) error {
-	err := api.dbReader.RemoveSession(ctx, sessionID)
+func (service *UseCase) Logout(sessionID string, ctx context.Context) error {
+	err := service.personStorage.RemoveSession(ctx, sessionID)
 	if err != nil {
 		return err
 	}
@@ -141,16 +141,16 @@ func checkPassword(hash, password string) error {
 	return bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 }
 
-func (api *UseCase) getUserCards(persons []*auth.Person, ctx context.Context) ([][]*auth.Interest, [][]auth.Image, error) {
+func (service *UseCase) getUserCards(persons []*auth.Person, ctx context.Context) ([][]*auth.Interest, [][]auth.Image, error) {
 	var err error
 	interests := make([][]*auth.Interest, len(persons))
 	images := make([][]auth.Image, len(persons))
 	for j := range persons {
-		interests[j], err = api.interestStorage.GetPersonInterests(ctx, persons[j].ID)
+		interests[j], err = service.interestStorage.GetPersonInterests(ctx, persons[j].ID)
 		if err != nil {
 			return nil, nil, err
 		}
-		images[j], err = api.imageStorage.Get(ctx, int64(persons[j].ID))
+		images[j], err = service.imageStorage.Get(ctx, int64(persons[j].ID))
 		if err != nil {
 			return nil, nil, err
 		}
