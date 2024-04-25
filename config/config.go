@@ -50,9 +50,11 @@ type FilesPathsConfig struct {
 func LoadConfig(path string) (*Config, error) {
 	var err error
 	var config Config
-
 	viper.SetConfigFile(path)
 
+	if err = viper.ReadInConfig(); err != nil {
+		return nil, err
+	}
 	err = viper.BindEnv("server.host", "SERVER_HOST")
 	if err != nil {
 		return nil, err
@@ -107,6 +109,5 @@ func LoadConfig(path string) (*Config, error) {
 	}
 
 	Cfg = config
-
 	return &config, nil
 }

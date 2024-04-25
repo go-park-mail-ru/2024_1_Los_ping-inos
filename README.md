@@ -2,7 +2,7 @@
 Backend-репозиторий команды Los_ping-inos
 
 ## Ссылки
-* сайт    - http://185.241.192.216:8081/
+* сайт    - https://jimder.ru
 * swagger - http://185.241.192.216:8085/swagger/index.html
 
 ## Как генерить swagger
