@@ -35,7 +35,7 @@ func NewFeedDelivery(uc feed.UseCase) *FeedHandler {
 // @Failure 500       {string} string
 func (deliver *FeedHandler) GetCardsHandler() func(http.ResponseWriter, *http.Request) {
 	return func(respWriter http.ResponseWriter, request *http.Request) {
-		logger := request.Context().Value(Logg).(*Log)
+		logger := request.Context().Value(Logg).(Log)
 
 		cards, err := deliver.usecase.GetCards(request.Context().Value(RequestUserID).(types.UserID), request.Context())
 		if err != nil {
@@ -62,7 +62,7 @@ func (deliver *FeedHandler) GetCardsHandler() func(http.ResponseWriter, *http.Re
 // @Failure 405       {string} string
 func (deliver *FeedHandler) CreateLike() func(respWriter http.ResponseWriter, request *http.Request) {
 	return func(respWriter http.ResponseWriter, request *http.Request) {
-		logger := request.Context().Value(Logg).(*Log)
+		logger := request.Context().Value(Logg).(Log)
 
 		body, err := io.ReadAll(request.Body)
 		if err != nil { // TODO эти два блока вынести в отдельную функцию и напихать её во все ручки
@@ -93,7 +93,7 @@ func (deliver *FeedHandler) CreateLike() func(respWriter http.ResponseWriter, re
 
 func (deliver *FeedHandler) CreateDislike() func(respWriter http.ResponseWriter, request *http.Request) {
 	return func(respWriter http.ResponseWriter, request *http.Request) {
-		logger := request.Context().Value(Logg).(*Log)
+		logger := request.Context().Value(Logg).(Log)
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("not implemented dislike")
 		requests.SendResponse(respWriter, request, http.StatusOK, nil)
 	}

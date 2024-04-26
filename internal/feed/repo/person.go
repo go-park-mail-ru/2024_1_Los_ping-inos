@@ -27,7 +27,7 @@ func NewPersonStorage(dbReader *sql.DB) *PersonStorage {
 }
 
 func (storage *PersonStorage) GetFeed(ctx context.Context, filter types.UserID) ([]*feed.Person, error) {
-	logger := ctx.Value(Logg).(*Log)
+	logger := ctx.Value(Logg).(Log)
 	likes := &LikeStorage{dbReader: storage.dbReader}
 	ids, err := likes.Get(ctx, &feed.LikeGetFilter{Person1: &filter})
 	if err != nil {

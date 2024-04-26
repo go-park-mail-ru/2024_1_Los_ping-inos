@@ -23,7 +23,7 @@ func NewImageStorage(dbReader *sql.DB) *ImageStorage {
 }
 
 func (storage *ImageStorage) Get(ctx context.Context, userID int64) ([]feed.Image, error) {
-	logger := ctx.Value(Logg).(*Log)
+	logger := ctx.Value(Logg).(Log)
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("Get request to person_image")
 	var images []feed.Image
 

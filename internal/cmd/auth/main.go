@@ -80,10 +80,15 @@ func main() {
 	}
 }
 
-func startServer(cfg *config.Config, logger *Log, deliver Delivers) error {
-	var apiPath = config.Cfg.ApiPath
+func startServer(cfg *config.Config, logger Log, deliver Delivers) error {
+	var apiPath = cfg.ApiPath
 	httpDeliver := deliver.http
-	authResolver := httpDeliver.UseCase
+
+	grpcConn, err := grpc.Dial("127.0.0.1:50051", grpc.WithInsecure())
+	if err != nil {
+		return err
+	}
+	authManager := gen.NewAuthHandlClient(grpcConn)
 	mux := http.NewServeMux()
 	mux.Handle(apiPath+"login", RequestIDMiddleware(
 		AllowedMethodMiddleware(
@@ -97,7 +102,7 @@ func startServer(cfg *config.Config, logger *Log, deliver Delivers) error {
 
 	mux.Handle(apiPath+"logout", RequestIDMiddleware(
 		AllowedMethodMiddleware(
-			IsAuthenticatedMiddleware(http.HandlerFunc(httpDeliver.LogoutHandler()), authResolver), hashset.New("GET")),
+			IsAuthenticatedMiddleware(http.HandlerFunc(httpDeliver.LogoutHandler()), authManager), hashset.New("GET")),
 		"logout", logger))
 
 	mux.Handle(apiPath+"isAuth", RequestIDMiddleware(
@@ -107,17 +112,17 @@ func startServer(cfg *config.Config, logger *Log, deliver Delivers) error {
 
 	mux.Handle(apiPath+"me", RequestIDMiddleware(
 		AllowedMethodMiddleware(
-			IsAuthenticatedMiddleware(http.HandlerFunc(httpDeliver.GetUsername()), authResolver), hashset.New("GET")),
+			IsAuthenticatedMiddleware(http.HandlerFunc(httpDeliver.GetUsername()), authManager), hashset.New("GET")),
 		"username (/me)", logger))
 
 	mux.Handle(apiPath+"profile", RequestIDMiddleware(
 		AllowedMethodMiddleware(
-			IsAuthenticatedMiddleware(CSRFMiddleware(http.HandlerFunc(httpDeliver.ProfileHandlers())), authResolver), hashset.New("GET", "POST", "DELETE")),
+			IsAuthenticatedMiddleware(CSRFMiddleware(http.HandlerFunc(httpDeliver.ProfileHandlers())), authManager), hashset.New("GET", "POST", "DELETE")),
 		"profile", logger))
 
 	mux.Handle(apiPath+"matches", RequestIDMiddleware(
 		AllowedMethodMiddleware(
-			IsAuthenticatedMiddleware(http.HandlerFunc(httpDeliver.GetMatches()), authResolver), hashset.New("GET")),
+			IsAuthenticatedMiddleware(http.HandlerFunc(httpDeliver.GetMatches()), authManager), hashset.New("GET")),
 		"matches", logger))
 
 	server := http.Server{
@@ -129,7 +134,5 @@ func startServer(cfg *config.Config, logger *Log, deliver Delivers) error {
 
 	logger.Logger.Infof("started auth http server at %v", server.Addr)
 	fmt.Printf("started auth http server at %v\n", server.Addr)
-	err := server.ListenAndServe()
-
-	return err
+	return server.ListenAndServe()
 }

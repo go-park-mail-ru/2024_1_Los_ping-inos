@@ -6,6 +6,7 @@ import (
 	"github.com/emirpasic/gods/sets/hashset"
 	"github.com/go-chi/chi"
 	httpSwagger "github.com/swaggo/http-swagger/v2"
+	"google.golang.org/grpc"
 	. "main.go/internal/pkg"
 	"net/http"
 	"time"
@@ -15,6 +16,7 @@ import (
 	"main.go/config"
 
 	authDelivery "main.go/internal/auth/delivery"
+	authGrpc "main.go/internal/auth/proto"
 	authRepo "main.go/internal/auth/repo"
 	authUsecase "main.go/internal/auth/usecase"
 	_ "main.go/internal/docs"
@@ -32,7 +34,6 @@ import (
 const configPath = "config/config.yaml"
 const (
 	authDeliver = iota
-	profileDeliver
 	feedDeliver
 	imageDeliver
 )
@@ -93,82 +94,88 @@ func runSwaggerServer(logger *Log) {
 	}
 }
 
-func StartServer(logger *Log, deliver []interface{}) error {
-	go runSwaggerServer(logger)
+func StartServer(logger Log, deliver []interface{}) error {
+	go runSwaggerServer(&logger)
 
 	var apiPath = config.Cfg.ApiPath
 
-	authResolver := deliver[authDeliver].(*authDelivery.AuthHandler).UseCase
 	authDel := deliver[authDeliver].(*authDelivery.AuthHandler)
 	feedDel := deliver[feedDeliver].(*feedDelivery.FeedHandler)
 	imageDel := deliver[imageDeliver].(*imageDelivery.ImageHandler)
 
+	grpcConn, err := grpc.Dial("127.0.0.1:50051", grpc.WithInsecure())
+	if err != nil {
+		println("THE GO FUCK YOURSELF LANGUAGE") // TODO
+		return err
+	}
+
+	authManager := authGrpc.NewAuthHandlClient(grpcConn)
 	// роутер)0)
 	// структура: путь, цепочка миддлвар: логирование -> методы -> [авторизация -> [CSRF]] -> функция-обработчик ручки
 	mux := http.NewServeMux()
 	mux.Handle(apiPath+"cards", RequestIDMiddleware(
 		AllowedMethodMiddleware(
-			IsAuthenticatedMiddleware(http.HandlerFunc(feedDel.GetCardsHandler()), authResolver), hashset.New("GET")),
+			IsAuthenticatedMiddleware(http.HandlerFunc(feedDel.GetCardsHandler()), authManager), hashset.New("GET")),
 		"get cards", logger))
 
-	mux.Handle(apiPath+"login", RequestIDMiddleware(
-		AllowedMethodMiddleware(
-			http.HandlerFunc(authDel.LoginHandler()), hashset.New("POST")),
-		"login", logger))
-
-	mux.Handle(apiPath+"registration", RequestIDMiddleware(
-		AllowedMethodMiddleware(
-			http.HandlerFunc(authDel.RegistrationHandler()), hashset.New("GET", "POST")),
-		"registration", logger))
-
-	mux.Handle(apiPath+"logout", RequestIDMiddleware(
-		AllowedMethodMiddleware(
-			IsAuthenticatedMiddleware(http.HandlerFunc(authDel.LogoutHandler()), authResolver), hashset.New("GET")),
-		"logout", logger))
-
-	mux.Handle(apiPath+"isAuth", RequestIDMiddleware(
-		AllowedMethodMiddleware(
-			http.HandlerFunc(authDel.IsAuthenticatedHandler()), hashset.New("GET")),
-		"authentication check", logger))
-
-	mux.Handle(apiPath+"me", RequestIDMiddleware(
-		AllowedMethodMiddleware(
-			IsAuthenticatedMiddleware(http.HandlerFunc(authDel.GetUsername()), authResolver), hashset.New("GET")),
-		"username (/me)", logger))
+	//mux.Handle(apiPath+"login", RequestIDMiddleware(
+	//	AllowedMethodMiddleware(
+	//		http.HandlerFunc(authDel.LoginHandler()), hashset.New("POST")),
+	//	"login", logger))
+	//
+	//mux.Handle(apiPath+"registration", RequestIDMiddleware(
+	//	AllowedMethodMiddleware(
+	//		http.HandlerFunc(authDel.RegistrationHandler()), hashset.New("GET", "POST")),
+	//	"registration", logger))
+	//
+	//mux.Handle(apiPath+"logout", RequestIDMiddleware(
+	//	AllowedMethodMiddleware(
+	//		IsAuthenticatedMiddleware(http.HandlerFunc(authDel.LogoutHandler()), authResolver), hashset.New("GET")),
+	//	"logout", logger))
+	//
+	//mux.Handle(apiPath+"isAuth", RequestIDMiddleware(
+	//	AllowedMethodMiddleware(
+	//		http.HandlerFunc(authDel.IsAuthenticatedHandler()), hashset.New("GET")),
+	//	"authentication check", logger))
+	//
+	//mux.Handle(apiPath+"me", RequestIDMiddleware(
+	//	AllowedMethodMiddleware(
+	//		IsAuthenticatedMiddleware(http.HandlerFunc(authDel.GetUsername()), authResolver), hashset.New("GET")),
+	//	"username (/me)", logger))
 
 	mux.Handle(apiPath+"getImage", RequestIDMiddleware(
 		AllowedMethodMiddleware(
-			IsAuthenticatedMiddleware(http.HandlerFunc(imageDel.GetImageHandler()), authResolver), hashset.New("GET")),
+			IsAuthenticatedMiddleware(http.HandlerFunc(imageDel.GetImageHandler()), authManager), hashset.New("GET")),
 		"get images", logger))
 
 	mux.Handle(apiPath+"addImage", RequestIDMiddleware(
 		AllowedMethodMiddleware(
-			IsAuthenticatedMiddleware(CSRFMiddleware(http.HandlerFunc(imageDel.AddImageHandler())), authResolver), hashset.New("POST")),
+			IsAuthenticatedMiddleware(CSRFMiddleware(http.HandlerFunc(imageDel.AddImageHandler())), authManager), hashset.New("POST")),
 		"username (/me)", logger))
 
 	mux.Handle(apiPath+"deleteImage", RequestIDMiddleware(
 		AllowedMethodMiddleware(
-			IsAuthenticatedMiddleware(CSRFMiddleware(http.HandlerFunc(imageDel.DeleteImageHandler())), authResolver), hashset.New("POST")),
+			IsAuthenticatedMiddleware(CSRFMiddleware(http.HandlerFunc(imageDel.DeleteImageHandler())), authManager), hashset.New("POST")),
 		"delete image", logger))
 
 	mux.Handle(apiPath+"profile", RequestIDMiddleware(
 		AllowedMethodMiddleware(
-			IsAuthenticatedMiddleware(CSRFMiddleware(http.HandlerFunc(authDel.ProfileHandlers())), authResolver), hashset.New("GET", "POST", "DELETE")),
+			IsAuthenticatedMiddleware(CSRFMiddleware(http.HandlerFunc(authDel.ProfileHandlers())), authManager), hashset.New("GET", "POST", "DELETE")),
 		"profile", logger))
 
 	mux.Handle(apiPath+"like", RequestIDMiddleware(
 		AllowedMethodMiddleware(
-			IsAuthenticatedMiddleware(CSRFMiddleware(http.HandlerFunc(feedDel.CreateLike())), authResolver), hashset.New("POST")),
+			IsAuthenticatedMiddleware(CSRFMiddleware(http.HandlerFunc(feedDel.CreateLike())), authManager), hashset.New("POST")),
 		"like", logger))
 
-	mux.Handle(apiPath+"matches", RequestIDMiddleware(
-		AllowedMethodMiddleware(
-			IsAuthenticatedMiddleware(http.HandlerFunc(authDel.GetMatches()), authResolver), hashset.New("GET")),
-		"matches", logger))
+	//mux.Handle(apiPath+"matches", RequestIDMiddleware(
+	//	AllowedMethodMiddleware(
+	//		IsAuthenticatedMiddleware(http.HandlerFunc(authDel.GetMatches()), authResolver), hashset.New("GET")),
+	//	"matches", logger))
 
 	mux.Handle(apiPath+"dislike", RequestIDMiddleware(
 		AllowedMethodMiddleware(
-			IsAuthenticatedMiddleware(CSRFMiddleware(http.HandlerFunc(feedDel.CreateDislike())), authResolver), hashset.New("POST")),
+			IsAuthenticatedMiddleware(CSRFMiddleware(http.HandlerFunc(feedDel.CreateDislike())), authManager), hashset.New("POST")),
 		"dislike", logger))
 
 	server := http.Server{
@@ -180,7 +187,7 @@ func StartServer(logger *Log, deliver []interface{}) error {
 
 	logger.Logger.Infof("started server at %v", server.Addr)
 	fmt.Printf("started server at %v\n", server.Addr)
-	err := server.ListenAndServe()
+	err = server.ListenAndServe()
 	if err != nil {
 		return err
 	}

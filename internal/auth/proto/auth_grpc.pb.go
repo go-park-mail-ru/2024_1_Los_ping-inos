@@ -19,14 +19,14 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	AuthHandl_IsAuth_FullMethodName = "/auth.AuthHandl/IsAuth"
+	AuthHandl_IsAuthenticated_FullMethodName = "/auth.AuthHandl/IsAuthenticated"
 )
 
 // AuthHandlClient is the client API for AuthHandl service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AuthHandlClient interface {
-	IsAuth(ctx context.Context, in *IsAuthRequest, opts ...grpc.CallOption) (*IsAuthResponse, error)
+	IsAuthenticated(ctx context.Context, in *IsAuthRequest, opts ...grpc.CallOption) (*IsAuthResponse, error)
 }
 
 type authHandlClient struct {
@@ -37,9 +37,9 @@ func NewAuthHandlClient(cc grpc.ClientConnInterface) AuthHandlClient {
 	return &authHandlClient{cc}
 }
 
-func (c *authHandlClient) IsAuth(ctx context.Context, in *IsAuthRequest, opts ...grpc.CallOption) (*IsAuthResponse, error) {
+func (c *authHandlClient) IsAuthenticated(ctx context.Context, in *IsAuthRequest, opts ...grpc.CallOption) (*IsAuthResponse, error) {
 	out := new(IsAuthResponse)
-	err := c.cc.Invoke(ctx, AuthHandl_IsAuth_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, AuthHandl_IsAuthenticated_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -50,7 +50,7 @@ func (c *authHandlClient) IsAuth(ctx context.Context, in *IsAuthRequest, opts ..
 // All implementations must embed UnimplementedAuthHandlServer
 // for forward compatibility
 type AuthHandlServer interface {
-	IsAuth(context.Context, *IsAuthRequest) (*IsAuthResponse, error)
+	IsAuthenticated(context.Context, *IsAuthRequest) (*IsAuthResponse, error)
 	mustEmbedUnimplementedAuthHandlServer()
 }
 
@@ -58,8 +58,8 @@ type AuthHandlServer interface {
 type UnimplementedAuthHandlServer struct {
 }
 
-func (UnimplementedAuthHandlServer) IsAuth(context.Context, *IsAuthRequest) (*IsAuthResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method IsAuth not implemented")
+func (UnimplementedAuthHandlServer) IsAuthenticated(context.Context, *IsAuthRequest) (*IsAuthResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method IsAuthenticated not implemented")
 }
 func (UnimplementedAuthHandlServer) mustEmbedUnimplementedAuthHandlServer() {}
 
@@ -74,20 +74,20 @@ func RegisterAuthHandlServer(s grpc.ServiceRegistrar, srv AuthHandlServer) {
 	s.RegisterService(&AuthHandl_ServiceDesc, srv)
 }
 
-func _AuthHandl_IsAuth_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _AuthHandl_IsAuthenticated_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(IsAuthRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AuthHandlServer).IsAuth(ctx, in)
+		return srv.(AuthHandlServer).IsAuthenticated(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: AuthHandl_IsAuth_FullMethodName,
+		FullMethod: AuthHandl_IsAuthenticated_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthHandlServer).IsAuth(ctx, req.(*IsAuthRequest))
+		return srv.(AuthHandlServer).IsAuthenticated(ctx, req.(*IsAuthRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -100,8 +100,8 @@ var AuthHandl_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*AuthHandlServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "IsAuth",
-			Handler:    _AuthHandl_IsAuth_Handler,
+			MethodName: "IsAuthenticated",
+			Handler:    _AuthHandl_IsAuthenticated_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

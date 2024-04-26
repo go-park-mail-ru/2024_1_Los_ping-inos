@@ -17,31 +17,31 @@ const RequestSID = "SID"
 var Cfg Config
 
 type Config struct {
-	ApiPath    string
-	Server     ServerConfig     `json:"server"`
-	Database   DatabaseConfig   `json:"database"`
-	FilesPaths FilesPathsConfig `json:"filesPaths"`
+	ApiPath    string           `yaml:"apiPath"`
+	Server     ServerConfig     `json:"server" yaml:"server"`
+	Database   DatabaseConfig   `json:"database" yaml:"database"`
+	FilesPaths FilesPathsConfig `json:"filesPaths" yaml:"filesPaths"`
 }
 
 type ServerConfig struct {
-	Host        string        `json:"host"`
-	Port        string        `json:"port"`
-	SwaggerPort string        `json:"swaggerPort"`
-	Timeout     time.Duration `json:"timeout"`
+	Host        string        `json:"host" yaml:"host"`
+	Port        string        `json:"port" yaml:"port"`
+	SwaggerPort string        `json:"swaggerPort" yaml:"swaggerPort"`
+	Timeout     time.Duration `json:"timeout" yaml:"timeout"`
 }
 
 type DatabaseConfig struct {
-	Host     string `json:"host"`
-	Port     int    `json:"port"`
-	Database string `json:"database"`
-	User     string `json:"username"`
-	Password string `json:"password"`
+	Host     string `json:"host" yaml:"host"`
+	Port     int    `json:"port" yaml:"port"`
+	Database string `json:"database" yaml:"database"`
+	User     string `json:"username" yaml:"user"`
+	Password string `json:"password" yaml:"password"`
 }
 
 type AwsConfig struct {
-	Id     string `json:"key_id"`
-	Access string `json:"key_access"`
-	Region string `json:"region"`
+	Id     string `json:"key_id" yaml:"id"`
+	Access string `json:"key_access" yaml:"access"`
+	Region string `json:"region" yaml:"region"`
 }
 
 type FilesPathsConfig struct {

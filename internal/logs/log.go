@@ -13,8 +13,8 @@ type Log struct {
 	RequestID int64
 }
 
-func InitLog() *Log {
-	logger := &Log{Logger: logrus.New()}
+func InitLog() Log {
+	logger := Log{Logger: logrus.New()}
 	file, err := os.OpenFile("logrus.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err == nil {
 		logger.Logger.Out = file

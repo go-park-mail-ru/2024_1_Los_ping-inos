@@ -26,7 +26,7 @@ func NewLikeStorage(dbReader *sql.DB) *LikeStorage {
 }
 
 func (storage *LikeStorage) Get(ctx context.Context, filter *feed.LikeGetFilter) ([]types.UserID, error) {
-	logger := ctx.Value(Logg).(*Log)
+	logger := ctx.Value(Logg).(Log)
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db get request to ", LikeTableName)
 	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
 	whereMap := qb.Or{}
@@ -67,7 +67,7 @@ func (storage *LikeStorage) Get(ctx context.Context, filter *feed.LikeGetFilter)
 }
 
 func (storage *LikeStorage) Create(ctx context.Context, person1ID, person2ID types.UserID) error {
-	logger := ctx.Value(Logg).(*Log)
+	logger := ctx.Value(Logg).(Log)
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db create request to ", LikeTableName)
 	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
 
