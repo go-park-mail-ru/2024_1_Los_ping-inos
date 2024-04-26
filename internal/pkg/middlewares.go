@@ -24,7 +24,7 @@ func IsAuthenticatedMiddleware(next http.Handler, uc auth.IUseCase) http.Handler
 			SendResponse(respWriter, request, http.StatusUnauthorized, "unauthorized")
 			return
 		}
-		id, authorized := uc.IsAuthenticated(session.Value, request.Context())
+		id, authorized, _ := uc.IsAuthenticated(session.Value, request.Context())
 
 		if !authorized {
 			log.Logger.WithFields(logrus.Fields{RequestID: log.RequestID}).Info("unauthorized")

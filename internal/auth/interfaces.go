@@ -7,7 +7,7 @@ import (
 
 type (
 	IUseCase interface {
-		IsAuthenticated(sessionID string, ctx context.Context) (types.UserID, bool)
+		IsAuthenticated(sessionID string, ctx context.Context) (types.UserID, bool, error)
 		Login(email, password string, ctx context.Context) (*Profile, string, error)
 		Logout(sessionID string, ctx context.Context) error
 		Registration(body RegitstrationBody, ctx context.Context) (*Profile, string, error)

@@ -205,7 +205,12 @@ func (deliver *AuthHandler) IsAuthenticatedHandler() func(w http.ResponseWriter,
 			requests.SendResponse(respWriter, request, http.StatusUnauthorized, nil)
 			return
 		}
-		UID, ok := deliver.UseCase.IsAuthenticated(session.Value, request.Context())
+		UID, ok, err := deliver.UseCase.IsAuthenticated(session.Value, request.Context())
+		if err != nil {
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info(err.Error())
+			requests.SendResponse(respWriter, request, http.StatusUnauthorized, nil)
+			return
+		}
 		if !ok {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("not authorized")
 			requests.SendResponse(respWriter, request, http.StatusUnauthorized, nil)

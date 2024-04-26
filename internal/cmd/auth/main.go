@@ -6,26 +6,32 @@ import (
 	"github.com/emirpasic/gods/sets/hashset"
 	_ "github.com/lib/pq"
 	"github.com/spf13/viper"
+	"google.golang.org/grpc"
 	"main.go/config"
-	httpDeliverivery "main.go/internal/auth/delivery"
+	Delivery "main.go/internal/auth/delivery"
+	gen "main.go/internal/auth/proto"
 	authRepo "main.go/internal/auth/repo"
 	authUsecase "main.go/internal/auth/usecase"
 	. "main.go/internal/logs"
 	. "main.go/internal/pkg"
+	"net"
 	"net/http"
 	"time"
 )
 
-const configPath = "config/auth_http_config.yaml"
+const (
+	httpPath = "config/auth_http_config.yaml"
+	grpcPath = "config/auth_grpc_config.yaml"
+)
 
 type Delivers struct {
-	http *httpDeliverivery.AuthHandler
+	http *Delivery.AuthHandler
 }
 
 func main() {
 	logger := InitLog()
 
-	httpCfg, err := config.LoadConfig(configPath)
+	httpCfg, err := config.LoadConfig(httpPath)
 	if err != nil {
 		logger.Logger.Fatal(err)
 	}
@@ -44,11 +50,29 @@ func main() {
 	}
 	defer db.Close()
 
-	httpDeliver := httpDeliverivery.NewAuthHandler(authUsecase.NewAuthUseCase(authRepo.NewAuthPersonStorage(db), authRepo.NewInterestStorage(db), authRepo.NewImageStorage(db)))
+	grpcCfg, err := config.LoadConfig(grpcPath)
+	if err != nil {
+		logger.Logger.Fatal(err)
+	}
 
+	useCase := authUsecase.NewAuthUseCase(authRepo.NewAuthPersonStorage(db), authRepo.NewInterestStorage(db), authRepo.NewImageStorage(db))
+
+	srv, ok := net.Listen("tcp", grpcCfg.Server.Port)
+	if ok != nil {
+		logger.Logger.Fatal(err)
+	}
+
+	grpcSrever := grpc.NewServer() // TODO интерсептеры для метрик сюда
+	grpcDeliver := Delivery.NewGRPCDeliver(useCase)
+	gen.RegisterAuthHandlServer(grpcSrever, grpcDeliver)
+
+	httpDeliver := Delivery.NewAuthHandler(useCase)
 	errors := make(chan error, 2)
 	go func() {
 		errors <- startServer(httpCfg, logger, Delivers{http: httpDeliver})
+	}()
+	go func() {
+		errors <- grpcSrever.Serve(srv)
 	}()
 
 	if err = <-errors; err != nil {

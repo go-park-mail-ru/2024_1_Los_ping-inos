@@ -25,12 +25,12 @@ func NewAuthUseCase(dbReader auth.PersonStorage, istore auth.InterestStorage, im
 	}
 }
 
-func (service *UseCase) IsAuthenticated(sessionID string, ctx context.Context) (types.UserID, bool) {
+func (service *UseCase) IsAuthenticated(sessionID string, ctx context.Context) (types.UserID, bool, error) {
 	person, err := service.personStorage.Get(ctx, &auth.PersonGetFilter{SessionID: []string{sessionID}})
 	if err != nil || len(person) == 0 {
-		return -1, false
+		return -1, false, err
 	}
-	return person[0].ID, true
+	return person[0].ID, true, nil
 }
 
 // Login - принимает email, пароль; возвращает ID сессии и ошибку
