@@ -21,8 +21,8 @@ import (
 )
 
 const (
-	httpPath = "../../../config/auth_http_config.yaml"
-	grpcPath = "../../../config/auth_grpc_config.yaml"
+	httpPath = "config/auth_http_config.yaml"
+	grpcPath = "config/auth_grpc_config.yaml"
 )
 
 type Delivers struct {

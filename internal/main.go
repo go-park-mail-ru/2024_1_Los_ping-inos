@@ -32,7 +32,7 @@ import (
 	imageUsecase "main.go/internal/image/usecase"
 )
 
-const configPath = "../config/config.yaml"
+const configPath = "config/config.yaml"
 const (
 	authDeliver = iota
 	feedDeliver
