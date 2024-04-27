@@ -3,24 +3,25 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	authDelivery "main.go/internal/auth/delivery"
+	authRepo "main.go/internal/auth/repo"
+	authUsecase "main.go/internal/auth/usecase"
 	"net/http"
 	"time"
 
 	"github.com/emirpasic/gods/sets/hashset"
 	_ "github.com/lib/pq"
 	"github.com/spf13/viper"
-	"google.golang.org/grpc"
 	"main.go/config"
 	Delivery "main.go/internal/CSAT/delivery"
 	Repo "main.go/internal/CSAT/repo"
 	Usecase "main.go/internal/CSAT/usecase"
-	gen "main.go/internal/auth/proto"
 	. "main.go/internal/logs"
 	. "main.go/internal/pkg"
 )
 
 const (
-	httpPath = "../../../config/csat_http_config.yaml"
+	httpPath = "config/csat_http_config.yaml"
 )
 
 type Delivers struct {
@@ -53,19 +54,21 @@ func main() {
 
 	httpDeliver := Delivery.NewHttpHandler(useCase)
 
-	err = startServer(httpCfg, logger, Delivers{http: httpDeliver})
+	err = startServer(httpCfg, logger, Delivers{http: httpDeliver}, db)
 	logger.Logger.Fatalf("server error: %v", err.Error())
 }
 
-func startServer(cfg *config.Config, logger Log, deliver Delivers) error {
+func startServer(cfg *config.Config, logger Log, deliver Delivers, db *sql.DB) error {
 	var apiPath = cfg.ApiPath
 	httpDeliver := deliver.http
 
-	grpcConn, err := grpc.Dial("127.0.0.1:50051", grpc.WithInsecure())
-	if err != nil {
-		return err
-	}
-	authManager := gen.NewAuthHandlClient(grpcConn)
+	//grpcConn, err := grpc.Dial("127.0.0.1:50051", grpc.WithInsecure())
+	//if err != nil {
+	//	return err
+	//}
+	//authManager := gen.NewAuthHandlClient(grpcConn)
+	aDel := authDelivery.NewAuthHandler(authUsecase.NewAuthUseCase(authRepo.NewAuthPersonStorage(db), authRepo.NewInterestStorage(db), authRepo.NewImageStorage(db)))
+	authManager := aDel.UseCase
 	mux := http.NewServeMux()
 
 	mux.Handle(apiPath+"createRate", RequestIDMiddleware(
