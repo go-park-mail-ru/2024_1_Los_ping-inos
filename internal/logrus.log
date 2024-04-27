@@ -1365,3 +1365,38 @@ time="2024-04-10T00:18:36+03:00" level=info msg="db returning records" requestID
 time="2024-04-10T00:18:36+03:00" level=info msg=authorized requestID=1
 time="2024-04-10T00:18:36+03:00" level=info msg="delete image" requestID=2
 time="2024-04-10T00:18:37+03:00" level=info msg="image added" requestID=2
+time="2024-04-26T17:45:31+03:00" level=fatal msg="open config/config.yaml: no such file or directory"
+time="2024-04-26T17:45:38+03:00" level=fatal msg="open config/config.yaml: no such file or directory"
+time="2024-04-26T17:46:04+03:00" level=info msg="started server at 127.0.0.1:8080"
+time="2024-04-26T17:46:26+03:00" level=info msg="get images request" requestID=26155743
+time="2024-04-26T17:46:26+03:00" level=info msg="methods checked" requestID=26155743
+time="2024-04-26T17:46:26+03:00" level=info msg="db get request to person" requestID=26155743
+time="2024-04-26T17:46:26+03:00" level=info msg="db returning records" requestID=26155743
+time="2024-04-26T17:46:26+03:00" level=info msg=authorized requestID=26155743
+time="2024-04-26T17:46:26+03:00" level=info msg="Get request to person_image" requestID=26155743
+time="2024-04-26T17:46:26+03:00" level=info msg="Return 3 images" requestID=26155743
+time="2024-04-26T17:46:26+03:00" level=info msg="sent image" requestID=26155743
+time="2024-04-26T21:41:16+03:00" level=info msg="profile request" requestID=26155958
+time="2024-04-26T21:41:16+03:00" level=info msg="methods checked" requestID=26155958
+time="2024-04-26T21:41:16+03:00" level=info msg="db get request to person" requestID=26155958
+time="2024-04-26T21:41:16+03:00" level=info msg="db returning records" requestID=26155958
+time="2024-04-26T21:41:16+03:00" level=info msg=authorized requestID=26155958
+time="2024-04-26T21:41:16+03:00" level=info msg="db get request to person" requestID=26155958
+time="2024-04-26T21:41:16+03:00" level=info msg="db returning records" requestID=26155958
+time="2024-04-26T21:41:16+03:00" level=info msg="db get request to person_interest" requestID=26155958
+time="2024-04-26T21:41:16+03:00" level=info msg="db got 0 interest ids" requestID=26155958
+time="2024-04-26T21:41:16+03:00" level=info msg="Get request to person_image" requestID=26155958
+time="2024-04-26T21:41:16+03:00" level=info msg="Return 3 images" requestID=26155958
+time="2024-04-26T21:41:16+03:00" level=info msg="get profile sent response" requestID=26155958
+time="2024-04-26T22:08:39+03:00" level=info msg="get images request" requestID=26155983
+time="2024-04-26T22:08:39+03:00" level=info msg="method not allowed" requestID=26155983
+time="2024-04-26T22:08:40+03:00" level=info msg="get images request" requestID=26155983
+time="2024-04-26T22:08:40+03:00" level=info msg="method not allowed" requestID=26155983
+time="2024-04-26T22:08:43+03:00" level=info msg="get images request" requestID=26155983
+time="2024-04-26T22:08:43+03:00" level=info msg="methods checked" requestID=26155983
+time="2024-04-26T22:08:43+03:00" level=info msg="db get request to person" requestID=26155983
+time="2024-04-26T22:08:43+03:00" level=info msg="db returning records" requestID=26155983
+time="2024-04-26T22:08:43+03:00" level=info msg=authorized requestID=26155983
+time="2024-04-26T22:08:43+03:00" level=info msg="Get request to person_image" requestID=26155983
+time="2024-04-26T22:08:43+03:00" level=info msg="Return 3 images" requestID=26155983
+time="2024-04-26T22:08:43+03:00" level=info msg="sent image" requestID=26155983

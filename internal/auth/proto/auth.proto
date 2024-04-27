@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package auth;
+
+option go_package = "/auth/proto";
+
+message IsAuthRequest{
+  int64 requestID = 1;
+  string sessionID = 2;
+}
+
+message IsAuthResponse{
+  bool isAuthenticated = 1;
+  int64 UserID = 2;
+}
+
+service AuthHandl {
+  rpc IsAuthenticated (IsAuthRequest) returns (IsAuthResponse) {}
+}

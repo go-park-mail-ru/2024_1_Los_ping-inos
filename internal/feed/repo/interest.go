@@ -40,7 +40,7 @@ func processInterestNameFilter(filter *feed.InterestGetFilter, whereMap *qb.And)
 }
 
 func (storage *InterestStorage) Get(ctx context.Context, filter *feed.InterestGetFilter) ([]*feed.Interest, error) {
-	logger := ctx.Value(Logg).(*Log)
+	logger := ctx.Value(Logg).(Log)
 	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
 	whereMap := qb.And{}
 
@@ -87,7 +87,7 @@ func (storage *InterestStorage) Get(ctx context.Context, filter *feed.InterestGe
 }
 
 func (storage *InterestStorage) GetPersonInterests(ctx context.Context, personID types.UserID) ([]*feed.Interest, error) {
-	logger := ctx.Value(Logg).(*Log)
+	logger := ctx.Value(Logg).(Log)
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db get request to ", PersonInterestTableName)
 	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
 	query := stBuilder.

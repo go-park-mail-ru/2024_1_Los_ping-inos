@@ -1,9 +1,11 @@
 package config
 
 import (
+	"os"
 	"time"
 
 	"github.com/spf13/viper"
+	"gopkg.in/yaml.v3"
 )
 
 const PersonTableName = "person"
@@ -36,6 +38,7 @@ type DatabaseConfig struct {
 	Database string `json:"database"`
 	User     string `json:"username"`
 	Password string `json:"password"`
+	Timer    uint32 `json:"timer"`
 }
 
 type AwsConfig struct {
@@ -45,6 +48,22 @@ type AwsConfig struct {
 }
 
 type FilesPathsConfig struct {
+}
+
+func ReadConfig() (*DatabaseConfig, error) {
+	dsnConfig := DatabaseConfig{}
+	dsnFile, err := os.ReadFile("../../../config/image_http_config.yaml")
+	if err != nil {
+		println("SUCK MU DICK")
+		return nil, err
+	}
+
+	err = yaml.Unmarshal(dsnFile, &dsnConfig)
+	if err != nil {
+		return nil, err
+	}
+
+	return &dsnConfig, nil
 }
 
 func LoadConfig(path string) (*Config, error) {

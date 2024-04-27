@@ -3,7 +3,10 @@ package usecase
 import (
 	"context"
 	"errors"
+
+	"main.go/config"
 	"main.go/internal/image"
+	"main.go/internal/image/repo"
 )
 
 type UseCase struct {
@@ -14,6 +17,21 @@ func NewImageUseCase(istore image.ImgStorage) *UseCase {
 	return &UseCase{
 		imageStorage: istore,
 	}
+}
+
+func GetCore(cfg_sql *config.DatabaseConfig) (*UseCase, error) {
+	//println("THIS IS CFG", *&cfg_sql.Database)
+
+	images, err := repo.GetImageRepo(cfg_sql)
+
+	if err != nil {
+		return nil, err
+	}
+
+	core := UseCase{
+		imageStorage: images,
+	}
+	return &core, nil
 }
 
 func (service *UseCase) GetImage(userID int64, ctx context.Context) ([]image.Image, error) {

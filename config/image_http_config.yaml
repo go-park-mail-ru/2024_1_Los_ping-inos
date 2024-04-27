@@ -1,0 +1,6 @@
+user: "postgres"
+database: "tpTinder"
+password: "postgres"
+host: "localhost"
+port: 5432
+timer: 1

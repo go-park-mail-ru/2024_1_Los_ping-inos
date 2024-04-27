@@ -5,6 +5,13 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
+	"log"
+	"math/rand"
+	"net/http"
+	"os"
+	"time"
+
 	"github.com/aws/aws-sdk-go-v2/aws"
 	v4 "github.com/aws/aws-sdk-go-v2/aws/signer/v4"
 	"github.com/aws/aws-sdk-go-v2/config"
@@ -12,22 +19,65 @@ import (
 	awsUpload "github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	serviceUpload "github.com/aws/aws-sdk-go/service/s3"
+	"github.com/emirpasic/gods/sets/hashset"
 	"github.com/sirupsen/logrus"
-	"io"
-	"log"
 	. "main.go/config"
 	"main.go/internal/image"
+	"main.go/internal/image/usecase"
 	. "main.go/internal/logs"
 	requests "main.go/internal/pkg"
 	"main.go/internal/types"
-	"math/rand"
-	"net/http"
-	"os"
-	"time"
 )
 
 type ImageHandler struct {
 	useCase image.UseCase
+	mx      *http.ServeMux
+}
+
+func (deliver *ImageHandler) ListenAndServe() error {
+	// server := http.Server{
+	// 	Addr:         cfg.Host + cfg.Port,
+	// 	Handler:      deliver.mx,
+	// 	ReadTimeout:  cfg.Timeout * time.Second,
+	// 	WriteTimeout: cfg.Timeout * time.Second,
+	// }
+
+	//logger.Logger.Infof("started auth http server at %v", server.Addr)
+	//	fmt.Printf("started auth http server at %v\n", server.Addr)
+	err := http.ListenAndServe(":8090", deliver.mx)
+	if err != nil {
+		//logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn(err.Error())
+		return fmt.Errorf("listen and serve error: %w", err)
+	}
+
+	return nil
+}
+
+func GetApi(c *usecase.UseCase, logger Log) *ImageHandler {
+	api := &ImageHandler{
+		useCase: c,
+		mx:      http.NewServeMux(),
+	}
+	var apiPath = "/api/v1/"
+
+	println("This is api path", apiPath)
+
+	api.mx.Handle(apiPath+"getImage", requests.RequestIDMiddleware(
+		requests.AllowedMethodMiddleware(
+			http.HandlerFunc(api.GetImageHandler()), hashset.New("GET")),
+		"get images", logger))
+
+	api.mx.Handle(apiPath+"addImage", requests.RequestIDMiddleware(
+		requests.AllowedMethodMiddleware(
+			http.HandlerFunc(api.AddImageHandler()), hashset.New("POST")),
+		"username (/me)", logger))
+
+	api.mx.Handle(apiPath+"deleteImage", requests.RequestIDMiddleware(
+		requests.AllowedMethodMiddleware(
+			http.HandlerFunc(api.DeleteImageHandler()), hashset.New("POST")),
+		"delete image", logger))
+
+	return api
 }
 
 func NewImageDelivery(uc image.UseCase) *ImageHandler {
@@ -43,8 +93,12 @@ const (
 
 func (deliver *ImageHandler) GetImageHandler() func(w http.ResponseWriter, r *http.Request) {
 	return func(respWriter http.ResponseWriter, request *http.Request) {
-		logger := request.Context().Value(Logg).(*Log)
-		userId := int64(request.Context().Value(RequestUserID).(types.UserID))
+		logger := request.Context().Value(Logg).(Log)
+
+		println(request.Context().Value(RequestUserID))
+		//userId := int64(request.Context().Value(RequestUserID).(types.UserID))
+		userId := int64(2)
+		//println(request.Context().Value(RequestUserID).(types.UserID))
 
 		images, err := deliver.useCase.GetImage(userId, request.Context())
 		if err != nil {
@@ -99,7 +153,7 @@ func (deliver *ImageHandler) GetImageHandler() func(w http.ResponseWriter, r *ht
 
 func (deliver *ImageHandler) AddImageHandler() func(w http.ResponseWriter, r *http.Request) {
 	return func(respWriter http.ResponseWriter, request *http.Request) {
-		logger := request.Context().Value(Logg).(*Log)
+		logger := request.Context().Value(Logg).(Log)
 
 		err := request.ParseMultipartForm(10 << 20)
 		if err != nil {
@@ -134,7 +188,8 @@ func (deliver *ImageHandler) AddImageHandler() func(w http.ResponseWriter, r *ht
 			return
 		}
 
-		userId := int64(request.Context().Value(RequestUserID).(types.UserID))
+		//userId := int64(request.Context().Value(RequestUserID).(types.UserID))
+		userId := int64(2)
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn(err.Error())
 			requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
@@ -189,9 +244,10 @@ func (deliver *ImageHandler) AddImageHandler() func(w http.ResponseWriter, r *ht
 
 func (deliver *ImageHandler) DeleteImageHandler() func(w http.ResponseWriter, r *http.Request) {
 	return func(respWriter http.ResponseWriter, request *http.Request) {
-		logger := request.Context().Value(Logg).(*Log)
+		logger := request.Context().Value(Logg).(Log)
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("delete image")
-		userId := int64(request.Context().Value(RequestUserID).(types.UserID))
+		//userId := int64(request.Context().Value(RequestUserID).(types.UserID))
+		userId := int64(2)
 		var r requests.ImageRequest
 
 		body, err := io.ReadAll(request.Body)

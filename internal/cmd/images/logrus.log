@@ -1,0 +1,52 @@
+time="2024-04-27T01:47:07+03:00" level=warning msg="open image_http_config.yaml: no such file or directory" requestID=0
+time="2024-04-27T01:49:06+03:00" level=warning msg="open ../../config/image_http_config.yaml: no such file or directory" requestID=0
+time="2024-04-27T01:51:10+03:00" level=warning msg="open ../../config/image_http_config.yaml: no such file or directory" requestID=0
+time="2024-04-27T01:51:24+03:00" level=warning msg="open ../config/image_http_config.yaml: no such file or directory" requestID=0
+time="2024-04-27T01:51:34+03:00" level=warning msg="open config/image_http_config.yaml: no such file or directory" requestID=0
+time="2024-04-27T01:51:43+03:00" level=warning msg="open image_http_config.yaml: no such file or directory" requestID=0
+time="2024-04-27T01:59:40+03:00" level=warning msg="open image_http_config.yaml: no such file or directory" requestID=0
+time="2024-04-27T02:04:58+03:00" level=warning msg="open ../../internal/image_http_config.yaml: no such file or directory" requestID=0
+time="2024-04-27T02:05:04+03:00" level=warning msg="open ../internal/image_http_config.yaml: no such file or directory" requestID=0
+time="2024-04-27T02:06:25+03:00" level=warning msg="open ../../config/image_http_config.yaml: no such file or directory" requestID=0
+time="2024-04-27T02:06:50+03:00" level=warning msg="yaml: unmarshal errors:\n  line 5: cannot unmarshal !!str `5432` into int" requestID=0
+time="2024-04-27T03:37:55+03:00" level=info msg="get images request" requestID=26156284
+time="2024-04-27T03:37:55+03:00" level=info msg="methods checked" requestID=26156284
+time="2024-04-27T03:39:35+03:00" level=info msg="get images request" requestID=26156286
+time="2024-04-27T03:39:35+03:00" level=info msg="methods checked" requestID=26156286
+time="2024-04-27T03:41:44+03:00" level=info msg="get images request" requestID=26156288
+time="2024-04-27T03:41:44+03:00" level=info msg="methods checked" requestID=26156288
+time="2024-04-27T03:42:26+03:00" level=info msg="get images request" requestID=26156288
+time="2024-04-27T03:42:26+03:00" level=info msg="methods checked" requestID=26156288
+time="2024-04-27T03:42:26+03:00" level=info msg="sent image" requestID=26156288
+time="2024-04-27T03:58:14+03:00" level=info msg="get images request" requestID=26156303
+time="2024-04-27T03:58:14+03:00" level=info msg="methods checked" requestID=26156303
+time="2024-04-27T04:01:46+03:00" level=info msg="get images request" requestID=26156306
+time="2024-04-27T04:01:46+03:00" level=info msg="methods checked" requestID=26156306
+time="2024-04-27T04:02:50+03:00" level=info msg="get images request" requestID=26156307
+time="2024-04-27T04:02:50+03:00" level=info msg="methods checked" requestID=26156307
+time="2024-04-27T04:04:30+03:00" level=info msg="get images request" requestID=26156309
+time="2024-04-27T04:04:30+03:00" level=info msg="methods checked" requestID=26156309
+time="2024-04-27T04:06:32+03:00" level=info msg="get images request" requestID=26156310
+time="2024-04-27T04:06:32+03:00" level=info msg="methods checked" requestID=26156310
+time="2024-04-27T04:06:32+03:00" level=info msg="sent image" requestID=26156310
+time="2024-04-27T04:11:45+03:00" level=info msg="delete image request" requestID=26156315
+time="2024-04-27T04:11:45+03:00" level=info msg="methods checked" requestID=26156315
+time="2024-04-27T04:12:24+03:00" level=info msg="delete image request" requestID=26156316
+time="2024-04-27T04:12:24+03:00" level=info msg="methods checked" requestID=26156316
+time="2024-04-27T04:12:24+03:00" level=info msg="delete image" requestID=26156316
+time="2024-04-27T04:12:50+03:00" level=info msg="delete image request" requestID=26156316
+time="2024-04-27T04:12:50+03:00" level=info msg="methods checked" requestID=26156316
+time="2024-04-27T04:12:50+03:00" level=info msg="delete image" requestID=26156316
+time="2024-04-27T04:12:56+03:00" level=info msg="delete image request" requestID=26156316
+time="2024-04-27T04:12:56+03:00" level=info msg="methods checked" requestID=26156316
+time="2024-04-27T04:12:56+03:00" level=info msg="delete image" requestID=26156316
+time="2024-04-27T04:12:56+03:00" level=info msg="image added" requestID=26156316
+time="2024-04-27T04:14:43+03:00" level=info msg="username (/me) request" requestID=26156318
+time="2024-04-27T04:14:43+03:00" level=info msg="methods checked" requestID=26156318
+time="2024-04-27T04:14:44+03:00" level=info msg="image added" requestID=26156318
+time="2024-04-27T04:20:03+03:00" level=info msg="get images request" requestID=26156323
+time="2024-04-27T04:20:03+03:00" level=info msg="methods checked" requestID=26156323
+time="2024-04-27T04:23:12+03:00" level=info msg="get images request" requestID=26156326
+time="2024-04-27T04:23:12+03:00" level=info msg="methods checked" requestID=26156326
+time="2024-04-27T04:27:42+03:00" level=info msg="get images request" requestID=26156330
+time="2024-04-27T04:27:42+03:00" level=info msg="methods checked" requestID=26156330

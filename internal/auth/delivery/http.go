@@ -57,7 +57,7 @@ func (deliver *AuthHandler) ReadProfile(respWriter http.ResponseWriter, request 
 		prof []auth.Profile
 	)
 
-	logger := request.Context().Value(Logg).(*Log)
+	logger := request.Context().Value(Logg).(Log)
 
 	if request.URL.Query().Has("id") { // просмотр профиля по id (чужой профиль из ленты)
 		id, err = strconv.Atoi(request.URL.Query().Get("id"))
@@ -95,7 +95,7 @@ func (deliver *AuthHandler) ReadProfile(respWriter http.ResponseWriter, request 
 // @Failure 405       {string} string
 // @Failure 409       {string} string // TODO
 func (deliver *AuthHandler) UpdateProfile(respWriter http.ResponseWriter, request *http.Request) {
-	logger := request.Context().Value(Logg).(*Log)
+	logger := request.Context().Value(Logg).(Log)
 
 	var requestBody auth.ProfileUpdateRequest
 
@@ -142,7 +142,7 @@ func (deliver *AuthHandler) UpdateProfile(respWriter http.ResponseWriter, reques
 // @Failure 405       {string} string
 // @Failure 409       {string} string // TODO
 func (deliver *AuthHandler) DeleteProfile(respWriter http.ResponseWriter, request *http.Request) {
-	logger := request.Context().Value(Logg).(*Log)
+	logger := request.Context().Value(Logg).(Log)
 
 	err := deliver.UseCase.DeleteProfile(request.Context().Value("SID").(string), request.Context())
 
@@ -169,7 +169,7 @@ func (deliver *AuthHandler) DeleteProfile(respWriter http.ResponseWriter, reques
 // @Failure 405        {string} string
 func (deliver *AuthHandler) GetMatches() func(respWriter http.ResponseWriter, request *http.Request) {
 	return func(respWriter http.ResponseWriter, request *http.Request) {
-		logger := request.Context().Value(Logg).(*Log)
+		logger := request.Context().Value(Logg).(Log)
 		userID := request.Context().Value(RequestUserID).(types.UserID)
 		matches, err := deliver.UseCase.GetMatches(userID, request.Context())
 		if err != nil {
@@ -193,7 +193,7 @@ func (deliver *AuthHandler) GetMatches() func(respWriter http.ResponseWriter, re
 // @Failure 403
 func (deliver *AuthHandler) IsAuthenticatedHandler() func(w http.ResponseWriter, r *http.Request) {
 	return func(respWriter http.ResponseWriter, request *http.Request) {
-		logger := request.Context().Value(Logg).(*Log)
+		logger := request.Context().Value(Logg).(Log)
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("auth check")
 		session, err := request.Cookie("session_id") // проверка авторизации
 
@@ -205,7 +205,12 @@ func (deliver *AuthHandler) IsAuthenticatedHandler() func(w http.ResponseWriter,
 			requests.SendResponse(respWriter, request, http.StatusUnauthorized, nil)
 			return
 		}
-		UID, ok := deliver.UseCase.IsAuthenticated(session.Value, request.Context())
+		UID, ok, err := deliver.UseCase.IsAuthenticated(session.Value, request.Context())
+		if err != nil {
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info(err.Error())
+			requests.SendResponse(respWriter, request, http.StatusUnauthorized, nil)
+			return
+		}
 		if !ok {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("not authorized")
 			requests.SendResponse(respWriter, request, http.StatusUnauthorized, nil)
@@ -235,7 +240,7 @@ func (deliver *AuthHandler) IsAuthenticatedHandler() func(w http.ResponseWriter,
 // @Failure 401       {string} string
 func (deliver *AuthHandler) LoginHandler() func(respWriter http.ResponseWriter, request *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		logger := r.Context().Value(Logg).(*Log)
+		logger := r.Context().Value(Logg).(Log)
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("login")
 		var request requests.LoginRequest
 
@@ -288,7 +293,7 @@ func (deliver *AuthHandler) LoginHandler() func(respWriter http.ResponseWriter, 
 // @Failure 500       {string} string
 func (deliver *AuthHandler) RegistrationHandler() func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		logger := r.Context().Value(Logg).(*Log)
+		logger := r.Context().Value(Logg).(Log)
 		if r.Method == http.MethodGet {
 			body, err := deliver.UseCase.GetAllInterests(r.Context())
 			if err != nil {
@@ -361,7 +366,7 @@ func (deliver *AuthHandler) RegistrationHandler() func(http.ResponseWriter, *htt
 // @Failure 500       {string} string
 func (deliver *AuthHandler) LogoutHandler() func(respWriter http.ResponseWriter, request *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		logger := r.Context().Value(Logg).(*Log)
+		logger := r.Context().Value(Logg).(Log)
 
 		session, err := r.Cookie("session_id")
 		if err != nil {
@@ -396,7 +401,7 @@ func (deliver *AuthHandler) LogoutHandler() func(respWriter http.ResponseWriter,
 // @Failure 500       {string} string
 func (deliver *AuthHandler) GetUsername() func(w http.ResponseWriter, r *http.Request) {
 	return func(respWriter http.ResponseWriter, request *http.Request) {
-		logger := request.Context().Value(Logg).(*Log)
+		logger := request.Context().Value(Logg).(Log)
 
 		name, err := deliver.UseCase.GetName(request.Context().Value(RequestSID).(string), request.Context())
 		if err != nil {
