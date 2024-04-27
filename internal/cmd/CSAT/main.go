@@ -73,6 +73,11 @@ func startServer(cfg *config.Config, logger Log, deliver Delivers) error {
 			IsAuthenticatedMiddleware(http.HandlerFunc(httpDeliver.Create()), authManager), hashset.New("POST")),
 		"create rate", logger))
 
+	mux.Handle(apiPath+"getStat", RequestIDMiddleware(
+		AllowedMethodMiddleware(
+			IsAuthenticatedMiddleware(http.HandlerFunc(httpDeliver.Read()), authManager), hashset.New("POST")),
+		"create rate", logger))
+
 	//mux.Handle(apiPath+"isAuth", RequestIDMiddleware(
 	//	AllowedMethodMiddleware(
 	//		http.HandlerFunc(httpDeliver.IsAuthenticatedHandler()), hashset.New("GET")),

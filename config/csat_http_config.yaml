@@ -9,6 +9,6 @@ server:
 database:
   host: "localhost"
   port: "5432"
-  dbname: "tpTinder"
+  dbname: "csat"
   user: "postgres"
   password: "postgres"
