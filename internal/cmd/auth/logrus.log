@@ -1,0 +1,46 @@
+time="2024-04-27T10:50:03+03:00" level=fatal msg="open config/auth_http_config.yaml: no such file or directory"
+time="2024-04-27T10:51:02+03:00" level=fatal msg="open ../../config/auth_http_config.yaml: no such file or directory"
+time="2024-04-27T10:51:56+03:00" level=info msg="started auth http server at 127.0.0.1:8081"
+time="2024-04-27T10:52:01+03:00" level=info msg="profile request" requestID=26156682
+time="2024-04-27T10:52:01+03:00" level=info msg="methods checked" requestID=26156682
+time="2024-04-27T10:52:01+03:00" level=info msg="db get request to person" requestID=0
+time="2024-04-27T10:52:01+03:00" level=info msg="db returning records" requestID=0
+time="2024-04-27T10:52:01+03:00" level=info msg=authorized requestID=26156682
+time="2024-04-27T10:52:01+03:00" level=info msg="db get request to person" requestID=26156682
+time="2024-04-27T10:52:01+03:00" level=info msg="db returning records" requestID=26156682
+time="2024-04-27T10:52:01+03:00" level=info msg="db get request to person_interest" requestID=26156682
+time="2024-04-27T10:52:01+03:00" level=info msg="db got 0 interest ids" requestID=26156682
+time="2024-04-27T10:52:01+03:00" level=info msg="Get request to person_image" requestID=26156682
+time="2024-04-27T10:52:01+03:00" level=info msg="Return 3 images" requestID=26156682
+time="2024-04-27T10:52:01+03:00" level=info msg="get profile sent response" requestID=26156682
+time="2024-04-27T11:27:44+03:00" level=info msg="db get request to person" requestID=0
+time="2024-04-27T11:27:44+03:00" level=info msg="db returning records" requestID=0
+time="2024-04-27T11:29:57+03:00" level=info msg="started auth http server at 127.0.0.1:8081"
+time="2024-04-27T11:30:01+03:00" level=info msg="db get request to person" requestID=0
+time="2024-04-27T11:30:01+03:00" level=info msg="db returning records" requestID=0
+time="2024-04-27T11:30:35+03:00" level=info msg="db get request to person" requestID=0
+time="2024-04-27T11:30:35+03:00" level=info msg="db returning records" requestID=0
+time="2024-04-27T11:32:51+03:00" level=info msg="db get request to person" requestID=0
+time="2024-04-27T11:32:51+03:00" level=info msg="db returning records" requestID=0
+time="2024-04-27T11:33:51+03:00" level=info msg="db get request to person" requestID=0
+time="2024-04-27T11:33:51+03:00" level=info msg="db returning records" requestID=0
+time="2024-04-27T11:33:53+03:00" level=info msg="db get request to person" requestID=0
+time="2024-04-27T11:33:53+03:00" level=info msg="db returning records" requestID=0
+time="2024-04-27T11:34:16+03:00" level=info msg="db get request to person" requestID=0
+time="2024-04-27T11:34:16+03:00" level=info msg="db returning records" requestID=0
+time="2024-04-27T11:38:08+03:00" level=info msg="db get request to person" requestID=0
+time="2024-04-27T11:38:08+03:00" level=info msg="db returning records" requestID=0
+time="2024-04-27T11:38:11+03:00" level=info msg="db get request to person" requestID=0
+time="2024-04-27T11:38:11+03:00" level=info msg="db returning records" requestID=0
+time="2024-04-27T11:38:24+03:00" level=info msg="db get request to person" requestID=0
+time="2024-04-27T11:38:24+03:00" level=info msg="db returning records" requestID=0
+time="2024-04-27T11:38:28+03:00" level=info msg="db get request to person" requestID=0
+time="2024-04-27T11:38:28+03:00" level=info msg="db returning records" requestID=0
+time="2024-04-27T11:38:34+03:00" level=info msg="db get request to person" requestID=0
+time="2024-04-27T11:38:34+03:00" level=info msg="db returning records" requestID=0
+time="2024-04-27T11:38:39+03:00" level=info msg="db get request to person" requestID=0
+time="2024-04-27T11:38:39+03:00" level=info msg="db returning records" requestID=0
+time="2024-04-27T11:40:41+03:00" level=info msg="db get request to person" requestID=0
+time="2024-04-27T11:40:41+03:00" level=info msg="db returning records" requestID=0
+time="2024-04-27T11:40:44+03:00" level=info msg="db get request to person" requestID=0
+time="2024-04-27T11:40:44+03:00" level=info msg="db returning records" requestID=0

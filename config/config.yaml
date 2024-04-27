@@ -1,0 +1,22 @@
+debug: true
+apiPath: "/api/v1/"
+server: 
+    host: "127.0.0.1"
+    port: ":8080"
+    swaggerPort: ":8085"
+    timeout: 5
+
+# TODO тут пока дефолтные настройки для локалки поставил, на деплое надо в .env прятать
+database:
+  host: "localhost"
+  port: "5432"
+  dbname: "tpTinder"
+  user: "postgres"
+  password: "postgres"
+
+aws:
+  key_id: ""
+  key_access: ""
+  region: ""
+  
+filesPaths:
