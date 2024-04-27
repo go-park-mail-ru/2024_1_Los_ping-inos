@@ -1477,3 +1477,4 @@ time="2024-04-27T11:40:44+03:00" level=info msg="db create request to \"like\"" 
 time="2024-04-27T11:40:44+03:00" level=info msg=halliluya requestID=26156726
 time="2024-04-27T11:40:44+03:00" level=info msg="db create request to \"like\"" requestID=26156726
 time="2024-04-27T11:40:44+03:00" level=info msg="create like sent response" requestID=26156726
+time="2024-04-27T13:01:13+03:00" level=info msg="started server at 127.0.0.1:8080"

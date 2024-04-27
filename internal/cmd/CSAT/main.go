@@ -3,6 +3,9 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"net/http"
+	"time"
+
 	"github.com/emirpasic/gods/sets/hashset"
 	_ "github.com/lib/pq"
 	"github.com/spf13/viper"
@@ -14,12 +17,10 @@ import (
 	gen "main.go/internal/auth/proto"
 	. "main.go/internal/logs"
 	. "main.go/internal/pkg"
-	"net/http"
-	"time"
 )
 
 const (
-	httpPath = "config/csat_http_config.yaml"
+	httpPath = "../../../config/csat_http_config.yaml"
 )
 
 type Delivers struct {

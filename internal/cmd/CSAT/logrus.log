@@ -1,0 +1,14 @@
+time="2024-04-27T12:56:24+03:00" level=fatal msg="open config/csat_http_config.yaml: no such file or directory"
+time="2024-04-27T12:59:45+03:00" level=fatal msg="open ../../config/csat_http_config.yaml: no such file or directory"
+time="2024-04-27T12:59:57+03:00" level=info msg="started CSAT http server at 127.0.0.1:8082"
+time="2024-04-27T13:01:52+03:00" level=info msg="create rate request" requestID=26156801
+time="2024-04-27T13:01:52+03:00" level=info msg="method not allowed" requestID=26156801
+time="2024-04-27T13:01:54+03:00" level=info msg="create rate request" requestID=26156801
+time="2024-04-27T13:01:54+03:00" level=info msg="methods checked" requestID=26156801
+time="2024-04-27T13:01:54+03:00" level=info msg=authorized requestID=26156801
+time="2024-04-27T13:01:54+03:00" level=warning msg="can't unmarshal body: invalid character '-' in numeric literal" requestID=26156801
+time="2024-04-27T13:02:11+03:00" level=info msg="create rate request" requestID=26156801
+time="2024-04-27T13:02:11+03:00" level=info msg="methods checked" requestID=26156801
+time="2024-04-27T13:02:11+03:00" level=info msg=authorized requestID=26156801
+time="2024-04-27T13:02:11+03:00" level=info msg="db get request to csat" requestID=26156801
+time="2024-04-27T13:02:11+03:00" level=info msg="sent created rate" requestID=26156801

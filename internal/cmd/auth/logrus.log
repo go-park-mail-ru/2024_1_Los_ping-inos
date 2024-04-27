@@ -44,3 +44,11 @@ time="2024-04-27T11:40:41+03:00" level=info msg="db get request to person" reque
 time="2024-04-27T11:40:41+03:00" level=info msg="db returning records" requestID=0
 time="2024-04-27T11:40:44+03:00" level=info msg="db get request to person" requestID=0
 time="2024-04-27T11:40:44+03:00" level=info msg="db returning records" requestID=0
+time="2024-04-27T12:57:32+03:00" level=fatal msg="<nil>"
+time="2024-04-27T12:57:43+03:00" level=fatal msg="<nil>"
+time="2024-04-27T12:58:48+03:00" level=fatal msg="<nil>"
+time="2024-04-27T13:00:50+03:00" level=info msg="started auth http server at 127.0.0.1:8081"
+time="2024-04-27T13:01:54+03:00" level=info msg="db get request to person" requestID=0
+time="2024-04-27T13:01:54+03:00" level=info msg="db returning records" requestID=0
+time="2024-04-27T13:02:11+03:00" level=info msg="db get request to person" requestID=0
+time="2024-04-27T13:02:11+03:00" level=info msg="db returning records" requestID=0
