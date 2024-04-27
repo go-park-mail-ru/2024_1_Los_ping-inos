@@ -85,11 +85,12 @@ func startServer(cfg *config.Config, logger Log, deliver Delivers) error {
 	var apiPath = cfg.ApiPath
 	httpDeliver := deliver.http
 
-	grpcConn, err := grpc.Dial("127.0.0.1:50051", grpc.WithInsecure())
-	if err != nil {
-		return err
-	}
-	authManager := gen.NewAuthHandlClient(grpcConn)
+	//grpcConn, err := grpc.Dial("127.0.0.1:50051", grpc.WithInsecure())
+	//if err != nil {
+	//	return err
+	//}
+	//authManager := gen.NewAuthHandlClient(grpcConn)
+	authManager := httpDeliver.UseCase
 	mux := http.NewServeMux()
 	mux.Handle(apiPath+"login", RequestIDMiddleware(
 		AllowedMethodMiddleware(

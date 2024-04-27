@@ -36,7 +36,6 @@ type (
 	}
 
 	CSRFTokenResponse struct {
-		Csrft string       `json:"csrft"`
-		UID   types.UserID `json:"UID"`
+		Csrft string `json:"csrft"`
 	}
 )

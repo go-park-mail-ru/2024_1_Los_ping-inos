@@ -224,7 +224,7 @@ func (deliver *AuthHandler) IsAuthenticatedHandler() func(w http.ResponseWriter,
 			requests.SendResponse(respWriter, request, http.StatusInternalServerError, err.Error())
 			return
 		}
-		requests.SendResponse(respWriter, request, http.StatusOK, requests.CSRFTokenResponse{Csrft: tok, UID: UID})
+		requests.SendResponse(respWriter, request, http.StatusOK, requests.CSRFTokenResponse{Csrft: tok})
 	}
 }
 

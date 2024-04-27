@@ -9,7 +9,6 @@ import (
 	"github.com/emirpasic/gods/sets/hashset"
 	"github.com/go-chi/chi"
 	httpSwagger "github.com/swaggo/http-swagger/v2"
-	"google.golang.org/grpc"
 	. "main.go/internal/pkg"
 
 	_ "github.com/lib/pq"
@@ -17,7 +16,6 @@ import (
 	"main.go/config"
 
 	authDelivery "main.go/internal/auth/delivery"
-	authGrpc "main.go/internal/auth/proto"
 	authRepo "main.go/internal/auth/repo"
 	authUsecase "main.go/internal/auth/usecase"
 	_ "main.go/internal/docs"
@@ -104,13 +102,14 @@ func StartServer(logger Log, deliver []interface{}) error {
 	feedDel := deliver[feedDeliver].(*feedDelivery.FeedHandler)
 	imageDel := deliver[imageDeliver].(*imageDelivery.ImageHandler)
 
-	grpcConn, err := grpc.Dial("127.0.0.1:50051", grpc.WithInsecure())
-	if err != nil {
-		println("THE GO FUCK YOURSELF LANGUAGE") // TODO
-		return err
-	}
+	//grpcConn, err := grpc.Dial("127.0.0.1:50051", grpc.WithInsecure())
+	//if err != nil {
+	//	println("THE GO FUCK YOURSELF LANGUAGE") // TODO
+	//	return err
+	//}
 
-	authManager := authGrpc.NewAuthHandlClient(grpcConn)
+	//authManager := authGrpc.NewAuthHandlClient(grpcConn)
+	authManager := authDel.UseCase
 	// роутер)0)
 	// структура: путь, цепочка миддлвар: логирование -> методы -> [авторизация -> [CSRF]] -> функция-обработчик ручки
 	mux := http.NewServeMux()
@@ -193,7 +192,7 @@ func StartServer(logger Log, deliver []interface{}) error {
 
 	logger.Logger.Infof("started server at %v", server.Addr)
 	fmt.Printf("started server at %v\n", server.Addr)
-	err = server.ListenAndServe()
+	err := server.ListenAndServe()
 	if err != nil {
 		return err
 	}
