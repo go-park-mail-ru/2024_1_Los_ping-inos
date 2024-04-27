@@ -3,15 +3,16 @@ package requests
 import (
 	"context"
 	"encoding/json"
+	"io"
+	"net/http"
+
 	"github.com/emirpasic/gods/sets/hashset"
 	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
-	"io"
 	. "main.go/config"
 	auth "main.go/internal/auth/proto"
 	. "main.go/internal/logs"
 	"main.go/internal/types"
-	"net/http"
 )
 
 const CSRFHeader = "csrft"
@@ -34,8 +35,18 @@ func IsAuthenticatedMiddleware(next http.Handler, _ auth.AuthHandlClient) http.H
 		}
 		req.AddCookie(session)
 		client := http.Client{}
-		authResponse, _ := client.Do(req)
-		body, _ := io.ReadAll(authResponse.Body)
+		authResponse, err := client.Do(req)
+		if err != nil {
+			log.Logger.WithFields(logrus.Fields{RequestID: log.RequestID}).Info("unauthorized: ", err.Error())
+			SendResponse(respWriter, request, http.StatusUnauthorized, "unauthorized: "+err.Error())
+			return
+		}
+		body, err := io.ReadAll(authResponse.Body)
+		if err != nil {
+			log.Logger.WithFields(logrus.Fields{RequestID: log.RequestID}).Info("unauthorized: ", err.Error())
+			SendResponse(respWriter, request, http.StatusUnauthorized, "unauthorized: "+err.Error())
+			return
+		}
 		tmp := make(map[string]interface{}, 2)
 		err = json.Unmarshal(body, &tmp)
 		if _, ok := tmp["csrft"]; !ok || err != nil {
