@@ -1,7 +1,9 @@
 version: "3.8" # версия вашего docker-compose
 services: # имеджи, которые запустятся по вашему желанию
   app:
-    build: db
+    build: 
+      context: .
+      dockerfile: Dockerfile
     depends_on:
       - db
     ports:
@@ -9,6 +11,17 @@ services: # имеджи, которые запустятся по вашему 
       - "8085:8085"
     env_file:
       - .env 
+  
+  auth:
+    build: 
+      context: .
+      dockerfile: Dockerfile.auth
+    depends_on:
+      - db
+    ports:
+      - "8081:8081"
+    env_file:
+      - .env
 
   db: # название моего имеджа
     image: postgres:12-alpine # скачает image postgres 12 версии

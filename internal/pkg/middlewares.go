@@ -2,19 +2,20 @@ package requests
 
 import (
 	"context"
+	"net/http"
+
 	"github.com/emirpasic/gods/sets/hashset"
 	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
 	. "main.go/config"
-	auth "main.go/internal/auth/proto"
+	auth "main.go/internal/auth"
 	. "main.go/internal/logs"
 	"main.go/internal/types"
-	"net/http"
 )
 
 const CSRFHeader = "csrft"
 
-func IsAuthenticatedMiddleware(next http.Handler, uc auth.AuthHandlClient) http.Handler {
+func IsAuthenticatedMiddleware(next http.Handler, useCase auth.IUseCase) http.Handler {
 	return http.HandlerFunc(func(respWriter http.ResponseWriter, request *http.Request) {
 		log := request.Context().Value(Logg).(Log)
 
@@ -25,7 +26,7 @@ func IsAuthenticatedMiddleware(next http.Handler, uc auth.AuthHandlClient) http.
 			return
 		}
 
-		authResponse, err := uc.IsAuthenticated(request.Context(), &auth.IsAuthRequest{SessionID: session.Value})
+		UID, ok, err := useCase.IsAuthenticated(session.Value, request.Context())
 
 		if err != nil {
 			log.Logger.WithFields(logrus.Fields{RequestID: log.RequestID}).Info("unauthorized: ", err.Error())
@@ -33,14 +34,14 @@ func IsAuthenticatedMiddleware(next http.Handler, uc auth.AuthHandlClient) http.
 			return
 		}
 
-		if !authResponse.IsAuthenticated {
+		if !ok {
 			log.Logger.WithFields(logrus.Fields{RequestID: log.RequestID}).Info("unauthorized")
 			SendResponse(respWriter, request, http.StatusUnauthorized, "unauthorized")
 			return
 		}
 
 		log.Logger.WithFields(logrus.Fields{RequestID: log.RequestID}).Info("authorized")
-		contexted := request.WithContext(context.WithValue(request.Context(), RequestUserID, types.UserID(authResponse.UserID)))
+		contexted := request.WithContext(context.WithValue(request.Context(), RequestUserID, UID))
 		contexted = request.WithContext(context.WithValue(contexted.Context(), RequestSID, session.Value))
 		next.ServeHTTP(respWriter, contexted)
 	})
