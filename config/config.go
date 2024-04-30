@@ -20,6 +20,7 @@ type Config struct {
 	ApiPath    string           `yaml:"apiPath"`
 	Server     ServerConfig     `json:"server" yaml:"server"`
 	Database   DatabaseConfig   `json:"database" yaml:"database"`
+	Redis      RedisConfig      `yaml:"redis"`
 	FilesPaths FilesPathsConfig `json:"filesPaths" yaml:"filesPaths"`
 }
 
@@ -36,6 +37,11 @@ type DatabaseConfig struct {
 	Database string `json:"database" yaml:"database"`
 	User     string `json:"username" yaml:"user"`
 	Password string `json:"password" yaml:"password"`
+}
+
+type RedisConfig struct {
+	Host string `yaml:"host"`
+	Port string `yaml:"port"`
 }
 
 type AwsConfig struct {

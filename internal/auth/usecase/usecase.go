@@ -13,31 +13,31 @@ import (
 
 type UseCase struct {
 	personStorage   auth.PersonStorage
+	sessionStorage  auth.SessionStorage
 	interestStorage auth.InterestStorage
 	imageStorage    auth.ImageStorage
 }
 
-func NewAuthUseCase(dbReader auth.PersonStorage, istore auth.InterestStorage, imgStore auth.ImageStorage) *UseCase {
+func NewAuthUseCase(dbReader auth.PersonStorage, sstore auth.SessionStorage, istore auth.InterestStorage, imgStore auth.ImageStorage) *UseCase {
 	return &UseCase{
 		personStorage:   dbReader,
+		sessionStorage:  sstore,
 		interestStorage: istore,
 		imageStorage:    imgStore,
 	}
 }
 
 func (service *UseCase) IsAuthenticated(sessionID string, ctx context.Context) (types.UserID, bool, error) {
-	person, err := service.personStorage.Get(ctx, &auth.PersonGetFilter{SessionID: []string{sessionID}})
-	if err != nil || len(person) == 0 {
+	person, err := service.sessionStorage.GetBySID(ctx, sessionID)
+	if err != nil {
 		return -1, false, err
 	}
-	return person[0].ID, true, nil
+	return person.UID, true, nil
 }
 
 // Login - принимает email, пароль; возвращает ID сессии и ошибку
 func (service *UseCase) Login(email, password string, ctx context.Context) (*auth.Profile, string, error) {
-	ems := make([]string, 1)
-	ems[0] = email
-	users, ok := service.personStorage.Get(ctx, &auth.PersonGetFilter{Email: ems})
+	users, ok := service.personStorage.Get(ctx, &auth.PersonGetFilter{Email: []string{email}})
 	if ok != nil {
 		return nil, "", ok
 	}
@@ -54,8 +54,11 @@ func (service *UseCase) Login(email, password string, ctx context.Context) (*aut
 	}
 
 	SID := uuid.NewString()
-	user.SessionID = SID
-	err = service.personStorage.Update(ctx, *user)
+
+	err = service.sessionStorage.CreateSession(ctx, auth.Session{
+		UID: user.ID,
+		SID: SID,
+	})
 	if err != nil {
 		return nil, "", err
 	}
@@ -123,12 +126,7 @@ func getInterestIDs(interests []*auth.Interest) []types.InterestID {
 }
 
 func (service *UseCase) Logout(sessionID string, ctx context.Context) error {
-	err := service.personStorage.RemoveSession(ctx, sessionID)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return service.sessionStorage.DeleteSession(ctx, sessionID)
 }
 
 func hashPassword(password string) (string, error) {

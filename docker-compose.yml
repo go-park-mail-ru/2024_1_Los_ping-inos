@@ -1,26 +1,58 @@
-version: "3.8" # версия вашего docker-compose
-services: # имеджи, которые запустятся по вашему желанию
+version: "3.8"
+services:
+  db:
+    image: postgres:12-alpine
+    restart: on-failure
+    volumes:
+      - ./db/migrations/:/docker-entrypoint-initdb.d/
+    environment:
+      POSTGRES_DB: tpTinder
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - pinguinos-net
+  
+  redis:
+    container_name: redis
+    image: redis:latest
+    restart: on-failure
+    ports:
+      - "6379:6379"
+    networks:
+      - pinguinos-net
+
   app:
-    build: db
+#    build: db
+    container_name: app
+    restart: on-failure
+    build:
+      context: .
+      dockerfile: Dockerfile
     depends_on:
       - db
+      - redis
     ports:
       - "8080:8080"
       - "8085:8085"
     env_file:
-      - .env 
+      - .env
+    networks:
+      - pinguinos-net
 
-  db: # название моего имеджа
-    image: postgres:12-alpine # скачает image postgres 12 версии
-    restart: always
-    volumes: # часть настроек для хранения данных, пока для нас это не важно
-      - type: volume
-        source: postgresdb-data
-        target: /var/lib/postgresql/data
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_DB: tpTinder
-      POSTGRES_PASSWORD: postgres
+  auth:
+    container_name: auth
+    restart: on-failure
+    depends_on:
+      - db
+    build:
+      context: .
+      dockerfile: auth.Dockerfile
+    ports:
+      - "8082:8082"
+    networks:
+      - pinguinos-net
 
   adminer: # adminer db client
     image: adminer
@@ -28,6 +60,12 @@ services: # имеджи, которые запустятся по вашему 
       - 8000:8080
     depends_on:
       - db
+    networks:
+      - pinguinos-net
+
+networks:
+  pinguinos-net:
+    driver: bridge
 
 volumes: # часть настроек для хранения данных
   postgresdb-data:

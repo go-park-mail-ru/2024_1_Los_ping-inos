@@ -1,10 +1,12 @@
 package main
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"github.com/emirpasic/gods/sets/hashset"
 	_ "github.com/lib/pq"
+	"github.com/redis/go-redis/v9"
 	"github.com/spf13/viper"
 	"google.golang.org/grpc"
 	"main.go/config"
@@ -20,8 +22,8 @@ import (
 )
 
 const (
-	httpPath = "config/auth_http_config.yaml"
-	grpcPath = "config/auth_grpc_config.yaml"
+	httpPath = "../../../config/auth_http_config.yaml"
+	grpcPath = "../../../config/auth_grpc_config.yaml"
 )
 
 type Delivers struct {
@@ -50,12 +52,31 @@ func main() {
 	}
 	defer db.Close()
 
+	redisCli := redis.NewClient(&redis.Options{
+		Addr:     httpCfg.Redis.Host + ":" + httpCfg.Redis.Port,
+		Password: "",
+		DB:       0,
+	})
+
+	defer func() {
+		if err := redisCli.Close(); err != nil {
+			logger.Logger.Errorf("Error Closing Redis connection: %v", err)
+		}
+		logger.Logger.Info("Redis closed without errors")
+	}()
+
+	_, pingErr := redisCli.Ping(context.Background()).Result()
+	if pingErr != nil {
+		logger.Logger.Errorf("Failed to ping Redis server: %v", pingErr)
+	}
+
 	grpcCfg, err := config.LoadConfig(grpcPath)
 	if err != nil {
 		logger.Logger.Fatal(err)
 	}
 
-	useCase := authUsecase.NewAuthUseCase(authRepo.NewAuthPersonStorage(db), authRepo.NewInterestStorage(db), authRepo.NewImageStorage(db))
+	useCase := authUsecase.NewAuthUseCase(authRepo.NewAuthPersonStorage(db),
+		authRepo.NewSessionStorage(redisCli), authRepo.NewInterestStorage(db), authRepo.NewImageStorage(db))
 
 	srv, ok := net.Listen("tcp", grpcCfg.Server.Port)
 	if ok != nil {

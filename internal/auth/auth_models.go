@@ -83,4 +83,9 @@ type (
 		Description string   `json:"description"`
 		Interests   []string `json:"interests"`
 	}
+
+	Session struct {
+		UID types.UserID `json:"UID"`
+		SID string       `json:"SID"`
+	}
 )

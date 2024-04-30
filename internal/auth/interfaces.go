@@ -23,8 +23,13 @@ type (
 		Get(ctx context.Context, filter *PersonGetFilter) ([]*Person, error)
 		Update(ctx context.Context, person Person) error
 		Delete(ctx context.Context, sessionID string) error
-		RemoveSession(ctx context.Context, sid string) error
 		GetMatch(ctx context.Context, person1ID types.UserID) ([]types.UserID, error)
+	}
+
+	SessionStorage interface {
+		GetBySID(ctx context.Context, SID string) (*Session, error)
+		CreateSession(ctx context.Context, session Session) error
+		DeleteSession(ctx context.Context, SID string) error
 	}
 
 	InterestStorage interface {
