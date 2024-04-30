@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
-	"fmt"
 	qb "github.com/Masterminds/squirrel"
 	"github.com/sirupsen/logrus"
 	"main.go/internal/auth"
@@ -39,7 +38,6 @@ func (storage *PersonStorage) Get(ctx context.Context, filter *auth.PersonGetFil
 
 	processIDFilter(filter, &whereMap)
 	processEmailFilter(filter, &whereMap)
-	processSessionIDFilter(filter, &whereMap)
 
 	query := stBuilder.
 		Select(personFields).
@@ -144,20 +142,6 @@ func (storage *PersonStorage) AddAccount(ctx context.Context, Name string, Birth
 	return nil
 }
 
-func (storage *PersonStorage) RemoveSession(ctx context.Context, sid string) error {
-	logger := ctx.Value(Logg).(Log)
-	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db remove session_id request to ", PersonTableName)
-	_, err := storage.dbReader.Exec(
-		"UPDATE person SET session_id = '' "+
-			"WHERE session_id = $1", sid)
-	if err != nil {
-		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't query: ", err.Error())
-		return fmt.Errorf("Remove sessions %w", err)
-	}
-	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db removed session_id ", PersonTableName)
-	return nil
-}
-
 func (storage *PersonStorage) GetMatch(ctx context.Context, person1ID types.UserID) ([]types.UserID, error) {
 	logger := ctx.Value(Logg).(Log)
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db get request to ", LikeTableName)
@@ -198,11 +182,5 @@ func processIDFilter(filter *auth.PersonGetFilter, whereMap *qb.And) {
 func processEmailFilter(filter *auth.PersonGetFilter, whereMap *qb.And) {
 	if filter.Email != nil {
 		*whereMap = append(*whereMap, qb.Eq{"email": filter.Email})
-	}
-}
-
-func processSessionIDFilter(filter *auth.PersonGetFilter, whereMap *qb.And) {
-	if filter.SessionID != nil {
-		*whereMap = append(*whereMap, qb.Eq{"session_id": filter.SessionID})
 	}
 }

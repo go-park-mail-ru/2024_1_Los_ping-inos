@@ -104,8 +104,8 @@ func (service *UseCase) Registration(body auth.RegitstrationBody, ctx context.Co
 	return prof, SID, nil
 }
 
-func (service *UseCase) GetName(sessionID string, ctx context.Context) (string, error) {
-	person, err := service.personStorage.Get(ctx, &auth.PersonGetFilter{SessionID: []string{sessionID}})
+func (service *UseCase) GetName(userID types.UserID, ctx context.Context) (string, error) {
+	person, err := service.personStorage.Get(ctx, &auth.PersonGetFilter{ID: []types.UserID{userID}})
 	if err != nil {
 		return "", err
 	}

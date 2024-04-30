@@ -25,7 +25,7 @@ func NewImageStorage(dbReader *sql.DB) *ImageStorage {
 
 func (storage *ImageStorage) Get(ctx context.Context, userID int64) ([]auth.Image, error) {
 	logger := ctx.Value(Logg).(Log)
-	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("Get request to person_image")
+	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("GetLike request to person_image")
 	var images []auth.Image
 
 	query := "SELECT " + personImageFields + " FROM person_image WHERE person_id = $1"

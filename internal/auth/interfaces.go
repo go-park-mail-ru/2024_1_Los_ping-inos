@@ -12,7 +12,7 @@ type (
 		Logout(sessionID string, ctx context.Context) error
 		Registration(body RegitstrationBody, ctx context.Context) (*Profile, string, error)
 		GetAllInterests(ctx context.Context) ([]*Interest, error)
-		GetName(sessionID string, ctx context.Context) (string, error)
+		GetName(userID types.UserID, ctx context.Context) (string, error)
 		GetProfile(params ProfileGetParams, ctx context.Context) ([]Profile, error)
 		UpdateProfile(SID string, profile ProfileUpdateRequest, ctx context.Context) error
 		DeleteProfile(sessionID string, ctx context.Context) error

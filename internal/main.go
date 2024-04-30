@@ -4,8 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/emirpasic/gods/sets/hashset"
-	"github.com/go-chi/chi"
-	httpSwagger "github.com/swaggo/http-swagger/v2"
 	"google.golang.org/grpc"
 	. "main.go/internal/pkg"
 	"net/http"
@@ -19,10 +17,6 @@ import (
 	_ "main.go/internal/docs"
 	. "main.go/internal/logs"
 
-	feedDelivery "main.go/internal/feed/delivery"
-	feedRepo "main.go/internal/feed/repo"
-	feedUsecase "main.go/internal/feed/usecase"
-
 	imageDelivery "main.go/internal/image/delivery"
 	imageRepo "main.go/internal/image/repo"
 	imageUsecase "main.go/internal/image/usecase"
@@ -30,9 +24,7 @@ import (
 
 const configPath = "config/config.yaml"
 const (
-	authDeliver = iota
-	feedDeliver
-	imageDeliver
+	imageDeliver = iota
 )
 
 // @title SportBro API
@@ -61,15 +53,9 @@ func main() {
 	}
 	defer db.Close()
 
-	feedPStorage := feedRepo.NewPersonStorage(db)
-	feedLStorage := feedRepo.NewLikeStorage(db)
-	feedImgStorage := feedRepo.NewImageStorage(db)
-	feedIntStorage := feedRepo.NewInterestStorage(db)
-
 	imageStorage := imageRepo.NewImageStorage(db)
 
 	delivers := make([]interface{}, 4)
-	delivers[feedDeliver] = feedDelivery.NewFeedDelivery(feedUsecase.New(feedPStorage, feedIntStorage, feedImgStorage, feedLStorage))
 	delivers[imageDeliver] = imageDelivery.NewImageDelivery(imageUsecase.NewImageUseCase(imageStorage))
 
 	err = StartServer(cfg, logger, delivers)
@@ -78,24 +64,9 @@ func main() {
 	}
 }
 
-func runSwaggerServer(logger *Log) {
-	r := chi.NewRouter()
-
-	r.Get("/swagger/*", httpSwagger.Handler(
-		httpSwagger.URL(config.Cfg.Server.Host+config.Cfg.Server.SwaggerPort+"/swagger/doc.json"),
-	))
-	err := http.ListenAndServe(config.Cfg.Server.SwaggerPort, r)
-	if err != nil {
-		logger.Logger.Warn(err.Error())
-	}
-}
-
 func StartServer(cfg *config.Config, logger Log, deliver []interface{}) error {
-	go runSwaggerServer(&logger)
 
 	var apiPath = cfg.ApiPath
-
-	feedDel := deliver[feedDeliver].(*feedDelivery.FeedHandler)
 	imageDel := deliver[imageDeliver].(*imageDelivery.ImageHandler)
 
 	grpcConn, err := grpc.Dial("auth:50051", grpc.WithInsecure())
@@ -107,10 +78,6 @@ func StartServer(cfg *config.Config, logger Log, deliver []interface{}) error {
 	// роутер)0)
 	// структура: путь, цепочка миддлвар: логирование -> методы -> [авторизация -> [CSRF]] -> функция-обработчик ручки
 	mux := http.NewServeMux()
-	mux.Handle(apiPath+"cards", RequestIDMiddleware(
-		AllowedMethodMiddleware(
-			IsAuthenticatedMiddleware(http.HandlerFunc(feedDel.GetCardsHandler()), authManager), hashset.New("GET")),
-		"get cards", logger))
 
 	mux.Handle(apiPath+"getImage", RequestIDMiddleware(
 		AllowedMethodMiddleware(
@@ -126,16 +93,6 @@ func StartServer(cfg *config.Config, logger Log, deliver []interface{}) error {
 		AllowedMethodMiddleware(
 			IsAuthenticatedMiddleware(CSRFMiddleware(http.HandlerFunc(imageDel.DeleteImageHandler())), authManager), hashset.New("POST")),
 		"delete image", logger))
-
-	mux.Handle(apiPath+"like", RequestIDMiddleware(
-		AllowedMethodMiddleware(
-			IsAuthenticatedMiddleware(CSRFMiddleware(http.HandlerFunc(feedDel.CreateLike())), authManager), hashset.New("POST")),
-		"like", logger))
-
-	mux.Handle(apiPath+"dislike", RequestIDMiddleware(
-		AllowedMethodMiddleware(
-			IsAuthenticatedMiddleware(CSRFMiddleware(http.HandlerFunc(feedDel.CreateDislike())), authManager), hashset.New("POST")),
-		"dislike", logger))
 
 	server := http.Server{
 		Addr:         config.Cfg.Server.Host + config.Cfg.Server.Port,
