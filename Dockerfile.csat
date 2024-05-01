@@ -7,7 +7,7 @@ RUN go mod download
 
 COPY ./ ./
 
-WORKDIR /app/internal/cmd/auth
+WORKDIR /app/internal/cmd/CSAT
 
 RUN CGO_ENABLED=0 GOOS=linux go build -o /docker-gs-ping
 
@@ -19,7 +19,7 @@ WORKDIR /
 COPY --from=build-stage /docker-gs-ping /docker-gs-ping
 COPY . .
 
-EXPOSE 8083
+EXPOSE 8082
 
 USER nonroot:nonroot
 
