@@ -3,14 +3,19 @@ package usecase
 import (
 	"context"
 	"errors"
+	"fmt"
 
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"main.go/config"
+	auth "main.go/internal/auth/proto"
 	"main.go/internal/image"
 	"main.go/internal/image/repo"
 )
 
 type UseCase struct {
 	imageStorage image.ImgStorage
+	client       auth.AuthHandlClient
 }
 
 func NewImageUseCase(istore image.ImgStorage) *UseCase {
@@ -19,9 +24,19 @@ func NewImageUseCase(istore image.ImgStorage) *UseCase {
 	}
 }
 
-func GetCore(cfg_sql *config.DatabaseConfig) (*UseCase, error) {
-	//println("THIS IS CFG", *&cfg_sql.Database)
+func GetClient(port string) (auth.AuthHandlClient, error) {
+	conn, err := grpc.Dial(port, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		return nil, fmt.Errorf("grpc connect err: %w", err)
+	}
 
+	client := auth.NewAuthHandlClient(conn)
+
+	return client, nil
+}
+
+func GetCore(cfg_sql *config.DatabaseConfig) (*UseCase, error) {
+	grpclient, err := GetClient(cfg_sql.GrpcPort)
 	images, err := repo.GetImageRepo(cfg_sql)
 
 	if err != nil {
@@ -30,6 +45,7 @@ func GetCore(cfg_sql *config.DatabaseConfig) (*UseCase, error) {
 
 	core := UseCase{
 		imageStorage: images,
+		client:       grpclient,
 	}
 	return &core, nil
 }

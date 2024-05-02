@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"os"
 	"time"
 
@@ -39,6 +40,7 @@ type DatabaseConfig struct {
 	User     string `json:"username"`
 	Password string `json:"password"`
 	Timer    uint32 `json:"timer"`
+	GrpcPort string `json:"grpc_port"`
 }
 
 type AwsConfig struct {
@@ -62,6 +64,7 @@ func ReadConfig() (*DatabaseConfig, error) {
 	if err != nil {
 		return nil, err
 	}
+	fmt.Println("this is dsn", dsnConfig)
 
 	return &dsnConfig, nil
 }
@@ -103,6 +106,14 @@ func LoadConfig(path string) (*Config, error) {
 		return nil, err
 	}
 	err = viper.BindEnv("database.dbname", "DB_NAME")
+	if err != nil {
+		return nil, err
+	}
+	err = viper.BindEnv("database.timer", "DB_TIMER")
+	if err != nil {
+		return nil, err
+	}
+	err = viper.BindEnv("database.grpc", "DB_GRPC")
 	if err != nil {
 		return nil, err
 	}

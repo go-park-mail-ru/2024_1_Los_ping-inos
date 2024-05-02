@@ -98,7 +98,7 @@ func (deliver *ImageHandler) GetImageHandler() func(w http.ResponseWriter, r *ht
 		println(request.Context().Value(RequestUserID))
 		//userId := int64(request.Context().Value(RequestUserID).(types.UserID))
 		userId := int64(2)
-		//println(request.Context().Value(RequestUserID).(types.UserID))
+		println(request.Context().Value(RequestUserID))
 
 		images, err := deliver.useCase.GetImage(userId, request.Context())
 		if err != nil {
