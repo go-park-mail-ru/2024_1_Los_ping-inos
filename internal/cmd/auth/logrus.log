@@ -14,3 +14,37 @@ time="2024-04-27T05:03:47+03:00" level=info msg="db got 0 interest ids" requestI
 time="2024-04-27T05:03:47+03:00" level=info msg="Get request to person_image" requestID=26156363
 time="2024-04-27T05:03:47+03:00" level=info msg="Return 3 images" requestID=26156363
 time="2024-04-27T05:03:47+03:00" level=info msg="get profile sent response" requestID=26156363
+time="2024-05-02T17:50:46+03:00" level=info msg="started auth http server at 127.0.0.1:8081"
+time="2024-05-02T17:50:57+03:00" level=info msg="db get request to person" requestID=0
+time="2024-05-02T17:50:57+03:00" level=info msg="db returning records" requestID=0
+time="2024-05-02T17:51:21+03:00" level=info msg="db get request to person" requestID=0
+time="2024-05-02T17:51:21+03:00" level=info msg="db returning records" requestID=0
+time="2024-05-02T17:51:23+03:00" level=info msg="db get request to person" requestID=0
+time="2024-05-02T17:51:23+03:00" level=info msg="db returning records" requestID=0
+time="2024-05-02T17:51:23+03:00" level=info msg="db get request to person" requestID=0
+time="2024-05-02T17:51:23+03:00" level=info msg="db returning records" requestID=0
+time="2024-05-02T17:51:24+03:00" level=info msg="db get request to person" requestID=0
+time="2024-05-02T17:51:24+03:00" level=info msg="db returning records" requestID=0
+time="2024-05-02T20:05:01+03:00" level=info msg="db get request to person" requestID=0
+time="2024-05-02T20:05:01+03:00" level=info msg="db returning records" requestID=0
+time="2024-05-02T20:11:57+03:00" level=info msg="db get request to person" requestID=0
+time="2024-05-02T20:11:57+03:00" level=info msg="db returning records" requestID=0
+time="2024-05-02T20:12:26+03:00" level=info msg="db get request to person" requestID=0
+time="2024-05-02T20:12:26+03:00" level=info msg="db returning records" requestID=0
+time="2024-05-02T20:19:06+03:00" level=info msg="db get request to person" requestID=0
+time="2024-05-02T20:19:06+03:00" level=info msg="db returning records" requestID=0
+time="2024-05-02T20:19:57+03:00" level=info msg="db get request to person" requestID=0
+time="2024-05-02T20:19:57+03:00" level=info msg="db returning records" requestID=0
+time="2024-05-02T20:37:59+03:00" level=info msg="db get request to person" requestID=0
+time="2024-05-02T20:37:59+03:00" level=info msg="db returning records" requestID=0
+time="2024-05-02T20:39:10+03:00" level=info msg="db get request to person" requestID=0
+time="2024-05-02T20:39:10+03:00" level=info msg="db returning records" requestID=0
+time="2024-05-02T20:39:53+03:00" level=info msg="db get request to person" requestID=0
+time="2024-05-02T20:39:53+03:00" level=info msg="db returning records" requestID=0
+time="2024-05-02T20:56:08+03:00" level=info msg="db get request to person" requestID=0
+time="2024-05-02T20:56:08+03:00" level=info msg="db returning records" requestID=0
+time="2024-05-02T20:56:15+03:00" level=info msg="db get request to person" requestID=0
+time="2024-05-02T20:56:15+03:00" level=info msg="db returning records" requestID=0
+time="2024-05-02T20:56:47+03:00" level=info msg="db get request to person" requestID=0
+time="2024-05-02T20:56:47+03:00" level=info msg="db returning records" requestID=0
+time="2024-05-02T21:31:02+03:00" level=info msg="started auth http server at 127.0.0.1:8081"

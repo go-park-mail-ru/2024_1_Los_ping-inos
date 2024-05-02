@@ -1,7 +1,6 @@
 package delivery
 
 import (
-	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -9,19 +8,16 @@ import (
 	"log"
 	"math/rand"
 	"net/http"
-	"os"
-	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
-	v4 "github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	"github.com/aws/aws-sdk-go-v2/config"
-	"github.com/aws/aws-sdk-go-v2/service/s3"
 	awsUpload "github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	serviceUpload "github.com/aws/aws-sdk-go/service/s3"
 	"github.com/emirpasic/gods/sets/hashset"
 	"github.com/sirupsen/logrus"
+	"google.golang.org/grpc"
 	. "main.go/config"
+	gen "main.go/internal/auth/proto"
 	"main.go/internal/image"
 	"main.go/internal/image/usecase"
 	. "main.go/internal/logs"
@@ -62,9 +58,15 @@ func GetApi(c *usecase.UseCase, logger Log) *ImageHandler {
 
 	println("This is api path", apiPath)
 
+	grpcConn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+	if err != nil {
+		print("fock off")
+	}
+	authManager := gen.NewAuthHandlClient(grpcConn)
+
 	api.mx.Handle(apiPath+"getImage", requests.RequestIDMiddleware(
 		requests.AllowedMethodMiddleware(
-			http.HandlerFunc(api.GetImageHandler()), hashset.New("GET")),
+			requests.IsAuthenticatedMiddleware(http.HandlerFunc(api.GetImageHandler()), authManager), hashset.New("GET")),
 		"get images", logger))
 
 	api.mx.Handle(apiPath+"addImage", requests.RequestIDMiddleware(
@@ -95,58 +97,21 @@ func (deliver *ImageHandler) GetImageHandler() func(w http.ResponseWriter, r *ht
 	return func(respWriter http.ResponseWriter, request *http.Request) {
 		logger := request.Context().Value(Logg).(Log)
 
-		println(request.Context().Value(RequestUserID))
-		//userId := int64(request.Context().Value(RequestUserID).(types.UserID))
-		userId := int64(2)
-		println(request.Context().Value(RequestUserID))
+		//var requestBody requests.ImageRequest
 
-		images, err := deliver.useCase.GetImage(userId, request.Context())
+		cell := request.FormValue("cell")
+		println(cell)
+
+		userId := int64(request.Context().Value(RequestUserID).(types.UserID))
+
+		images, err := deliver.useCase.GetImage(userId, cell, request.Context())
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn(err.Error())
 			requests.SendResponse(respWriter, request, http.StatusInternalServerError, err.Error())
 			return
 		}
 
-		cfg, err := config.LoadDefaultConfig(context.TODO())
-		if err != nil {
-			print("Error loading default config: %v", err)
-			os.Exit(0)
-		}
-
-		client := s3.NewFromConfig(cfg, func(o *s3.Options) {
-			o.BaseEndpoint = aws.String(vkCloudHotboxEndpoint)
-			o.Region = defaultRegion
-		})
-
-		presigner := s3.NewPresignClient(client)
-		bucketName := "los_ping"
-		lifeTimeSeconds := int64(60)
-
-		var req *v4.PresignedHTTPRequest
-		//urls := make([]string, 0)
-		url := make(map[string][]map[string]string)
-
-		for _, img := range images {
-			objectKey := img.Url
-			req, err = presigner.PresignGetObject(context.TODO(), &s3.GetObjectInput{
-				Bucket: aws.String(bucketName),
-				Key:    aws.String(objectKey),
-			}, func(opts *s3.PresignOptions) {
-				opts.Expires = time.Duration(lifeTimeSeconds * int64(time.Second))
-			})
-			newImage := map[string]string{
-				"cell": img.CellNumber,
-				"url":  req.URL,
-			}
-			//urls = append(urls, req.URL)
-			url["photo"] = append(url["photo"], newImage)
-		}
-
-		if err != nil {
-			log.Printf("Couldn't get a presigned request to get %v. Error: %v\n", bucketName, err)
-		}
-
-		requests.SendResponse(respWriter, request, http.StatusOK, url)
+		requests.SendResponse(respWriter, request, http.StatusOK, images)
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("sent image")
 	}
 }

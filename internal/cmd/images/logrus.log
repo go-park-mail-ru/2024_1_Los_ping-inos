@@ -67,3 +67,86 @@ time="2024-05-02T16:53:39+03:00" level=info msg="get images request" requestID=2
 time="2024-05-02T16:53:39+03:00" level=info msg="methods checked" requestID=26163605
 time="2024-05-02T16:53:39+03:00" level=warning msg="dial tcp: lookup port=0: no such host" requestID=26163605
 time="2024-05-02T17:10:45+03:00" level=warning msg="yaml: unmarshal errors:\n  line 21: cannot unmarshal !!map into string" requestID=0
+time="2024-05-02T17:19:03+03:00" level=info msg="get images request" requestID=26163628
+time="2024-05-02T17:19:03+03:00" level=info msg="methods checked" requestID=26163628
+time="2024-05-02T17:19:03+03:00" level=warning msg="dial tcp: lookup db on 172.27.224.1:53: no such host" requestID=26163628
+time="2024-05-02T17:20:29+03:00" level=info msg="get images request" requestID=26163629
+time="2024-05-02T17:20:29+03:00" level=info msg="methods checked" requestID=26163629
+time="2024-05-02T17:20:29+03:00" level=info msg="sent image" requestID=26163629
+time="2024-05-02T17:48:48+03:00" level=info msg="get images request" requestID=26163655
+time="2024-05-02T17:48:48+03:00" level=info msg="methods checked" requestID=26163655
+time="2024-05-02T17:48:48+03:00" level=info msg="unauthorized: rpc error: code = Unavailable desc = connection error: desc = \"transport: Error while dialing: dial tcp: lookup auth on 172.27.224.1:53: no such host\"" requestID=26163655
+time="2024-05-02T17:49:18+03:00" level=info msg="get images request" requestID=26163655
+time="2024-05-02T17:49:18+03:00" level=info msg="methods checked" requestID=26163655
+time="2024-05-02T17:49:18+03:00" level=info msg="unauthorized: rpc error: code = Unavailable desc = connection error: desc = \"transport: Error while dialing: dial tcp 127.0.0.1:50051: connect: connection refused\"" requestID=26163655
+time="2024-05-02T17:49:48+03:00" level=warning msg="listen and serve error: listen tcp :8090: bind: address already in use" requestID=0
+time="2024-05-02T17:50:02+03:00" level=warning msg="listen and serve error: listen tcp :8090: bind: address already in use" requestID=0
+time="2024-05-02T17:50:57+03:00" level=info msg="get images request" requestID=26163657
+time="2024-05-02T17:50:57+03:00" level=info msg="methods checked" requestID=26163657
+time="2024-05-02T17:50:57+03:00" level=info msg=authorized requestID=26163657
+time="2024-05-02T17:50:57+03:00" level=info msg="sent image" requestID=26163657
+time="2024-05-02T17:51:21+03:00" level=info msg="get images request" requestID=26163657
+time="2024-05-02T17:51:21+03:00" level=info msg="methods checked" requestID=26163657
+time="2024-05-02T17:51:21+03:00" level=info msg=authorized requestID=26163657
+time="2024-05-02T17:51:21+03:00" level=info msg="sent image" requestID=26163657
+time="2024-05-02T17:51:23+03:00" level=info msg="get images request" requestID=26163657
+time="2024-05-02T17:51:23+03:00" level=info msg="methods checked" requestID=26163657
+time="2024-05-02T17:51:23+03:00" level=info msg=authorized requestID=26163657
+time="2024-05-02T17:51:23+03:00" level=info msg="sent image" requestID=26163657
+time="2024-05-02T17:51:23+03:00" level=info msg="get images request" requestID=26163657
+time="2024-05-02T17:51:23+03:00" level=info msg="methods checked" requestID=26163657
+time="2024-05-02T17:51:23+03:00" level=info msg=authorized requestID=26163657
+time="2024-05-02T17:51:23+03:00" level=info msg="sent image" requestID=26163657
+time="2024-05-02T17:51:24+03:00" level=info msg="get images request" requestID=26163657
+time="2024-05-02T17:51:24+03:00" level=info msg="methods checked" requestID=26163657
+time="2024-05-02T17:51:24+03:00" level=info msg=authorized requestID=26163657
+time="2024-05-02T17:51:24+03:00" level=info msg="sent image" requestID=26163657
+time="2024-05-02T20:05:01+03:00" level=info msg="get images request" requestID=26163780
+time="2024-05-02T20:05:01+03:00" level=info msg="methods checked" requestID=26163780
+time="2024-05-02T20:05:01+03:00" level=info msg=authorized requestID=26163780
+time="2024-05-02T20:05:01+03:00" level=info msg="sent image" requestID=26163780
+time="2024-05-02T20:11:57+03:00" level=info msg="get images request" requestID=26163786
+time="2024-05-02T20:11:57+03:00" level=info msg="methods checked" requestID=26163786
+time="2024-05-02T20:11:57+03:00" level=info msg=authorized requestID=26163786
+time="2024-05-02T20:11:57+03:00" level=info msg="sent image" requestID=26163786
+time="2024-05-02T20:12:26+03:00" level=info msg="get images request" requestID=26163787
+time="2024-05-02T20:12:26+03:00" level=info msg="methods checked" requestID=26163787
+time="2024-05-02T20:12:26+03:00" level=info msg=authorized requestID=26163787
+time="2024-05-02T20:12:26+03:00" level=info msg="sent image" requestID=26163787
+time="2024-05-02T20:19:06+03:00" level=info msg="get images request" requestID=26163793
+time="2024-05-02T20:19:06+03:00" level=info msg="methods checked" requestID=26163793
+time="2024-05-02T20:19:06+03:00" level=info msg=authorized requestID=26163793
+time="2024-05-02T20:19:06+03:00" level=info msg="sent image" requestID=26163793
+time="2024-05-02T20:19:57+03:00" level=info msg="get images request" requestID=26163793
+time="2024-05-02T20:19:57+03:00" level=info msg="methods checked" requestID=26163793
+time="2024-05-02T20:19:57+03:00" level=info msg=authorized requestID=26163793
+time="2024-05-02T20:19:57+03:00" level=info msg="sent image" requestID=26163793
+time="2024-05-02T20:37:59+03:00" level=info msg="get images request" requestID=26163810
+time="2024-05-02T20:37:59+03:00" level=info msg="methods checked" requestID=26163810
+time="2024-05-02T20:37:59+03:00" level=info msg=authorized requestID=26163810
+time="2024-05-02T20:37:59+03:00" level=info msg="sent image" requestID=26163810
+time="2024-05-02T20:39:10+03:00" level=info msg="get images request" requestID=26163811
+time="2024-05-02T20:39:10+03:00" level=info msg="methods checked" requestID=26163811
+time="2024-05-02T20:39:10+03:00" level=info msg=authorized requestID=26163811
+time="2024-05-02T20:39:10+03:00" level=info msg="sent image" requestID=26163811
+time="2024-05-02T20:39:53+03:00" level=info msg="get images request" requestID=26163812
+time="2024-05-02T20:39:53+03:00" level=info msg="methods checked" requestID=26163812
+time="2024-05-02T20:39:53+03:00" level=info msg=authorized requestID=26163812
+time="2024-05-02T20:39:53+03:00" level=info msg="sent image" requestID=26163812
+time="2024-05-02T20:56:08+03:00" level=info msg="get images request" requestID=26163827
+time="2024-05-02T20:56:08+03:00" level=info msg="methods checked" requestID=26163827
+time="2024-05-02T20:56:08+03:00" level=info msg=authorized requestID=26163827
+time="2024-05-02T20:56:08+03:00" level=warning msg="no images for user with such sessionID" requestID=26163827
+time="2024-05-02T20:56:15+03:00" level=info msg="get images request" requestID=26163827
+time="2024-05-02T20:56:15+03:00" level=info msg="methods checked" requestID=26163827
+time="2024-05-02T20:56:15+03:00" level=info msg=authorized requestID=26163827
+time="2024-05-02T20:56:15+03:00" level=warning msg="no images for user with such sessionID" requestID=26163827
+time="2024-05-02T20:56:47+03:00" level=info msg="get images request" requestID=26163827
+time="2024-05-02T20:56:47+03:00" level=info msg="methods checked" requestID=26163827
+time="2024-05-02T20:56:47+03:00" level=info msg=authorized requestID=26163827
+time="2024-05-02T20:56:47+03:00" level=info msg="sent image" requestID=26163827
+time="2024-05-02T21:24:45+03:00" level=fatal msg="<nil>"
+time="2024-05-02T21:26:01+03:00" level=fatal msg="<nil>"
+time="2024-05-02T21:27:37+03:00" level=fatal msg="<nil>"
+time="2024-05-02T21:28:31+03:00" level=fatal msg="<nil>"
+time="2024-05-02T21:28:34+03:00" level=fatal msg="<nil>"

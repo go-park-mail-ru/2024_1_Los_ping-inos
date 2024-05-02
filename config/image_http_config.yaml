@@ -6,11 +6,6 @@ apiPath: "/api/v1/"
 #   host: "localhost"
 #   port: 5432
 #   timer: 1
-
-# database:
-#   host: "db"
-#   port: "5432"
-#   dbname: "tpTinder"
 server:
   host: "localhost"
   port: ":8083"
@@ -18,7 +13,7 @@ server:
   timeout: 5
 
 database:
-  host: "db"
+  host: "localhost"
   port: "5432"
   dbname: "tpTinder"
   user: "postgres"

@@ -11,8 +11,9 @@ service Image {
 }
 
 message GetImageRequest {
-    string id = 1; // User id
-    string cell = 2; // Number of the cell that contains the image
+    int64 requestID = 1;
+    int64 id = 2; // User id
+    string cell = 3; // Number of the cell that contains the image
 }
 
 message GetImageResponce {

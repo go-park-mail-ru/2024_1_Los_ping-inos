@@ -2,6 +2,7 @@ package delivery
 
 import (
 	"context"
+
 	pb "main.go/internal/auth/proto"
 	"main.go/internal/auth/usecase"
 	. "main.go/internal/logs"
@@ -20,7 +21,7 @@ func NewGRPCDeliver(uc *usecase.UseCase) *Server {
 	return res
 }
 
-func NewServer()
+//func NewServer()
 
 func (server *Server) IsAuthenticated(_ context.Context, req *pb.IsAuthRequest) (*pb.IsAuthResponse, error) {
 	tmp := server.ctx.Value(Logg).(Log) // TODO intercepter

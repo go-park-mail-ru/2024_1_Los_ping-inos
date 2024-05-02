@@ -9,7 +9,6 @@ import (
 	_ "github.com/jackc/pgx/stdlib"
 	"github.com/sirupsen/logrus"
 
-	"main.go/config"
 	"main.go/internal/image"
 	. "main.go/internal/logs"
 )
@@ -30,16 +29,16 @@ func NewImageStorage(dbReader *sql.DB) *ImageStorage {
 	}
 }
 
-func GetImageRepo(config *config.DatabaseConfig) (*ImageStorage, error) {
+func GetImageRepo(config string) (*ImageStorage, error) {
 	//logger := ctx.Value(Logg).(Log)
 
-	dsn := fmt.Sprintf("host=%s port=%d user=%s "+
-		"password=%s dbname=%s sslmode=disable",
-		config.Host, config.Port, config.User, config.Password, config.Database)
+	// dsn := fmt.Sprintf("host=%s port=%d user=%s "+
+	// 	"password=%s dbname=%s sslmode=disable",
+	// 	config.Host, config.Port, config.User, config.Password, config.Database)
 
-	println(dsn)
+	//println(dsn)
 
-	db, err := sql.Open("pgx", dsn)
+	db, err := sql.Open("pgx", config)
 	if err != nil {
 		println(err.Error())
 	}
@@ -50,7 +49,7 @@ func GetImageRepo(config *config.DatabaseConfig) (*ImageStorage, error) {
 
 	postgreDb := ImageStorage{dbReader: db}
 
-	go postgreDb.pingDb(config.Timer)
+	go postgreDb.pingDb(50)
 	return &postgreDb, nil
 }
 
@@ -66,14 +65,14 @@ func (storage *ImageStorage) pingDb(timer uint32) {
 	}
 }
 
-func (storage *ImageStorage) Get(ctx context.Context, userID int64) ([]image.Image, error) {
+func (storage *ImageStorage) Get(ctx context.Context, userID int64, cell string) ([]image.Image, error) {
 	//logger := ctx.Value(Logg).(Log)
 	//logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("Get request to person_image")
 	var images []image.Image
 
-	query := "SELECT " + personImageFields + " FROM person_image WHERE person_id = $1"
+	query := "SELECT " + personImageFields + " FROM person_image WHERE person_id = $1 AND cell_number = $2"
 
-	rows, err := storage.dbReader.Query(query, userID)
+	rows, err := storage.dbReader.Query(query, userID, cell)
 	if err != nil {
 		return []image.Image{}, err
 	}
