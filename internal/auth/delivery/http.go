@@ -424,6 +424,7 @@ func generateCookie(name, value string, expires time.Time, httpOnly bool) *http.
 		Path:     "/",
 		Expires:  expires,
 		HttpOnly: httpOnly,
+		Domain:   "biba.boba.hui",
 	}
 }
 
