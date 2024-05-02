@@ -28,11 +28,19 @@ func NewAuthUseCase(dbReader auth.PersonStorage, sstore auth.SessionStorage, ist
 }
 
 func (service *UseCase) IsAuthenticated(sessionID string, ctx context.Context) (types.UserID, bool, error) {
+<<<<<<< HEAD
+	person, err := service.personStorage.Get(ctx, &auth.PersonGetFilter{SessionID: []string{sessionID}})
+	if err != nil || len(person) == 0 {
+		return -1, false, err
+	}
+	return person[0].ID, true, nil
+=======
 	person, err := service.sessionStorage.GetBySID(ctx, sessionID)
 	if err != nil {
 		return -1, false, err
 	}
 	return person.UID, true, nil
+>>>>>>> spiriddan-chats
 }
 
 // Login - принимает email, пароль; возвращает ID сессии и ошибку

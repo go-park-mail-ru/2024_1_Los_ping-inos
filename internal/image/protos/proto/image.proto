@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package image;
+
+// protoc -I proto proto/image.proto --go_out=./gen --go_opt=paths=source_relative --go-grpc_out=./gen --go-grpc_opt=paths=source_relative
+
+option go_package = "/image/proto";
+
+service Image {
+    rpc GetImage (GetImageRequest) returns (GetImageResponce);
+}
+
+message GetImageRequest {
+    int64 requestID = 1;
+    int64 id = 2; // User id
+    string cell = 3; // Number of the cell that contains the image
+}
+
+message GetImageResponce {
+    string url = 1;
+}

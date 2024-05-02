@@ -4,6 +4,10 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"net"
+	"net/http"
+	"time"
+
 	"github.com/emirpasic/gods/sets/hashset"
 	_ "github.com/lib/pq"
 	"github.com/redis/go-redis/v9"
@@ -16,9 +20,6 @@ import (
 	authUsecase "main.go/internal/auth/usecase"
 	. "main.go/internal/logs"
 	. "main.go/internal/pkg"
-	"net"
-	"net/http"
-	"time"
 )
 
 const (
@@ -106,6 +107,7 @@ func startServer(cfg *config.Config, logger Log, deliver Delivers) error {
 	httpDeliver := deliver.http
 
 	grpcConn, err := grpc.Dial("auth:50051", grpc.WithInsecure())
+
 	if err != nil {
 		return err
 	}

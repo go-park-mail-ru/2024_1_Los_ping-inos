@@ -32,11 +32,13 @@ type ServerConfig struct {
 }
 
 type DatabaseConfig struct {
-	Host     string `json:"host" yaml:"host"`
-	Port     int    `json:"port" yaml:"port"`
-	Database string `json:"database" yaml:"database"`
-	User     string `json:"username" yaml:"user"`
-	Password string `json:"password" yaml:"password"`
+	Host     string `json:"host"`
+	Port     int    `json:"port"`
+	Database string `json:"database"`
+	User     string `json:"username"`
+	Password string `json:"password"`
+	Timer    uint32 `json:"timer"`
+	GrpcPort string `json:"grpc_port"`
 }
 
 type RedisConfig struct {
@@ -90,6 +92,14 @@ func LoadConfig(path string) (*Config, error) {
 		return nil, err
 	}
 	err = viper.BindEnv("database.dbname", "DB_NAME")
+	if err != nil {
+		return nil, err
+	}
+	err = viper.BindEnv("database.timer", "DB_TIMER")
+	if err != nil {
+		return nil, err
+	}
+	err = viper.BindEnv("database.grpc", "DB_GRPC")
 	if err != nil {
 		return nil, err
 	}

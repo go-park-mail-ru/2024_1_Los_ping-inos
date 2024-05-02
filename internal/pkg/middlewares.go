@@ -2,6 +2,8 @@ package requests
 
 import (
 	"context"
+	"net/http"
+
 	"github.com/emirpasic/gods/sets/hashset"
 	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
@@ -9,7 +11,6 @@ import (
 	auth "main.go/internal/auth/proto"
 	. "main.go/internal/logs"
 	"main.go/internal/types"
-	"net/http"
 )
 
 const CSRFHeader = "csrft"

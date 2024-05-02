@@ -1,8 +1,9 @@
 package logs
 
 import (
-	"github.com/sirupsen/logrus"
 	"os"
+
+	"github.com/sirupsen/logrus"
 )
 
 const RequestID = "requestID"
