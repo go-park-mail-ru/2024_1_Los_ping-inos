@@ -142,23 +142,6 @@ func (storage *PersonStorage) AddAccount(ctx context.Context, Name string, Birth
 	return nil
 }
 
-<<<<<<< HEAD
-func (storage *PersonStorage) RemoveSession(ctx context.Context, sid string) error {
-	logger := ctx.Value(Logg).(Log)
-	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db remove session_id request to ", PersonTableName)
-	_, err := storage.dbReader.Exec(
-		"UPDATE person SET session_id = '' "+
-			"WHERE session_id = $1", sid)
-	if err != nil {
-		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't query: ", err.Error())
-		return fmt.Errorf("Remove sessions %w", err)
-	}
-	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db removed session_id ", PersonTableName)
-	return nil
-}
-
-=======
->>>>>>> spiriddan-chats
 func (storage *PersonStorage) GetMatch(ctx context.Context, person1ID types.UserID) ([]types.UserID, error) {
 	logger := ctx.Value(Logg).(Log)
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db get request to ", LikeTableName)

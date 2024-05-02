@@ -40,7 +40,7 @@ func (deliver *ImageHandler) ListenAndServe() error {
 
 	//logger.Logger.Infof("started auth http server at %v", server.Addr)
 	//	fmt.Printf("started auth http server at %v\n", server.Addr)
-	err := http.ListenAndServe(":8090", deliver.mx)
+	err := http.ListenAndServe(":8082", deliver.mx)
 	if err != nil {
 		//logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn(err.Error())
 		return fmt.Errorf("listen and serve error: %w", err)
@@ -58,7 +58,7 @@ func GetApi(c *usecase.UseCase, logger Log) *ImageHandler {
 
 	println("This is api path", apiPath)
 
-	grpcConn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+	grpcConn, err := grpc.Dial("auth:50051", grpc.WithInsecure())
 	if err != nil {
 		print("fock off")
 	}

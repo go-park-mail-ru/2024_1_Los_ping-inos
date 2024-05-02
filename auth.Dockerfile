@@ -20,7 +20,7 @@ WORKDIR /
 COPY --from=build-stage auth auth
 COPY . .
 
-EXPOSE 8082
+EXPOSE 8083
 
 USER nonroot:nonroot
 

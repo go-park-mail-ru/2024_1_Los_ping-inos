@@ -48,6 +48,20 @@ services:
       context: .
       dockerfile: auth.Dockerfile
     ports:
+      - "8083:8083"
+    networks:
+      - pinguinos-net
+
+  images:
+    image: golang
+    container_name: images
+    restart: on-failure
+    depends_on:
+      - db
+    build:
+      context: .
+      dockerfile: images.Dockerfile
+    ports:
       - "8082:8082"
     networks:
       - pinguinos-net

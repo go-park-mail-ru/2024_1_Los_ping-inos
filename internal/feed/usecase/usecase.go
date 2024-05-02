@@ -65,8 +65,6 @@ func (service *UseCase) getUserCards(persons []*feed.Person, ctx context.Context
 	return interests, images, nil
 }
 
-func (service *UseCase) getUserCard()
-
 func combineToCards(persons []*feed.Person, interests [][]*feed.Interest, images [][]feed.Image) []feed.Card {
 	if len(persons) != len(interests) || len(persons) != len(images) {
 		return nil
