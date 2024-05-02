@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
-	"fmt"
 	qb "github.com/Masterminds/squirrel"
 	"github.com/sirupsen/logrus"
 	"main.go/internal/auth"
@@ -13,7 +12,7 @@ import (
 )
 
 const (
-	personFields    = "id, name, birthday, description, location, photo, email, password, created_at, premium, likes_left, session_id, gender"
+	personFields    = "id, name, birthday, description, location, email, password, created_at, premium, likes_left, gender"
 	PersonTableName = "person"
 	LikeTableName   = "\"like\""
 )
@@ -39,7 +38,6 @@ func (storage *PersonStorage) Get(ctx context.Context, filter *auth.PersonGetFil
 
 	processIDFilter(filter, &whereMap)
 	processEmailFilter(filter, &whereMap)
-	processSessionIDFilter(filter, &whereMap)
 
 	query := stBuilder.
 		Select(personFields).
@@ -60,8 +58,8 @@ func (storage *PersonStorage) Get(ctx context.Context, filter *auth.PersonGetFil
 
 	for rows.Next() {
 		person := &auth.Person{}
-		err = rows.Scan(&person.ID, &person.Name, &person.Birthday, &person.Description, &person.Location, &person.Photo,
-			&person.Email, &person.Password, &person.CreatedAt, &person.Premium, &person.LikesLeft, &person.SessionID, &person.Gender)
+		err = rows.Scan(&person.ID, &person.Name, &person.Birthday, &person.Description, &person.Location,
+			&person.Email, &person.Password, &person.CreatedAt, &person.Premium, &person.LikesLeft, &person.Gender)
 
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("db can't scan person: ", err.Error())
@@ -92,6 +90,7 @@ func (storage *PersonStorage) Update(ctx context.Context, person auth.Person) er
 		return err
 	}
 	setMap["password"] = person.Password
+	delete(setMap, "photo")
 	query := stBuilder.
 		Update(PersonTableName).
 		SetMap(setMap).
@@ -99,11 +98,11 @@ func (storage *PersonStorage) Update(ctx context.Context, person auth.Person) er
 		RunWith(storage.dbReader)
 
 	rows, err := query.Query()
-	defer rows.Close()
 	if err != nil {
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("db update can't query: ", err.Error())
 		return err
 	}
+	defer rows.Close()
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db person updated")
 	return nil
 }
@@ -143,6 +142,7 @@ func (storage *PersonStorage) AddAccount(ctx context.Context, Name string, Birth
 	return nil
 }
 
+<<<<<<< HEAD
 func (storage *PersonStorage) RemoveSession(ctx context.Context, sid string) error {
 	logger := ctx.Value(Logg).(Log)
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db remove session_id request to ", PersonTableName)
@@ -157,6 +157,8 @@ func (storage *PersonStorage) RemoveSession(ctx context.Context, sid string) err
 	return nil
 }
 
+=======
+>>>>>>> spiriddan-chats
 func (storage *PersonStorage) GetMatch(ctx context.Context, person1ID types.UserID) ([]types.UserID, error) {
 	logger := ctx.Value(Logg).(Log)
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db get request to ", LikeTableName)
@@ -197,11 +199,5 @@ func processIDFilter(filter *auth.PersonGetFilter, whereMap *qb.And) {
 func processEmailFilter(filter *auth.PersonGetFilter, whereMap *qb.And) {
 	if filter.Email != nil {
 		*whereMap = append(*whereMap, qb.Eq{"email": filter.Email})
-	}
-}
-
-func processSessionIDFilter(filter *auth.PersonGetFilter, whereMap *qb.And) {
-	if filter.SessionID != nil {
-		*whereMap = append(*whereMap, qb.Eq{"session_id": filter.SessionID})
 	}
 }

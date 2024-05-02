@@ -60,4 +60,15 @@ type (
 		Person1 types.UserID
 		Person2 types.UserID
 	}
+
+	Message struct {
+		Data     string       `json:"data"`
+		Sender   types.UserID `json:"sender"`
+		Receiver types.UserID `json:"receiver"`
+		Time     time.Time    `json:"time"`
+	}
+
+	GetChatRequest struct {
+		Person types.UserID `json:"person"`
+	}
 )

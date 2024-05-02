@@ -67,8 +67,7 @@ func (deliver *AuthHandler) ReadProfile(respWriter http.ResponseWriter, request 
 		}
 		prof, err = deliver.UseCase.GetProfile(auth.ProfileGetParams{ID: []types.UserID{types.UserID(id)}}, request.Context())
 	} else { // свой профиль
-		session, _ := request.Cookie("session_id")
-		prof, err = deliver.UseCase.GetProfile(auth.ProfileGetParams{SessionID: []string{session.Value}}, request.Context())
+		prof, err = deliver.UseCase.GetProfile(auth.ProfileGetParams{ID: []types.UserID{request.Context().Value(RequestUserID).(types.UserID)}}, request.Context())
 	}
 
 	if err != nil {
@@ -403,7 +402,7 @@ func (deliver *AuthHandler) GetUsername() func(w http.ResponseWriter, r *http.Re
 	return func(respWriter http.ResponseWriter, request *http.Request) {
 		logger := request.Context().Value(Logg).(Log)
 
-		name, err := deliver.UseCase.GetName(request.Context().Value(RequestSID).(string), request.Context())
+		name, err := deliver.UseCase.GetName(request.Context().Value(RequestUserID).(types.UserID), request.Context())
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn(err.Error())
 			requests.SendResponse(respWriter, request, http.StatusInternalServerError, "can't get name")
@@ -425,6 +424,7 @@ func generateCookie(name, value string, expires time.Time, httpOnly bool) *http.
 		Path:     "/",
 		Expires:  expires,
 		HttpOnly: httpOnly,
+		Domain:   "biba.boba.hui",
 	}
 }
 

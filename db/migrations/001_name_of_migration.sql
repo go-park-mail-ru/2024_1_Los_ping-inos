@@ -1,10 +1,10 @@
 -- Write your migrate up statements here
 CREATE TABLE IF NOT EXISTS person (
-  id INT generated always as IDENTITY PRIMARY KEY,
+  id SERIAL PRIMARY KEY,
   name TEXT NOT NULL,
   birthday DATE NOT NULL DEFAULT CURRENT_DATE,
-  description TEXT NOT NULL,
-  location TEXT NOT NULL, 
+  description TEXT NOT NULL DEFAULT '',
+  location TEXT NOT NULL DEFAULT '',
   email TEXT NOT NULL UNIQUE,
   password TEXT NOT NULL,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -70,20 +70,32 @@ CREATE TABLE IF NOT EXISTS person_premium (
 	date_started date not null,
 	date_ended date
 );
+
+create table if not exists message (
+   id SERIAL PRIMARY KEY,
+   data TEXT NOT NULL DEFAULT '',
+   sender_id int not null references person(id)
+       on delete cascade
+       on update cascade,
+   receiver_id int not null references person(id)
+       on delete cascade
+       on update cascade,
+   sent_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
 ---- create above / drop below ----
-drop table person;
-
-drop table interest;
-
-drop table person_interest;
-
-drop table "like";
-
-drop table dislike;
-
-drop table person_image;
-
-drop table person_premium;
+-- drop table person;
+--
+-- drop table interest;
+--
+-- drop table person_interest;
+--
+-- drop table "like";
+--
+-- drop table dislike;
+--
+-- drop table person_image;
+--
+-- drop table person_premium;
 
 -- Write your migrate down statements here. If this migration is irreversible
 -- Then delete the separator line above.

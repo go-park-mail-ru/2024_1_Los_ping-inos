@@ -1,7 +1,9 @@
 package delivery
 
 import (
+	"context"
 	"encoding/json"
+	"github.com/gorilla/websocket"
 	"github.com/sirupsen/logrus"
 	"io"
 	. "main.go/config"
@@ -96,5 +98,96 @@ func (deliver *FeedHandler) CreateDislike() func(respWriter http.ResponseWriter,
 		logger := request.Context().Value(Logg).(Log)
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("not implemented dislike")
 		requests.SendResponse(respWriter, request, http.StatusOK, nil)
+	}
+}
+
+func (deliver *FeedHandler) GetChat() func(respWriter http.ResponseWriter, request *http.Request) {
+	return func(respWriter http.ResponseWriter, request *http.Request) {
+		logger := request.Context().Value(Logg).(Log)
+		body, err := io.ReadAll(request.Body)
+		if err != nil { // TODO эти два блока вынести в отдельную функцию и напихать её во все ручки
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("bad body: ", err.Error())
+			requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
+			return
+		}
+
+		var requestBody feed.GetChatRequest
+		err = json.Unmarshal(body, &requestBody)
+		if err != nil {
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't unmarshal body: ", err.Error())
+			requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
+			return
+		}
+
+		messages, err := deliver.usecase.GetChat(request.Context(), request.Context().Value(RequestUserID).(types.UserID), requestBody.Person)
+		err = json.Unmarshal(body, &requestBody)
+		if err != nil {
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn(err.Error())
+			requests.SendResponse(respWriter, request, http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		requests.SendResponse(respWriter, request, http.StatusOK, messages)
+		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("sent chat")
+	}
+}
+
+func upgradeConnection() websocket.Upgrader {
+	upgrader := websocket.Upgrader{
+		CheckOrigin: func(r *http.Request) bool {
+			return true // Пропускаем любой запрос
+		},
+	}
+	return upgrader
+}
+
+func (deliver *FeedHandler) ServeMessages() func(respWriter http.ResponseWriter, request *http.Request) {
+	return func(respWriter http.ResponseWriter, request *http.Request) {
+		logger := request.Context().Value(Logg).(Log)
+		upgrader := upgradeConnection()
+		connection, err := upgrader.Upgrade(respWriter, request, nil)
+		if err != nil {
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Error("can't open connection: ", err.Error())
+			requests.SendResponse(respWriter, request, http.StatusInternalServerError, err.Error())
+			return
+		}
+		deliver.handleWebsocket(request.Context(), connection)
+	}
+}
+
+func (deliver *FeedHandler) handleWebsocket(ctx context.Context, connection *websocket.Conn) {
+	logger := ctx.Value(Logg).(Log)
+	sender := ctx.Value(RequestUserID).(types.UserID)
+	deliver.usecase.AddConnection(ctx, connection, sender)
+
+	for {
+		mt, mess, err := connection.ReadMessage()
+		if err != nil || mt == websocket.CloseMessage {
+			break
+		}
+		var message feed.Message
+		err = json.Unmarshal(mess, &message)
+		if err != nil {
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("Error unmarshalling message: ", err.Error())
+			continue // TODO отправлять ошибку на фронт?
+		}
+		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("got ws message")
+
+		message.Sender = sender
+		_, err = deliver.usecase.SaveMessage(ctx, message)
+		if err != nil {
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("Error saving message: ", err.Error())
+			continue // TODO отправлять ошибку на фронт?
+		}
+
+		// отправляем сообщение получателю
+		resConnection, ok := deliver.usecase.GetConnection(ctx, message.Receiver)
+		if !ok {
+			continue
+		}
+		err = resConnection.WriteMessage(mt, mess)
+		if err != nil {
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("Error sending message: ", err.Error())
+		}
 	}
 }

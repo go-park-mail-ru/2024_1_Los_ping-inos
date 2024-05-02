@@ -10,6 +10,14 @@ Backend-репозиторий команды Los_ping-inos
 * `swag init` в терминале в репозитории internal
   * если будет ругаться на кастомные структуры, можно `swag init --parseDependency  --parseInternal -g main.go`
 
+## Как генерить proto
+  * `protoc --go_out=. --go-grpc_out=. --go-grpc_opt=paths=source_relative --go_opt=paths=source_relative *.proto`
+    * в папке с прото файлом
+
+## Как установить `protoc` 
+1. https://grpc.io/docs/protoc-installation/
+2. `go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest`
+
 ## Мини дока по репозиторию
 - `config`
     - в `config.yaml` настроечки: `server`, `database` и `filesPaths` для каких-то файлов на будущее

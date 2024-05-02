@@ -1,12 +1,9 @@
 package config
 
 import (
-	"fmt"
-	"os"
 	"time"
 
 	"github.com/spf13/viper"
-	"gopkg.in/yaml.v3"
 )
 
 const PersonTableName = "person"
@@ -20,17 +17,18 @@ const RequestSID = "SID"
 var Cfg Config
 
 type Config struct {
-	ApiPath    string
-	Server     ServerConfig     `json:"server"`
-	Database   DatabaseConfig   `json:"database"`
-	FilesPaths FilesPathsConfig `json:"filesPaths"`
+	ApiPath    string           `yaml:"apiPath"`
+	Server     ServerConfig     `json:"server" yaml:"server"`
+	Database   DatabaseConfig   `json:"database" yaml:"database"`
+	Redis      RedisConfig      `yaml:"redis"`
+	FilesPaths FilesPathsConfig `json:"filesPaths" yaml:"filesPaths"`
 }
 
 type ServerConfig struct {
-	Host        string        `json:"host"`
-	Port        string        `json:"port"`
-	SwaggerPort string        `json:"swaggerPort"`
-	Timeout     time.Duration `json:"timeout"`
+	Host        string        `json:"host" yaml:"host"`
+	Port        string        `json:"port" yaml:"port"`
+	SwaggerPort string        `json:"swaggerPort" yaml:"swaggerPort"`
+	Timeout     time.Duration `json:"timeout" yaml:"timeout"`
 }
 
 type DatabaseConfig struct {
@@ -43,30 +41,18 @@ type DatabaseConfig struct {
 	GrpcPort string `json:"grpc_port"`
 }
 
+type RedisConfig struct {
+	Host string `yaml:"host"`
+	Port string `yaml:"port"`
+}
+
 type AwsConfig struct {
-	Id     string `json:"key_id"`
-	Access string `json:"key_access"`
-	Region string `json:"region"`
+	Id     string `json:"key_id" yaml:"id"`
+	Access string `json:"key_access" yaml:"access"`
+	Region string `json:"region" yaml:"region"`
 }
 
 type FilesPathsConfig struct {
-}
-
-func ReadConfig() (*DatabaseConfig, error) {
-	dsnConfig := DatabaseConfig{}
-	dsnFile, err := os.ReadFile("../../../config/image_http_config.yaml")
-	if err != nil {
-		println("SUCK MU DICK")
-		return nil, err
-	}
-
-	err = yaml.Unmarshal(dsnFile, &dsnConfig)
-	if err != nil {
-		return nil, err
-	}
-	fmt.Println("this is dsn", dsnConfig)
-
-	return &dsnConfig, nil
 }
 
 func LoadConfig(path string) (*Config, error) {

@@ -2,7 +2,6 @@ package repo
 
 import (
 	"context"
-	"database/sql"
 	qb "github.com/Masterminds/squirrel"
 	"github.com/sirupsen/logrus"
 	. "main.go/config"
@@ -15,17 +14,7 @@ const (
 	likeFields = "person_one_id, person_two_id"
 )
 
-type LikeStorage struct {
-	dbReader *sql.DB
-}
-
-func NewLikeStorage(dbReader *sql.DB) *LikeStorage {
-	return &LikeStorage{
-		dbReader: dbReader,
-	}
-}
-
-func (storage *LikeStorage) Get(ctx context.Context, filter *feed.LikeGetFilter) ([]types.UserID, error) {
+func (storage *PostgresStorage) GetLike(ctx context.Context, filter *feed.LikeGetFilter) ([]types.UserID, error) {
 	logger := ctx.Value(Logg).(Log)
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db get request to ", LikeTableName)
 	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
@@ -66,7 +55,7 @@ func (storage *LikeStorage) Get(ctx context.Context, filter *feed.LikeGetFilter)
 	return res, nil
 }
 
-func (storage *LikeStorage) Create(ctx context.Context, person1ID, person2ID types.UserID) error {
+func (storage *PostgresStorage) CreateLike(ctx context.Context, person1ID, person2ID types.UserID) error {
 	logger := ctx.Value(Logg).(Log)
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db create request to ", LikeTableName)
 	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)

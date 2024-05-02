@@ -2,7 +2,6 @@ package repo
 
 import (
 	"context"
-	"database/sql"
 	"main.go/internal/types"
 
 	qb "github.com/Masterminds/squirrel"
@@ -13,23 +12,13 @@ import (
 )
 
 const (
-	personFields = "id, name, birthday, description, location, photo, email, password, created_at, premium, likes_left, session_id, gender"
+	personFields = "id, name, birthday, description, location, email, password, created_at, premium, likes_left, gender"
 )
 
-type PersonStorage struct {
-	dbReader *sql.DB
-}
-
-func NewPersonStorage(dbReader *sql.DB) *PersonStorage {
-	return &PersonStorage{
-		dbReader: dbReader,
-	}
-}
-
-func (storage *PersonStorage) GetFeed(ctx context.Context, filter types.UserID) ([]*feed.Person, error) {
+func (storage *PostgresStorage) GetFeed(ctx context.Context, filter types.UserID) ([]*feed.Person, error) {
 	logger := ctx.Value(Logg).(Log)
-	likes := &LikeStorage{dbReader: storage.dbReader}
-	ids, err := likes.Get(ctx, &feed.LikeGetFilter{Person1: &filter})
+
+	ids, err := storage.GetLike(ctx, &feed.LikeGetFilter{Person1: &filter})
 	if err != nil {
 		return nil, err
 	}
@@ -54,8 +43,8 @@ func (storage *PersonStorage) GetFeed(ctx context.Context, filter types.UserID) 
 
 	for rows.Next() {
 		person := &feed.Person{}
-		err = rows.Scan(&person.ID, &person.Name, &person.Birthday, &person.Description, &person.Location, &person.Photo,
-			&person.Email, &person.Password, &person.CreatedAt, &person.Premium, &person.LikesLeft, &person.SessionID, &person.Gender)
+		err = rows.Scan(&person.ID, &person.Name, &person.Birthday, &person.Description, &person.Location,
+			&person.Email, &person.Password, &person.CreatedAt, &person.Premium, &person.LikesLeft, &person.Gender)
 
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("db can't scan person: ", err.Error())

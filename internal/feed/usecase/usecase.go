@@ -8,24 +8,20 @@ import (
 )
 
 type UseCase struct {
-	personStorage   feed.PersonStorage
-	interestStorage feed.InterestStorage
-	imageStorage    feed.ImageStorage
-	likeStorage     feed.LikeStorage
+	storage feed.PostgresStorage
+	ws      feed.WebSocStorage
 }
 
-func New(pstor feed.PersonStorage, istor feed.InterestStorage, imstor feed.ImageStorage, lstor feed.LikeStorage) *UseCase {
+func New(pstor feed.PostgresStorage, wsstor feed.WebSocStorage) *UseCase {
 	return &UseCase{
-		personStorage:   pstor,
-		interestStorage: istor,
-		imageStorage:    imstor,
-		likeStorage:     lstor,
+		storage: pstor,
+		ws:      wsstor,
 	}
 }
 
 // GetCards - вернуть ленту пользователей, доступно только авторизованному пользователю
 func (service *UseCase) GetCards(userID types.UserID, ctx context.Context) ([]feed.Card, error) {
-	persons, err := service.personStorage.GetFeed(ctx, userID)
+	persons, err := service.storage.GetFeed(ctx, userID)
 
 	if err != nil {
 		return nil, err
@@ -41,7 +37,15 @@ func (service *UseCase) GetCards(userID types.UserID, ctx context.Context) ([]fe
 }
 
 func (service *UseCase) CreateLike(profile1, profile2 types.UserID, ctx context.Context) error {
-	return service.likeStorage.Create(ctx, profile1, profile2)
+	return service.storage.CreateLike(ctx, profile1, profile2)
+}
+
+func (service *UseCase) GetChat(ctx context.Context, user1, user2 types.UserID) ([]feed.Message, error) {
+	return service.storage.GetChat(ctx, user1, user2)
+}
+
+func (service *UseCase) SaveMessage(ctx context.Context, message feed.Message) (*feed.Message, error) {
+	return service.storage.CreateMessage(ctx, message)
 }
 
 func (service *UseCase) getUserCards(persons []*feed.Person, ctx context.Context) ([][]*feed.Interest, [][]feed.Image, error) {
@@ -49,11 +53,11 @@ func (service *UseCase) getUserCards(persons []*feed.Person, ctx context.Context
 	interests := make([][]*feed.Interest, len(persons))
 	images := make([][]feed.Image, len(persons))
 	for j := range persons {
-		interests[j], err = service.interestStorage.GetPersonInterests(ctx, persons[j].ID)
+		interests[j], err = service.storage.GetPersonInterests(ctx, persons[j].ID)
 		if err != nil {
 			return nil, nil, err
 		}
-		images[j], err = service.imageStorage.Get(ctx, int64(persons[j].ID))
+		images[j], err = service.storage.GetImages(ctx, int64(persons[j].ID))
 		if err != nil {
 			return nil, nil, err
 		}
