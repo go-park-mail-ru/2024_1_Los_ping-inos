@@ -24,4 +24,4 @@ EXPOSE 8082
 
 USER nonroot:nonroot
 
-ENTRYPOINT ["/docker-gs-ping"]
+ENTRYPOINT ["/images"]
