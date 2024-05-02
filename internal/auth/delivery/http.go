@@ -3,17 +3,18 @@ package delivery
 import (
 	"encoding/json"
 	"errors"
-	"github.com/sirupsen/logrus"
 	"io"
+	"net/http"
+	"strconv"
+	"time"
+
+	"github.com/sirupsen/logrus"
 	. "main.go/config"
 	"main.go/internal/auth"
 	. "main.go/internal/logs"
 	requests "main.go/internal/pkg"
 	"main.go/internal/types"
 	. "main.go/internal/types"
-	"net/http"
-	"strconv"
-	"time"
 )
 
 type AuthHandler struct {
@@ -424,7 +425,8 @@ func generateCookie(name, value string, expires time.Time, httpOnly bool) *http.
 		Path:     "/",
 		Expires:  expires,
 		HttpOnly: httpOnly,
-		Domain:   "biba.boba.hui",
+		Domain:   ".jimder.ru",
+		SameSite: http.SameSiteNoneMode,
 	}
 }
 
