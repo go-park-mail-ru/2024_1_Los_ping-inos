@@ -13,11 +13,18 @@ import (
 // 	grpcPath = "config/auth_grpc_config.yaml"
 // )
 
+const (
+	httpPath = "../../../config/image_http_config.yaml"
+	grpcPath = "../../../config/image_grpc_config.yaml"
+)
+
 func main() {
 	logger := InitLog()
 
-	config, err := config.ReadConfig()
-	println("CONFIG", config.Database)
+	httpCfg, err := config.LoadConfig(httpPath)
+
+	//config, err := config.ReadConfig()
+	//println("CONFIG", config.Database)
 	if err != nil {
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn(err.Error())
 		return

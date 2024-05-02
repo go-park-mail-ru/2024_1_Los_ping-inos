@@ -50,3 +50,20 @@ time="2024-04-27T04:23:12+03:00" level=info msg="get images request" requestID=2
 time="2024-04-27T04:23:12+03:00" level=info msg="methods checked" requestID=26156326
 time="2024-04-27T04:27:42+03:00" level=info msg="get images request" requestID=26156330
 time="2024-04-27T04:27:42+03:00" level=info msg="methods checked" requestID=26156330
+time="2024-04-27T09:56:25+03:00" level=info msg="get images request" requestID=26156631
+time="2024-04-27T09:56:25+03:00" level=info msg="methods checked" requestID=26156631
+time="2024-04-27T09:56:25+03:00" level=info msg="sent image" requestID=26156631
+time="2024-04-27T10:34:37+03:00" level=info msg="get images request" requestID=26156666
+time="2024-04-27T10:34:37+03:00" level=info msg="methods checked" requestID=26156666
+time="2024-04-27T10:37:31+03:00" level=info msg="get images request" requestID=26156668
+time="2024-04-27T10:37:31+03:00" level=info msg="methods checked" requestID=26156668
+time="2024-04-27T10:37:31+03:00" level=info msg="sent image" requestID=26156668
+time="2024-05-02T13:24:37+03:00" level=info msg="get images request" requestID=26163413
+time="2024-05-02T13:24:37+03:00" level=info msg="method not allowed" requestID=26163413
+time="2024-05-02T13:24:40+03:00" level=info msg="get images request" requestID=26163413
+time="2024-05-02T13:24:40+03:00" level=info msg="methods checked" requestID=26163413
+time="2024-05-02T13:24:40+03:00" level=info msg="sent image" requestID=26163413
+time="2024-05-02T16:53:39+03:00" level=info msg="get images request" requestID=26163605
+time="2024-05-02T16:53:39+03:00" level=info msg="methods checked" requestID=26163605
+time="2024-05-02T16:53:39+03:00" level=warning msg="dial tcp: lookup port=0: no such host" requestID=26163605
+time="2024-05-02T17:10:45+03:00" level=warning msg="yaml: unmarshal errors:\n  line 21: cannot unmarshal !!map into string" requestID=0
