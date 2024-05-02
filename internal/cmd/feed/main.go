@@ -51,7 +51,7 @@ func main() {
 	}
 	defer db.Close()
 
-	useCase := Usecase.New(Repo.NewPostgresStorage(db))
+	useCase := Usecase.New(Repo.NewPostgresStorage(db), Repo.NewWebSocStorage())
 
 	httpDeliver := Delivery.NewFeedDelivery(useCase)
 	errors := make(chan error, 2)
@@ -102,6 +102,11 @@ func startServer(cfg *config.Config, logger Log, deliver Delivers) error {
 		AllowedMethodMiddleware(
 			IsAuthenticatedMiddleware(CSRFMiddleware(http.HandlerFunc(feedDel.CreateDislike())), authManager), hashset.New("POST")),
 		"dislike", logger))
+
+	mux.Handle(apiPath+"openConnection", RequestIDMiddleware(
+		AllowedMethodMiddleware(
+			IsAuthenticatedMiddleware(http.HandlerFunc(feedDel.ServeMessages()), authManager), hashset.New("GET")),
+		"open connection", logger))
 
 	server := http.Server{
 		Addr:         cfg.Server.Host + cfg.Server.Port,

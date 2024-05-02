@@ -70,6 +70,18 @@ CREATE TABLE IF NOT EXISTS person_premium (
 	date_started date not null,
 	date_ended date
 );
+
+create table if not exists message (
+   id SERIAL PRIMARY KEY,
+   data TEXT NOT NULL DEFAULT '',
+   sender_id int not null references person(id)
+       on delete cascade
+       on update cascade,
+   receiver_id int not null references person(id)
+       on delete cascade
+       on update cascade,
+   sent_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
 ---- create above / drop below ----
 -- drop table person;
 --

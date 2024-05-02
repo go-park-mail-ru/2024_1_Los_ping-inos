@@ -8,11 +8,13 @@ import (
 
 type UseCase struct {
 	storage feed.PostgresStorage
+	ws      feed.WebSocStorage
 }
 
-func New(pstor feed.PostgresStorage) *UseCase {
+func New(pstor feed.PostgresStorage, wsstor feed.WebSocStorage) *UseCase {
 	return &UseCase{
 		storage: pstor,
+		ws:      wsstor,
 	}
 }
 
@@ -35,6 +37,14 @@ func (service *UseCase) GetCards(userID types.UserID, ctx context.Context) ([]fe
 
 func (service *UseCase) CreateLike(profile1, profile2 types.UserID, ctx context.Context) error {
 	return service.storage.CreateLike(ctx, profile1, profile2)
+}
+
+func (service *UseCase) GetChat(ctx context.Context, user1, user2 types.UserID) ([]feed.Message, error) {
+	return service.storage.GetChat(ctx, user1, user2)
+}
+
+func (service *UseCase) SaveMessage(ctx context.Context, message feed.Message) (*feed.Message, error) {
+	return service.storage.CreateMessage(ctx, message)
 }
 
 func (service *UseCase) getUserCards(persons []*feed.Person, ctx context.Context) ([][]*feed.Interest, [][]feed.Image, error) {
