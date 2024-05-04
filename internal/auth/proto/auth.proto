@@ -19,14 +19,14 @@ message GetMatchesRequest{
   int64 requestID = 2;
 }
 
-message Match{
+message Chat{
   int64 personID = 1;
   string name = 2;
-  string Photo = 3;
+  string photo = 3;
 }
 
 message GetMatchesResponse{
-  repeated Match matches = 1;
+  repeated Chat chats = 1;
 }
 
 service AuthHandl {

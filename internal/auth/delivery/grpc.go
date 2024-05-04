@@ -39,9 +39,9 @@ func (server *Server) GetMatches(_ context.Context, req *pb.GetMatchesRequest) (
 		tmp.Logger.WithFields(logrus.Fields{RequestID: tmp.RequestID}).Warn("can't get matches: ", err.Error())
 		return nil, err
 	}
-	res := make([]*pb.Match, len(matches))
+	res := make([]*pb.Chat, len(matches))
 	for i := range matches {
-		res[i] = &pb.Match{
+		res[i] = &pb.Chat{
 			Name:     matches[i].Name,
 			PersonID: int64(matches[i].ID),
 		}
@@ -50,5 +50,5 @@ func (server *Server) GetMatches(_ context.Context, req *pb.GetMatchesRequest) (
 			res[i].Photo = matches[i].Photos[0].Url
 		}
 	}
-	return &pb.GetMatchesResponse{Matches: res}, nil
+	return &pb.GetMatchesResponse{Chats: res}, nil
 }
