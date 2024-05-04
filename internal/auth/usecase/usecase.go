@@ -54,7 +54,7 @@ func (service *UseCase) Login(email, password string, ctx context.Context) (*aut
 	}
 
 	SID := uuid.NewString()
-
+	println("AAAA outside: ", SID)
 	err = service.sessionStorage.CreateSession(ctx, auth.Session{
 		UID: user.ID,
 		SID: SID,

@@ -20,6 +20,7 @@ const _ = grpc.SupportPackageIsVersion7
 
 const (
 	AuthHandl_IsAuthenticated_FullMethodName = "/auth.AuthHandl/IsAuthenticated"
+	AuthHandl_GetMatches_FullMethodName      = "/auth.AuthHandl/GetMatches"
 )
 
 // AuthHandlClient is the client API for AuthHandl service.
@@ -27,6 +28,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AuthHandlClient interface {
 	IsAuthenticated(ctx context.Context, in *IsAuthRequest, opts ...grpc.CallOption) (*IsAuthResponse, error)
+	GetMatches(ctx context.Context, in *GetMatchesRequest, opts ...grpc.CallOption) (*GetMatchesResponse, error)
 }
 
 type authHandlClient struct {
@@ -46,11 +48,21 @@ func (c *authHandlClient) IsAuthenticated(ctx context.Context, in *IsAuthRequest
 	return out, nil
 }
 
+func (c *authHandlClient) GetMatches(ctx context.Context, in *GetMatchesRequest, opts ...grpc.CallOption) (*GetMatchesResponse, error) {
+	out := new(GetMatchesResponse)
+	err := c.cc.Invoke(ctx, AuthHandl_GetMatches_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AuthHandlServer is the server API for AuthHandl service.
 // All implementations must embed UnimplementedAuthHandlServer
 // for forward compatibility
 type AuthHandlServer interface {
 	IsAuthenticated(context.Context, *IsAuthRequest) (*IsAuthResponse, error)
+	GetMatches(context.Context, *GetMatchesRequest) (*GetMatchesResponse, error)
 	mustEmbedUnimplementedAuthHandlServer()
 }
 
@@ -60,6 +72,9 @@ type UnimplementedAuthHandlServer struct {
 
 func (UnimplementedAuthHandlServer) IsAuthenticated(context.Context, *IsAuthRequest) (*IsAuthResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method IsAuthenticated not implemented")
+}
+func (UnimplementedAuthHandlServer) GetMatches(context.Context, *GetMatchesRequest) (*GetMatchesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetMatches not implemented")
 }
 func (UnimplementedAuthHandlServer) mustEmbedUnimplementedAuthHandlServer() {}
 
@@ -92,6 +107,24 @@ func _AuthHandl_IsAuthenticated_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AuthHandl_GetMatches_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetMatchesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthHandlServer).GetMatches(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthHandl_GetMatches_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthHandlServer).GetMatches(ctx, req.(*GetMatchesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AuthHandl_ServiceDesc is the grpc.ServiceDesc for AuthHandl service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -102,6 +135,10 @@ var AuthHandl_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "IsAuthenticated",
 			Handler:    _AuthHandl_IsAuthenticated_Handler,
+		},
+		{
+			MethodName: "GetMatches",
+			Handler:    _AuthHandl_GetMatches_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

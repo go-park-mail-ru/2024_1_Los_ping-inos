@@ -14,6 +14,22 @@ message IsAuthResponse{
   int64 UserID = 2;
 }
 
+message GetMatchesRequest{
+  int64 userID = 1;
+  int64 requestID = 2;
+}
+
+message Match{
+  int64 personID = 1;
+  string name = 2;
+  string Photo = 3;
+}
+
+message GetMatchesResponse{
+  repeated Match matches = 1;
+}
+
 service AuthHandl {
   rpc IsAuthenticated (IsAuthRequest) returns (IsAuthResponse) {}
+  rpc GetMatches(GetMatchesRequest) returns (GetMatchesResponse) {}
 }

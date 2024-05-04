@@ -53,7 +53,13 @@ func main() {
 
 	useCase := Usecase.New(Repo.NewPostgresStorage(db), Repo.NewWebSocStorage())
 
-	httpDeliver := Delivery.NewFeedDelivery(useCase)
+	grpcConn, err := grpc.Dial("auth:50051", grpc.WithInsecure())
+	if err != nil {
+		logger.Logger.Fatal(err)
+	}
+	authManager := gen.NewAuthHandlClient(grpcConn)
+	httpDeliver := Delivery.NewFeedDelivery(useCase, authManager)
+
 	errors := make(chan error, 2)
 	go func() {
 		errors <- startServer(httpCfg, logger, Delivers{http: httpDeliver})
@@ -81,12 +87,8 @@ func startServer(cfg *config.Config, logger Log, deliver Delivers) error {
 
 	var apiPath = cfg.ApiPath
 	feedDel := deliver.http
+	authManager := feedDel.AuthManager
 
-	grpcConn, err := grpc.Dial("auth:50051", grpc.WithInsecure())
-	if err != nil {
-		return err
-	}
-	authManager := gen.NewAuthHandlClient(grpcConn)
 	mux := http.NewServeMux()
 
 	mux.Handle(apiPath+"cards", RequestIDMiddleware(
@@ -112,6 +114,11 @@ func startServer(cfg *config.Config, logger Log, deliver Delivers) error {
 		AllowedMethodMiddleware(
 			IsAuthenticatedMiddleware(http.HandlerFunc(feedDel.GetChat()), authManager), hashset.New("GET")),
 		"get chat", logger))
+
+	mux.Handle(apiPath+"getAllChats", RequestIDMiddleware(
+		AllowedMethodMiddleware(
+			IsAuthenticatedMiddleware(http.HandlerFunc(feedDel.GetAllChats()), authManager), hashset.New("GET")),
+		"get all chats", logger))
 
 	server := http.Server{
 		Addr:         cfg.Server.Host + cfg.Server.Port,

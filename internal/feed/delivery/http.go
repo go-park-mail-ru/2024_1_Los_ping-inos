@@ -7,6 +7,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"io"
 	. "main.go/config"
+	gen "main.go/internal/auth/proto"
 	"main.go/internal/feed"
 	. "main.go/internal/logs"
 	requests "main.go/internal/pkg"
@@ -15,12 +16,14 @@ import (
 )
 
 type FeedHandler struct {
-	usecase feed.UseCase
+	usecase     feed.UseCase
+	AuthManager gen.AuthHandlClient
 }
 
-func NewFeedDelivery(uc feed.UseCase) *FeedHandler {
+func NewFeedDelivery(uc feed.UseCase, am gen.AuthHandlClient) *FeedHandler {
 	return &FeedHandler{
-		usecase: uc,
+		usecase:     uc,
+		AuthManager: am,
 	}
 }
 
@@ -189,5 +192,21 @@ func (deliver *FeedHandler) handleWebsocket(ctx context.Context, connection *web
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("Error sending message: ", err.Error())
 		}
+	}
+}
+
+func (deliver *FeedHandler) GetAllChats() func(respWriter http.ResponseWriter, request *http.Request) {
+	return func(respWriter http.ResponseWriter, request *http.Request) {
+		logger := request.Context().Value(Logg).(Log)
+		chats, err := deliver.AuthManager.GetMatches(request.Context(), &gen.GetMatchesRequest{
+			UserID:    int64(request.Context().Value(RequestUserID).(types.UserID)),
+			RequestID: logger.RequestID,
+		})
+		if err != nil {
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Error("can't get chats: ", err.Error())
+			requests.SendResponse(respWriter, request, http.StatusInternalServerError, err.Error())
+			return
+		}
+		requests.SendResponse(respWriter, request, http.StatusOK, chats)
 	}
 }
