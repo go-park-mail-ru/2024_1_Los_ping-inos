@@ -4,6 +4,7 @@ import (
 	"context"
 	qb "github.com/Masterminds/squirrel"
 	"github.com/gorilla/websocket"
+	"github.com/lib/pq"
 	"github.com/sirupsen/logrus"
 	"main.go/internal/feed"
 	. "main.go/internal/logs"
@@ -12,8 +13,9 @@ import (
 )
 
 const (
-	messageFields = "data, sender_id, receiver_id, sent_time"
-	messageTable  = "message"
+	messageFields    = "data, sender_id, receiver_id, sent_time"
+	messageTable     = "message"
+	getLastMessQuery = "SELECT DISTINCT ON (    CASE        WHEN sender_id < receiver_id THEN sender_id || '_' || receiver_id        ELSE receiver_id || '_' || sender_id    END) id, data, sender_id, receiver_id, sent_time FROM message WHERE     (sender_id = $1 OR receiver_id = $1)    AND ((sender_id = ANY($2)) OR (receiver_id = ANY($2))) ORDER BY (    CASE        WHEN sender_id < receiver_id THEN sender_id || '_' || receiver_id        ELSE receiver_id || '_' || sender_id    END), sent_time DESC;"
 )
 
 func (storage *PostgresStorage) GetChat(ctx context.Context, user1, user2 types.UserID) ([]feed.Message, error) {
@@ -76,6 +78,24 @@ func (storage *PostgresStorage) CreateMessage(ctx context.Context, message feed.
 
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("Db: created message")
 	return &message, nil
+}
+
+func (storage *PostgresStorage) GetLastMessages(ctx context.Context, id int64, ids []int) ([]feed.Message, error) {
+	logger := ctx.Value(Logg).(Log)
+	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("Get last messages request")
+	rows, err := storage.dbReader.Query(getLastMessQuery, id, pq.Array(ids))
+	if err != nil {
+		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db can't query: ", err.Error())
+		return nil, err
+	}
+	defer rows.Close()
+	var res []feed.Message
+	for rows.Next() {
+		tmp := feed.Message{}
+		rows.Scan(&tmp.Id, &tmp.Data, &tmp.Sender, &tmp.Receiver, &tmp.Time)
+		res = append(res, tmp)
+	}
+	return res, nil
 }
 
 type WSStorage struct {

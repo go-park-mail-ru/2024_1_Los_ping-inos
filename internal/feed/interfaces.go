@@ -16,6 +16,7 @@ type (
 		GetConnection(ctx context.Context, UID types.UserID) (*websocket.Conn, bool)
 		DeleteConnection(ctx context.Context, UID types.UserID)
 		SaveMessage(ctx context.Context, message Message) (*Message, error)
+		GetLastMessages(ctx context.Context, UID int64, ids []int64) ([]Message, error)
 	}
 	PostgresStorage interface {
 		GetFeed(ctx context.Context, filter types.UserID) ([]*Person, error)
@@ -25,6 +26,7 @@ type (
 		GetImages(ctx context.Context, userID int64) ([]Image, error)
 		GetChat(ctx context.Context, user1, user2 types.UserID) ([]Message, error)
 		CreateMessage(ctx context.Context, message Message) (*Message, error)
+		GetLastMessages(ctx context.Context, id int64, ids []int) ([]Message, error)
 	}
 
 	WebSocStorage interface {

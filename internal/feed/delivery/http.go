@@ -207,6 +207,41 @@ func (deliver *FeedHandler) GetAllChats() func(respWriter http.ResponseWriter, r
 			requests.SendResponse(respWriter, request, http.StatusInternalServerError, err.Error())
 			return
 		}
-		requests.SendResponse(respWriter, request, http.StatusOK, chats.Chats)
+
+		messages, err := deliver.usecase.GetLastMessages(request.Context(),
+			int64(request.Context().Value(RequestUserID).(types.UserID)), getIds(chats))
+
+		if err != nil {
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Error("can't get chats: ", err.Error())
+			requests.SendResponse(respWriter, request, http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		var allChats feed.AllChats
+		allChats.Chats = make([]feed.ChatPreview, len(messages))
+		for i := range messages {
+			allChats.Chats[i] = feed.ChatPreview{
+				PersonID: chats.Chats[i].PersonID,
+				Name:     chats.Chats[i].Name,
+				Photo:    chats.Chats[i].Photo,
+				LastMessage: feed.Message{
+					Id:       messages[i].Id,
+					Data:     messages[i].Data,
+					Sender:   messages[i].Sender,
+					Receiver: messages[i].Receiver,
+					Time:     messages[i].Time,
+				},
+			}
+		}
+
+		requests.SendResponse(respWriter, request, http.StatusOK, allChats)
 	}
+}
+
+func getIds(l *gen.GetMatchesResponse) []int64 {
+	res := make([]int64, len(l.Chats))
+	for i := range l.Chats {
+		res[i] = l.Chats[i].PersonID
+	}
+	return res
 }

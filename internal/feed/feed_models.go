@@ -62,6 +62,7 @@ type (
 	}
 
 	Message struct {
+		Id       int64        `json:"id"`
 		Data     string       `json:"data"`
 		Sender   types.UserID `json:"sender"`
 		Receiver types.UserID `json:"receiver"`
@@ -70,5 +71,16 @@ type (
 
 	GetChatRequest struct {
 		Person types.UserID `json:"person"`
+	}
+
+	ChatPreview struct {
+		PersonID    int64   `json:"personID"`
+		Name        string  `json:"name"`
+		Photo       string  `json:"photo"`
+		LastMessage Message `json:"lastMessage"`
+	}
+
+	AllChats struct {
+		Chats []ChatPreview `json:"chats"`
 	}
 )
