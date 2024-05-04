@@ -207,6 +207,6 @@ func (deliver *FeedHandler) GetAllChats() func(respWriter http.ResponseWriter, r
 			requests.SendResponse(respWriter, request, http.StatusInternalServerError, err.Error())
 			return
 		}
-		requests.SendResponse(respWriter, request, http.StatusOK, chats)
+		requests.SendResponse(respWriter, request, http.StatusOK, chats.Chats)
 	}
 }
