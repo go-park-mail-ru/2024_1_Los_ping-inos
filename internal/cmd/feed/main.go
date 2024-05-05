@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"fmt"
+
 	"github.com/emirpasic/gods/sets/hashset"
 	"github.com/go-chi/chi"
 	_ "github.com/lib/pq"
@@ -16,9 +17,10 @@ import (
 	Usecase "main.go/internal/feed/usecase"
 	. "main.go/internal/logs"
 
-	. "main.go/internal/pkg"
 	"net/http"
 	"time"
+
+	. "main.go/internal/pkg"
 )
 
 const (
@@ -107,12 +109,12 @@ func startServer(cfg *config.Config, logger Log, deliver Delivers) error {
 
 	mux.Handle(apiPath+"openConnection", RequestIDMiddleware(
 		AllowedMethodMiddleware(
-			IsAuthenticatedMiddleware(http.HandlerFunc(feedDel.ServeMessages()), authManager), hashset.New("GET")),
+			http.HandlerFunc(feedDel.ServeMessages()), hashset.New("GET")),
 		"open connection", logger))
 
 	mux.Handle(apiPath+"getChat", RequestIDMiddleware(
 		AllowedMethodMiddleware(
-			IsAuthenticatedMiddleware(http.HandlerFunc(feedDel.GetChat()), authManager), hashset.New("GET")),
+			IsAuthenticatedMiddleware(http.HandlerFunc(feedDel.GetChat()), authManager), hashset.New("POST")),
 		"get chat", logger))
 
 	mux.Handle(apiPath+"getAllChats", RequestIDMiddleware(
