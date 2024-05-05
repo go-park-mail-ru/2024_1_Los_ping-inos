@@ -34,12 +34,14 @@ type (
 	ProfileGetParams struct {
 		ID        []types.UserID
 		SessionID []string
+		Name      string
 	}
 
 	PersonGetFilter struct {
 		ID        []types.UserID
 		Email     []string
 		SessionID []string
+		Name      string
 	}
 
 	Interest struct {
@@ -87,5 +89,9 @@ type (
 	Session struct {
 		UID types.UserID `json:"UID"`
 		SID string       `json:"SID"`
+	}
+
+	GetMatchesRequest struct {
+		Name string `json:"name"`
 	}
 )

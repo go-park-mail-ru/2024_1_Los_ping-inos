@@ -171,7 +171,22 @@ func (deliver *AuthHandler) GetMatches() func(respWriter http.ResponseWriter, re
 	return func(respWriter http.ResponseWriter, request *http.Request) {
 		logger := request.Context().Value(Logg).(Log)
 		userID := request.Context().Value(RequestUserID).(types.UserID)
-		matches, err := deliver.UseCase.GetMatches(userID, request.Context())
+		var requestBody auth.GetMatchesRequest
+		body, err := io.ReadAll(request.Body)
+		if err != nil {
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("bad body: ", err.Error())
+			requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
+			return
+		}
+
+		err = json.Unmarshal(body, &requestBody)
+		if err != nil {
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't unmarshal body: ", err.Error())
+			requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
+			return
+		}
+
+		matches, err := deliver.UseCase.GetMatches(userID, requestBody.Name, request.Context())
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't get matches: ", err.Error())
 			requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())

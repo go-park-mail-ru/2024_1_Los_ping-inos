@@ -42,7 +42,7 @@ func (storage *PersonStorage) Get(ctx context.Context, filter *auth.PersonGetFil
 	query := stBuilder.
 		Select(personFields).
 		From(PersonTableName).
-		Where(whereMap).
+		Where(qb.And{whereMap, qb.Like{"name": filter.Name + "%"}}).
 		RunWith(storage.dbReader)
 
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db get request to ", PersonTableName)
@@ -150,7 +150,7 @@ func (storage *PersonStorage) GetMatch(ctx context.Context, person1ID types.User
 	query := stBuilder.Select("t1.person_two_id").
 		From(LikeTableName + "t1").
 		InnerJoin(LikeTableName + "t2 ON t1.person_one_id = t2.person_two_id AND t1.person_two_id = t2.person_one_id").
-		Where(qb.Eq{"t1.person_one_id": person1ID}).
+		Where(qb.And{qb.Eq{"t1.person_one_id": person1ID}}).
 		RunWith(storage.dbReader)
 
 	rows, err := query.Query()

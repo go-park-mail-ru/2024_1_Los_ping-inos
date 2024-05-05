@@ -10,7 +10,7 @@ import (
 )
 
 func (service *UseCase) GetProfile(params auth.ProfileGetParams, ctx context.Context) ([]auth.Profile, error) {
-	persons, err := service.personStorage.Get(ctx, &auth.PersonGetFilter{SessionID: params.SessionID, ID: params.ID})
+	persons, err := service.personStorage.Get(ctx, &auth.PersonGetFilter{SessionID: params.SessionID, ID: params.ID, Name: params.Name})
 	if err != nil {
 		return nil, err
 	}
@@ -126,7 +126,7 @@ func getInterestSetIDs(interests []*auth.Interest) []interface{} {
 	return res
 }
 
-func (service *UseCase) GetMatches(prof types.UserID, ctx context.Context) ([]auth.Profile, error) {
+func (service *UseCase) GetMatches(prof types.UserID, nameFilter string, ctx context.Context) ([]auth.Profile, error) {
 	ids, err := service.personStorage.GetMatch(ctx, prof)
 	if err != nil {
 		return nil, err
@@ -135,7 +135,7 @@ func (service *UseCase) GetMatches(prof types.UserID, ctx context.Context) ([]au
 		return make([]auth.Profile, 0), nil
 	}
 
-	return service.GetProfile(auth.ProfileGetParams{ID: ids}, ctx)
+	return service.GetProfile(auth.ProfileGetParams{ID: ids, Name: nameFilter}, ctx)
 }
 
 func normalizeFromSet(input []interface{}) []types.InterestID {

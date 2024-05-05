@@ -34,7 +34,7 @@ func (server *Server) GetMatches(_ context.Context, req *pb.GetMatchesRequest) (
 	tmp := server.ctx.Value(Logg).(Log) // TODO intercepter
 	tmp.RequestID = req.RequestID
 	server.ctx = context.WithValue(server.ctx, Logg, tmp)
-	matches, err := server.useCase.GetMatches(types.UserID(req.UserID), server.ctx)
+	matches, err := server.useCase.GetMatches(types.UserID(req.UserID), "", server.ctx)
 	if err != nil {
 		tmp.Logger.WithFields(logrus.Fields{RequestID: tmp.RequestID}).Warn("can't get matches: ", err.Error())
 		return nil, err

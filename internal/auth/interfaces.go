@@ -17,7 +17,7 @@ type (
 		GetProfile(params ProfileGetParams, ctx context.Context) ([]Profile, error)
 		UpdateProfile(SID string, profile ProfileUpdateRequest, ctx context.Context) error
 		DeleteProfile(sessionID string, ctx context.Context) error
-		GetMatches(profile types.UserID, ctx context.Context) ([]Profile, error)
+		GetMatches(profile types.UserID, nameFilter string, ctx context.Context) ([]Profile, error)
 	}
 	PersonStorage interface {
 		AddAccount(ctx context.Context, Name string, Birhday string, Gender string, Email string, Password string) error
