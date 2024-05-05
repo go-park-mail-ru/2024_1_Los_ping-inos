@@ -71,12 +71,12 @@ func GetApi(c *usecase.UseCase, logger Log) *ImageHandler {
 
 	api.mx.Handle(apiPath+"addImage", requests.RequestIDMiddleware(
 		requests.AllowedMethodMiddleware(
-			http.HandlerFunc(api.AddImageHandler()), hashset.New("POST")),
+			requests.IsAuthenticatedMiddleware(http.HandlerFunc(api.AddImageHandler()), authManager), hashset.New("POST")),
 		"username (/me)", logger))
 
 	api.mx.Handle(apiPath+"deleteImage", requests.RequestIDMiddleware(
 		requests.AllowedMethodMiddleware(
-			http.HandlerFunc(api.DeleteImageHandler()), hashset.New("POST")),
+			requests.IsAuthenticatedMiddleware(http.HandlerFunc(api.DeleteImageHandler()), authManager), hashset.New("POST")),
 		"delete image", logger))
 
 	return api
@@ -96,8 +96,6 @@ const (
 func (deliver *ImageHandler) GetImageHandler() func(w http.ResponseWriter, r *http.Request) {
 	return func(respWriter http.ResponseWriter, request *http.Request) {
 		logger := request.Context().Value(Logg).(Log)
-
-		//var requestBody requests.ImageRequest
 
 		cell := request.FormValue("cell")
 		println(cell)
@@ -153,8 +151,8 @@ func (deliver *ImageHandler) AddImageHandler() func(w http.ResponseWriter, r *ht
 			return
 		}
 
-		//userId := int64(request.Context().Value(RequestUserID).(types.UserID))
-		userId := int64(2)
+		userId := int64(request.Context().Value(RequestUserID).(types.UserID))
+		//userId := int64(2)
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn(err.Error())
 			requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
@@ -211,8 +209,8 @@ func (deliver *ImageHandler) DeleteImageHandler() func(w http.ResponseWriter, r 
 	return func(respWriter http.ResponseWriter, request *http.Request) {
 		logger := request.Context().Value(Logg).(Log)
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("delete image")
-		//userId := int64(request.Context().Value(RequestUserID).(types.UserID))
-		userId := int64(2)
+		userId := int64(request.Context().Value(RequestUserID).(types.UserID))
+		//userId := int64(2)
 		var r requests.ImageRequest
 
 		body, err := io.ReadAll(request.Body)
