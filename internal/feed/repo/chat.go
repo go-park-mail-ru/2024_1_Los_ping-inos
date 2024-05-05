@@ -66,7 +66,7 @@ func (storage *PostgresStorage) CreateMessage(ctx context.Context, message feed.
 	t := time.UnixMilli(message.Time)
 	query := stBuilder.
 		Insert(messageTable).
-		Columns(messageFields).
+		Columns("data, sender_id, receiver_id, sent_time").
 		Values(message.Data, message.Sender, message.Receiver, t).
 		RunWith(storage.dbReader)
 
