@@ -125,6 +125,10 @@ func startServer(cfg *config.Config, logger Log, deliver Delivers) error {
 			IsAuthenticatedMiddleware(http.HandlerFunc(feedDel.CreateClaim()), authManager), hashset.New("POST")),
 		"create claim", logger))
 
+	mux.Handle(apiPath+"claimTypes", RequestIDMiddleware(
+		AllowedMethodMiddleware(http.HandlerFunc(feedDel.GetAlClaims()), hashset.New("GET")),
+		"get claim types", logger))
+
 	server := http.Server{
 		Addr:         cfg.Server.Host + cfg.Server.Port,
 		Handler:      mux,

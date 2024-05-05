@@ -275,3 +275,16 @@ func (deliver *FeedHandler) CreateClaim() func(respWriter http.ResponseWriter, r
 		requests.SendResponse(respWriter, request, http.StatusOK, nil)
 	}
 }
+
+func (deliver *FeedHandler) GetAlClaims() func(respWriter http.ResponseWriter, request *http.Request) {
+	return func(respWriter http.ResponseWriter, request *http.Request) {
+		logger := request.Context().Value(Logg).(Log)
+		claims, err := deliver.usecase.GetClaims(request.Context())
+		if err != nil {
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't get claim types: ", err.Error())
+			requests.SendResponse(respWriter, request, http.StatusInternalServerError, err.Error())
+			return
+		}
+		requests.SendResponse(respWriter, request, http.StatusOK, claims)
+	}
+}

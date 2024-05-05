@@ -18,6 +18,7 @@ type (
 		DeleteConnection(ctx context.Context, UID types.UserID)
 		SaveMessage(ctx context.Context, message Message) (*Message, error)
 		CreateClaim(ctx context.Context, typeID, senderID, receiverID int64) error
+		GetClaims(ctx context.Context) ([]PureClaim, error)
 	}
 	PostgresStorage interface {
 		GetFeed(ctx context.Context, filter types.UserID) ([]*Person, error)
@@ -29,6 +30,7 @@ type (
 		CreateMessage(ctx context.Context, message Message) (*Message, error)
 		GetLastMessages(ctx context.Context, id int64, ids []int) ([]Message, error)
 		CreateClaim(ctx context.Context, claim Claim) error
+		GetAllClaims(ctx context.Context) ([]PureClaim, error)
 	}
 
 	WebSocStorage interface {

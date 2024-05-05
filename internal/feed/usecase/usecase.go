@@ -91,3 +91,7 @@ func combineToCards(persons []*feed.Person, interests [][]*feed.Interest, images
 func (service *UseCase) CreateClaim(ctx context.Context, typeID, senderID, receiverID int64) error {
 	return service.storage.CreateClaim(ctx, feed.Claim{TypeID: typeID, SenderID: senderID, ReceiverID: receiverID})
 }
+
+func (service *UseCase) GetClaims(ctx context.Context) ([]feed.PureClaim, error) {
+	return service.storage.GetAllClaims(ctx)
+}

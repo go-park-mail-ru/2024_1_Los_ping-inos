@@ -95,4 +95,9 @@ type (
 		Type       int64 `json:"type"`
 		ReceiverID int64 `json:"receiverID"`
 	}
+
+	PureClaim struct {
+		Id    int64  `json:"id"`
+		Title string `json:"title"`
+	}
 )
