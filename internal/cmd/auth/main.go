@@ -145,7 +145,7 @@ func startServer(cfg *config.Config, logger Log, deliver Delivers) error {
 
 	mux.Handle(apiPath+"matches", RequestIDMiddleware(
 		AllowedMethodMiddleware(
-			IsAuthenticatedMiddleware(http.HandlerFunc(httpDeliver.GetMatches()), authManager), hashset.New("GET")),
+			IsAuthenticatedMiddleware(http.HandlerFunc(httpDeliver.GetMatches()), authManager), hashset.New("POST")),
 		"matches", logger))
 
 	metricHandler := MetricTimeMiddleware(mux)
