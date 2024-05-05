@@ -172,7 +172,7 @@ func (deliver *FeedHandler) handleWebsocket(ctx context.Context, connection *web
 		err = json.Unmarshal(mess, &message)
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("Error unmarshalling message: ", err.Error())
-			continue // TODO отправлять ошибку на фронт?
+			continue
 		}
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("got ws message")
 
@@ -180,7 +180,7 @@ func (deliver *FeedHandler) handleWebsocket(ctx context.Context, connection *web
 		_, err = deliver.usecase.SaveMessage(ctx, message)
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("Error saving message: ", err.Error())
-			continue // TODO отправлять ошибку на фронт?
+			continue
 		}
 
 		// отправляем сообщение получателю

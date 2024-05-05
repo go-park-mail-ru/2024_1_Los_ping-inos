@@ -10,6 +10,7 @@ import (
 	. "main.go/internal/logs"
 	"main.go/internal/types"
 	"sync"
+	"time"
 )
 
 const (
@@ -60,13 +61,13 @@ func (storage *PostgresStorage) GetChat(ctx context.Context, user1, user2 types.
 func (storage *PostgresStorage) CreateMessage(ctx context.Context, message feed.Message) (*feed.Message, error) {
 	logger := ctx.Value(Logg).(Log)
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("Create request to message")
-
 	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
 
+	t := time.UnixMilli(message.Time)
 	query := stBuilder.
 		Insert(messageTable).
 		Columns(messageFields).
-		Values(message.Data, message.Sender, message.Receiver, message.Time).
+		Values(message.Data, message.Sender, message.Receiver, t).
 		RunWith(storage.dbReader)
 
 	rows, err := query.Query()

@@ -66,7 +66,7 @@ type (
 		Data     string       `json:"data"`
 		Sender   types.UserID `json:"sender"`
 		Receiver types.UserID `json:"receiver"`
-		Time     time.Time    `json:"time"`
+		Time     int64        `json:"time"`
 	}
 
 	GetChatRequest struct {
