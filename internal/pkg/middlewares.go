@@ -10,6 +10,7 @@ import (
 	. "main.go/internal/logs"
 	"main.go/internal/types"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -22,23 +23,22 @@ func IsAuthenticatedMiddleware(next http.Handler, uc auth.AuthHandlClient) http.
 	return http.HandlerFunc(func(respWriter http.ResponseWriter, request *http.Request) {
 		log := request.Context().Value(Logg).(Log)
 		var session string
-		//t := request.Header.Get("Upgrade")
-		//if t == "websocket" {
-		//	session = request.Header.Get("session_id")
-		//	if session == "" {
-		//		log.Logger.WithFields(logrus.Fields{RequestID: log.RequestID}).Info("unauthorized")
-		//		SendResponse(respWriter, request, http.StatusUnauthorized, "unauthorized")
-		//		return
-		//	}
-		//} else {
-		sess, err := request.Cookie("session_id") // проверка авторизации
-		if err != nil || sess == nil {
-			log.Logger.WithFields(logrus.Fields{RequestID: log.RequestID}).Info("unauthorized")
-			SendResponse(respWriter, request, http.StatusUnauthorized, "unauthorized")
+		session = request.Header.Get("USER-ID")
+		if session != "" {
+			log.Logger.WithFields(logrus.Fields{RequestID: log.RequestID}).Info("authorized")
+			sess, _ := strconv.Atoi(session)
+			contexted := request.WithContext(context.WithValue(request.Context(), RequestUserID, types.UserID(sess)))
+			next.ServeHTTP(respWriter, contexted)
 			return
+		} else {
+			sess, err := request.Cookie("session_id") // проверка авторизации
+			if err != nil || sess == nil {
+				log.Logger.WithFields(logrus.Fields{RequestID: log.RequestID}).Info("unauthorized")
+				SendResponse(respWriter, request, http.StatusUnauthorized, "unauthorized")
+				return
+			}
+			session = sess.Value
 		}
-		session = sess.Value
-		//}
 
 		authResponse, err := uc.IsAuthenticated(request.Context(), &auth.IsAuthRequest{SessionID: session})
 

@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	messageFields    = "data, sender_id, receiver_id, sent_time"
+	messageFields    = "id, data, sender_id, receiver_id, sent_time"
 	messageTable     = "message"
 	getLastMessQuery = "SELECT DISTINCT ON (    CASE        WHEN sender_id < receiver_id THEN sender_id || '_' || receiver_id        ELSE receiver_id || '_' || sender_id    END) id, data, sender_id, receiver_id, sent_time FROM message WHERE     (sender_id = $1 OR receiver_id = $1)    AND ((sender_id = ANY($2)) OR (receiver_id = ANY($2))) ORDER BY (    CASE        WHEN sender_id < receiver_id THEN sender_id || '_' || receiver_id        ELSE receiver_id || '_' || sender_id    END), sent_time DESC;"
 )
@@ -45,7 +45,7 @@ func (storage *PostgresStorage) GetChat(ctx context.Context, user1, user2 types.
 	)
 
 	for rows.Next() {
-		err = rows.Scan(&message.Data, &message.Sender, &message.Receiver, &message.Time)
+		err = rows.Scan(&message.Id, &message.Data, &message.Sender, &message.Receiver, &message.Time)
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("Db can't scan: ", err.Error())
 			return nil, err
