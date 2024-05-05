@@ -42,7 +42,7 @@ func (storage *PersonStorage) Get(ctx context.Context, filter *auth.PersonGetFil
 	query := stBuilder.
 		Select(personFields).
 		From(PersonTableName).
-		Where(qb.And{whereMap, qb.Like{"name": filter.Name + "%"}}).
+		Where(qb.And{whereMap, qb.Like{"name": "%" + filter.Name + "%"}}).
 		RunWith(storage.dbReader)
 
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db get request to ", PersonTableName)
