@@ -176,6 +176,8 @@ func (deliver *FeedHandler) handleWebsocket(ctx context.Context, connection *web
 		}
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("got ws message")
 
+		_ = connection.WriteMessage(mt, mess)
+
 		message.Sender = sender
 		_, err = deliver.usecase.SaveMessage(ctx, message)
 		if err != nil {
