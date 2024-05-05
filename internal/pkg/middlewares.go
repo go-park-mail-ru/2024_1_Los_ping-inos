@@ -22,11 +22,11 @@ const (
 func IsAuthenticatedMiddleware(next http.Handler, uc auth.AuthHandlClient) http.Handler {
 	return http.HandlerFunc(func(respWriter http.ResponseWriter, request *http.Request) {
 		log := request.Context().Value(Logg).(Log)
-		var session string
-		session = request.Header.Get("USER-ID")
-		if session != "" {
+		var session string // USER-ID
+
+		if request.URL.Query().Has("uid") {
 			log.Logger.WithFields(logrus.Fields{RequestID: log.RequestID}).Info("authorized")
-			sess, _ := strconv.Atoi(session)
+			sess, _ := strconv.Atoi(request.URL.Query().Get("uid"))
 			contexted := request.WithContext(context.WithValue(request.Context(), RequestUserID, types.UserID(sess)))
 			next.ServeHTTP(respWriter, contexted)
 			return
