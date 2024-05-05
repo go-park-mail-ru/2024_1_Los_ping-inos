@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	_ "github.com/lib/pq"
 	"time"
 
 	_ "github.com/jackc/pgx/stdlib"
@@ -38,7 +39,7 @@ func GetImageRepo(config string) (*ImageStorage, error) {
 
 	//println(dsn)
 
-	db, err := sql.Open("pgx", config)
+	db, err := sql.Open("postgres", config)
 	if err != nil {
 		println(err.Error())
 	}
