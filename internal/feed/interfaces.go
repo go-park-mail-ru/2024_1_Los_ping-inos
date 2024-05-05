@@ -16,7 +16,7 @@ type (
 		AddConnection(ctx context.Context, connection *websocket.Conn, UID types.UserID)
 		GetConnection(ctx context.Context, UID types.UserID) (*websocket.Conn, bool)
 		DeleteConnection(ctx context.Context, UID types.UserID)
-		SaveMessage(ctx context.Context, message Message) (*Message, error)
+		SaveMessage(ctx context.Context, message MessageToReceive) (*MessageToReceive, error)
 		CreateClaim(ctx context.Context, typeID, senderID, receiverID int64) error
 		GetClaims(ctx context.Context) ([]PureClaim, error)
 	}
@@ -27,7 +27,7 @@ type (
 		CreateLike(ctx context.Context, person1ID, person2ID types.UserID) error
 		GetImages(ctx context.Context, userID int64) ([]Image, error)
 		GetChat(ctx context.Context, user1, user2 types.UserID) ([]Message, error)
-		CreateMessage(ctx context.Context, message Message) (*Message, error)
+		CreateMessage(ctx context.Context, message MessageToReceive) (*MessageToReceive, error)
 		GetLastMessages(ctx context.Context, id int64, ids []int) ([]Message, error)
 		CreateClaim(ctx context.Context, claim Claim) error
 		GetAllClaims(ctx context.Context) ([]PureClaim, error)

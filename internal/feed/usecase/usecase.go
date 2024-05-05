@@ -43,7 +43,7 @@ func (service *UseCase) GetChat(ctx context.Context, user1, user2 types.UserID) 
 	return service.storage.GetChat(ctx, user1, user2)
 }
 
-func (service *UseCase) SaveMessage(ctx context.Context, message feed.Message) (*feed.Message, error) {
+func (service *UseCase) SaveMessage(ctx context.Context, message feed.MessageToReceive) (*feed.MessageToReceive, error) {
 	return service.storage.CreateMessage(ctx, message)
 }
 

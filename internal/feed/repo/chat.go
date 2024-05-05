@@ -58,7 +58,7 @@ func (storage *PostgresStorage) GetChat(ctx context.Context, user1, user2 types.
 	return messages, nil
 }
 
-func (storage *PostgresStorage) CreateMessage(ctx context.Context, message feed.Message) (*feed.Message, error) {
+func (storage *PostgresStorage) CreateMessage(ctx context.Context, message feed.MessageToReceive) (*feed.MessageToReceive, error) {
 	logger := ctx.Value(Logg).(Log)
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("Create request to message")
 	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)

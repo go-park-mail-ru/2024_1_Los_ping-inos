@@ -61,12 +61,20 @@ type (
 		Person2 types.UserID
 	}
 
-	Message struct {
+	MessageToReceive struct {
 		Id       int64        `json:"id"`
 		Data     string       `json:"data"`
 		Sender   types.UserID `json:"sender"`
 		Receiver types.UserID `json:"receiver"`
 		Time     int64        `json:"time"`
+	}
+
+	Message struct {
+		Id       int64        `json:"id"`
+		Data     string       `json:"data"`
+		Sender   types.UserID `json:"sender"`
+		Receiver types.UserID `json:"receiver"`
+		Time     time.Time    `json:"time"`
 	}
 
 	GetChatRequest struct {

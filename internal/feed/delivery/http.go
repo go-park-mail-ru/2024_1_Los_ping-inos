@@ -168,7 +168,7 @@ func (deliver *FeedHandler) handleWebsocket(ctx context.Context, connection *web
 		if err != nil || mt == websocket.CloseMessage {
 			break
 		}
-		var message feed.Message
+		var message feed.MessageToReceive
 		err = json.Unmarshal(mess, &message)
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("Error unmarshalling message: ", err.Error())
