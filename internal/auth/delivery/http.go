@@ -170,6 +170,7 @@ func (deliver *AuthHandler) DeleteProfile(respWriter http.ResponseWriter, reques
 func (deliver *AuthHandler) GetMatches() func(respWriter http.ResponseWriter, request *http.Request) {
 	return func(respWriter http.ResponseWriter, request *http.Request) {
 		logger := request.Context().Value(Logg).(Log)
+
 		userID := request.Context().Value(RequestUserID).(types.UserID)
 		var requestBody auth.GetMatchesRequest
 		body, err := io.ReadAll(request.Body)

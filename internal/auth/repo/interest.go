@@ -7,7 +7,9 @@ import (
 	"github.com/sirupsen/logrus"
 	"main.go/internal/auth"
 	. "main.go/internal/logs"
+	requests "main.go/internal/pkg"
 	"main.go/internal/types"
+	"time"
 )
 
 const (
@@ -28,6 +30,8 @@ func NewInterestStorage(dbReader *sql.DB) *InterestStorage {
 }
 
 func (storage *InterestStorage) CreatePersonInterests(ctx context.Context, personID types.UserID, interestID []types.InterestID) error {
+	defer requests.TrackContextTimings(ctx, "CreatePersonInterestRep", time.Now())
+
 	logger := ctx.Value(Logg).(Log)
 	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db add request to ", PersonInterestTableName)
@@ -51,6 +55,8 @@ func (storage *InterestStorage) CreatePersonInterests(ctx context.Context, perso
 }
 
 func (storage *InterestStorage) Get(ctx context.Context, filter *auth.InterestGetFilter) ([]*auth.Interest, error) {
+	defer requests.TrackContextTimings(ctx, "GetInterestRep", time.Now())
+
 	logger := ctx.Value(Logg).(Log)
 	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
 	whereMap := qb.And{}
@@ -110,6 +116,8 @@ func processInterestNameFilter(filter *auth.InterestGetFilter, whereMap *qb.And)
 }
 
 func (storage *InterestStorage) GetPersonInterests(ctx context.Context, personID types.UserID) ([]*auth.Interest, error) {
+	defer requests.TrackContextTimings(ctx, "GetPersonInterestRep", time.Now())
+
 	logger := ctx.Value(Logg).(Log)
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db get request to ", PersonInterestTableName)
 	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
@@ -144,6 +152,8 @@ func (storage *InterestStorage) GetPersonInterests(ctx context.Context, personID
 }
 
 func (storage *InterestStorage) DeletePersonInterests(ctx context.Context, personID types.UserID, interestID []types.InterestID) error {
+	defer requests.TrackContextTimings(ctx, "DelPersonInterestRep", time.Now())
+
 	logger := ctx.Value(Logg).(Log)
 	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db delete request to ", PersonInterestTableName)

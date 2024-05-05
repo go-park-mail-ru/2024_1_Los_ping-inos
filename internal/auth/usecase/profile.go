@@ -5,11 +5,13 @@ import (
 	"errors"
 	"github.com/emirpasic/gods/sets/hashset"
 	"main.go/internal/auth"
+	requests "main.go/internal/pkg"
 	"main.go/internal/types"
 	"time"
 )
 
 func (service *UseCase) GetProfile(params auth.ProfileGetParams, ctx context.Context) ([]auth.Profile, error) {
+	defer requests.TrackContextTimings(ctx, "GetProfileUc", time.Now())
 	persons, err := service.personStorage.Get(ctx, &auth.PersonGetFilter{SessionID: params.SessionID, ID: params.ID, Name: params.Name})
 	if err != nil {
 		return nil, err
@@ -39,6 +41,8 @@ func (service *UseCase) GetProfile(params auth.ProfileGetParams, ctx context.Con
 }
 
 func (service *UseCase) UpdateProfile(SID string, prof auth.ProfileUpdateRequest, ctx context.Context) error {
+	defer requests.TrackContextTimings(ctx, "UpdateProfileUc", time.Now())
+
 	persons, err := service.personStorage.Get(ctx, &auth.PersonGetFilter{SessionID: []string{SID}})
 	if err != nil {
 		return err
@@ -83,8 +87,9 @@ func (service *UseCase) UpdateProfile(SID string, prof auth.ProfileUpdateRequest
 }
 
 func (service *UseCase) DeleteProfile(sessionID string, ctx context.Context) error {
-	err := service.personStorage.Delete(ctx, sessionID)
-	return err
+	defer requests.TrackContextTimings(ctx, "DeleteProfileUc", time.Now())
+
+	return service.personStorage.Delete(ctx, sessionID)
 }
 
 func (service *UseCase) handleInterests(interests []string, personID types.UserID, ctx context.Context) error {
@@ -127,6 +132,8 @@ func getInterestSetIDs(interests []*auth.Interest) []interface{} {
 }
 
 func (service *UseCase) GetMatches(prof types.UserID, nameFilter string, ctx context.Context) ([]auth.Profile, error) {
+	defer requests.TrackContextTimings(ctx, "GetMatchesUc", time.Now())
+
 	ids, err := service.personStorage.GetMatch(ctx, prof)
 	if err != nil {
 		return nil, err

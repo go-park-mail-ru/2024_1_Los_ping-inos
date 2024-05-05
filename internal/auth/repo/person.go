@@ -8,7 +8,9 @@ import (
 	"github.com/sirupsen/logrus"
 	"main.go/internal/auth"
 	. "main.go/internal/logs"
+	requests "main.go/internal/pkg"
 	"main.go/internal/types"
+	"time"
 )
 
 const (
@@ -28,6 +30,8 @@ func NewAuthPersonStorage(dbReader *sql.DB) *PersonStorage {
 }
 
 func (storage *PersonStorage) Get(ctx context.Context, filter *auth.PersonGetFilter) ([]*auth.Person, error) {
+	defer requests.TrackContextTimings(ctx, "GetPersonRep", time.Now())
+
 	logger := ctx.Value(Logg).(Log)
 	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
 	whereMap := qb.And{}
@@ -74,6 +78,8 @@ func (storage *PersonStorage) Get(ctx context.Context, filter *auth.PersonGetFil
 }
 
 func (storage *PersonStorage) Update(ctx context.Context, person auth.Person) error {
+	defer requests.TrackContextTimings(ctx, "UpdatePersonRep", time.Now())
+
 	logger := ctx.Value(Logg).(Log)
 	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
 	setMap := make(map[string]interface{})
@@ -91,6 +97,7 @@ func (storage *PersonStorage) Update(ctx context.Context, person auth.Person) er
 	}
 	setMap["password"] = person.Password
 	delete(setMap, "photo")
+	delete(setMap, "session_id")
 	query := stBuilder.
 		Update(PersonTableName).
 		SetMap(setMap).
@@ -108,6 +115,8 @@ func (storage *PersonStorage) Update(ctx context.Context, person auth.Person) er
 }
 
 func (storage *PersonStorage) Delete(ctx context.Context, sessionID string) error {
+	defer requests.TrackContextTimings(ctx, "DeletePersonRep", time.Now())
+
 	logger := ctx.Value(Logg).(Log)
 	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db delete request to ", PersonTableName)
@@ -127,6 +136,8 @@ func (storage *PersonStorage) Delete(ctx context.Context, sessionID string) erro
 }
 
 func (storage *PersonStorage) AddAccount(ctx context.Context, Name string, Birthday string, Gender string, Email string, Password string) error {
+	defer requests.TrackContextTimings(ctx, "CreatePersonRep", time.Now())
+
 	logger := ctx.Value(Logg).(Log)
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db create request to ", PersonTableName)
 	_, err := storage.dbReader.Exec(
@@ -143,6 +154,8 @@ func (storage *PersonStorage) AddAccount(ctx context.Context, Name string, Birth
 }
 
 func (storage *PersonStorage) GetMatch(ctx context.Context, person1ID types.UserID) ([]types.UserID, error) {
+	defer requests.TrackContextTimings(ctx, "GetMatchesRep", time.Now())
+
 	logger := ctx.Value(Logg).(Log)
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db get request to ", LikeTableName)
 	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
@@ -172,6 +185,31 @@ func (storage *PersonStorage) GetMatch(ctx context.Context, person1ID types.User
 	}
 	return res, nil
 }
+
+// TODO
+//func (storage *PersonStorage) GetUserCards(ctx context.Context, persons []types.UserID) ([][]*auth.Interest, [][]auth.Image, error) {
+//	defer requests.TrackContextTimings(ctx, "GetUserCardsRep", time.Now())
+//
+//	logger := ctx.Value(Logg).(Log)
+//	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db get request to ", PersonInterestTableName)
+//	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
+//
+//	query := stBuilder.
+//		Select(personInterestFields).
+//		From(PersonInterestTableName).
+//		Where(qb.Eq{"person_id": persons}).
+//		GroupBy("person_id").
+//		RunWith(storage.dbReader)
+//
+//	interests, err := query.Query()
+//	if err != nil {
+//		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("db can't query:  ", err.Error())
+//		return nil, nil, err
+//	}
+//	for interests.Next() {
+//
+//	}
+//}
 
 func processIDFilter(filter *auth.PersonGetFilter, whereMap *qb.And) {
 	if filter.ID != nil {

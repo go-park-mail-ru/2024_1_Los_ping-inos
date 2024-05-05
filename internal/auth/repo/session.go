@@ -6,8 +6,10 @@ import (
 	"github.com/sirupsen/logrus"
 	"main.go/internal/auth"
 	. "main.go/internal/logs"
+	requests "main.go/internal/pkg"
 	"main.go/internal/types"
 	"strconv"
+	"time"
 )
 
 type SessionStorage struct {
@@ -21,6 +23,8 @@ func NewSessionStorage(db *redis.Client) *SessionStorage {
 }
 
 func (stor *SessionStorage) GetBySID(ctx context.Context, SID string) (*auth.Session, error) {
+	defer requests.TrackContextTimings(ctx, "GetSessionRep", time.Now())
+
 	logger := ctx.Value(Logg).(Log)
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db get request to session storage")
 	session := &auth.Session{SID: SID}
@@ -40,14 +44,17 @@ func (stor *SessionStorage) GetBySID(ctx context.Context, SID string) (*auth.Ses
 }
 
 func (stor *SessionStorage) CreateSession(ctx context.Context, session auth.Session) error {
+	defer requests.TrackContextTimings(ctx, "CreateSessionRep", time.Now())
+
 	logger := ctx.Value(Logg).(Log)
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db create request to session storage")
-	println("AAAA  inside: ", session.SID)
 	err := stor.db.Set(context.TODO(), session.SID, strconv.Itoa(int(session.UID)), 0).Err()
 	return err
 }
 
 func (stor *SessionStorage) DeleteSession(ctx context.Context, SID string) error {
+	defer requests.TrackContextTimings(ctx, "DeleteSessionRep", time.Now())
+
 	logger := ctx.Value(Logg).(Log)
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db delete request to session storage")
 	return stor.db.Del(context.TODO(), SID).Err()

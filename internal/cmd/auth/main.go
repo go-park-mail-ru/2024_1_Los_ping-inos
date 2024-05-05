@@ -148,9 +148,11 @@ func startServer(cfg *config.Config, logger Log, deliver Delivers) error {
 			IsAuthenticatedMiddleware(http.HandlerFunc(httpDeliver.GetMatches()), authManager), hashset.New("GET")),
 		"matches", logger))
 
+	metricHandler := MetricTimeMiddleware(mux)
+
 	server := http.Server{
 		Addr:         cfg.Server.Host + cfg.Server.Port,
-		Handler:      mux,
+		Handler:      metricHandler,
 		ReadTimeout:  cfg.Server.Timeout * time.Second,
 		WriteTimeout: cfg.Server.Timeout * time.Second,
 	}

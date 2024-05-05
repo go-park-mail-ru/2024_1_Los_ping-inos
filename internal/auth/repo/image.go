@@ -4,6 +4,8 @@ import (
 	"context"
 	"database/sql"
 	"github.com/sirupsen/logrus"
+	requests "main.go/internal/pkg"
+	"time"
 
 	"main.go/internal/auth"
 	. "main.go/internal/logs"
@@ -24,6 +26,8 @@ func NewImageStorage(dbReader *sql.DB) *ImageStorage {
 }
 
 func (storage *ImageStorage) Get(ctx context.Context, userID int64) ([]auth.Image, error) {
+	defer requests.TrackContextTimings(ctx, "GetImageRep", time.Now())
+
 	logger := ctx.Value(Logg).(Log)
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("Get request to person_image")
 

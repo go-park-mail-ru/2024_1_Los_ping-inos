@@ -7,8 +7,10 @@ import (
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 	"main.go/internal/auth"
+	requests "main.go/internal/pkg"
 	"main.go/internal/types"
 	"slices"
+	"time"
 )
 
 type UseCase struct {
@@ -28,6 +30,8 @@ func NewAuthUseCase(dbReader auth.PersonStorage, sstore auth.SessionStorage, ist
 }
 
 func (service *UseCase) IsAuthenticated(sessionID string, ctx context.Context) (types.UserID, bool, error) {
+	defer requests.TrackContextTimings(ctx, "IsAuthUc", time.Now())
+
 	person, err := service.sessionStorage.GetBySID(ctx, sessionID)
 	if err != nil {
 		return -1, false, err
@@ -37,6 +41,8 @@ func (service *UseCase) IsAuthenticated(sessionID string, ctx context.Context) (
 
 // Login - принимает email, пароль; возвращает ID сессии и ошибку
 func (service *UseCase) Login(email, password string, ctx context.Context) (*auth.Profile, string, error) {
+	defer requests.TrackContextTimings(ctx, "LoginUc", time.Now())
+
 	users, ok := service.personStorage.Get(ctx, &auth.PersonGetFilter{Email: []string{email}})
 	if ok != nil {
 		return nil, "", ok
@@ -54,7 +60,6 @@ func (service *UseCase) Login(email, password string, ctx context.Context) (*aut
 	}
 
 	SID := uuid.NewString()
-	println("AAAA outside: ", SID)
 	err = service.sessionStorage.CreateSession(ctx, auth.Session{
 		UID: user.ID,
 		SID: SID,
@@ -72,10 +77,14 @@ func (service *UseCase) Login(email, password string, ctx context.Context) (*aut
 }
 
 func (service *UseCase) GetAllInterests(ctx context.Context) ([]*auth.Interest, error) {
+	defer requests.TrackContextTimings(ctx, "GetAllInterestsUc", time.Now())
+
 	return service.interestStorage.Get(ctx, nil)
 }
 
 func (service *UseCase) Registration(body auth.RegitstrationBody, ctx context.Context) (*auth.Profile, string, error) {
+	defer requests.TrackContextTimings(ctx, "RegistrationUc", time.Now())
+
 	hashedPassword, err := hashPassword(body.Password)
 	if err != nil {
 		return nil, "", err
@@ -105,6 +114,8 @@ func (service *UseCase) Registration(body auth.RegitstrationBody, ctx context.Co
 }
 
 func (service *UseCase) GetName(userID types.UserID, ctx context.Context) (string, error) {
+	defer requests.TrackContextTimings(ctx, "GetNameUc", time.Now())
+
 	person, err := service.personStorage.Get(ctx, &auth.PersonGetFilter{ID: []types.UserID{userID}})
 	if err != nil {
 		return "", err
@@ -126,6 +137,8 @@ func getInterestIDs(interests []*auth.Interest) []types.InterestID {
 }
 
 func (service *UseCase) Logout(sessionID string, ctx context.Context) error {
+	defer requests.TrackContextTimings(ctx, "LogoutUc", time.Now())
+
 	return service.sessionStorage.DeleteSession(ctx, sessionID)
 }
 
@@ -143,6 +156,14 @@ func (service *UseCase) getUserCards(persons []*auth.Person, ctx context.Context
 	var err error
 	interests := make([][]*auth.Interest, len(persons))
 	images := make([][]auth.Image, len(persons))
+
+	// TODO
+	//interests, images, err := service.personStorage.GetUserCards(ctx, getUserIDs(persons))
+	//
+	//if err != nil {
+	//	return nil, nil, err
+	//}
+
 	for j := range persons {
 		interests[j], err = service.interestStorage.GetPersonInterests(ctx, persons[j].ID)
 		if err != nil {
@@ -154,6 +175,14 @@ func (service *UseCase) getUserCards(persons []*auth.Person, ctx context.Context
 		}
 	}
 	return interests, images, nil
+}
+
+func getUserIDs(persons []*auth.Person) []types.UserID {
+	res := make([]types.UserID, len(persons))
+	for i := range persons {
+		res[i] = persons[i].ID
+	}
+	return res
 }
 
 func combineToCards(persons []*auth.Person, interests [][]*auth.Interest, images [][]auth.Image) []auth.Profile {

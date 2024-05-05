@@ -25,6 +25,7 @@ type (
 		Update(ctx context.Context, person Person) error
 		Delete(ctx context.Context, sessionID string) error
 		GetMatch(ctx context.Context, person1ID types.UserID) ([]types.UserID, error)
+		//GetUserCards(ctx context.Context, persons []types.UserID) ([][]*Interest, [][]Image, error)
 	}
 
 	SessionStorage interface {

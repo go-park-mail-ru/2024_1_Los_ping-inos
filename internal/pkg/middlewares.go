@@ -2,8 +2,6 @@ package requests
 
 import (
 	"context"
-	"net/http"
-
 	"github.com/emirpasic/gods/sets/hashset"
 	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
@@ -11,31 +9,36 @@ import (
 	auth "main.go/internal/auth/proto"
 	. "main.go/internal/logs"
 	"main.go/internal/types"
+	"net/http"
+	"time"
 )
 
-const CSRFHeader = "csrft"
+const (
+	CSRFHeader = "X-Csrf-Token"
+	TimingsKey = "timing"
+)
 
 func IsAuthenticatedMiddleware(next http.Handler, uc auth.AuthHandlClient) http.Handler {
 	return http.HandlerFunc(func(respWriter http.ResponseWriter, request *http.Request) {
 		log := request.Context().Value(Logg).(Log)
 		var session string
-		t := request.Header.Get("Upgrade")
-		if t == "websocket" {
-			session = request.Header.Get("session_id")
-			if session == "" {
-				log.Logger.WithFields(logrus.Fields{RequestID: log.RequestID}).Info("unauthorized")
-				SendResponse(respWriter, request, http.StatusUnauthorized, "unauthorized")
-				return
-			}
-		} else {
-			sess, err := request.Cookie("session_id") // проверка авторизации
-			if err != nil || sess == nil {
-				log.Logger.WithFields(logrus.Fields{RequestID: log.RequestID}).Info("unauthorized")
-				SendResponse(respWriter, request, http.StatusUnauthorized, "unauthorized")
-				return
-			}
-			session = sess.Value
+		//t := request.Header.Get("Upgrade")
+		//if t == "websocket" {
+		//	session = request.Header.Get("session_id")
+		//	if session == "" {
+		//		log.Logger.WithFields(logrus.Fields{RequestID: log.RequestID}).Info("unauthorized")
+		//		SendResponse(respWriter, request, http.StatusUnauthorized, "unauthorized")
+		//		return
+		//	}
+		//} else {
+		sess, err := request.Cookie("session_id") // проверка авторизации
+		if err != nil || sess == nil {
+			log.Logger.WithFields(logrus.Fields{RequestID: log.RequestID}).Info("unauthorized")
+			SendResponse(respWriter, request, http.StatusUnauthorized, "unauthorized")
+			return
 		}
+		session = sess.Value
+		//}
 
 		authResponse, err := uc.IsAuthenticated(request.Context(), &auth.IsAuthRequest{SessionID: session})
 
@@ -104,5 +107,17 @@ func CSRFMiddleware(next http.Handler) http.Handler {
 			return
 		}
 		next.ServeHTTP(respWriter, request)
+	})
+}
+
+func MetricTimeMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(respWriter http.ResponseWriter, request *http.Request) {
+		ctx := request.Context()
+		ctx = context.WithValue(ctx, TimingsKey, &ctxTimings{
+			Data: make(map[string]*Timing),
+		})
+		// TODO log?
+		defer LogContextTimings(ctx, request.URL.Path, time.Now()) // тут можно, у нас в апи нет переменных в пути
+		next.ServeHTTP(respWriter, request.WithContext(ctx))
 	})
 }
