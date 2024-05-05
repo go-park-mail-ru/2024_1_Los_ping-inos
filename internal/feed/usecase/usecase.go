@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"context"
-
 	"main.go/internal/feed"
 	"main.go/internal/types"
 )
@@ -87,4 +86,8 @@ func combineToCards(persons []*feed.Person, interests [][]*feed.Interest, images
 			Interests: interests[i], Photos: photos[i]}
 	}
 	return res
+}
+
+func (service *UseCase) CreateClaim(ctx context.Context, typeID, senderID, receiverID int64) error {
+	return service.storage.CreateClaim(ctx, feed.Claim{TypeID: typeID, SenderID: senderID, ReceiverID: receiverID})
 }

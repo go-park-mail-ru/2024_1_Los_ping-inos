@@ -245,3 +245,33 @@ func getIds(l *gen.GetMatchesResponse) []int64 {
 	}
 	return res
 }
+
+func (deliver *FeedHandler) CreateClaim() func(respWriter http.ResponseWriter, request *http.Request) {
+	return func(respWriter http.ResponseWriter, request *http.Request) {
+		logger := request.Context().Value(Logg).(Log)
+		body, err := io.ReadAll(request.Body)
+		if err != nil { // TODO эти два блока вынести в отдельную функцию и напихать её во все ручки
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("bad body: ", err.Error())
+			requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
+			return
+		}
+		var requestBody feed.CreateClaimRequest
+		err = json.Unmarshal(body, &requestBody)
+		if err != nil {
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("can't unmarshal body: ", err.Error())
+			requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
+			return
+		}
+
+		err = deliver.usecase.CreateClaim(request.Context(), requestBody.Type,
+			int64(request.Context().Value(RequestUserID).(types.UserID)), requestBody.ReceiverID)
+
+		if err != nil {
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't create claim: ", err.Error())
+			requests.SendResponse(respWriter, request, http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		requests.SendResponse(respWriter, request, http.StatusOK, nil)
+	}
+}

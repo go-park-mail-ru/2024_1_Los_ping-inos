@@ -83,4 +83,16 @@ type (
 	AllChats struct {
 		Chats []ChatPreview `json:"chats"`
 	}
+
+	Claim struct {
+		Id         int64 `json:"id"`
+		TypeID     int64 `json:"typeID"`
+		SenderID   int64 `json:"senderID"`
+		ReceiverID int64 `json:"receiverID"`
+	}
+
+	CreateClaimRequest struct {
+		Type       int64 `json:"type"`
+		ReceiverID int64 `json:"receiverID"`
+	}
 )

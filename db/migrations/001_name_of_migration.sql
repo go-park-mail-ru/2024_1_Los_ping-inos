@@ -82,6 +82,22 @@ create table if not exists message (
        on update cascade,
    sent_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+create table if not exists person_claim (
+   id SERIAL PRIMARY KEY,
+   type int not null references claim(id),
+   sender_id int not null references person(id)
+       on delete cascade
+       on update cascade,
+   receiver_id int not null references person(id)
+       on delete cascade
+       on update cascade
+);
+
+create table if not exists claim (
+   id SERIAL PRIMARY KEY,
+   title TEXT NOT NULL
+);
 ---- create above / drop below ----
 -- drop table person;
 --

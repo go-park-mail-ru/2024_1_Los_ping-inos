@@ -120,6 +120,11 @@ func startServer(cfg *config.Config, logger Log, deliver Delivers) error {
 			IsAuthenticatedMiddleware(http.HandlerFunc(feedDel.GetAllChats()), authManager), hashset.New("GET")),
 		"get all chats", logger))
 
+	mux.Handle(apiPath+"createClaim", RequestIDMiddleware(
+		AllowedMethodMiddleware(
+			IsAuthenticatedMiddleware(http.HandlerFunc(feedDel.CreateClaim()), authManager), hashset.New("POST")),
+		"create claim", logger))
+
 	server := http.Server{
 		Addr:         cfg.Server.Host + cfg.Server.Port,
 		Handler:      mux,

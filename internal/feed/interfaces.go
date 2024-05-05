@@ -11,12 +11,13 @@ type (
 		GetCards(userID types.UserID, ctx context.Context) ([]Card, error)
 		CreateLike(profile1, profile2 types.UserID, ctx context.Context) error
 		GetChat(ctx context.Context, user1, user2 types.UserID) ([]Message, error)
+		GetLastMessages(ctx context.Context, UID int64, ids []int64) ([]Message, error)
 
 		AddConnection(ctx context.Context, connection *websocket.Conn, UID types.UserID)
 		GetConnection(ctx context.Context, UID types.UserID) (*websocket.Conn, bool)
 		DeleteConnection(ctx context.Context, UID types.UserID)
 		SaveMessage(ctx context.Context, message Message) (*Message, error)
-		GetLastMessages(ctx context.Context, UID int64, ids []int64) ([]Message, error)
+		CreateClaim(ctx context.Context, typeID, senderID, receiverID int64) error
 	}
 	PostgresStorage interface {
 		GetFeed(ctx context.Context, filter types.UserID) ([]*Person, error)
@@ -27,6 +28,7 @@ type (
 		GetChat(ctx context.Context, user1, user2 types.UserID) ([]Message, error)
 		CreateMessage(ctx context.Context, message Message) (*Message, error)
 		GetLastMessages(ctx context.Context, id int64, ids []int) ([]Message, error)
+		CreateClaim(ctx context.Context, claim Claim) error
 	}
 
 	WebSocStorage interface {
