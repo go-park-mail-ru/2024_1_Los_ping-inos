@@ -57,6 +57,8 @@ services:
     restart: on-failure
     depends_on:
       - db
+    env_file:
+      - .env
     build:
       context: .
       dockerfile: images.Dockerfile

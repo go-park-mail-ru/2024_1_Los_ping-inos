@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"context"
-	"errors"
 	"github.com/emirpasic/gods/sets/hashset"
 	"main.go/internal/auth"
 	requests "main.go/internal/pkg"
@@ -18,7 +17,7 @@ func (service *UseCase) GetProfile(params auth.ProfileGetParams, ctx context.Con
 	}
 
 	if len(persons) == 0 {
-		return nil, errors.New("no such person")
+		return []auth.Profile{}, nil
 	}
 
 	interests, images, err := service.getUserCards(persons, ctx)

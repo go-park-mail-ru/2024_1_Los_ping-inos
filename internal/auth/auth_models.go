@@ -55,7 +55,7 @@ type (
 	}
 
 	Profile struct {
-		ID          types.UserID  `json:"-"`
+		ID          types.UserID  `json:"id"`
 		Name        string        `json:"name"`
 		Birthday    time.Time     `json:"birthday"`
 		Description string        `json:"description"`

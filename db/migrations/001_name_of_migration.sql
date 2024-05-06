@@ -60,6 +60,7 @@ CREATE TABLE IF NOT EXISTS person_image (
 	on update cascade,
     image_url text not null,
     cell_number int not null
+    CONSTRAINT person_cell UNIQUE (person_id, cell_number)
 );
 
 CREATE TABLE IF NOT EXISTS person_premium (
