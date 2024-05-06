@@ -24,6 +24,12 @@ func (storage *PostgresStorage) GetFeed(ctx context.Context, filter types.UserID
 	}
 	ids = append(ids, filter)
 
+	baned, err := storage.GetClaimed(ctx, filter)
+	if err != nil {
+		return nil, err
+	}
+	ids = append(ids, baned...)
+
 	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db get request to ", PersonTableName)
 	query := stBuilder.
@@ -56,4 +62,33 @@ func (storage *PostgresStorage) GetFeed(ctx context.Context, filter types.UserID
 
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db returning records")
 	return persons, nil
+}
+
+func (storage *PostgresStorage) GetClaimed(ctx context.Context, id types.UserID) ([]types.UserID, error) {
+	logger := ctx.Value(Logg).(Log)
+	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db get request to person_claim")
+	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
+
+	query := stBuilder.
+		Select("receiver_id").
+		From("person_claim").Where(qb.Eq{"sender_id": id}).
+		RunWith(storage.dbReader)
+
+	rows, err := query.Query()
+	if err != nil {
+		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("db can't query: ", err.Error())
+		return nil, err
+	}
+	defer rows.Close()
+	var res []types.UserID
+	var tmp types.UserID
+	for rows.Next() {
+		err = rows.Scan(&tmp)
+		if err != nil {
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("db can't scan: ", err.Error())
+			return nil, err
+		}
+		res = append(res, tmp)
+	}
+	return res, nil
 }
