@@ -42,7 +42,7 @@ func (storage *ImageStorage) Get(ctx context.Context, userID int64) ([]auth.Imag
 
 	images := make([]auth.Image, 5)
 	for i := 0; i < 5; i++ {
-		images[i] = auth.Image{CellNumber: strconv.Itoa(i + 1), Url: ""}
+		images[i] = auth.Image{CellNumber: strconv.Itoa(i), Url: ""}
 	}
 
 	for rows.Next() {
@@ -52,7 +52,7 @@ func (storage *ImageStorage) Get(ctx context.Context, userID int64) ([]auth.Imag
 			return []auth.Image{}, err
 		}
 		cell, _ := strconv.Atoi(image.CellNumber)
-		images[cell-1] = auth.Image{image.UserId, image.Url, image.CellNumber}
+		images[cell] = auth.Image{image.UserId, image.Url, image.CellNumber}
 	}
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("Return ", len(images), " images")
 	return images, nil
