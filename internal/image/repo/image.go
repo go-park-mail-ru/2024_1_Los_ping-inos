@@ -4,8 +4,9 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	_ "github.com/lib/pq"
 	"time"
+
+	_ "github.com/lib/pq"
 
 	_ "github.com/jackc/pgx/stdlib"
 	"github.com/sirupsen/logrus"
@@ -97,6 +98,7 @@ func (storage *ImageStorage) Add(ctx context.Context, image image.Image) error {
 	logger := ctx.Value(Logg).(Log)
 	query := "INSERT INTO person_image (person_id, image_url, cell_number) VALUES ($1, $2, $3) ON CONFLICT (person_id, cell_number) DO UPDATE SET image_url = EXCLUDED.image_url;"
 
+	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("hehe ", image.UserId, image.CellNumber, image.Url)
 	_, err := storage.dbReader.Exec(query, image.UserId, image.Url, image.CellNumber)
 	if err != nil {
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't query: ", err.Error())

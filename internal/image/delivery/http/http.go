@@ -5,14 +5,9 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"log"
 	"math/rand"
 	"net/http"
 
-	"github.com/aws/aws-sdk-go-v2/aws"
-	awsUpload "github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/session"
-	serviceUpload "github.com/aws/aws-sdk-go/service/s3"
 	"github.com/emirpasic/gods/sets/hashset"
 	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
@@ -126,7 +121,6 @@ func (deliver *ImageHandler) AddImageHandler() func(w http.ResponseWriter, r *ht
 		}
 
 		cell := request.FormValue("cell")
-
 		img, handler, err := request.FormFile("image")
 		if err != nil && errors.Is(err, http.ErrMissingFile) {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn(err.Error())
@@ -152,50 +146,19 @@ func (deliver *ImageHandler) AddImageHandler() func(w http.ResponseWriter, r *ht
 		}
 
 		userId := int64(request.Context().Value(RequestUserID).(types.UserID))
-		//userId := int64(2)
-		if err != nil {
-			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn(err.Error())
-			requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
-			return
-		}
-
 		filename := fmt.Sprint(userId) + "/" + fmt.Sprint(cell) + "/" + fmt.Sprint(rand.Int()) + handler.Filename
 		objectURL := "https://los_ping.hb.ru-msk.vkcs.cloud/" + filename
-
-		sess, err := session.NewSession(&awsUpload.Config{
-			Region: aws.String("ru-msk"),
-		})
-		if err != nil {
-			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn(err.Error())
-			return
-		}
-
 		userImage := image.Image{
 			UserId:     userId,
 			Url:        objectURL,
 			CellNumber: cell,
+			FileName:   filename,
 		}
 
-		err = deliver.useCase.AddImage(userImage, request.Context())
+		err = deliver.useCase.AddImage(userImage, img, request.Context())
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn(err.Error())
 			requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
-			return
-		}
-
-		svc := serviceUpload.New(sess, awsUpload.NewConfig().WithEndpoint(vkCloudHotboxEndpoint).WithRegion(defaultRegion))
-		bucket := "los_ping"
-
-		params := &serviceUpload.PutObjectInput{
-			Bucket: aws.String(bucket),
-			Key:    aws.String(filename),
-			Body:   img,
-			ACL:    aws.String("public-read"),
-		}
-
-		_, err = svc.PutObject(params)
-		if err != nil {
-			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn(err.Error())
 			return
 		}
 
@@ -210,7 +173,6 @@ func (deliver *ImageHandler) DeleteImageHandler() func(w http.ResponseWriter, r 
 		logger := request.Context().Value(Logg).(Log)
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("delete image")
 		userId := int64(request.Context().Value(RequestUserID).(types.UserID))
-		//userId := int64(2)
 		var r requests.ImageRequest
 
 		body, err := io.ReadAll(request.Body)
@@ -237,38 +199,6 @@ func (deliver *ImageHandler) DeleteImageHandler() func(w http.ResponseWriter, r 
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn(err.Error())
 			requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
 			return
-		}
-
-		sess, err := session.NewSession(&awsUpload.Config{
-			Region: aws.String("ru-msk"),
-		})
-		if err != nil {
-			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn(err.Error())
-			return
-		}
-
-		svc := serviceUpload.New(sess, awsUpload.NewConfig().WithEndpoint(vkCloudHotboxEndpoint).WithRegion(defaultRegion))
-		bucket := "los_ping"
-		key := fmt.Sprint(userId) + "/" + r.CellNumber + "/"
-
-		input := &serviceUpload.ListObjectsV2Input{
-			Bucket: aws.String(bucket),
-			Prefix: aws.String(key),
-		}
-		result, err := svc.ListObjectsV2(input)
-		if err != nil {
-			log.Fatalf("Unable to list objects in directory %q, %v\n", key, err)
-		}
-
-		for _, obj := range result.Contents {
-			if _, err := svc.DeleteObject(&serviceUpload.DeleteObjectInput{
-				Bucket: aws.String(bucket),
-				Key:    obj.Key,
-			}); err != nil {
-				log.Fatalf("Unable to delete object %q from bucket %q, %v\n", key, bucket, err)
-			} else {
-				log.Printf("Object %q deleted from bucket %q\n", key, bucket)
-			}
 		}
 
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("image added")

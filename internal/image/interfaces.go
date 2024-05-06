@@ -2,12 +2,13 @@ package image
 
 import (
 	"context"
+	"mime/multipart"
 )
 
 type (
 	UseCase interface {
 		GetImage(userID int64, cell string, ctx context.Context) (string, error)
-		AddImage(userImage Image, ctx context.Context) error
+		AddImage(userImage Image, img multipart.File, ctx context.Context) error
 		DeleteImage(userImage Image, ctx context.Context) error
 	}
 
