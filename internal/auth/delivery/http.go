@@ -443,6 +443,7 @@ func generateCookie(name, value string, expires time.Time, httpOnly bool) *http.
 		HttpOnly: httpOnly,
 		Domain:   "127.0.0.1",
 		SameSite: http.SameSiteNoneMode,
+		Secure:   true,
 	}
 }
 
