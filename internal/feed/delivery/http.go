@@ -200,7 +200,7 @@ func (deliver *FeedHandler) handleWebsocket(ctx context.Context, connection *web
 func (deliver *FeedHandler) GetAllChats() func(respWriter http.ResponseWriter, request *http.Request) {
 	return func(respWriter http.ResponseWriter, request *http.Request) {
 		logger := request.Context().Value(Logg).(Log)
-		chats, err := deliver.AuthManager.GetMatches(request.Context(), &gen.GetMatchesRequest{
+		matches, err := deliver.AuthManager.GetMatches(request.Context(), &gen.GetMatchesRequest{
 			UserID:    int64(request.Context().Value(RequestUserID).(types.UserID)),
 			RequestID: logger.RequestID,
 		})
@@ -211,7 +211,7 @@ func (deliver *FeedHandler) GetAllChats() func(respWriter http.ResponseWriter, r
 		}
 
 		messages, err := deliver.usecase.GetLastMessages(request.Context(),
-			int64(request.Context().Value(RequestUserID).(types.UserID)), getIds(chats))
+			int64(request.Context().Value(RequestUserID).(types.UserID)), getIds(matches))
 
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Error("can't get chats: ", err.Error())
@@ -220,19 +220,25 @@ func (deliver *FeedHandler) GetAllChats() func(respWriter http.ResponseWriter, r
 		}
 
 		var allChats feed.AllChats
-		allChats.Chats = make([]feed.ChatPreview, len(messages))
-		for i := range messages {
+		allChats.Chats = make([]feed.ChatPreview, len(matches.Chats))
+		for i := range matches.Chats {
 			allChats.Chats[i] = feed.ChatPreview{
-				PersonID: chats.Chats[i].PersonID,
-				Name:     chats.Chats[i].Name,
-				Photo:    chats.Chats[i].Photo,
-				LastMessage: feed.Message{
-					Id:       messages[i].Id,
-					Data:     messages[i].Data,
-					Sender:   messages[i].Sender,
-					Receiver: messages[i].Receiver,
-					Time:     messages[i].Time,
-				},
+				PersonID: matches.Chats[i].PersonID,
+				Name:     matches.Chats[i].Name,
+				Photo:    matches.Chats[i].Photo,
+			}
+
+			for j := range messages {
+				if int64(messages[j].Sender) == allChats.Chats[i].PersonID || int64(messages[j].Receiver) == allChats.Chats[i].PersonID {
+					allChats.Chats[i].LastMessage = feed.Message{
+						Id:       messages[j].Id,
+						Data:     messages[j].Data,
+						Sender:   messages[j].Sender,
+						Receiver: messages[j].Receiver,
+						Time:     messages[j].Time,
+					}
+					break
+				}
 			}
 		}
 

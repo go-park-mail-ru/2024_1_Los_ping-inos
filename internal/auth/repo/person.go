@@ -163,7 +163,7 @@ func (storage *PersonStorage) GetMatch(ctx context.Context, person1ID types.User
 	query := stBuilder.Select("t1.person_two_id").
 		From(LikeTableName + "t1").
 		InnerJoin(LikeTableName + "t2 ON t1.person_one_id = t2.person_two_id AND t1.person_two_id = t2.person_one_id").
-		Where(qb.And{qb.Eq{"t1.person_one_id": person1ID}}).
+		Where(qb.And{qb.Eq{"t1.person_one_id": person1ID}}).OrderBy("t1.person_two_id").
 		RunWith(storage.dbReader)
 
 	rows, err := query.Query()
