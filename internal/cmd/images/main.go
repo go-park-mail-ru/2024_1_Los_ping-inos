@@ -51,7 +51,7 @@ func main() {
 		logger.Logger.Fatal(err)
 		println("princess")
 	}
-	println(grpcCfg.Server.Port)
+	println("THIS IS GRPC PORT", grpcCfg.Server.Port)
 	srv, ok := net.Listen("tcp", grpcCfg.Server.Port)
 	if ok != nil {
 		logger.Logger.Fatal(err)

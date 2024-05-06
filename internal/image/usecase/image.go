@@ -92,6 +92,7 @@ func (service *UseCase) GetImage(userID int64, cell string, ctx context.Context)
 
 	var req *v4.PresignedHTTPRequest
 	var url string
+	var obj string
 
 	for _, img := range images {
 		objectKey := img.Url
@@ -104,13 +105,14 @@ func (service *UseCase) GetImage(userID int64, cell string, ctx context.Context)
 		})
 		url = req.URL
 		println(url)
+		obj = img.Url
 	}
 
 	if err != nil {
 		log.Printf("Couldn't get a presigned request to get %v. Error: %v\n", bucketName, err)
 	}
 
-	return url, err
+	return obj, err
 }
 
 func (service *UseCase) AddImage(userImage image.Image, img multipart.File, ctx context.Context) error {
