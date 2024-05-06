@@ -129,7 +129,9 @@ func (deliver *FeedHandler) GetChat() func(respWriter http.ResponseWriter, reque
 			requests.SendResponse(respWriter, request, http.StatusInternalServerError, err.Error())
 			return
 		}
-
+		if messages == nil {
+			messages = []feed.Message{}
+		}
 		requests.SendResponse(respWriter, request, http.StatusOK, messages)
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("sent chat")
 	}
