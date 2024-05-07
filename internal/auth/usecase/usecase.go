@@ -18,15 +18,13 @@ type UseCase struct {
 	personStorage   auth.PersonStorage
 	sessionStorage  auth.SessionStorage
 	interestStorage auth.InterestStorage
-	imageStorage    auth.ImageStorage
 }
 
-func NewAuthUseCase(dbReader auth.PersonStorage, sstore auth.SessionStorage, istore auth.InterestStorage, imgStore auth.ImageStorage) *UseCase {
+func NewAuthUseCase(dbReader auth.PersonStorage, sstore auth.SessionStorage, istore auth.InterestStorage) *UseCase {
 	return &UseCase{
 		personStorage:   dbReader,
 		sessionStorage:  sstore,
 		interestStorage: istore,
-		imageStorage:    imgStore,
 	}
 }
 
@@ -146,13 +144,8 @@ func (service *UseCase) getUserCards(persons []*auth.Person, ctx context.Context
 	interests := make([][]*auth.Interest, len(persons))
 	images := make([][]auth.Image, len(persons))
 
-	// анна , в субботу в пять на малой никитской ? кафе с не скро мным наз ванием , ,
-	// баунти' ' ., где я буду вас... ебаунти=) ;-) ;-) :-) :-):-)
-
-	println("some interesting stuffchik")
 	grpcConn, err := grpc.Dial("images:50052", grpc.WithInsecure())
 	if err != nil {
-		println("i fuck yo manma")
 		return nil, nil, err
 	}
 	for j := range persons {

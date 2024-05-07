@@ -56,13 +56,8 @@ func (service *UseCase) getUserCards(persons []*feed.Person, ctx context.Context
 	interests := make([][]*feed.Interest, len(persons))
 	images := make([][]feed.Image, len(persons))
 
-	// анна , в субботу в пять на малой никитской ? кафе с не скро мным наз ванием , ,
-	// баунти' ' ., где я буду вас... ебаунти=) ;-) ;-) :-) :-):-)
-
-	println("some interesting stuffchik")
 	grpcConn, err := grpc.Dial("images:50052", grpc.WithInsecure())
 	if err != nil {
-		println("i fuck yo manma")
 		return nil, nil, err
 	}
 	for j := range persons {

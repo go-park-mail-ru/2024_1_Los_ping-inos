@@ -40,8 +40,4 @@ type (
 		GetPersonInterests(ctx context.Context, personID types.UserID) ([]*Interest, error)
 		DeletePersonInterests(ctx context.Context, personID types.UserID, interestID []types.InterestID) error
 	}
-
-	ImageStorage interface {
-		Get(ctx context.Context, userID int64) ([]Image, error)
-	}
 )

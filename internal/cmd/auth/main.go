@@ -80,7 +80,7 @@ func main() {
 	}
 
 	useCase := authUsecase.NewAuthUseCase(authRepo.NewAuthPersonStorage(db),
-		authRepo.NewSessionStorage(redisCli), authRepo.NewInterestStorage(db), authRepo.NewImageStorage(db))
+		authRepo.NewSessionStorage(redisCli), authRepo.NewInterestStorage(db))
 
 	srv, ok := net.Listen("tcp", grpcCfg.Server.Port)
 	if ok != nil {
