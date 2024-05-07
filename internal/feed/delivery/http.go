@@ -13,6 +13,7 @@ import (
 	requests "main.go/internal/pkg"
 	"main.go/internal/types"
 	"net/http"
+	"time"
 )
 
 type FeedHandler struct {
@@ -297,4 +298,19 @@ func (deliver *FeedHandler) GetAlClaims() func(respWriter http.ResponseWriter, r
 		}
 		requests.SendResponse(respWriter, request, http.StatusOK, claims)
 	}
+}
+
+func MetricTimeMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(respWriter http.ResponseWriter, request *http.Request) {
+		start := time.Now()
+
+		next.ServeHTTP(respWriter, request)
+
+		end := time.Since(start)
+		path := request.URL.Path
+		if path != "/metrics" {
+			feed.TotalHits.WithLabelValues().Inc()
+			feed.HitDuration.WithLabelValues(request.Method, path).Set(float64(end.Milliseconds()))
+		}
+	})
 }

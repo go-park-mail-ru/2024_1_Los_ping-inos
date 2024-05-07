@@ -134,9 +134,11 @@ func startServer(cfg *config.Config, logger Log, deliver Delivers) error {
 		AllowedMethodMiddleware(http.HandlerFunc(feedDel.GetAlClaims()), hashset.New("GET")),
 		"get claim types", logger))
 
+	metricHandler := Delivery.MetricTimeMiddleware(mux)
+
 	server := http.Server{
 		Addr:         cfg.Server.Host + cfg.Server.Port,
-		Handler:      mux,
+		Handler:      metricHandler,
 		ReadTimeout:  cfg.Server.Timeout * time.Second,
 		WriteTimeout: cfg.Server.Timeout * time.Second,
 	}

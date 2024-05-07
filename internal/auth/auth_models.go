@@ -107,7 +107,7 @@ var (
 	)
 	HitDuration = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
-			Name: "auth_methods_response_time",
+			Name: "auth_methods_handling_duration",
 			Help: "Duration processing hit",
 		},
 		[]string{"method", "path"},

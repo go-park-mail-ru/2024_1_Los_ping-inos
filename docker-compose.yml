@@ -84,12 +84,16 @@ services:
   adminer: # adminer db client
     image: adminer
     ports:
-      - 8000:8080
+      - "8000:8080"
     depends_on:
       - db
     networks:
       - pinguinos-net
 
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "6003:3000"
 networks:
   pinguinos-net:
     driver: bridge

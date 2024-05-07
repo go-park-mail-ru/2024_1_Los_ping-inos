@@ -8,6 +8,7 @@ import (
 	"io"
 	"math/rand"
 	"net/http"
+	"time"
 
 	"github.com/emirpasic/gods/sets/hashset"
 	"github.com/sirupsen/logrus"
@@ -36,7 +37,7 @@ func (deliver *ImageHandler) ListenAndServe() error {
 
 	//logger.Logger.Infof("started auth http server at %v", server.Addr)
 	//	fmt.Printf("started auth http server at %v\n", server.Addr)
-	err := http.ListenAndServe(":8082", deliver.mx)
+	err := http.ListenAndServe(":8082", MetricTimeMiddleware(deliver.mx))
 	if err != nil {
 		//logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn(err.Error())
 		return fmt.Errorf("listen and serve error: %w", err)
@@ -76,7 +77,6 @@ func GetApi(c *usecase.UseCase, logger Log) *ImageHandler {
 		requests.AllowedMethodMiddleware(
 			requests.IsAuthenticatedMiddleware(http.HandlerFunc(api.DeleteImageHandler()), authManager), hashset.New("POST")),
 		"delete image", logger))
-
 	return api
 }
 
@@ -207,4 +207,19 @@ func (deliver *ImageHandler) DeleteImageHandler() func(w http.ResponseWriter, r 
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("image added")
 		requests.SendResponse(respWriter, request, http.StatusOK, nil)
 	}
+}
+
+func MetricTimeMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(respWriter http.ResponseWriter, request *http.Request) {
+		start := time.Now()
+
+		next.ServeHTTP(respWriter, request)
+
+		end := time.Since(start)
+		path := request.URL.Path
+		if path != "/metrics" {
+			image.TotalHits.WithLabelValues().Inc()
+			image.HitDuration.WithLabelValues(request.Method, path).Set(float64(end.Milliseconds()))
+		}
+	})
 }

@@ -1,6 +1,7 @@
 package feed
 
 import (
+	"github.com/prometheus/client_golang/prometheus"
 	"main.go/internal/types"
 	"time"
 )
@@ -108,4 +109,21 @@ type (
 		Id    int64  `json:"id"`
 		Title string `json:"title"`
 	}
+)
+
+var (
+	TotalHits = prometheus.NewCounterVec(
+		prometheus.CounterOpts{
+			Name: "feed_total_hits",
+			Help: "Count of hits in feed service.",
+		},
+		[]string{},
+	)
+	HitDuration = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "feed_methods_handling_duration",
+			Help: "Duration processing hit",
+		},
+		[]string{"method", "path"},
+	)
 )

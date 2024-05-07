@@ -441,8 +441,10 @@ func MetricTimeMiddleware(next http.Handler) http.Handler {
 
 		end := time.Since(start)
 		path := request.URL.Path
-		auth.TotalHits.WithLabelValues().Inc()
-		auth.HitDuration.WithLabelValues(request.Method, path).Set(float64(end.Milliseconds()))
+		if path != "/metrics" {
+			auth.TotalHits.WithLabelValues().Inc()
+			auth.HitDuration.WithLabelValues(request.Method, path).Set(float64(end.Milliseconds()))
+		}
 	})
 }
 

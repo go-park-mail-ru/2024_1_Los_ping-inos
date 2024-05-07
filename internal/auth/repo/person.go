@@ -8,9 +8,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"main.go/internal/auth"
 	. "main.go/internal/logs"
-	requests "main.go/internal/pkg"
 	"main.go/internal/types"
-	"time"
 )
 
 const (
@@ -30,8 +28,6 @@ func NewAuthPersonStorage(dbReader *sql.DB) *PersonStorage {
 }
 
 func (storage *PersonStorage) Get(ctx context.Context, filter *auth.PersonGetFilter) ([]*auth.Person, error) {
-	defer requests.TrackContextTimings(ctx, "GetPersonRep", time.Now())
-
 	logger := ctx.Value(Logg).(Log)
 	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
 	whereMap := qb.And{}
@@ -78,8 +74,6 @@ func (storage *PersonStorage) Get(ctx context.Context, filter *auth.PersonGetFil
 }
 
 func (storage *PersonStorage) Update(ctx context.Context, person auth.Person) error {
-	defer requests.TrackContextTimings(ctx, "UpdatePersonRep", time.Now())
-
 	logger := ctx.Value(Logg).(Log)
 	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
 	setMap := make(map[string]interface{})
@@ -115,8 +109,6 @@ func (storage *PersonStorage) Update(ctx context.Context, person auth.Person) er
 }
 
 func (storage *PersonStorage) Delete(ctx context.Context, UID types.UserID) error {
-	defer requests.TrackContextTimings(ctx, "DeletePersonRep", time.Now())
-
 	logger := ctx.Value(Logg).(Log)
 	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db delete request to ", PersonTableName)
@@ -136,8 +128,6 @@ func (storage *PersonStorage) Delete(ctx context.Context, UID types.UserID) erro
 }
 
 func (storage *PersonStorage) AddAccount(ctx context.Context, Name string, Birthday string, Gender string, Email string, Password string) error {
-	defer requests.TrackContextTimings(ctx, "CreatePersonRep", time.Now())
-
 	logger := ctx.Value(Logg).(Log)
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db create request to ", PersonTableName)
 	_, err := storage.dbReader.Exec(
@@ -154,8 +144,6 @@ func (storage *PersonStorage) AddAccount(ctx context.Context, Name string, Birth
 }
 
 func (storage *PersonStorage) GetMatch(ctx context.Context, person1ID types.UserID) ([]types.UserID, error) {
-	defer requests.TrackContextTimings(ctx, "GetMatchesRep", time.Now())
-
 	logger := ctx.Value(Logg).(Log)
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db get request to ", LikeTableName)
 	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
