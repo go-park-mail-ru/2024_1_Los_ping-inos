@@ -1,9 +1,10 @@
 package auth
 
 import (
+	"time"
+
 	"github.com/prometheus/client_golang/prometheus"
 	"main.go/internal/types"
-	"time"
 )
 
 type (
