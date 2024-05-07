@@ -21,10 +21,12 @@ func NewGRPCDeliver(uc *usecase.UseCase) *Server {
 	return res
 }
 
-func (server *Server) GetImages(_ context.Context, req *pb.GetImageRequest) (*pb.GetImageResponce, error) {
+func (server *Server) GetImage(_ context.Context, req *pb.GetImageRequest) (*pb.GetImageResponce, error) {
 	tmp := server.ctx.Value(Logg).(Log)
 	tmp.RequestID = req.RequestID
 	server.ctx = context.WithValue(server.ctx, Logg, tmp)
+	println("THIS IS ID AND CELL", req.Id, req.Cell)
 	url, err := server.useCase.GetImage(req.Id, req.Cell, server.ctx)
+	println("THIS IS ULR", url)
 	return &pb.GetImageResponce{Url: url}, err
 }

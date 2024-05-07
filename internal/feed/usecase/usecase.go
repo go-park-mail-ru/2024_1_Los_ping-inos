@@ -55,34 +55,45 @@ func (service *UseCase) getUserCards(persons []*feed.Person, ctx context.Context
 	var err error
 	interests := make([][]*feed.Interest, len(persons))
 	images := make([][]feed.Image, len(persons))
+
+	// анна , в субботу в пять на малой никитской ? кафе с не скро мным наз ванием , ,
+	// баунти' ' ., где я буду вас... ебаунти=) ;-) ;-) :-) :-):-)
+
+	println("some interesting stuffchik")
+	grpcConn, err := grpc.Dial("images:50052", grpc.WithInsecure())
+	if err != nil {
+		println("i fuck yo manma")
+		return nil, nil, err
+	}
 	for j := range persons {
+		imageManager := image.NewImageClient(grpcConn)
+		imagePerson := []feed.Image{}
+		for i := 0; i < 6; i++ {
+			image, err := imageManager.GetImage(ctx, &image.GetImageRequest{Id: int64(persons[j].ID), Cell: fmt.Sprintf("%v", i)})
+			imagePiece := feed.Image{}
+			if err != nil {
+				imagePiece = feed.Image{
+					UserId:     int64(persons[j].ID),
+					Url:        "",
+					CellNumber: fmt.Sprintf("%v", i),
+				}
+			} else {
+				imagePiece = feed.Image{
+					UserId:     int64(persons[j].ID),
+					Url:        image.Url,
+					CellNumber: fmt.Sprintf("%v", i),
+				}
+			}
+			imagePerson = append(imagePerson, imagePiece)
+		}
+		images[j] = imagePerson
+
 		interests[j], err = service.storage.GetPersonInterests(ctx, persons[j].ID)
 		if err != nil {
 			return nil, nil, err
 		}
-		println("some interesting stuffchik")
-		grpcConn, err := grpc.Dial("image:50052", grpc.WithInsecure())
-		if err != nil {
-			println("i fuck yo manma")
-			return nil, nil, err
-		}
-		//imagess := make([]feed.Image, 0)
-		imageManager := image.NewImageClient(grpcConn)
-		for i := 1; i < 6; i++ {
-			image, err := imageManager.GetImage(ctx, &image.GetImageRequest{Id: 1, Cell: fmt.Sprintf("%v", i)})
-			if err != nil {
-				println("im sorry babemama")
-				return nil, nil, err
-			}
-			//imagess = append(imagess, feed.Image{CellNumber: fmt.Sprintf("%v", i), Url: image.Url})
-			println("oru")
-			println(image)
-		}
-		images[j], err = service.storage.GetImages(ctx, int64(persons[j].ID))
-		if err != nil {
-			return nil, nil, err
-		}
 	}
+
 	return interests, images, nil
 }
 

@@ -4,13 +4,17 @@ import (
 	"cmp"
 	"context"
 	"errors"
-	"github.com/google/uuid"
-	"golang.org/x/crypto/bcrypt"
-	"main.go/internal/auth"
-	requests "main.go/internal/pkg"
-	"main.go/internal/types"
+	"fmt"
 	"slices"
 	"time"
+
+	"github.com/google/uuid"
+	"golang.org/x/crypto/bcrypt"
+	"google.golang.org/grpc"
+	"main.go/internal/auth"
+	image "main.go/internal/image/protos/gen"
+	requests "main.go/internal/pkg"
+	"main.go/internal/types"
 )
 
 type UseCase struct {
@@ -157,23 +161,44 @@ func (service *UseCase) getUserCards(persons []*auth.Person, ctx context.Context
 	interests := make([][]*auth.Interest, len(persons))
 	images := make([][]auth.Image, len(persons))
 
-	// TODO
-	//interests, images, err := service.personStorage.GetUserCards(ctx, getUserIDs(persons))
-	//
-	//if err != nil {
-	//	return nil, nil, err
-	//}
+	// анна , в субботу в пять на малой никитской ? кафе с не скро мным наз ванием , ,
+	// баунти' ' ., где я буду вас... ебаунти=) ;-) ;-) :-) :-):-)
 
+	println("some interesting stuffchik")
+	grpcConn, err := grpc.Dial("images:50052", grpc.WithInsecure())
+	if err != nil {
+		println("i fuck yo manma")
+		return nil, nil, err
+	}
 	for j := range persons {
+		imageManager := image.NewImageClient(grpcConn)
+		imagePerson := []auth.Image{}
+		for i := 0; i < 6; i++ {
+			image, err := imageManager.GetImage(ctx, &image.GetImageRequest{Id: int64(persons[j].ID), Cell: fmt.Sprintf("%v", i)})
+			imagePiece := auth.Image{}
+			if err != nil {
+				imagePiece = auth.Image{
+					UserId:     int64(persons[j].ID),
+					Url:        "",
+					CellNumber: fmt.Sprintf("%v", i),
+				}
+			} else {
+				imagePiece = auth.Image{
+					UserId:     int64(persons[j].ID),
+					Url:        image.Url,
+					CellNumber: fmt.Sprintf("%v", i),
+				}
+			}
+			imagePerson = append(imagePerson, imagePiece)
+		}
+		images[j] = imagePerson
+
 		interests[j], err = service.interestStorage.GetPersonInterests(ctx, persons[j].ID)
 		if err != nil {
 			return nil, nil, err
 		}
-		images[j], err = service.imageStorage.Get(ctx, int64(persons[j].ID))
-		if err != nil {
-			return nil, nil, err
-		}
 	}
+
 	return interests, images, nil
 }
 
