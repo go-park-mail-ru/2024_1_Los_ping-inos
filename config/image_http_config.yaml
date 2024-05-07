@@ -1,0 +1,21 @@
+apiPath: "/api/v1/"
+# server:
+#   user: "postgres"
+#   database: "tpTinder"
+#   password: "postgres"
+#   host: "localhost"
+#   port: 5432
+#   timer: 1
+server:
+  host: "0.0.0.0"
+  port: ":8082"
+  swaggerPort: ":8085"
+  timeout: 5
+
+database:
+  host: "db"
+  port: "5432"
+  dbname: "tpTinder"
+  user: "postgres"
+  password: "postgres"
+  timer: 5

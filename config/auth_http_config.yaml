@@ -1,0 +1,17 @@
+apiPath: "/api/v1/"
+
+server:
+  host: "0.0.0.0"
+  port: ":8083"
+  timeout: 5
+
+database:
+  host: "db"
+  port: "5432"
+  dbname: "tpTinder"
+  user: "postgres"
+  password: "postgres"
+
+redis:
+  host: "redis"
+  port: "6379"

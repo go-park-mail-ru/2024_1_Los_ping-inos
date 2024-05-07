@@ -60,4 +60,52 @@ type (
 		Person1 types.UserID
 		Person2 types.UserID
 	}
+
+	MessageToReceive struct {
+		Id       int64        `json:"id"`
+		Data     string       `json:"data"`
+		Sender   types.UserID `json:"sender"`
+		Receiver types.UserID `json:"receiver"`
+		Time     int64        `json:"time"`
+	}
+
+	Message struct {
+		Id       int64        `json:"id"`
+		Data     string       `json:"data"`
+		Sender   types.UserID `json:"sender"`
+		Receiver types.UserID `json:"receiver"`
+		Time     time.Time    `json:"time"`
+	}
+
+	GetChatRequest struct {
+		Person types.UserID `json:"person"`
+	}
+
+	ChatPreview struct {
+		PersonID    int64   `json:"personID"`
+		Name        string  `json:"name"`
+		Photo       string  `json:"photo"`
+		LastMessage Message `json:"lastMessage"`
+	}
+
+	AllChats struct {
+		Chats []ChatPreview `json:"chats"`
+	}
+
+	Claim struct {
+		Id         int64 `json:"id"`
+		TypeID     int64 `json:"typeID"`
+		SenderID   int64 `json:"senderID"`
+		ReceiverID int64 `json:"receiverID"`
+	}
+
+	CreateClaimRequest struct {
+		Type       int64 `json:"type"`
+		ReceiverID int64 `json:"receiverID"`
+	}
+
+	PureClaim struct {
+		Id    int64  `json:"id"`
+		Title string `json:"title"`
+	}
 )

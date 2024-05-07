@@ -1,10 +1,13 @@
 package delivery
 
 import (
+	"context"
 	"encoding/json"
+	"github.com/gorilla/websocket"
 	"github.com/sirupsen/logrus"
 	"io"
 	. "main.go/config"
+	gen "main.go/internal/auth/proto"
 	"main.go/internal/feed"
 	. "main.go/internal/logs"
 	requests "main.go/internal/pkg"
@@ -13,12 +16,14 @@ import (
 )
 
 type FeedHandler struct {
-	usecase feed.UseCase
+	usecase     feed.UseCase
+	AuthManager gen.AuthHandlClient
 }
 
-func NewFeedDelivery(uc feed.UseCase) *FeedHandler {
+func NewFeedDelivery(uc feed.UseCase, am gen.AuthHandlClient) *FeedHandler {
 	return &FeedHandler{
-		usecase: uc,
+		usecase:     uc,
+		AuthManager: am,
 	}
 }
 
@@ -35,7 +40,7 @@ func NewFeedDelivery(uc feed.UseCase) *FeedHandler {
 // @Failure 500       {string} string
 func (deliver *FeedHandler) GetCardsHandler() func(http.ResponseWriter, *http.Request) {
 	return func(respWriter http.ResponseWriter, request *http.Request) {
-		logger := request.Context().Value(Logg).(*Log)
+		logger := request.Context().Value(Logg).(Log)
 
 		cards, err := deliver.usecase.GetCards(request.Context().Value(RequestUserID).(types.UserID), request.Context())
 		if err != nil {
@@ -62,7 +67,7 @@ func (deliver *FeedHandler) GetCardsHandler() func(http.ResponseWriter, *http.Re
 // @Failure 405       {string} string
 func (deliver *FeedHandler) CreateLike() func(respWriter http.ResponseWriter, request *http.Request) {
 	return func(respWriter http.ResponseWriter, request *http.Request) {
-		logger := request.Context().Value(Logg).(*Log)
+		logger := request.Context().Value(Logg).(Log)
 
 		body, err := io.ReadAll(request.Body)
 		if err != nil { // TODO эти два блока вынести в отдельную функцию и напихать её во все ручки
@@ -93,8 +98,203 @@ func (deliver *FeedHandler) CreateLike() func(respWriter http.ResponseWriter, re
 
 func (deliver *FeedHandler) CreateDislike() func(respWriter http.ResponseWriter, request *http.Request) {
 	return func(respWriter http.ResponseWriter, request *http.Request) {
-		logger := request.Context().Value(Logg).(*Log)
+		logger := request.Context().Value(Logg).(Log)
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("not implemented dislike")
 		requests.SendResponse(respWriter, request, http.StatusOK, nil)
+	}
+}
+
+func (deliver *FeedHandler) GetChat() func(respWriter http.ResponseWriter, request *http.Request) {
+	return func(respWriter http.ResponseWriter, request *http.Request) {
+		logger := request.Context().Value(Logg).(Log)
+		body, err := io.ReadAll(request.Body)
+		if err != nil { // TODO эти два блока вынести в отдельную функцию и напихать её во все ручки
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("bad body: ", err.Error())
+			requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
+			return
+		}
+
+		var requestBody feed.GetChatRequest
+		err = json.Unmarshal(body, &requestBody)
+		if err != nil {
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't unmarshal body: ", err.Error())
+			requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
+			return
+		}
+
+		messages, err := deliver.usecase.GetChat(request.Context(), request.Context().Value(RequestUserID).(types.UserID), requestBody.Person)
+		err = json.Unmarshal(body, &requestBody)
+		if err != nil {
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn(err.Error())
+			requests.SendResponse(respWriter, request, http.StatusInternalServerError, err.Error())
+			return
+		}
+		if messages == nil {
+			messages = []feed.Message{}
+		}
+		requests.SendResponse(respWriter, request, http.StatusOK, messages)
+		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("sent chat")
+	}
+}
+
+func upgradeConnection() websocket.Upgrader {
+	upgrader := websocket.Upgrader{
+		CheckOrigin: func(r *http.Request) bool {
+			return true // Пропускаем любой запрос
+		},
+	}
+	return upgrader
+}
+
+func (deliver *FeedHandler) ServeMessages() func(respWriter http.ResponseWriter, request *http.Request) {
+	return func(respWriter http.ResponseWriter, request *http.Request) {
+		logger := request.Context().Value(Logg).(Log)
+		upgrader := upgradeConnection()
+		connection, err := upgrader.Upgrade(respWriter, request, nil)
+		if err != nil {
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Error("can't open connection: ", err.Error())
+			requests.SendResponse(respWriter, request, http.StatusInternalServerError, err.Error())
+			return
+		}
+		deliver.handleWebsocket(request.Context(), connection)
+	}
+}
+
+func (deliver *FeedHandler) handleWebsocket(ctx context.Context, connection *websocket.Conn) {
+	logger := ctx.Value(Logg).(Log)
+	sender := ctx.Value(RequestUserID).(types.UserID)
+	deliver.usecase.AddConnection(ctx, connection, sender)
+
+	for {
+		mt, mess, err := connection.ReadMessage()
+		if err != nil || mt == websocket.CloseMessage {
+			break
+		}
+		var message feed.MessageToReceive
+		err = json.Unmarshal(mess, &message)
+		if err != nil {
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("Error unmarshalling message: ", err.Error())
+			continue
+		}
+		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("got ws message")
+
+		_ = connection.WriteMessage(mt, mess)
+
+		message.Sender = sender
+		_, err = deliver.usecase.SaveMessage(ctx, message)
+		if err != nil {
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("Error saving message: ", err.Error())
+			continue
+		}
+
+		// отправляем сообщение получателю
+		resConnection, ok := deliver.usecase.GetConnection(ctx, message.Receiver)
+		if !ok {
+			continue
+		}
+		err = resConnection.WriteMessage(mt, mess)
+		if err != nil {
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("Error sending message: ", err.Error())
+		}
+	}
+}
+
+func (deliver *FeedHandler) GetAllChats() func(respWriter http.ResponseWriter, request *http.Request) {
+	return func(respWriter http.ResponseWriter, request *http.Request) {
+		logger := request.Context().Value(Logg).(Log)
+		matches, err := deliver.AuthManager.GetMatches(request.Context(), &gen.GetMatchesRequest{
+			UserID:    int64(request.Context().Value(RequestUserID).(types.UserID)),
+			RequestID: logger.RequestID,
+		})
+		if err != nil {
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Error("can't get chats: ", err.Error())
+			requests.SendResponse(respWriter, request, http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		messages, err := deliver.usecase.GetLastMessages(request.Context(),
+			int64(request.Context().Value(RequestUserID).(types.UserID)), getIds(matches))
+
+		if err != nil {
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Error("can't get chats: ", err.Error())
+			requests.SendResponse(respWriter, request, http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		var allChats feed.AllChats
+		allChats.Chats = make([]feed.ChatPreview, len(matches.Chats))
+		for i := range matches.Chats {
+			allChats.Chats[i] = feed.ChatPreview{
+				PersonID: matches.Chats[i].PersonID,
+				Name:     matches.Chats[i].Name,
+				Photo:    matches.Chats[i].Photo,
+			}
+
+			for j := range messages {
+				if int64(messages[j].Sender) == allChats.Chats[i].PersonID || int64(messages[j].Receiver) == allChats.Chats[i].PersonID {
+					allChats.Chats[i].LastMessage = feed.Message{
+						Id:       messages[j].Id,
+						Data:     messages[j].Data,
+						Sender:   messages[j].Sender,
+						Receiver: messages[j].Receiver,
+						Time:     messages[j].Time,
+					}
+					break
+				}
+			}
+		}
+
+		requests.SendResponse(respWriter, request, http.StatusOK, allChats)
+	}
+}
+
+func getIds(l *gen.GetMatchesResponse) []int64 {
+	res := make([]int64, len(l.Chats))
+	for i := range l.Chats {
+		res[i] = l.Chats[i].PersonID
+	}
+	return res
+}
+
+func (deliver *FeedHandler) CreateClaim() func(respWriter http.ResponseWriter, request *http.Request) {
+	return func(respWriter http.ResponseWriter, request *http.Request) {
+		logger := request.Context().Value(Logg).(Log)
+		body, err := io.ReadAll(request.Body)
+		if err != nil { // TODO эти два блока вынести в отдельную функцию и напихать её во все ручки
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("bad body: ", err.Error())
+			requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
+			return
+		}
+		var requestBody feed.CreateClaimRequest
+		err = json.Unmarshal(body, &requestBody)
+		if err != nil {
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("can't unmarshal body: ", err.Error())
+			requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
+			return
+		}
+
+		err = deliver.usecase.CreateClaim(request.Context(), requestBody.Type,
+			int64(request.Context().Value(RequestUserID).(types.UserID)), requestBody.ReceiverID)
+
+		if err != nil {
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't create claim: ", err.Error())
+			requests.SendResponse(respWriter, request, http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		requests.SendResponse(respWriter, request, http.StatusOK, nil)
+	}
+}
+
+func (deliver *FeedHandler) GetAlClaims() func(respWriter http.ResponseWriter, request *http.Request) {
+	return func(respWriter http.ResponseWriter, request *http.Request) {
+		logger := request.Context().Value(Logg).(Log)
+		claims, err := deliver.usecase.GetClaims(request.Context())
+		if err != nil {
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't get claim types: ", err.Error())
+			requests.SendResponse(respWriter, request, http.StatusInternalServerError, err.Error())
+			return
+		}
+		requests.SendResponse(respWriter, request, http.StatusOK, claims)
 	}
 }

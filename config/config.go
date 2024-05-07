@@ -17,17 +17,18 @@ const RequestSID = "SID"
 var Cfg Config
 
 type Config struct {
-	ApiPath    string
-	Server     ServerConfig     `json:"server"`
-	Database   DatabaseConfig   `json:"database"`
-	FilesPaths FilesPathsConfig `json:"filesPaths"`
+	ApiPath    string           `yaml:"apiPath"`
+	Server     ServerConfig     `json:"server" yaml:"server"`
+	Database   DatabaseConfig   `json:"database" yaml:"database"`
+	Redis      RedisConfig      `yaml:"redis"`
+	FilesPaths FilesPathsConfig `json:"filesPaths" yaml:"filesPaths"`
 }
 
 type ServerConfig struct {
-	Host        string        `json:"host"`
-	Port        string        `json:"port"`
-	SwaggerPort string        `json:"swaggerPort"`
-	Timeout     time.Duration `json:"timeout"`
+	Host        string        `json:"host" yaml:"host"`
+	Port        string        `json:"port" yaml:"port"`
+	SwaggerPort string        `json:"swaggerPort" yaml:"swaggerPort"`
+	Timeout     time.Duration `json:"timeout" yaml:"timeout"`
 }
 
 type DatabaseConfig struct {
@@ -36,12 +37,19 @@ type DatabaseConfig struct {
 	Database string `json:"database"`
 	User     string `json:"username"`
 	Password string `json:"password"`
+	Timer    uint32 `json:"timer"`
+	GrpcPort string `json:"grpc_port"`
+}
+
+type RedisConfig struct {
+	Host string `yaml:"host"`
+	Port string `yaml:"port"`
 }
 
 type AwsConfig struct {
-	Id     string `json:"key_id"`
-	Access string `json:"key_access"`
-	Region string `json:"region"`
+	Id     string `json:"key_id" yaml:"id"`
+	Access string `json:"key_access" yaml:"access"`
+	Region string `json:"region" yaml:"region"`
 }
 
 type FilesPathsConfig struct {
@@ -50,9 +58,11 @@ type FilesPathsConfig struct {
 func LoadConfig(path string) (*Config, error) {
 	var err error
 	var config Config
-
 	viper.SetConfigFile(path)
 
+	if err = viper.ReadInConfig(); err != nil {
+		return nil, err
+	}
 	err = viper.BindEnv("server.host", "SERVER_HOST")
 	if err != nil {
 		return nil, err
@@ -85,6 +95,14 @@ func LoadConfig(path string) (*Config, error) {
 	if err != nil {
 		return nil, err
 	}
+	err = viper.BindEnv("database.timer", "DB_TIMER")
+	if err != nil {
+		return nil, err
+	}
+	err = viper.BindEnv("database.grpc", "DB_GRPC")
+	if err != nil {
+		return nil, err
+	}
 	err = viper.BindEnv("aws.key_id", "AWS_ACCESS_KEY_ID")
 	if err != nil {
 		return nil, err
@@ -107,6 +125,5 @@ func LoadConfig(path string) (*Config, error) {
 	}
 
 	Cfg = config
-
 	return &config, nil
 }

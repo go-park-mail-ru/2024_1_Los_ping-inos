@@ -2,7 +2,6 @@ package repo
 
 import (
 	"context"
-	"database/sql"
 	"github.com/sirupsen/logrus"
 	"main.go/internal/feed"
 	. "main.go/internal/logs"
@@ -12,19 +11,9 @@ const (
 	personImageFields = "person_id, image_url, cell_number"
 )
 
-type ImageStorage struct {
-	dbReader *sql.DB
-}
-
-func NewImageStorage(dbReader *sql.DB) *ImageStorage {
-	return &ImageStorage{
-		dbReader: dbReader,
-	}
-}
-
-func (storage *ImageStorage) Get(ctx context.Context, userID int64) ([]feed.Image, error) {
-	logger := ctx.Value(Logg).(*Log)
-	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("Get request to person_image")
+func (storage *PostgresStorage) GetImages(ctx context.Context, userID int64) ([]feed.Image, error) {
+	logger := ctx.Value(Logg).(Log)
+	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("GetLike request to person_image")
 	var images []feed.Image
 
 	query := "SELECT " + personImageFields + " FROM person_image WHERE person_id = $1"

@@ -31,10 +31,17 @@ type (
 		SessionID   string       `json:"session_id"`
 	}
 
+	ProfileGetParams struct {
+		ID        []types.UserID
+		SessionID []string
+		Name      string
+	}
+
 	PersonGetFilter struct {
 		ID        []types.UserID
 		Email     []string
 		SessionID []string
+		Name      string
 	}
 
 	Interest struct {
@@ -48,7 +55,7 @@ type (
 	}
 
 	Profile struct {
-		ID          types.UserID  `json:"-"`
+		ID          types.UserID  `json:"id"`
 		Name        string        `json:"name"`
 		Birthday    time.Time     `json:"birthday"`
 		Description string        `json:"description"`
@@ -67,5 +74,24 @@ type (
 	ImageToSend struct {
 		Cell string `json:"cell"`
 		Url  string `json:"url"`
+	}
+
+	ProfileUpdateRequest struct {
+		Name        string   `json:"name"`
+		Email       string   `json:"email"`
+		Birthday    string   `json:"birthday"`
+		Password    string   `json:"password"`
+		OldPassword string   `json:"oldPassword"`
+		Description string   `json:"description"`
+		Interests   []string `json:"interests"`
+	}
+
+	Session struct {
+		UID types.UserID `json:"UID"`
+		SID string       `json:"SID"`
+	}
+
+	GetMatchesRequest struct {
+		Name string `json:"name"`
 	}
 )

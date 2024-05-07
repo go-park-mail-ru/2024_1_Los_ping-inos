@@ -4,6 +4,9 @@ import (
 	"context"
 	"database/sql"
 	"github.com/sirupsen/logrus"
+	requests "main.go/internal/pkg"
+	"strconv"
+	"time"
 
 	"main.go/internal/auth"
 	. "main.go/internal/logs"
@@ -24,9 +27,10 @@ func NewImageStorage(dbReader *sql.DB) *ImageStorage {
 }
 
 func (storage *ImageStorage) Get(ctx context.Context, userID int64) ([]auth.Image, error) {
-	logger := ctx.Value(Logg).(*Log)
+	defer requests.TrackContextTimings(ctx, "GetImageRep", time.Now())
+
+	logger := ctx.Value(Logg).(Log)
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("Get request to person_image")
-	var images []auth.Image
 
 	query := "SELECT " + personImageFields + " FROM person_image WHERE person_id = $1"
 
@@ -36,15 +40,19 @@ func (storage *ImageStorage) Get(ctx context.Context, userID int64) ([]auth.Imag
 	}
 	defer rows.Close()
 
-	for rows.Next() {
-		var image auth.Image
+	images := make([]auth.Image, 5)
+	for i := 0; i < 5; i++ {
+		images[i] = auth.Image{CellNumber: strconv.Itoa(i), Url: ""}
+	}
 
-		err := rows.Scan(&image.UserId, &image.Url, &image.CellNumber)
+	for rows.Next() {
+		image := auth.Image{}
+		err = rows.Scan(&image.UserId, &image.Url, &image.CellNumber)
 		if err != nil {
 			return []auth.Image{}, err
 		}
-
-		images = append(images, image)
+		cell, _ := strconv.Atoi(image.CellNumber)
+		images[cell] = auth.Image{image.UserId, image.Url, image.CellNumber}
 	}
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("Return ", len(images), " images")
 	return images, nil

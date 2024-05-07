@@ -2,8 +2,6 @@ package repo
 
 import (
 	"context"
-	"database/sql"
-
 	qb "github.com/Masterminds/squirrel"
 	"github.com/sirupsen/logrus"
 	. "main.go/config"
@@ -17,16 +15,6 @@ const (
 	personInterestFields = "person_id, interest_id"
 )
 
-type InterestStorage struct {
-	dbReader *sql.DB
-}
-
-func NewInterestStorage(dbReader *sql.DB) *InterestStorage {
-	return &InterestStorage{
-		dbReader: dbReader,
-	}
-}
-
 func processInterestIDFilter(filter *feed.InterestGetFilter, whereMap *qb.And) {
 	if filter.ID != nil {
 		*whereMap = append(*whereMap, qb.Eq{"id": filter.ID})
@@ -39,8 +27,8 @@ func processInterestNameFilter(filter *feed.InterestGetFilter, whereMap *qb.And)
 	}
 }
 
-func (storage *InterestStorage) Get(ctx context.Context, filter *feed.InterestGetFilter) ([]*feed.Interest, error) {
-	logger := ctx.Value(Logg).(*Log)
+func (storage *PostgresStorage) getInterests(ctx context.Context, filter *feed.InterestGetFilter) ([]*feed.Interest, error) {
+	logger := ctx.Value(Logg).(Log)
 	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
 	whereMap := qb.And{}
 
@@ -86,8 +74,8 @@ func (storage *InterestStorage) Get(ctx context.Context, filter *feed.InterestGe
 	return interests, nil
 }
 
-func (storage *InterestStorage) GetPersonInterests(ctx context.Context, personID types.UserID) ([]*feed.Interest, error) {
-	logger := ctx.Value(Logg).(*Log)
+func (storage *PostgresStorage) GetPersonInterests(ctx context.Context, personID types.UserID) ([]*feed.Interest, error) {
+	logger := ctx.Value(Logg).(Log)
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db get request to ", PersonInterestTableName)
 	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
 	query := stBuilder.
@@ -117,5 +105,5 @@ func (storage *InterestStorage) GetPersonInterests(ctx context.Context, personID
 		ids = append(ids, interestID)
 	}
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db got ", len(ids), " interest ids")
-	return storage.Get(ctx, &feed.InterestGetFilter{ID: ids})
+	return storage.getInterests(ctx, &feed.InterestGetFilter{ID: ids})
 }
