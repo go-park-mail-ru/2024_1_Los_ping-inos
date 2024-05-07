@@ -114,7 +114,7 @@ func (storage *PersonStorage) Update(ctx context.Context, person auth.Person) er
 	return nil
 }
 
-func (storage *PersonStorage) Delete(ctx context.Context, sessionID string) error {
+func (storage *PersonStorage) Delete(ctx context.Context, UID types.UserID) error {
 	defer requests.TrackContextTimings(ctx, "DeletePersonRep", time.Now())
 
 	logger := ctx.Value(Logg).(Log)
@@ -122,15 +122,15 @@ func (storage *PersonStorage) Delete(ctx context.Context, sessionID string) erro
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db delete request to ", PersonTableName)
 	query := stBuilder.
 		Delete(PersonTableName).
-		Where(qb.Eq{"session_id": sessionID}).
+		Where(qb.Eq{"id": UID}).
 		RunWith(storage.dbReader)
 
 	rows, err := query.Query()
-	defer rows.Close()
 	if err != nil {
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("db delete can't query: ", err.Error())
 		return err
 	}
+	defer rows.Close()
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db person deleted")
 	return nil
 }

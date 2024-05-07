@@ -39,10 +39,10 @@ func (service *UseCase) GetProfile(params auth.ProfileGetParams, ctx context.Con
 	return prof, err
 }
 
-func (service *UseCase) UpdateProfile(SID string, prof auth.ProfileUpdateRequest, ctx context.Context) error {
+func (service *UseCase) UpdateProfile(UID types.UserID, prof auth.ProfileUpdateRequest, ctx context.Context) error {
 	defer requests.TrackContextTimings(ctx, "UpdateProfileUc", time.Now())
 
-	persons, err := service.personStorage.Get(ctx, &auth.PersonGetFilter{SessionID: []string{SID}})
+	persons, err := service.personStorage.Get(ctx, &auth.PersonGetFilter{ID: []types.UserID{UID}})
 	if err != nil {
 		return err
 	}
@@ -85,10 +85,10 @@ func (service *UseCase) UpdateProfile(SID string, prof auth.ProfileUpdateRequest
 	return err
 }
 
-func (service *UseCase) DeleteProfile(sessionID string, ctx context.Context) error {
+func (service *UseCase) DeleteProfile(UID types.UserID, ctx context.Context) error {
 	defer requests.TrackContextTimings(ctx, "DeleteProfileUc", time.Now())
 
-	return service.personStorage.Delete(ctx, sessionID)
+	return service.personStorage.Delete(ctx, UID)
 }
 
 func (service *UseCase) handleInterests(interests []string, personID types.UserID, ctx context.Context) error {

@@ -113,9 +113,7 @@ func (deliver *AuthHandler) UpdateProfile(respWriter http.ResponseWriter, reques
 		return
 	}
 
-	session, _ := request.Cookie("session_id")
-
-	err = deliver.UseCase.UpdateProfile(session.Value, requestBody, request.Context())
+	err = deliver.UseCase.UpdateProfile(request.Context().Value(RequestUserID).(types.UserID), requestBody, request.Context())
 	if err != nil {
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't update profile: ", err.Error())
 		if errors.As(err, &types.DifferentPasswordsError) {
@@ -144,7 +142,7 @@ func (deliver *AuthHandler) UpdateProfile(respWriter http.ResponseWriter, reques
 func (deliver *AuthHandler) DeleteProfile(respWriter http.ResponseWriter, request *http.Request) {
 	logger := request.Context().Value(Logg).(Log)
 
-	err := deliver.UseCase.DeleteProfile(request.Context().Value("SID").(string), request.Context())
+	err := deliver.UseCase.DeleteProfile(request.Context().Value(RequestUserID).(types.UserID), request.Context())
 
 	if err != nil {
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't delete: ", err.Error())

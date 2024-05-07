@@ -15,15 +15,15 @@ type (
 		GetAllInterests(ctx context.Context) ([]*Interest, error)
 		GetName(userID types.UserID, ctx context.Context) (string, error)
 		GetProfile(params ProfileGetParams, ctx context.Context) ([]Profile, error)
-		UpdateProfile(SID string, profile ProfileUpdateRequest, ctx context.Context) error
-		DeleteProfile(sessionID string, ctx context.Context) error
+		UpdateProfile(UID types.UserID, profile ProfileUpdateRequest, ctx context.Context) error
+		DeleteProfile(UID types.UserID, ctx context.Context) error
 		GetMatches(profile types.UserID, nameFilter string, ctx context.Context) ([]Profile, error)
 	}
 	PersonStorage interface {
 		AddAccount(ctx context.Context, Name string, Birhday string, Gender string, Email string, Password string) error
 		Get(ctx context.Context, filter *PersonGetFilter) ([]*Person, error)
 		Update(ctx context.Context, person Person) error
-		Delete(ctx context.Context, sessionID string) error
+		Delete(ctx context.Context, UID types.UserID) error
 		GetMatch(ctx context.Context, person1ID types.UserID) ([]types.UserID, error)
 		//GetUserCards(ctx context.Context, persons []types.UserID) ([][]*Interest, [][]Image, error)
 	}
