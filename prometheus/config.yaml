@@ -1,0 +1,17 @@
+global:
+  scrape_interval:     10s
+  evaluation_interval: 10s
+
+scrape_configs:
+  - job_name: 'feed'
+    metrics_path: '/api/v1/metrics/'
+    static_configs:
+      - targets: ['feed:8080']
+
+  - job_name: 'auth'
+    static_configs:
+      - targets: ['auth:8083']
+
+  - job_name: 'images'
+    static_configs:
+      - targets: ['images:8082']

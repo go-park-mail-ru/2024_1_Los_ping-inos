@@ -90,6 +90,13 @@ func main() {
 
 	httpDeliver := Delivery.NewAuthHandler(useCase)
 	errors := make(chan error, 2)
+
+	//prometheus.MustRegister(
+	//	appmetrics.AuthTotalHits,
+	//	appmetrics.AuthHits,
+	//	appmetrics.AuthHitDuration,
+	//)
+
 	go func() {
 		errors <- startServer(httpCfg, logger, Delivers{http: httpDeliver})
 	}()

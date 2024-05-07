@@ -3,12 +3,12 @@ package usecase
 import (
 	"context"
 	"fmt"
+	"main.go/internal/image/mocks"
 	"reflect"
 	"testing"
 
 	"github.com/golang/mock/gomock"
 	models "main.go/internal/auth"
-	"main.go/internal/auth/mocks"
 	"main.go/internal/types"
 )
 

@@ -13,7 +13,19 @@ services:
       - "5432:5432"
     networks:
       - pinguinos-net
-  
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+#    command:
+#      - '--config.file=/etc/config/prometheus.yaml'
+    volumes:
+      - ./prometheus:/etc/config
+    ports:
+      - "9090:9090"
+    depends_on:
+      - auth
+
   redis:
     container_name: redis
     image: redis:latest
