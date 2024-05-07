@@ -11,7 +11,6 @@ import (
 	"main.go/internal/types"
 	"net/http"
 	"strconv"
-	"time"
 )
 
 const (
@@ -107,17 +106,5 @@ func CSRFMiddleware(next http.Handler) http.Handler {
 			return
 		}
 		next.ServeHTTP(respWriter, request)
-	})
-}
-
-func MetricTimeMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(respWriter http.ResponseWriter, request *http.Request) {
-		ctx := request.Context()
-		ctx = context.WithValue(ctx, TimingsKey, &ctxTimings{
-			Data: make(map[string]*Timing),
-		})
-		// TODO log?
-		defer LogContextTimings(ctx, request.URL.Path, time.Now()) // тут можно, у нас в апи нет переменных в пути
-		next.ServeHTTP(respWriter, request.WithContext(ctx))
 	})
 }

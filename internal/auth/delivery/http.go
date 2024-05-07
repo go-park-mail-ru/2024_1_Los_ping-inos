@@ -77,6 +77,12 @@ func (deliver *AuthHandler) ReadProfile(respWriter http.ResponseWriter, request 
 		return
 	}
 
+	if len(prof) == 0 {
+		requests.SendResponse(respWriter, request, http.StatusBadRequest, "no such profile")
+		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("no such profile")
+		return
+	}
+
 	requests.SendResponse(respWriter, request, http.StatusOK, prof[0])
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("get profile sent response")
 }
@@ -425,6 +431,19 @@ func (deliver *AuthHandler) GetUsername() func(w http.ResponseWriter, r *http.Re
 		requests.SendResponse(respWriter, request, http.StatusOK, name)
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("sent username")
 	}
+}
+
+func MetricTimeMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(respWriter http.ResponseWriter, request *http.Request) {
+		start := time.Now()
+
+		next.ServeHTTP(respWriter, request)
+
+		end := time.Since(start)
+		path := request.URL.Path
+		auth.TotalHits.WithLabelValues().Inc()
+		auth.HitDuration.WithLabelValues(request.Method, path).Set(float64(end.Milliseconds()))
+	})
 }
 
 func setLoginCookie(sessionID string, expires time.Time, writer http.ResponseWriter) {

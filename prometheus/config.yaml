@@ -4,14 +4,18 @@ global:
 
 scrape_configs:
   - job_name: 'feed'
-    metrics_path: '/api/v1/metrics/'
     static_configs:
-      - targets: ['feed:8080']
+      - targets: ['host.docker.internal:8080']
 
   - job_name: 'auth'
+    metrics_path: '/metrics'
     static_configs:
-      - targets: ['auth:8083']
+      - targets: ['host.docker.internal:8083']
 
   - job_name: 'images'
     static_configs:
-      - targets: ['images:8082']
+      - targets: ['host.docker.internal:8082']
+
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: [ 'host.docker.internal:9090']

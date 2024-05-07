@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 
 	"github.com/emirpasic/gods/sets/hashset"
 	"github.com/go-chi/chi"
@@ -92,6 +93,8 @@ func startServer(cfg *config.Config, logger Log, deliver Delivers) error {
 	authManager := feedDel.AuthManager
 
 	mux := http.NewServeMux()
+
+	mux.Handle("/metrics", promhttp.Handler())
 
 	mux.Handle(apiPath+"cards", RequestIDMiddleware(
 		AllowedMethodMiddleware(

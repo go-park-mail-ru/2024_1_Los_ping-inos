@@ -4,6 +4,9 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"main.go/internal/auth"
 	"net"
 	"net/http"
 	"time"
@@ -84,18 +87,12 @@ func main() {
 		logger.Logger.Fatal(err)
 	}
 
-	grpcSrever := grpc.NewServer() // TODO интерсептеры для метрик сюда
+	grpcSrever := grpc.NewServer()
 	grpcDeliver := Delivery.NewGRPCDeliver(useCase)
 	gen.RegisterAuthHandlServer(grpcSrever, grpcDeliver)
 
 	httpDeliver := Delivery.NewAuthHandler(useCase)
 	errors := make(chan error, 2)
-
-	//prometheus.MustRegister(
-	//	appmetrics.AuthTotalHits,
-	//	appmetrics.AuthHits,
-	//	appmetrics.AuthHitDuration,
-	//)
 
 	go func() {
 		errors <- startServer(httpCfg, logger, Delivers{http: httpDeliver})
@@ -112,7 +109,6 @@ func main() {
 func startServer(cfg *config.Config, logger Log, deliver Delivers) error {
 	var apiPath = cfg.ApiPath
 	httpDeliver := deliver.http
-
 	grpcConn, err := grpc.Dial("auth:50051", grpc.WithInsecure())
 
 	if err != nil {
@@ -120,6 +116,14 @@ func startServer(cfg *config.Config, logger Log, deliver Delivers) error {
 	}
 	authManager := gen.NewAuthHandlClient(grpcConn)
 	mux := http.NewServeMux()
+
+	prometheus.MustRegister(
+		auth.TotalHits,
+		auth.HitDuration,
+	)
+
+	mux.Handle("/metrics", promhttp.Handler())
+
 	mux.Handle(apiPath+"login", RequestIDMiddleware(
 		AllowedMethodMiddleware(
 			http.HandlerFunc(httpDeliver.LoginHandler()), hashset.New("POST")),
@@ -155,8 +159,7 @@ func startServer(cfg *config.Config, logger Log, deliver Delivers) error {
 			IsAuthenticatedMiddleware(http.HandlerFunc(httpDeliver.GetMatches()), authManager), hashset.New("POST")),
 		"matches", logger))
 
-	metricHandler := MetricTimeMiddleware(mux)
-
+	metricHandler := Delivery.MetricTimeMiddleware(mux)
 	server := http.Server{
 		Addr:         cfg.Server.Host + cfg.Server.Port,
 		Handler:      metricHandler,

@@ -17,14 +17,16 @@ services:
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
-#    command:
-#      - '--config.file=/etc/config/prometheus.yaml'
+    command:
+      - '--config.file=/etc/config/config.yaml'
     volumes:
       - ./prometheus:/etc/config
     ports:
       - "9090:9090"
-    depends_on:
-      - auth
+#    depends_on:
+#      - auth
+    networks:
+      - pinguinos-net
 
   redis:
     container_name: redis

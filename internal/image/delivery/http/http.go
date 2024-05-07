@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"io"
 	"math/rand"
 	"net/http"
@@ -58,6 +59,8 @@ func GetApi(c *usecase.UseCase, logger Log) *ImageHandler {
 		print("fock off")
 	}
 	authManager := gen.NewAuthHandlClient(grpcConn)
+
+	api.mx.Handle("/metrics", promhttp.Handler())
 
 	api.mx.Handle(apiPath+"getImage", requests.RequestIDMiddleware(
 		requests.AllowedMethodMiddleware(

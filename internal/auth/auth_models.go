@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"github.com/prometheus/client_golang/prometheus"
 	"main.go/internal/types"
 	"time"
 )
@@ -94,4 +95,21 @@ type (
 	GetMatchesRequest struct {
 		Name string `json:"name"`
 	}
+)
+
+var (
+	TotalHits = prometheus.NewCounterVec(
+		prometheus.CounterOpts{
+			Name: "auth_total_hits",
+			Help: "Count of hits in auth service.",
+		},
+		[]string{},
+	)
+	HitDuration = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "auth_methods_response_time",
+			Help: "Duration processing hit",
+		},
+		[]string{"method", "path"},
+	)
 )
