@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"fmt"
+
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 
 	"github.com/emirpasic/gods/sets/hashset"
