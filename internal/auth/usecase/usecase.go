@@ -5,28 +5,33 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/google/uuid"
+	"slices"
+
 	"golang.org/x/crypto/bcrypt"
-	"google.golang.org/grpc"
 	"main.go/internal/auth"
 	image "main.go/internal/image/protos/gen"
 	"main.go/internal/types"
-	"slices"
 )
 
 type UseCase struct {
 	personStorage   auth.PersonStorage
 	sessionStorage  auth.SessionStorage
 	interestStorage auth.InterestStorage
-	imageStorage    auth.ImageStorage
+	grpcClient      image.ImageClient
 }
 
-func NewAuthUseCase(dbReader auth.PersonStorage, sstore auth.SessionStorage, istore auth.InterestStorage, imgStore auth.ImageStorage) *UseCase {
+func NewAuthUseCase(dbReader auth.PersonStorage, sstore auth.SessionStorage, istore auth.InterestStorage, grpcClient image.ImageClient) *UseCase {
 	return &UseCase{
 		personStorage:   dbReader,
 		sessionStorage:  sstore,
 		interestStorage: istore,
-		imageStorage:    imgStore,
+		grpcClient:      grpcClient,
+	}
+}
+
+func NewGRPCCLient(grpcClient image.ImageClient) *UseCase {
+	return &UseCase{
+		grpcClient: grpcClient,
 	}
 }
 
@@ -56,11 +61,9 @@ func (service *UseCase) Login(email, password string, ctx context.Context) (*aut
 		return nil, "", err
 	}
 
-	SID := uuid.NewString()
-	err = service.sessionStorage.CreateSession(ctx, auth.Session{
-		UID: user.ID,
-		SID: SID,
-	})
+	//SID := uuid.NewString() // -- ЗДЕСЬ ТО ЖЕ САМОЕ, ГЕНЕРИТЬ СИД НАДО УРОВНЕМ НИЖЕ ЧТОБЫ В ТЕСТАХ К НЕМУ БЫЛ ДОСТУП
+	//SID := "predefined_session_id"
+	SID, err := service.sessionStorage.CreateSession(ctx, user.ID) // перенес создание сессии в бд ===)
 	if err != nil {
 		return nil, "", err
 	}
@@ -70,6 +73,15 @@ func (service *UseCase) Login(email, password string, ctx context.Context) (*aut
 		return nil, "", err
 	}
 	profiles := combineToCards(users, interests, images)
+
+	// profiles := []auth.Profile{ // -- ДЛЯ ТЕСТА НА ЛОГИН НАДО КАК ТО ПЕРЕДЕЛАТЬ ИНАЧЕ НЕ РОБИТ
+	// 	{
+	// 		ID:    user.ID,
+	// 		Name:  user.Name,
+	// 		Email: user.Email,
+	// 	},
+	// }
+
 	return &profiles[0], SID, nil
 }
 
@@ -78,17 +90,18 @@ func (service *UseCase) GetAllInterests(ctx context.Context) ([]*auth.Interest, 
 }
 
 func (service *UseCase) Registration(body auth.RegitstrationBody, ctx context.Context) (*auth.Profile, string, error) {
-	hashedPassword, err := hashPassword(body.Password)
+	// hashedPassword, err := hashPassword(body.Password)
+	// if err != nil {
+	// 	return nil, "", err
+	// }
+
+	hashedPassword, err := service.personStorage.AddAccount(ctx, body.Name, body.Birthday, body.Gender, body.Email, body.Password)
+	//err := service.personStorage.AddAccount(ctx, body.Name, body.Birthday, body.Gender, body.Email, body.Password)
 	if err != nil {
 		return nil, "", err
 	}
 
-	err = service.personStorage.AddAccount(ctx, body.Name, body.Birthday, body.Gender, body.Email, hashedPassword)
-	if err != nil {
-		return nil, "", err
-	}
-
-	prof, SID, err := service.Login(body.Email, body.Password, ctx)
+	prof, SID, err := service.Login(body.Email, hashedPassword, ctx)
 	if err != nil {
 		return nil, "", err
 	}
@@ -149,17 +162,10 @@ func (service *UseCase) getUserCards(persons []*auth.Person, ctx context.Context
 	// анна , в субботу в пять на малой никитской ? кафе с не скро мным наз ванием , ,
 	// баунти' ' ., где я буду вас... ебаунти=) ;-) ;-) :-) :-):-)
 
-	println("some interesting stuffchik")
-	grpcConn, err := grpc.Dial("images:50052", grpc.WithInsecure())
-	if err != nil {
-		println("i fuck yo manma")
-		return nil, nil, err
-	}
 	for j := range persons {
-		imageManager := image.NewImageClient(grpcConn)
 		imagePerson := []auth.Image{}
-		for i := 0; i < 6; i++ {
-			image, err := imageManager.GetImage(ctx, &image.GetImageRequest{Id: int64(persons[j].ID), Cell: fmt.Sprintf("%v", i)})
+		for i := 0; i < 5; i++ {
+			image, err := service.grpcClient.GetImage(ctx, &image.GetImageRequest{Id: int64(persons[j].ID), Cell: fmt.Sprintf("%v", i)})
 			imagePiece := auth.Image{}
 			if err != nil {
 				imagePiece = auth.Image{
@@ -185,14 +191,6 @@ func (service *UseCase) getUserCards(persons []*auth.Person, ctx context.Context
 	}
 
 	return interests, images, nil
-}
-
-func getUserIDs(persons []*auth.Person) []types.UserID {
-	res := make([]types.UserID, len(persons))
-	for i := range persons {
-		res[i] = persons[i].ID
-	}
-	return res
 }
 
 func combineToCards(persons []*auth.Person, interests [][]*auth.Interest, images [][]auth.Image) []auth.Profile {

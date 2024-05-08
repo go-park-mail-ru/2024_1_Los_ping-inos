@@ -3,6 +3,8 @@ package auth
 import (
 	"context"
 
+	"google.golang.org/grpc"
+	image "main.go/internal/image/protos/gen"
 	"main.go/internal/types"
 )
 
@@ -20,7 +22,7 @@ type (
 		GetMatches(profile types.UserID, nameFilter string, ctx context.Context) ([]Profile, error)
 	}
 	PersonStorage interface {
-		AddAccount(ctx context.Context, Name string, Birhday string, Gender string, Email string, Password string) error
+		AddAccount(ctx context.Context, Name string, Birthday string, Gender string, Email string, Password string) (string, error)
 		Get(ctx context.Context, filter *PersonGetFilter) ([]*Person, error)
 		Update(ctx context.Context, person Person) error
 		Delete(ctx context.Context, UID types.UserID) error
@@ -30,7 +32,7 @@ type (
 
 	SessionStorage interface {
 		GetBySID(ctx context.Context, SID string) (*Session, error)
-		CreateSession(ctx context.Context, session Session) error
+		CreateSession(ctx context.Context, UID types.UserID) (string, error)
 		DeleteSession(ctx context.Context, SID string) error
 	}
 
@@ -42,6 +44,11 @@ type (
 	}
 
 	ImageStorage interface {
-		Get(ctx context.Context, userID int64) ([]Image, error)
+		//Get(ctx context.Context, userID int64) ([]Image, error)
+		GetImage(ctx context.Context, userID int64, cell string) (*Image, error)
+	}
+
+	ImageClient interface {
+		GetImage(ctx context.Context, in *image.GetImageRequest, opts ...grpc.CallOption) (*image.GetImageResponce, error)
 	}
 )
