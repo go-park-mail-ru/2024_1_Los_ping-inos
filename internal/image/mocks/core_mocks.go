@@ -103,17 +103,17 @@ func (m *MockImgStorage) EXPECT() *MockImgStorageMockRecorder {
 }
 
 // Add mocks base method.
-func (m *MockImgStorage) Add(ctx context.Context, image image.Image) error {
+func (m *MockImgStorage) Add(ctx context.Context, image image.Image, img multipart.File) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Add", ctx, image)
+	ret := m.ctrl.Call(m, "Add", ctx, image, img)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Add indicates an expected call of Add.
-func (mr *MockImgStorageMockRecorder) Add(ctx, image interface{}) *gomock.Call {
+func (mr *MockImgStorageMockRecorder) Add(ctx, image, img interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Add", reflect.TypeOf((*MockImgStorage)(nil).Add), ctx, image)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Add", reflect.TypeOf((*MockImgStorage)(nil).Add), ctx, image, img)
 }
 
 // Delete mocks base method.
@@ -131,10 +131,10 @@ func (mr *MockImgStorageMockRecorder) Delete(ctx, image interface{}) *gomock.Cal
 }
 
 // Get mocks base method.
-func (m *MockImgStorage) Get(ctx context.Context, userID int64, cell string) ([]image.Image, error) {
+func (m *MockImgStorage) Get(ctx context.Context, userID int64, cell string) (string, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Get", ctx, userID, cell)
-	ret0, _ := ret[0].([]image.Image)
+	ret0, _ := ret[0].(string)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

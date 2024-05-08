@@ -2,7 +2,10 @@ package feed
 
 import (
 	"context"
+
 	"github.com/gorilla/websocket"
+	"google.golang.org/grpc"
+	image "main.go/internal/image/protos/gen"
 	"main.go/internal/types"
 )
 
@@ -37,5 +40,9 @@ type (
 		AddConnection(ctx context.Context, connection *websocket.Conn, UID types.UserID)
 		GetConnection(ctx context.Context, UID types.UserID) (*websocket.Conn, bool)
 		DeleteConnection(ctx context.Context, UID types.UserID)
+	}
+
+	ImageClient interface {
+		GetImage(ctx context.Context, in *image.GetImageRequest, opts ...grpc.CallOption) (*image.GetImageResponce, error)
 	}
 )

@@ -17,6 +17,7 @@ import (
 	Delivery "main.go/internal/feed/delivery"
 	Repo "main.go/internal/feed/repo"
 	Usecase "main.go/internal/feed/usecase"
+	image "main.go/internal/image/protos/gen"
 	. "main.go/internal/logs"
 
 	"net/http"
@@ -55,9 +56,16 @@ func main() {
 	}
 	defer db.Close()
 
-	useCase := Usecase.New(Repo.NewPostgresStorage(db), Repo.NewWebSocStorage())
+	grpcConn, err := grpc.Dial("images:50052", grpc.WithInsecure())
+	if err != nil {
+		logger.Logger.Fatal(err)
+	}
 
-	grpcConn, err := grpc.Dial("auth:50051", grpc.WithInsecure())
+	imageManager := image.NewImageClient(grpcConn)
+
+	useCase := Usecase.New(Repo.NewPostgresStorage(db), Repo.NewWebSocStorage(), imageManager)
+
+	grpcConn, err = grpc.Dial("auth:50051", grpc.WithInsecure())
 	if err != nil {
 		logger.Logger.Fatal(err)
 	}

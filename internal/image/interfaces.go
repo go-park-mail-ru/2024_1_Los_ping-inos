@@ -13,8 +13,8 @@ type (
 	}
 
 	ImgStorage interface {
-		Get(ctx context.Context, userID int64, cell string) ([]Image, error)
-		Add(ctx context.Context, image Image) error
+		Get(ctx context.Context, userID int64, cell string) (string, error)
+		Add(ctx context.Context, image Image, img multipart.File) error
 		Delete(ctx context.Context, image Image) error
 	}
 )
