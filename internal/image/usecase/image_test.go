@@ -6,6 +6,7 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
+	models "main.go/internal/image"
 	"main.go/internal/image/mocks"
 )
 
@@ -92,27 +93,52 @@ func TestDeleteImage(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
 
+	userImage := models.Image{
+		UserId:     1,
+		Url:        "image.com",
+		CellNumber: "1",
+		FileName:   "image",
+	}
+
 	mockObj := mocks.NewMockImgStorage(mockCtrl)
 
-	mockObj.EXPECT().Get(gomock.Any(), int64(1), "1").Return("image", nil)
+	mockObj.EXPECT().Delete(gomock.Any(), userImage).Return(nil)
 
 	core := UseCase{imageStorage: mockObj}
 
 	testTable := []struct {
-		id    int64
-		name  string
-		image string
+		userImage models.Image
 	}{
 		{
-			id:    1,
-			name:  "1",
-			image: "image",
+			userImage: userImage,
 		},
 	}
 
 	for _, curr := range testTable {
-		image, err := core.GetImage(curr.id, curr.name, context.TODO())
-		require.Equal(t, image, curr.image)
+		//image, err := core.GetImage(curr.id, curr.name, context.TODO())
+		err := core.DeleteImage(curr.userImage, context.TODO())
+		//require.Equal(t, image, curr.image)
 		require.NoError(t, err)
+	}
+}
+
+func TestNewImageUseCase(t *testing.T) {
+	mockCtrl := gomock.NewController(t)
+	defer mockCtrl.Finish()
+	mockObj := mocks.NewMockImgStorage(mockCtrl)
+
+	core := UseCase{imageStorage: mockObj}
+
+	testTable := []struct {
+		istore models.ImgStorage
+	}{
+		{
+			istore: mockObj,
+		},
+	}
+
+	for _, curr := range testTable {
+		UseCase := NewImageUseCase(curr.istore)
+		require.Equal(t, &core, UseCase)
 	}
 }

@@ -160,23 +160,71 @@ func TestLogin(t *testing.T) {
 	mockObj.EXPECT().GetImage(gomock.Any(), &image.GetImageRequest{Id: int64(1), Cell: "4"}).Return(imageResponce, nil)
 
 	hashedPassword, _ := hashPassword("qwertyqwerty")
+	//wrongHashedPassword, _ := hashPassword("charliXCXisthecutest")
 
-	expected := []*models.Person{
+	expected := [][]*models.Person{
 		{
-			ID:       1,
-			Name:     "Sanya",
-			Email:    "somemail@gmial.com",
-			Password: hashedPassword,
+			{
+				ID:       1,
+				Name:     "Sanya",
+				Email:    "somemail@gmial.com",
+				Password: hashedPassword,
+			},
+		},
+		{
+			{
+				ID:       2,
+				Name:     "Sanya",
+				Email:    "hehel@gmial.com",
+				Password: hashedPassword,
+			},
+		},
+		{
+			{
+				ID:       4,
+				Name:     "Sanya",
+				Email:    "babo@gmial.com",
+				Password: "=0",
+			},
+		},
+		{
+			{
+				ID:       5,
+				Name:     "Sanya",
+				Email:    "mail2@gmial.com",
+				Password: hashedPassword,
+			},
 		},
 	}
 
-	getFilter := &models.PersonGetFilter{Email: []string{"somemail@gmial.com"}}
+	getFilter := []models.PersonGetFilter{
+		{
+			Email: []string{"somemail@gmial.com"},
+		},
+		{
+			Email: []string{"hehel@gmial.com"},
+		},
+		{
+			Email: []string{"hde@gmial.com"},
+		},
+		{
+			Email: []string{"babo@gmial.com"},
+		},
+		{
+			Email: []string{"mail2@gmial.com"},
+		},
+	}
 
 	mockSQL := mocks.NewMockPersonStorage(ctrl)
-	mockSQL.EXPECT().Get(gomock.Any(), getFilter).Return(expected, nil)
+	mockSQL.EXPECT().Get(gomock.Any(), &getFilter[0]).Return(expected[0], nil)
+	mockSQL.EXPECT().Get(gomock.Any(), &getFilter[1]).Return(nil, fmt.Errorf("repo error"))
+	mockSQL.EXPECT().Get(gomock.Any(), &getFilter[2]).Return([]*models.Person{}, nil)
+	mockSQL.EXPECT().Get(gomock.Any(), &getFilter[3]).Return(expected[2], nil)
+	mockSQL.EXPECT().Get(gomock.Any(), &getFilter[4]).Return(expected[3], nil)
 
 	mockREDIS := mocks.NewMockSessionStorage(ctrl)
-	mockREDIS.EXPECT().CreateSession(gomock.Any(), types.UserID(1)).Return("predefined_session_id", nil)
+	mockREDIS.EXPECT().CreateSession(gomock.Any(), types.UserID(1)).Return("predefined_session_id1", nil)
+	mockREDIS.EXPECT().CreateSession(gomock.Any(), types.UserID(5)).Return("", fmt.Errorf("create session error"))
 
 	mockInterest := mocks.NewMockInterestStorage(ctrl)
 
@@ -209,6 +257,34 @@ func TestLogin(t *testing.T) {
 			Password: "qwertyqwerty",
 			hasErr:   false,
 		},
+		{
+			ID:       2,
+			Name:     "Sanya",
+			Email:    "hehel@gmial.com",
+			Password: "qwertyqwerty",
+			hasErr:   true,
+		},
+		{
+			ID:       3,
+			Name:     "Sanya",
+			Email:    "hde@gmial.com",
+			Password: "qwertyqwerty",
+			hasErr:   true,
+		},
+		{
+			ID:       4,
+			Name:     "Sanya",
+			Email:    "babo@gmial.com",
+			Password: "=====",
+			hasErr:   true,
+		},
+		{
+			ID:       5,
+			Name:     "Sanya",
+			Email:    "mail2@gmial.com",
+			Password: "qwertyqwerty",
+			hasErr:   true,
+		},
 	}
 
 	for _, curr := range testTable {
@@ -216,20 +292,18 @@ func TestLogin(t *testing.T) {
 		t.Log(hashedPassword)
 		t.Log(curr.Password)
 		profile, sessionID, err := core.Login(curr.Email, curr.Password, context.TODO())
-		if err != nil {
-			t.Error("Failed to login", err)
-			return
-		}
+		// if err != nil {
+		// 	t.Error("Failed to login", err)
+		// 	return
+		// }
 		if curr.hasErr && err == nil {
 			t.Errorf("unexpected err result")
 			return
 		}
-		t.Logf(curr.Name)
-		t.Logf(profile.Email)
-		if profile.Name != curr.Name {
+		if !curr.hasErr && profile.Name != curr.Name {
 			t.Errorf("unexpected profile")
 		}
-		if sessionID == "" {
+		if !curr.hasErr && sessionID == "" {
 			t.Errorf("unexpected sessionID")
 		}
 	}

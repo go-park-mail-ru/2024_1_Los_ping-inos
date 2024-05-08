@@ -61,8 +61,6 @@ func (service *UseCase) Login(email, password string, ctx context.Context) (*aut
 		return nil, "", err
 	}
 
-	//SID := uuid.NewString() // -- ЗДЕСЬ ТО ЖЕ САМОЕ, ГЕНЕРИТЬ СИД НАДО УРОВНЕМ НИЖЕ ЧТОБЫ В ТЕСТАХ К НЕМУ БЫЛ ДОСТУП
-	//SID := "predefined_session_id"
 	SID, err := service.sessionStorage.CreateSession(ctx, user.ID) // перенес создание сессии в бд ===)
 	if err != nil {
 		return nil, "", err
@@ -73,15 +71,6 @@ func (service *UseCase) Login(email, password string, ctx context.Context) (*aut
 		return nil, "", err
 	}
 	profiles := combineToCards(users, interests, images)
-
-	// profiles := []auth.Profile{ // -- ДЛЯ ТЕСТА НА ЛОГИН НАДО КАК ТО ПЕРЕДЕЛАТЬ ИНАЧЕ НЕ РОБИТ
-	// 	{
-	// 		ID:    user.ID,
-	// 		Name:  user.Name,
-	// 		Email: user.Email,
-	// 	},
-	// }
-
 	return &profiles[0], SID, nil
 }
 
