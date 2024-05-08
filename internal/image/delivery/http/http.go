@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"io"
 	"math/rand"
@@ -37,6 +38,12 @@ func (deliver *ImageHandler) ListenAndServe() error {
 
 	//logger.Logger.Infof("started auth http server at %v", server.Addr)
 	//	fmt.Printf("started auth http server at %v\n", server.Addr)
+
+	prometheus.MustRegister(
+		image.TotalHits,
+		image.HitDuration,
+	)
+
 	err := http.ListenAndServe(":8082", MetricTimeMiddleware(deliver.mx))
 	if err != nil {
 		//logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn(err.Error())
