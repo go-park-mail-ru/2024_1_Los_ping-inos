@@ -3,17 +3,18 @@ package delivery
 import (
 	"context"
 	"encoding/json"
+	"io"
+	"net/http"
+	"time"
+
 	"github.com/gorilla/websocket"
 	"github.com/sirupsen/logrus"
-	"io"
 	. "main.go/config"
 	gen "main.go/internal/auth/proto"
 	"main.go/internal/feed"
 	. "main.go/internal/logs"
 	requests "main.go/internal/pkg"
 	"main.go/internal/types"
-	"net/http"
-	"time"
 )
 
 type FeedHandler struct {
@@ -164,7 +165,10 @@ func (deliver *FeedHandler) ServeMessages() func(respWriter http.ResponseWriter,
 func (deliver *FeedHandler) handleWebsocket(ctx context.Context, connection *websocket.Conn) {
 	logger := ctx.Value(Logg).(Log)
 	sender := ctx.Value(RequestUserID).(types.UserID)
-	deliver.usecase.AddConnection(ctx, connection, sender)
+	err := deliver.usecase.AddConnection(ctx, connection, sender)
+	if err != nil {
+		return
+	}
 
 	for {
 		mt, mess, err := connection.ReadMessage()

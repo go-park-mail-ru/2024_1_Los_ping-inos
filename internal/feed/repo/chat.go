@@ -2,6 +2,10 @@ package repo
 
 import (
 	"context"
+	"fmt"
+	"sync"
+	"time"
+
 	qb "github.com/Masterminds/squirrel"
 	"github.com/gorilla/websocket"
 	"github.com/lib/pq"
@@ -9,8 +13,6 @@ import (
 	"main.go/internal/feed"
 	. "main.go/internal/logs"
 	"main.go/internal/types"
-	"sync"
-	"time"
 )
 
 const (
@@ -109,10 +111,18 @@ func NewWebSocStorage() *WSStorage {
 	}
 }
 
-func (stor *WSStorage) AddConnection(ctx context.Context, connection *websocket.Conn, UID types.UserID) {
+func (stor *WSStorage) AddConnection(ctx context.Context, connection *websocket.Conn, UID types.UserID) error {
 	stor.connections.Store(UID, connection)
+	conn, ok := stor.connections.Load(UID)
+	if !ok {
+		return fmt.Errorf("sync map error")
+	}
+	if conn != connection {
+		return fmt.Errorf("sync map error")
+	}
 	logger := ctx.Value(Logg).(Log)
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("Stored connection with user ", UID)
+	return nil
 }
 
 func (stor *WSStorage) GetConnection(ctx context.Context, UID types.UserID) (*websocket.Conn, bool) {
@@ -126,8 +136,16 @@ func (stor *WSStorage) GetConnection(ctx context.Context, UID types.UserID) (*we
 	return nil, ok
 }
 
-func (stor *WSStorage) DeleteConnection(ctx context.Context, UID types.UserID) {
+func (stor *WSStorage) DeleteConnection(ctx context.Context, UID types.UserID) error {
 	stor.connections.Delete(UID)
+	con, ok := stor.connections.Load(UID)
+	if con != nil {
+		return fmt.Errorf("sync map error")
+	}
+	if ok {
+		return fmt.Errorf("sync map error")
+	}
 	logger := ctx.Value(Logg).(Log)
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("Deleted connection with user ", UID)
+	return nil
 }

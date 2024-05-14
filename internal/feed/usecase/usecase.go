@@ -23,12 +23,6 @@ func New(pstor feed.PostgresStorage, wsstor feed.WebSocStorage, grpcClient image
 	}
 }
 
-func NewGRPCCLient(grpcClient image.ImageClient) *UseCase {
-	return &UseCase{
-		grpcClient: grpcClient,
-	}
-}
-
 // GetCards - вернуть ленту пользователей, доступно только авторизованному пользователю
 func (service *UseCase) GetCards(userID types.UserID, ctx context.Context) ([]feed.Card, error) {
 	persons, err := service.storage.GetFeed(ctx, userID)

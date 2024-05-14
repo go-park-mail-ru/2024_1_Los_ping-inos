@@ -72,20 +72,15 @@ func (service *UseCase) GetAllInterests(ctx context.Context) ([]*auth.Interest, 
 }
 
 func (service *UseCase) Registration(body auth.RegitstrationBody, ctx context.Context) (*auth.Profile, string, error) {
-	// hashedPassword, err := hashPassword(body.Password)
-	// if err != nil {
-	// 	return nil, "", err
-	// }
 
 	_, err := service.personStorage.AddAccount(ctx, body.Name, body.Birthday, body.Gender, body.Email, body.Password)
-	//err := service.personStorage.AddAccount(ctx, body.Name, body.Birthday, body.Gender, body.Email, body.Password)
 	if err != nil {
-		return nil, "", fmt.Errorf("poshel nahuy")
+		return nil, "", fmt.Errorf("nuh uh")
 	}
 
 	prof, SID, err := service.Login(body.Email, body.Password, ctx)
 	if err != nil {
-		return nil, "", fmt.Errorf("poshel nahuy dolboeb")
+		return nil, "", fmt.Errorf("nuh uh uh")
 	}
 
 	interests, err := service.interestStorage.Get(ctx, &auth.InterestGetFilter{Name: body.Interests})

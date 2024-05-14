@@ -40,9 +40,11 @@ func (m *MockUseCase) EXPECT() *MockUseCaseMockRecorder {
 }
 
 // AddConnection mocks base method.
-func (m *MockUseCase) AddConnection(ctx context.Context, connection *websocket.Conn, UID types.UserID) {
+func (m *MockUseCase) AddConnection(ctx context.Context, connection *websocket.Conn, UID types.UserID) error {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "AddConnection", ctx, connection, UID)
+	ret := m.ctrl.Call(m, "AddConnection", ctx, connection, UID)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
 // AddConnection indicates an expected call of AddConnection.
@@ -80,9 +82,11 @@ func (mr *MockUseCaseMockRecorder) CreateLike(profile1, profile2, ctx interface{
 }
 
 // DeleteConnection mocks base method.
-func (m *MockUseCase) DeleteConnection(ctx context.Context, UID types.UserID) {
+func (m *MockUseCase) DeleteConnection(ctx context.Context, UID types.UserID) error {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "DeleteConnection", ctx, UID)
+	ret := m.ctrl.Call(m, "DeleteConnection", ctx, UID)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
 // DeleteConnection indicates an expected call of DeleteConnection.
@@ -376,9 +380,11 @@ func (m *MockWebSocStorage) EXPECT() *MockWebSocStorageMockRecorder {
 }
 
 // AddConnection mocks base method.
-func (m *MockWebSocStorage) AddConnection(ctx context.Context, connection *websocket.Conn, UID types.UserID) {
+func (m *MockWebSocStorage) AddConnection(ctx context.Context, connection *websocket.Conn, UID types.UserID) error {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "AddConnection", ctx, connection, UID)
+	ret := m.ctrl.Call(m, "AddConnection", ctx, connection, UID)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
 // AddConnection indicates an expected call of AddConnection.
@@ -388,9 +394,11 @@ func (mr *MockWebSocStorageMockRecorder) AddConnection(ctx, connection, UID inte
 }
 
 // DeleteConnection mocks base method.
-func (m *MockWebSocStorage) DeleteConnection(ctx context.Context, UID types.UserID) {
+func (m *MockWebSocStorage) DeleteConnection(ctx context.Context, UID types.UserID) error {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "DeleteConnection", ctx, UID)
+	ret := m.ctrl.Call(m, "DeleteConnection", ctx, UID)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
 // DeleteConnection indicates an expected call of DeleteConnection.

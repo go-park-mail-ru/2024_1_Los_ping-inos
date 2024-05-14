@@ -2,6 +2,8 @@ package usecase
 
 import (
 	"context"
+	"fmt"
+	"reflect"
 	"testing"
 	"time"
 
@@ -12,6 +14,27 @@ import (
 	image "main.go/internal/image/protos/gen"
 	"main.go/internal/types"
 )
+
+func TestNewUseCase(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockStorage := mocks.NewMockPostgresStorage(ctrl)
+	mockWs := mocks.NewMockWebSocStorage(ctrl)
+	mockGrpc := mocks.NewMockImageClient(ctrl)
+
+	useCase := New(mockStorage, mockWs, mockGrpc)
+
+	if useCase.storage == nil {
+		t.Error("personStorage should not be nil")
+	}
+	if useCase.ws == nil {
+		t.Error("sessionStorage should not be nil")
+	}
+	if useCase.grpcClient == nil {
+		t.Error("interestStorage should not be nil")
+	}
+}
 
 func TestGetUserCards(t *testing.T) {
 	ctrl := gomock.NewController(t)
@@ -120,6 +143,11 @@ func TestGetCards(t *testing.T) {
 	mockObj.EXPECT().GetImage(gomock.Any(), &image.GetImageRequest{Id: int64(1), Cell: "2"}).Return(imageResponce, nil)
 	mockObj.EXPECT().GetImage(gomock.Any(), &image.GetImageRequest{Id: int64(1), Cell: "3"}).Return(imageResponce, nil)
 	mockObj.EXPECT().GetImage(gomock.Any(), &image.GetImageRequest{Id: int64(1), Cell: "4"}).Return(imageResponce, nil)
+	mockObj.EXPECT().GetImage(gomock.Any(), &image.GetImageRequest{Id: int64(3), Cell: "0"}).Return(nil, fmt.Errorf("repo error"))
+	mockObj.EXPECT().GetImage(gomock.Any(), &image.GetImageRequest{Id: int64(3), Cell: "1"}).Return(nil, fmt.Errorf("repo error"))
+	mockObj.EXPECT().GetImage(gomock.Any(), &image.GetImageRequest{Id: int64(3), Cell: "2"}).Return(nil, fmt.Errorf("repo error"))
+	mockObj.EXPECT().GetImage(gomock.Any(), &image.GetImageRequest{Id: int64(3), Cell: "3"}).Return(nil, fmt.Errorf("repo error"))
+	mockObj.EXPECT().GetImage(gomock.Any(), &image.GetImageRequest{Id: int64(3), Cell: "4"}).Return(nil, fmt.Errorf("repo error"))
 
 	mockSQL := mocks.NewMockPostgresStorage(ctrl)
 
@@ -135,6 +163,7 @@ func TestGetCards(t *testing.T) {
 	}
 
 	mockSQL.EXPECT().GetPersonInterests(gomock.Any(), types.UserID(1)).Return(interests, nil)
+	mockSQL.EXPECT().GetPersonInterests(gomock.Any(), types.UserID(3)).Return(nil, fmt.Errorf("repo error"))
 
 	persons := []*models.Person{
 		{
@@ -145,8 +174,19 @@ func TestGetCards(t *testing.T) {
 			Email:    "somemail@gmial.com",
 		},
 	}
+	wrongPersons := []*models.Person{
+		{
+			ID:       3,
+			Name:     "Sanya",
+			Birthday: time.Date(2001, 1, 1, 0, 0, 0, 0, time.UTC),
+			Gender:   "male",
+			Email:    "somemail@gmial.com",
+		},
+	}
 
 	mockSQL.EXPECT().GetFeed(gomock.Any(), types.UserID(1)).Return(persons, nil)
+	mockSQL.EXPECT().GetFeed(gomock.Any(), types.UserID(2)).Return(nil, fmt.Errorf("repo error"))
+	mockSQL.EXPECT().GetFeed(gomock.Any(), types.UserID(3)).Return(wrongPersons, nil)
 
 	core := UseCase{grpcClient: mockObj, storage: mockSQL}
 
@@ -192,20 +232,65 @@ func TestGetCards(t *testing.T) {
 		},
 	}
 
-	cards := []models.Card{
+	testTable := []struct {
+		cards  []models.Card
+		hasErr bool
+	}{
 		{
-			ID:        1,
-			Name:      "Sanya",
-			Birthday:  time.Date(2001, 1, 1, 0, 0, 0, 0, time.UTC),
-			Interests: newInterests[0],
-			Photos:    newImage[0],
+			cards: []models.Card{
+				{
+					ID:        1,
+					Name:      "Sanya",
+					Birthday:  time.Date(2001, 1, 1, 0, 0, 0, 0, time.UTC),
+					Interests: newInterests[0],
+					Photos:    newImage[0],
+				},
+			},
+			hasErr: false,
+		},
+		{
+			cards: []models.Card{
+				{
+					ID:        2,
+					Name:      "Sanya",
+					Birthday:  time.Date(2001, 1, 1, 0, 0, 0, 0, time.UTC),
+					Interests: newInterests[0],
+					Photos:    newImage[0],
+				},
+			},
+			hasErr: true,
+		},
+		{
+			cards: []models.Card{
+				{
+					ID:        3,
+					Name:      "Sanya",
+					Birthday:  time.Date(2001, 1, 1, 0, 0, 0, 0, time.UTC),
+					Interests: newInterests[0],
+					Photos:    newImage[0],
+				},
+			},
+			hasErr: true,
 		},
 	}
 
 	//interes, imm, err := core.getUserCards(testTable, context.TODO())
-	result, err := core.GetCards(types.UserID(1), context.TODO())
-	require.NoError(t, err)
-	require.Equal(t, result, cards)
+	for _, curr := range testTable {
+		result, err := core.GetCards(curr.cards[0].ID, context.TODO())
+		if curr.hasErr && err == nil {
+			t.Errorf("unexpected err result")
+			return
+		}
+		if !curr.hasErr && err != nil {
+			t.Errorf("unexpected err result")
+			t.Error(err)
+			return
+		}
+		if !curr.hasErr && !reflect.DeepEqual(result, curr.cards) {
+			t.Errorf("unexpected err result")
+			return
+		}
+	}
 }
 
 func TestCreateLike(t *testing.T) {

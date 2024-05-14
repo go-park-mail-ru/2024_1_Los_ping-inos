@@ -3,11 +3,11 @@ package usecase
 import (
 	"context"
 	"fmt"
+	"reflect"
 	"testing"
 	"time"
 
 	"github.com/golang/mock/gomock"
-	"github.com/stretchr/testify/require"
 	"main.go/internal/auth"
 	models "main.go/internal/auth"
 	mocks "main.go/internal/auth/mocks"
@@ -420,11 +420,11 @@ func TestGetMatches(t *testing.T) {
 
 	mockObj := mocks.NewMockPersonStorage(ctrl)
 
-	//mockObj.EXPECT().Delete(gomock.Any(), types.UserID(1)).Return(nil)
 	mockObj.EXPECT().GetMatch(gomock.Any(), types.UserID(1)).Return([]types.UserID{2}, nil)
+	mockObj.EXPECT().GetMatch(gomock.Any(), types.UserID(2)).Return(nil, fmt.Errorf("repo error"))
+	mockObj.EXPECT().GetMatch(gomock.Any(), types.UserID(3)).Return([]types.UserID{}, nil)
 
 	PersonGetFilter := &auth.PersonGetFilter{
-		//SessionID: []string{"47300672-793e-4fd"},
 		ID:   []types.UserID{2},
 		Name: "nikola_kwas",
 	}
@@ -464,6 +464,7 @@ func TestGetMatches(t *testing.T) {
 		UID      types.UserID
 		name     string
 		profiles []auth.Profile
+		hasErr   bool
 	}{
 		{
 			UID:  types.UserID(1),
@@ -472,16 +473,6 @@ func TestGetMatches(t *testing.T) {
 				{
 					ID:   types.UserID(1),
 					Name: "nikola_kwas",
-					// Interests: []*models.Interest{
-					// 	{
-					// 		ID:   1,
-					// 		Name: "foo",
-					// 	},
-					// 	{
-					// 		ID:   2,
-					// 		Name: "bar",
-					// 	},
-					// },
 					Photos: []models.ImageToSend{
 						{
 							Cell: "0",
@@ -507,23 +498,36 @@ func TestGetMatches(t *testing.T) {
 					Interests: []*models.Interest{},
 				},
 			},
+			hasErr: false,
+		},
+		{
+			UID:    types.UserID(2),
+			hasErr: true,
+		},
+		{
+			UID:      types.UserID(3),
+			hasErr:   false,
+			profiles: []auth.Profile{},
 		},
 	}
 
 	for _, curr := range testTable {
-		//err := core.DeleteProfile(curr.UID, context.TODO())
 		profiles, err := core.GetMatches(curr.UID, curr.name, context.TODO())
-		if err != nil {
+		if curr.hasErr && err == nil {
 			t.Errorf("unexpected err result")
 			t.Error(err)
 			return
 		}
-		// if !reflect.DeepEqual(profiles, curr.profiles) {
-		// 	t.Errorf("unexpected profiles result")
-		// 	t.Error(profiles)
-		// 	t.Error(curr.profiles)
-		// 	return
-		// }
-		require.Equal(t, profiles, curr.profiles)
+		if !curr.hasErr && err != nil {
+			t.Errorf("unexpected err result")
+			t.Error(err)
+			return
+		}
+		if !curr.hasErr && !reflect.DeepEqual(profiles, curr.profiles) {
+			t.Errorf("unexpected err result")
+			t.Error(err)
+			return
+		}
+		//require.Equal(t, profiles, curr.profiles)
 	}
 }

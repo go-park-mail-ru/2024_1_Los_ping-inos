@@ -45,14 +45,6 @@ func NewImageStorage(dbReader *sql.DB) *ImageStorage {
 }
 
 func GetImageRepo(config string) (*ImageStorage, error) {
-	//logger := ctx.Value(Logg).(Log)
-
-	// dsn := fmt.Sprintf("host=%s port=%d user=%s "+
-	// 	"password=%s dbname=%s sslmode=disable",
-	// 	config.Host, config.Port, config.User, config.Password, config.Database)
-
-	//println(dsn)
-
 	db, err := sql.Open("postgres", config)
 	if err != nil {
 		println(err.Error())
