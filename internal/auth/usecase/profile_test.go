@@ -2,11 +2,12 @@ package usecase
 
 import (
 	"context"
-	"reflect"
+	"fmt"
 	"testing"
 	"time"
 
 	"github.com/golang/mock/gomock"
+	"github.com/stretchr/testify/require"
 	"main.go/internal/auth"
 	models "main.go/internal/auth"
 	mocks "main.go/internal/auth/mocks"
@@ -95,48 +96,233 @@ func TestUpdateProfile(t *testing.T) {
 
 	mockObj := mocks.NewMockPersonStorage(ctrl)
 
-	PersonGetFilter := &auth.PersonGetFilter{
-		ID: []types.UserID{1},
+	PersonGetFilter := []*auth.PersonGetFilter{
+		{
+			ID: []types.UserID{1},
+		},
+		{
+			ID: []types.UserID{2},
+		},
+		{
+			ID: []types.UserID{3},
+		},
+		{
+			ID: []types.UserID{4},
+		},
+		{
+			ID: []types.UserID{5},
+		},
+		{
+			ID: []types.UserID{6},
+		},
+		{
+			ID: []types.UserID{7},
+		},
 	}
 
 	hashedPassword, _ := hashPassword("password")
 
-	persons := []*auth.Person{
+	persons := [][]*auth.Person{
 		{
-			ID:          types.UserID(1),
-			Name:        "nikola_kwas",
-			Email:       "nikola_kwas",
-			SessionID:   "47300672-793e-4fd",
+			{
+				ID:          1,
+				Name:        "nikola_kwas",
+				Email:       "nikola_kwas",
+				Password:    hashedPassword,
+				Birthday:    time.Date(2001, 1, 1, 0, 0, 0, 0, time.UTC),
+				Description: "hehehehaw",
+			},
+		},
+		{
+			{
+				ID:          2,
+				Name:        "petro",
+				Email:       "perto@sobaka.dom",
+				Password:    hashedPassword,
+				Birthday:    time.Date(2001, 1, 1, 0, 0, 0, 0, time.UTC),
+				Description: "hehehehaw",
+			},
+		},
+		{
+			{
+				ID:          3,
+				Name:        "petro",
+				Email:       "perto@sobaka.dom",
+				Password:    hashedPassword,
+				Birthday:    time.Date(2001, 1, 1, 0, 0, 0, 0, time.UTC),
+				Description: "hehehehaw",
+			},
+		},
+		{
+			{
+				ID:          4,
+				Name:        "petro",
+				Email:       "perto@sobaka.dom",
+				Password:    hashedPassword,
+				Birthday:    time.Date(2001, 1, 1, 0, 0, 0, 0, time.UTC),
+				Description: "hehehehaw",
+			},
+		},
+		{
+			{
+				ID:          5,
+				Name:        "petro",
+				Email:       "perto@sobaka.dom",
+				Password:    hashedPassword,
+				Birthday:    time.Date(2001, 1, 1, 0, 0, 0, 0, time.UTC),
+				Description: "hehehehaw",
+			},
+		},
+		{
+			{
+				ID:          6,
+				Name:        "petro",
+				Email:       "perto@sobaka.dom",
+				Password:    hashedPassword,
+				Birthday:    time.Date(2001, 1, 1, 0, 0, 0, 0, time.UTC),
+				Description: "hehehehaw",
+			},
+		},
+		{
+			{
+				ID:          7,
+				Name:        "petro",
+				Email:       "perto@sobaka.dom",
+				Password:    hashedPassword,
+				Birthday:    time.Date(2001, 1, 1, 0, 0, 0, 0, time.UTC),
+				Description: "hehehehaw",
+			},
+		},
+	}
+	updates := []*auth.Person{
+		{
+			ID:          1,
+			Name:        "nikola_kwa",
+			Email:       "nikola_kds",
 			Password:    hashedPassword,
 			Birthday:    time.Date(2001, 1, 1, 0, 0, 0, 0, time.UTC),
-			Description: "hehehehaw",
+			Description: "new description",
+		},
+		{
+			ID:          7,
+			Name:        "nikola_kwa",
+			Email:       "nikola_kds",
+			Password:    hashedPassword,
+			Birthday:    time.Date(2001, 1, 1, 0, 0, 0, 0, time.UTC),
+			Description: "new description",
 		},
 	}
 
-	mockObj.EXPECT().Get(gomock.Any(), PersonGetFilter).Return(persons, nil)
-	mockObj.EXPECT().Update(gomock.Any(), persons[0]).Return(nil)
+	mockObj.EXPECT().Get(gomock.Any(), PersonGetFilter[0]).Return(persons[0], nil)
+	mockObj.EXPECT().Get(gomock.Any(), PersonGetFilter[1]).Return(nil, fmt.Errorf("repo error"))
+	mockObj.EXPECT().Get(gomock.Any(), PersonGetFilter[2]).Return(persons[2], nil)
+	mockObj.EXPECT().Get(gomock.Any(), PersonGetFilter[3]).Return(persons[3], nil)
+	mockObj.EXPECT().Get(gomock.Any(), PersonGetFilter[4]).Return(persons[4], nil)
+	mockObj.EXPECT().Get(gomock.Any(), PersonGetFilter[5]).Return(persons[5], nil)
+	mockObj.EXPECT().Get(gomock.Any(), PersonGetFilter[6]).Return(persons[6], nil)
+	mockObj.EXPECT().Update(gomock.Any(), *updates[0]).Return(nil)
+	mockObj.EXPECT().Update(gomock.Any(), *updates[1]).Return(fmt.Errorf("repo error"))
 
 	core := UseCase{personStorage: mockObj}
 
 	testTable := []struct {
-		UID  types.UserID
-		prof auth.ProfileUpdateRequest
+		UID    types.UserID
+		prof   *auth.ProfileUpdateRequest
+		hasErr bool
 	}{
 		{
 			UID: types.UserID(1),
-			prof: auth.ProfileUpdateRequest{
+			prof: &auth.ProfileUpdateRequest{
 				Name:        "nikola_kwa",
 				Email:       "nikola_kds",
-				Password:    "password",
-				Birthday:    "20011111",
+				OldPassword: "password",
+				Birthday:    "01.01.2001",
 				Description: "new description",
 			},
+			hasErr: false,
+		},
+		{
+			UID: types.UserID(2),
+			prof: &auth.ProfileUpdateRequest{
+				Name:        "nikola_kwa",
+				Email:       "nikola_kds",
+				OldPassword: "password",
+				Birthday:    "01.01.2001",
+				Description: "new description",
+			},
+			hasErr: true,
+		},
+		{
+			UID: types.UserID(3),
+			prof: &auth.ProfileUpdateRequest{
+				Name:        "nikola_kwa",
+				Email:       "nikola_kds",
+				OldPassword: "passwordd",
+				Birthday:    "01.01.2001",
+				Description: "new description",
+			},
+			hasErr: true,
+		},
+		{
+			UID: types.UserID(4),
+			prof: &auth.ProfileUpdateRequest{
+				Name:        "nikola_kwa",
+				Email:       "nikola_kds",
+				OldPassword: "password",
+				Birthday:    "20010101",
+				Description: "new description",
+			},
+			hasErr: true,
+		},
+		{
+			UID: types.UserID(5),
+			prof: &auth.ProfileUpdateRequest{
+				Name:        "nikola_kwa",
+				Email:       "nikola_kds",
+				OldPassword: "password",
+				Birthday:    "20010101",
+				Description: "new description",
+				Interests:   []string{"footba", "goo"},
+			},
+			hasErr: true,
+		},
+		{
+			UID: types.UserID(6),
+			prof: &auth.ProfileUpdateRequest{
+				Name:        "nikola_kwa",
+				Password:    "newpassword",
+				OldPassword: "passworddsdf",
+				Birthday:    "01.01.2001",
+				Description: "new description",
+			},
+			hasErr: true,
+		},
+		{
+			UID: types.UserID(7),
+			prof: &auth.ProfileUpdateRequest{
+				Name:        "nikola_kwa",
+				Email:       "nikola_kds",
+				OldPassword: "password",
+				Birthday:    "01.01.2001",
+				Description: "new description",
+			},
+			hasErr: true,
 		},
 	}
 
 	for _, curr := range testTable {
-		err := core.UpdateProfile(curr.UID, curr.prof, context.TODO())
-		if err != nil {
+		err := core.UpdateProfile(curr.UID, *curr.prof, context.TODO())
+		if curr.hasErr && err == nil {
+			t.Errorf("unexpected err result")
+			t.Error(err)
+			return
+		}
+		// if err != nil {
+		// 	t.Errorf("unexpected err result")
+		// 	t.Error(err)
+		// 	return
+		// }
+		if !curr.hasErr && err != nil {
 			t.Errorf("unexpected err result")
 			t.Error(err)
 			return
@@ -318,6 +504,7 @@ func TestGetMatches(t *testing.T) {
 							Url:  "http://localhost",
 						},
 					},
+					Interests: []*models.Interest{},
 				},
 			},
 		},
@@ -331,11 +518,12 @@ func TestGetMatches(t *testing.T) {
 			t.Error(err)
 			return
 		}
-		if !reflect.DeepEqual(profiles, curr.profiles) {
-			t.Errorf("unexpected profiles result")
-			t.Error(profiles)
-			t.Error(curr.profiles)
-			return
-		}
+		// if !reflect.DeepEqual(profiles, curr.profiles) {
+		// 	t.Errorf("unexpected profiles result")
+		// 	t.Error(profiles)
+		// 	t.Error(curr.profiles)
+		// 	return
+		// }
+		require.Equal(t, profiles, curr.profiles)
 	}
 }

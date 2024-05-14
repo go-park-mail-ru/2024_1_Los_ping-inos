@@ -432,44 +432,6 @@ func (mr *MockInterestStorageMockRecorder) GetPersonInterests(ctx, personID inte
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetPersonInterests", reflect.TypeOf((*MockInterestStorage)(nil).GetPersonInterests), ctx, personID)
 }
 
-// MockImageStorage is a mock of ImageStorage interface.
-type MockImageStorage struct {
-	ctrl     *gomock.Controller
-	recorder *MockImageStorageMockRecorder
-}
-
-// MockImageStorageMockRecorder is the mock recorder for MockImageStorage.
-type MockImageStorageMockRecorder struct {
-	mock *MockImageStorage
-}
-
-// NewMockImageStorage creates a new mock instance.
-func NewMockImageStorage(ctrl *gomock.Controller) *MockImageStorage {
-	mock := &MockImageStorage{ctrl: ctrl}
-	mock.recorder = &MockImageStorageMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockImageStorage) EXPECT() *MockImageStorageMockRecorder {
-	return m.recorder
-}
-
-// GetImage mocks base method.
-func (m *MockImageStorage) GetImage(ctx context.Context, userID int64, cell string) (*auth.Image, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetImage", ctx, userID, cell)
-	ret0, _ := ret[0].(*auth.Image)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// GetImage indicates an expected call of GetImage.
-func (mr *MockImageStorageMockRecorder) GetImage(ctx, userID, cell interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetImage", reflect.TypeOf((*MockImageStorage)(nil).GetImage), ctx, userID, cell)
-}
-
 // MockImageClient is a mock of ImageClient interface.
 type MockImageClient struct {
 	ctrl     *gomock.Controller

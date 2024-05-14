@@ -43,11 +43,6 @@ type (
 		DeletePersonInterests(ctx context.Context, personID types.UserID, interestID []types.InterestID) error
 	}
 
-	ImageStorage interface {
-		//Get(ctx context.Context, userID int64) ([]Image, error)
-		GetImage(ctx context.Context, userID int64, cell string) (*Image, error)
-	}
-
 	ImageClient interface {
 		GetImage(ctx context.Context, in *image.GetImageRequest, opts ...grpc.CallOption) (*image.GetImageResponce, error)
 	}

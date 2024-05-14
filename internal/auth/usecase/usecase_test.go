@@ -16,6 +16,90 @@ import (
 	"main.go/internal/types"
 )
 
+func TestNewAuthUseCase(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockPerson := mocks.NewMockPersonStorage(ctrl)
+	mockSession := mocks.NewMockSessionStorage(ctrl)
+	mockInterest := mocks.NewMockInterestStorage(ctrl)
+	mockGrpc := mocks.NewMockImageClient(ctrl)
+
+	useCase := NewAuthUseCase(mockPerson, mockSession, mockInterest, mockGrpc)
+
+	if useCase.personStorage == nil {
+		t.Error("personStorage should not be nil")
+	}
+	if useCase.sessionStorage == nil {
+		t.Error("sessionStorage should not be nil")
+	}
+	if useCase.interestStorage == nil {
+		t.Error("interestStorage should not be nil")
+	}
+	if useCase.grpcClient == nil {
+		t.Error("grpcClient should not be nil")
+	}
+}
+
+func TestGetAllIntests(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockInterest := mocks.NewMockInterestStorage(ctrl)
+
+	//interestFilter := &models.InterestGetFilter{Name: []string{"foo", "bar"}}
+
+	interests := []*models.Interest{
+		{
+			ID:   1,
+			Name: "foo",
+		},
+		{
+			ID:   2,
+			Name: "bar",
+		},
+	}
+
+	mockInterest.EXPECT().Get(gomock.Any(), nil).Return(interests, nil)
+
+	core := UseCase{interestStorage: mockInterest}
+
+	newInterest, err := core.GetAllInterests(context.TODO())
+	if err != nil {
+		t.Errorf("unexpected err result")
+		t.Error(err)
+		return
+	}
+	if !reflect.DeepEqual(interests, newInterest) {
+		t.Errorf("wanted %v, had %v", interests, newInterest)
+		return
+	}
+
+}
+
+func TestGetInterestIDs(t *testing.T) {
+	mockInterests := []*models.Interest{
+		{ID: 1},
+		{ID: 2},
+		{ID: 3},
+	}
+
+	// Call the function to be tested
+	interestIDs := getInterestIDs(mockInterests)
+
+	if len(interestIDs) != len(mockInterests) {
+		t.Errorf("Expected %d interest IDs, got %d", len(mockInterests), len(interestIDs))
+	}
+
+	// Assert that the function returns the correct interest IDs
+	for i, id := range interestIDs {
+		if id != mockInterests[i].ID {
+			t.Errorf("Expected interest ID %d, got %d", mockInterests[i].ID, id)
+		}
+	}
+
+}
+
 func TestGetName(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -313,6 +397,18 @@ func TestRedgistration(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
+	mockObj := mocks.NewMockImageClient(ctrl)
+
+	imageResponce := &image.GetImageResponce{
+		Url: "http://localhost",
+	}
+
+	mockObj.EXPECT().GetImage(gomock.Any(), &image.GetImageRequest{Id: int64(1), Cell: "0"}).Return(imageResponce, nil)
+	mockObj.EXPECT().GetImage(gomock.Any(), &image.GetImageRequest{Id: int64(1), Cell: "1"}).Return(imageResponce, nil)
+	mockObj.EXPECT().GetImage(gomock.Any(), &image.GetImageRequest{Id: int64(1), Cell: "2"}).Return(imageResponce, nil)
+	mockObj.EXPECT().GetImage(gomock.Any(), &image.GetImageRequest{Id: int64(1), Cell: "3"}).Return(imageResponce, nil)
+	mockObj.EXPECT().GetImage(gomock.Any(), &image.GetImageRequest{Id: int64(1), Cell: "4"}).Return(imageResponce, nil)
+
 	hashedPassword, _ := hashPassword("qwertyqwerty")
 
 	expected := []*models.Person{
@@ -352,13 +448,14 @@ func TestRedgistration(t *testing.T) {
 
 	mockInterest.EXPECT().Get(gomock.Any(), interestFilter).Return(interests, nil)
 	mockInterest.EXPECT().CreatePersonInterests(gomock.Any(), expected[0].ID, []types.InterestID{1, 2}).Return(nil)
+	mockInterest.EXPECT().GetPersonInterests(gomock.Any(), types.UserID(1)).Return(interests, nil)
 
 	mockREDIS := mocks.NewMockSessionStorage(ctrl)
 	mockREDIS.EXPECT().CreateSession(gomock.Any(), types.UserID(1)).Return("predefined_session_id", nil)
 
-	interest := &mocks.MockInterestStorage{}
+	//interest := &mocks.MockInterestStorage{}
 
-	core := UseCase{sessionStorage: mockREDIS, personStorage: mockSQL, interestStorage: interest}
+	core := UseCase{sessionStorage: mockREDIS, personStorage: mockSQL, interestStorage: mockInterest, grpcClient: mockObj}
 
 	testTable := []models.RegitstrationBody{
 		{
@@ -372,9 +469,6 @@ func TestRedgistration(t *testing.T) {
 	}
 
 	for _, curr := range testTable {
-		//hashedPassword, _ := hashPassword(curr.Password)
-		//t.Log(hashedPassword)
-		//t.Log(curr.Password)
 		profile, sessionID, err := core.Registration(curr, context.TODO())
 		require.NoError(t, err)
 		require.Equal(t, curr.Name, profile.Name)

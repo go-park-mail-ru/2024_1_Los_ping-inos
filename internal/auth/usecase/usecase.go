@@ -29,12 +29,6 @@ func NewAuthUseCase(dbReader auth.PersonStorage, sstore auth.SessionStorage, ist
 	}
 }
 
-func NewGRPCCLient(grpcClient image.ImageClient) *UseCase {
-	return &UseCase{
-		grpcClient: grpcClient,
-	}
-}
-
 func (service *UseCase) IsAuthenticated(sessionID string, ctx context.Context) (types.UserID, bool, error) {
 	person, err := service.sessionStorage.GetBySID(ctx, sessionID)
 	if err != nil {
@@ -56,7 +50,6 @@ func (service *UseCase) Login(email, password string, ctx context.Context) (*aut
 
 	user := users[0]
 	err := checkPassword(user.Password, password)
-
 	if err != nil {
 		return nil, "", err
 	}
@@ -84,15 +77,15 @@ func (service *UseCase) Registration(body auth.RegitstrationBody, ctx context.Co
 	// 	return nil, "", err
 	// }
 
-	hashedPassword, err := service.personStorage.AddAccount(ctx, body.Name, body.Birthday, body.Gender, body.Email, body.Password)
+	_, err := service.personStorage.AddAccount(ctx, body.Name, body.Birthday, body.Gender, body.Email, body.Password)
 	//err := service.personStorage.AddAccount(ctx, body.Name, body.Birthday, body.Gender, body.Email, body.Password)
 	if err != nil {
-		return nil, "", err
+		return nil, "", fmt.Errorf("poshel nahuy")
 	}
 
-	prof, SID, err := service.Login(body.Email, hashedPassword, ctx)
+	prof, SID, err := service.Login(body.Email, body.Password, ctx)
 	if err != nil {
-		return nil, "", err
+		return nil, "", fmt.Errorf("poshel nahuy dolboeb")
 	}
 
 	interests, err := service.interestStorage.Get(ctx, &auth.InterestGetFilter{Name: body.Interests})
