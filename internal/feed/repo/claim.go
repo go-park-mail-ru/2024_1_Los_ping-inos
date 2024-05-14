@@ -46,7 +46,7 @@ func (storage *PostgresStorage) GetAllClaims(ctx context.Context) ([]feed.PureCl
 	}
 	defer rows.Close()
 	var tmp feed.PureClaim
-	claims := make([]feed.PureClaim, 1)
+	claims := make([]feed.PureClaim, 0)
 	for rows.Next() {
 		err = rows.Scan(&tmp.Id, &tmp.Title)
 		if err != nil {
