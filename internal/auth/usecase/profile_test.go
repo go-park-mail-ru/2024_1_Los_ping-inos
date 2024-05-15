@@ -21,10 +21,22 @@ func TestGetProfile(t *testing.T) {
 
 	mockObj := mocks.NewMockPersonStorage(ctrl)
 
-	PersonGetFilter := &auth.PersonGetFilter{
-		SessionID: []string{"47300672-793e-4fd"},
-		ID:        []types.UserID{1},
-		Name:      "nikola_kwas",
+	PersonGetFilter := []*auth.PersonGetFilter{
+		{
+			SessionID: []string{"47300672-793e-4fd"},
+			ID:        []types.UserID{1},
+			Name:      "nikola_kwas",
+		},
+		{
+			SessionID: []string{"47300672-793e-sdf"},
+			ID:        []types.UserID{2},
+			Name:      "nikola_kwas",
+		},
+		{
+			SessionID: []string{"47300672-793e-kal"},
+			ID:        []types.UserID{3},
+			Name:      "nikola_kwas",
+		},
 	}
 
 	persons := []*auth.Person{
@@ -35,8 +47,18 @@ func TestGetProfile(t *testing.T) {
 			SessionID: "47300672-793e-4fd",
 		},
 	}
+	wrongPersons := []*auth.Person{
+		{
+			ID:        types.UserID(3),
+			Name:      "nikola_kwas",
+			Email:     "nikola_kwas",
+			SessionID: "47300672-793e-kal",
+		},
+	}
 
-	mockObj.EXPECT().Get(gomock.Any(), PersonGetFilter).Return(persons, nil)
+	mockObj.EXPECT().Get(gomock.Any(), PersonGetFilter[0]).Return(persons, nil)
+	mockObj.EXPECT().Get(gomock.Any(), PersonGetFilter[1]).Return(nil, fmt.Errorf("repo error"))
+	mockObj.EXPECT().Get(gomock.Any(), PersonGetFilter[2]).Return(wrongPersons, nil)
 
 	mockImage := mocks.NewMockImageClient(ctrl)
 
@@ -49,6 +71,11 @@ func TestGetProfile(t *testing.T) {
 	mockImage.EXPECT().GetImage(gomock.Any(), &image.GetImageRequest{Id: int64(1), Cell: "2"}).Return(imageResponce, nil)
 	mockImage.EXPECT().GetImage(gomock.Any(), &image.GetImageRequest{Id: int64(1), Cell: "3"}).Return(imageResponce, nil)
 	mockImage.EXPECT().GetImage(gomock.Any(), &image.GetImageRequest{Id: int64(1), Cell: "4"}).Return(imageResponce, nil)
+	mockImage.EXPECT().GetImage(gomock.Any(), &image.GetImageRequest{Id: int64(3), Cell: "0"}).Return(imageResponce, nil)
+	mockImage.EXPECT().GetImage(gomock.Any(), &image.GetImageRequest{Id: int64(3), Cell: "1"}).Return(imageResponce, nil)
+	mockImage.EXPECT().GetImage(gomock.Any(), &image.GetImageRequest{Id: int64(3), Cell: "2"}).Return(imageResponce, nil)
+	mockImage.EXPECT().GetImage(gomock.Any(), &image.GetImageRequest{Id: int64(3), Cell: "3"}).Return(imageResponce, nil)
+	mockImage.EXPECT().GetImage(gomock.Any(), &image.GetImageRequest{Id: int64(3), Cell: "4"}).Return(imageResponce, nil)
 
 	mockInterest := mocks.NewMockInterestStorage(ctrl)
 
@@ -64,28 +91,64 @@ func TestGetProfile(t *testing.T) {
 	}
 
 	mockInterest.EXPECT().GetPersonInterests(gomock.Any(), types.UserID(1)).Return(interests, nil)
+	mockInterest.EXPECT().GetPersonInterests(gomock.Any(), types.UserID(3)).Return(nil, fmt.Errorf("repo error"))
 
 	core := UseCase{personStorage: mockObj, grpcClient: mockImage, interestStorage: mockInterest}
 
-	testTable := []auth.ProfileGetParams{
+	testTable := []struct {
+		profile auth.ProfileGetParams
+		hasErr  bool
+	}{
 		{
-			ID:        []types.UserID{1},
-			SessionID: []string{"47300672-793e-4fd"},
-			Name:      "nikola_kwas",
+			profile: auth.ProfileGetParams{
+
+				SessionID: []string{"47300672-793e-4fd"},
+				ID:        []types.UserID{1},
+				Name:      "nikola_kwas",
+			},
+			hasErr: false,
+		},
+		{
+			profile: auth.ProfileGetParams{
+
+				SessionID: []string{"47300672-793e-sdf"},
+				ID:        []types.UserID{2},
+				Name:      "nikola_kwas",
+			},
+			hasErr: true,
+		},
+		{
+			profile: auth.ProfileGetParams{
+
+				SessionID: []string{"47300672-793e-kal"},
+				ID:        []types.UserID{3},
+				Name:      "nikola_kwas",
+			},
+			hasErr: true,
 		},
 	}
 
 	for _, curr := range testTable {
-		prof, err := core.GetProfile(curr, context.TODO())
-		if err != nil {
+		prof, err := core.GetProfile(curr.profile, context.TODO())
+		if curr.hasErr && err == nil {
 			t.Errorf("unexpected err result")
+			t.Error(err)
 			return
 		}
-		if len(prof) == 0 {
-			t.Errorf("unexpected result")
+		if !curr.hasErr && err != nil {
+			t.Errorf("unexpected err result")
+			t.Error(err)
+			return
 		}
-		if prof[0].Name != curr.Name {
-			t.Errorf("unexpected result")
+		if !curr.hasErr && len(prof) == 0 {
+			t.Errorf("unexpected err result")
+			t.Error(err)
+			return
+		}
+		if !curr.hasErr && prof[0].Name != curr.profile.Name {
+			t.Errorf("unexpected err result")
+			t.Error(err)
+			return
 		}
 	}
 }

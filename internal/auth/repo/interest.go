@@ -3,6 +3,7 @@ package repo
 import (
 	"context"
 	"database/sql"
+
 	qb "github.com/Masterminds/squirrel"
 	"github.com/sirupsen/logrus"
 	"main.go/internal/auth"
@@ -28,9 +29,9 @@ func NewInterestStorage(dbReader *sql.DB) *InterestStorage {
 }
 
 func (storage *InterestStorage) CreatePersonInterests(ctx context.Context, personID types.UserID, interestID []types.InterestID) error {
-	logger := ctx.Value(Logg).(Log)
+	//logger := ctx.Value(Logg).(Log)
 	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
-	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db add request to ", PersonInterestTableName)
+	//logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db add request to ", PersonInterestTableName)
 
 	for i := range interestID {
 		query := stBuilder.
@@ -41,7 +42,7 @@ func (storage *InterestStorage) CreatePersonInterests(ctx context.Context, perso
 
 		rows, err := query.Query()
 		if err != nil {
-			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("db insert can't query: ", err.Error())
+			//logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("db insert can't query: ", err.Error())
 			return err
 		}
 		rows.Close()

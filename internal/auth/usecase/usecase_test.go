@@ -408,6 +408,21 @@ func TestRedgistration(t *testing.T) {
 	mockObj.EXPECT().GetImage(gomock.Any(), &image.GetImageRequest{Id: int64(1), Cell: "2"}).Return(imageResponce, nil)
 	mockObj.EXPECT().GetImage(gomock.Any(), &image.GetImageRequest{Id: int64(1), Cell: "3"}).Return(imageResponce, nil)
 	mockObj.EXPECT().GetImage(gomock.Any(), &image.GetImageRequest{Id: int64(1), Cell: "4"}).Return(imageResponce, nil)
+	mockObj.EXPECT().GetImage(gomock.Any(), &image.GetImageRequest{Id: int64(2), Cell: "0"}).Return(imageResponce, nil)
+	mockObj.EXPECT().GetImage(gomock.Any(), &image.GetImageRequest{Id: int64(2), Cell: "1"}).Return(imageResponce, nil)
+	mockObj.EXPECT().GetImage(gomock.Any(), &image.GetImageRequest{Id: int64(2), Cell: "2"}).Return(imageResponce, nil)
+	mockObj.EXPECT().GetImage(gomock.Any(), &image.GetImageRequest{Id: int64(2), Cell: "3"}).Return(imageResponce, nil)
+	mockObj.EXPECT().GetImage(gomock.Any(), &image.GetImageRequest{Id: int64(2), Cell: "4"}).Return(imageResponce, nil)
+	mockObj.EXPECT().GetImage(gomock.Any(), &image.GetImageRequest{Id: int64(3), Cell: "0"}).Return(imageResponce, nil)
+	mockObj.EXPECT().GetImage(gomock.Any(), &image.GetImageRequest{Id: int64(3), Cell: "1"}).Return(imageResponce, nil)
+	mockObj.EXPECT().GetImage(gomock.Any(), &image.GetImageRequest{Id: int64(3), Cell: "2"}).Return(imageResponce, nil)
+	mockObj.EXPECT().GetImage(gomock.Any(), &image.GetImageRequest{Id: int64(3), Cell: "3"}).Return(imageResponce, nil)
+	mockObj.EXPECT().GetImage(gomock.Any(), &image.GetImageRequest{Id: int64(3), Cell: "4"}).Return(imageResponce, nil)
+	mockObj.EXPECT().GetImage(gomock.Any(), &image.GetImageRequest{Id: int64(4), Cell: "0"}).Return(imageResponce, nil)
+	mockObj.EXPECT().GetImage(gomock.Any(), &image.GetImageRequest{Id: int64(4), Cell: "1"}).Return(imageResponce, nil)
+	mockObj.EXPECT().GetImage(gomock.Any(), &image.GetImageRequest{Id: int64(4), Cell: "2"}).Return(imageResponce, nil)
+	mockObj.EXPECT().GetImage(gomock.Any(), &image.GetImageRequest{Id: int64(4), Cell: "3"}).Return(imageResponce, nil)
+	mockObj.EXPECT().GetImage(gomock.Any(), &image.GetImageRequest{Id: int64(4), Cell: "4"}).Return(imageResponce, nil)
 
 	hashedPassword, _ := hashPassword("qwertyqwerty")
 
@@ -420,20 +435,61 @@ func TestRedgistration(t *testing.T) {
 			Email:    "somemail@gmial.com",
 			Password: hashedPassword,
 		},
+		{
+			ID:       2,
+			Name:     "Sanyok",
+			Birthday: time.Date(2001, 1, 1, 0, 0, 0, 0, time.UTC),
+			Gender:   "male",
+			Email:    "sanyok@gmail.com",
+			Password: hashedPassword,
+		},
+		{
+			ID:       3,
+			Name:     "Sanyok",
+			Birthday: time.Date(2001, 1, 1, 0, 0, 0, 0, time.UTC),
+			Gender:   "male",
+			Email:    "kirgiz@gmial.com",
+			Password: hashedPassword,
+		},
+	}
+	wrong := []*models.Person{
+		{
+			ID:       4,
+			Name:     "Sanyok",
+			Birthday: time.Date(2001, 1, 1, 0, 0, 0, 0, time.UTC),
+			Gender:   "male",
+			Email:    "wronginterests@gmial.com",
+			Password: hashedPassword,
+		},
 	}
 
-	getFilter := &models.PersonGetFilter{Email: []string{"somemail@gmial.com"}}
+	getFilter := []*models.PersonGetFilter{
+		{Email: []string{"somemail@gmial.com"}},
+		{Email: []string{"kirgiz@gmial.com"}},
+		{Email: []string{"wronginterests@gmial.com"}},
+	}
 
 	mockSQL := mocks.NewMockPersonStorage(ctrl)
 
-	mockSQL.EXPECT().AddAccount(gomock.Any(), expected[0].Name, "20010101",
-		expected[0].Gender, expected[0].Email, "qwertyqwerty").Return(hashedPassword, nil)
+	mockSQL.EXPECT().AddAccount(gomock.Any(), expected[0].Name, "20010101", expected[0].Gender, expected[0].Email, "qwertyqwerty").Return(hashedPassword, nil)
+	mockSQL.EXPECT().AddAccount(gomock.Any(), expected[1].Name, "20010101", expected[1].Gender, expected[1].Email, "qwertyqwerty").Return("", fmt.Errorf("repo error"))
+	mockSQL.EXPECT().AddAccount(gomock.Any(), expected[2].Name, "20010101", expected[2].Gender, expected[2].Email, "qwertyqwerty").Return(hashedPassword, nil)
+	mockSQL.EXPECT().AddAccount(gomock.Any(), wrong[0].Name, "20010101", wrong[0].Gender, wrong[0].Email, "qwertyqwerty").Return(hashedPassword, nil)
 
-	mockSQL.EXPECT().Get(gomock.Any(), getFilter).Return(expected, nil)
+	mockSQL.EXPECT().Get(gomock.Any(), getFilter[0]).Return(expected, nil)
+	mockSQL.EXPECT().Get(gomock.Any(), getFilter[1]).Return(nil, fmt.Errorf("repo error"))
+	mockSQL.EXPECT().Get(gomock.Any(), getFilter[2]).Return(wrong, nil)
 
 	mockInterest := mocks.NewMockInterestStorage(ctrl)
 
-	interestFilter := &models.InterestGetFilter{Name: []string{"foo", "bar"}}
+	interestFilter := []*models.InterestGetFilter{
+		{
+			Name: []string{"foo", "bar"},
+		},
+		{
+			Name: []string{"fee", "faa"},
+		},
+	}
 
 	interests := []*models.Interest{
 		{
@@ -446,34 +502,91 @@ func TestRedgistration(t *testing.T) {
 		},
 	}
 
-	mockInterest.EXPECT().Get(gomock.Any(), interestFilter).Return(interests, nil)
+	mockInterest.EXPECT().Get(gomock.Any(), interestFilter[0]).Return(interests, nil)
+	mockInterest.EXPECT().Get(gomock.Any(), interestFilter[1]).Return(nil, fmt.Errorf("repo error"))
+
 	mockInterest.EXPECT().CreatePersonInterests(gomock.Any(), expected[0].ID, []types.InterestID{1, 2}).Return(nil)
+
 	mockInterest.EXPECT().GetPersonInterests(gomock.Any(), types.UserID(1)).Return(interests, nil)
+	mockInterest.EXPECT().GetPersonInterests(gomock.Any(), types.UserID(2)).Return(interests, nil)
+	mockInterest.EXPECT().GetPersonInterests(gomock.Any(), types.UserID(3)).Return(interests, nil)
+	mockInterest.EXPECT().GetPersonInterests(gomock.Any(), types.UserID(4)).Return(interests, nil)
 
 	mockREDIS := mocks.NewMockSessionStorage(ctrl)
 	mockREDIS.EXPECT().CreateSession(gomock.Any(), types.UserID(1)).Return("predefined_session_id", nil)
-
-	//interest := &mocks.MockInterestStorage{}
+	mockREDIS.EXPECT().CreateSession(gomock.Any(), types.UserID(4)).Return("predefined_session_id", nil)
 
 	core := UseCase{sessionStorage: mockREDIS, personStorage: mockSQL, interestStorage: mockInterest, grpcClient: mockObj}
 
-	testTable := []models.RegitstrationBody{
+	testTable := []struct {
+		body   models.RegitstrationBody
+		hasErr bool
+	}{
 		{
-			Name:      "Sanya",
-			Birthday:  "20010101",
-			Gender:    "male",
-			Email:     "somemail@gmial.com",
-			Password:  "qwertyqwerty",
-			Interests: []string{"foo", "bar"},
+			body: models.RegitstrationBody{
+				Name:      "Sanya",
+				Birthday:  "20010101",
+				Gender:    "male",
+				Email:     "somemail@gmial.com",
+				Password:  "qwertyqwerty",
+				Interests: []string{"foo", "bar"},
+			},
+			hasErr: false,
+		},
+		{
+			body: models.RegitstrationBody{
+				Name:      "Sanyok",
+				Birthday:  "20010101",
+				Gender:    "male",
+				Email:     "sanyok@gmail.com",
+				Password:  "qwertyqwerty",
+				Interests: []string{"foo", "bar"},
+			},
+			hasErr: true,
+		},
+		{
+			body: models.RegitstrationBody{
+				Name:      "Sanyok",
+				Birthday:  "20010101",
+				Gender:    "male",
+				Email:     "kirgiz@gmial.com",
+				Password:  "qwertyqwerty",
+				Interests: []string{"foo", "bar"},
+			},
+			hasErr: true,
+		},
+		{
+			body: models.RegitstrationBody{
+				Name:      "Sanyok",
+				Birthday:  "20010101",
+				Gender:    "male",
+				Email:     "wronginterests@gmial.com",
+				Password:  "qwertyqwerty",
+				Interests: []string{"fee", "faa"},
+			},
+			hasErr: true,
 		},
 	}
 
 	for _, curr := range testTable {
-		profile, sessionID, err := core.Registration(curr, context.TODO())
-		require.NoError(t, err)
-		require.Equal(t, curr.Name, profile.Name)
-		require.Equal(t, curr.Email, profile.Email)
-		require.NotEmpty(t, sessionID)
+		profile, sessionID, err := core.Registration(curr.body, context.TODO())
+		if curr.hasErr && err == nil {
+			t.Errorf("unexpected err result")
+			return
+		}
+		if !curr.hasErr && err != nil {
+			t.Errorf("unexpected err result")
+			return
+		}
+		if !curr.hasErr && profile.Name != curr.body.Name {
+			t.Errorf("unexpected profile")
+		}
+		if !curr.hasErr && profile.Email != curr.body.Email {
+			t.Errorf("unexpected profile")
+		}
+		if !curr.hasErr && sessionID == "" {
+			t.Errorf("unexpected sessionID")
+		}
 	}
 }
 

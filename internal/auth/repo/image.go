@@ -3,10 +3,10 @@ package repo
 import (
 	"context"
 	"database/sql"
-	"github.com/sirupsen/logrus"
-	"main.go/internal/auth"
-	. "main.go/internal/logs"
 	"strconv"
+
+	"main.go/internal/auth"
+	//. "main.go/internal/logs"
 )
 
 const (
@@ -24,8 +24,8 @@ func NewImageStorage(dbReader *sql.DB) *ImageStorage {
 }
 
 func (storage *ImageStorage) Get(ctx context.Context, userID int64) ([]auth.Image, error) {
-	logger := ctx.Value(Logg).(Log)
-	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("Get request to person_image")
+	//logger := ctx.Value(Logg).(Log)
+	//logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("Get request to person_image")
 
 	query := "SELECT " + personImageFields + " FROM person_image WHERE person_id = $1"
 
@@ -49,6 +49,6 @@ func (storage *ImageStorage) Get(ctx context.Context, userID int64) ([]auth.Imag
 		cell, _ := strconv.Atoi(image.CellNumber)
 		images[cell] = auth.Image{image.UserId, image.Url, image.CellNumber}
 	}
-	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("Return ", len(images), " images")
+	//logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("Return ", len(images), " images")
 	return images, nil
 }
