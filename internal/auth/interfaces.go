@@ -37,7 +37,7 @@ type (
 	}
 
 	InterestStorage interface {
-		Get(ctx context.Context, filter *InterestGetFilter) ([]*Interest, error)
+		GetInterest(ctx context.Context, filter *InterestGetFilter) ([]*Interest, error)
 		CreatePersonInterests(ctx context.Context, personID types.UserID, interestID []types.InterestID) error
 		GetPersonInterests(ctx context.Context, personID types.UserID) ([]*Interest, error)
 		DeletePersonInterests(ctx context.Context, personID types.UserID, interestID []types.InterestID) error

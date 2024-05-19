@@ -60,7 +60,7 @@ func TestGetAllIntests(t *testing.T) {
 		},
 	}
 
-	mockInterest.EXPECT().Get(gomock.Any(), nil).Return(interests, nil)
+	mockInterest.EXPECT().GetInterest(gomock.Any(), nil).Return(interests, nil)
 
 	core := UseCase{interestStorage: mockInterest}
 
@@ -502,8 +502,8 @@ func TestRedgistration(t *testing.T) {
 		},
 	}
 
-	mockInterest.EXPECT().Get(gomock.Any(), interestFilter[0]).Return(interests, nil)
-	mockInterest.EXPECT().Get(gomock.Any(), interestFilter[1]).Return(nil, fmt.Errorf("repo error"))
+	mockInterest.EXPECT().GetInterest(gomock.Any(), interestFilter[0]).Return(interests, nil)
+	mockInterest.EXPECT().GetInterest(gomock.Any(), interestFilter[1]).Return(nil, fmt.Errorf("repo error"))
 
 	mockInterest.EXPECT().CreatePersonInterests(gomock.Any(), expected[0].ID, []types.InterestID{1, 2}).Return(nil)
 

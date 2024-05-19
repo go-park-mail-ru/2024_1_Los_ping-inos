@@ -2,10 +2,11 @@ package usecase
 
 import (
 	"context"
+	"time"
+
 	"github.com/emirpasic/gods/sets/hashset"
 	"main.go/internal/auth"
 	"main.go/internal/types"
-	"time"
 )
 
 func (service *UseCase) GetProfile(params auth.ProfileGetParams, ctx context.Context) ([]auth.Profile, error) {
@@ -91,7 +92,7 @@ func (service *UseCase) handleInterests(interests []string, personID types.UserI
 		return err
 	}
 
-	interestsAfter, err := service.interestStorage.Get(ctx, &auth.InterestGetFilter{Name: interests})
+	interestsAfter, err := service.interestStorage.GetInterest(ctx, &auth.InterestGetFilter{Name: interests})
 	if err != nil {
 		return err
 	}

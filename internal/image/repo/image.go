@@ -9,7 +9,6 @@ import (
 	"os"
 	"time"
 
-	v4 "github.com/aws/aws-sdk-go-v2/aws/signer/v4"
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/aws/aws-sdk-go/aws"
@@ -111,22 +110,23 @@ func (storage *ImageStorage) Get(ctx context.Context, userID int64, cell string)
 	bucketName := "los_ping"
 	lifeTimeSeconds := int64(60)
 
-	var req *v4.PresignedHTTPRequest
-	var url string
+	//var req *v4.PresignedHTTPRequest
+	//var url string
 	var obj string
 
 	for _, img := range images {
 		objectKey := img.Url
 		println("THIS IS OBJECT KEY", objectKey)
-		req, err = presigner.PresignGetObject(context.TODO(), &s3.GetObjectInput{
+		_, err = presigner.PresignGetObject(context.TODO(), &s3.GetObjectInput{
 			Bucket: aws.String(bucketName),
 			Key:    aws.String(objectKey),
 		}, func(opts *s3.PresignOptions) {
 			opts.Expires = time.Duration(lifeTimeSeconds * int64(time.Second))
 		})
-		url = req.URL
-		println(url)
+		//url = req.URL
+		//println(url)
 		obj = img.Url
+		return obj, nil
 	}
 	//logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("Return ", len(images), " images")
 	return obj, nil

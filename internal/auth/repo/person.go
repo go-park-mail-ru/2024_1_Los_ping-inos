@@ -163,11 +163,11 @@ func (storage *PersonStorage) GetMatch(ctx context.Context, person1ID types.User
 		RunWith(storage.dbReader)
 
 	rows, err := query.Query()
-	defer rows.Close()
 	if err != nil {
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("db can't query:  ", err.Error())
 		return nil, err
 	}
+	defer rows.Close()
 
 	res := make([]types.UserID, 0)
 	var scan types.UserID

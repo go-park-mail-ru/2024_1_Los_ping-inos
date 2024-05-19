@@ -68,7 +68,7 @@ func (service *UseCase) Login(email, password string, ctx context.Context) (*aut
 }
 
 func (service *UseCase) GetAllInterests(ctx context.Context) ([]*auth.Interest, error) {
-	return service.interestStorage.Get(ctx, nil)
+	return service.interestStorage.GetInterest(ctx, nil)
 }
 
 func (service *UseCase) Registration(body auth.RegitstrationBody, ctx context.Context) (*auth.Profile, string, error) {
@@ -83,7 +83,7 @@ func (service *UseCase) Registration(body auth.RegitstrationBody, ctx context.Co
 		return nil, "", fmt.Errorf("nuh uh uh")
 	}
 
-	interests, err := service.interestStorage.Get(ctx, &auth.InterestGetFilter{Name: body.Interests})
+	interests, err := service.interestStorage.GetInterest(ctx, &auth.InterestGetFilter{Name: body.Interests})
 	if err != nil {
 		return nil, "", err
 	}

@@ -402,19 +402,19 @@ func (mr *MockInterestStorageMockRecorder) DeletePersonInterests(ctx, personID, 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeletePersonInterests", reflect.TypeOf((*MockInterestStorage)(nil).DeletePersonInterests), ctx, personID, interestID)
 }
 
-// Get mocks base method.
-func (m *MockInterestStorage) Get(ctx context.Context, filter *auth.InterestGetFilter) ([]*auth.Interest, error) {
+// GetInterest mocks base method.
+func (m *MockInterestStorage) GetInterest(ctx context.Context, filter *auth.InterestGetFilter) ([]*auth.Interest, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Get", ctx, filter)
+	ret := m.ctrl.Call(m, "GetInterest", ctx, filter)
 	ret0, _ := ret[0].([]*auth.Interest)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// Get indicates an expected call of Get.
-func (mr *MockInterestStorageMockRecorder) Get(ctx, filter interface{}) *gomock.Call {
+// GetInterest indicates an expected call of GetInterest.
+func (mr *MockInterestStorageMockRecorder) GetInterest(ctx, filter interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockInterestStorage)(nil).Get), ctx, filter)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetInterest", reflect.TypeOf((*MockInterestStorage)(nil).GetInterest), ctx, filter)
 }
 
 // GetPersonInterests mocks base method.

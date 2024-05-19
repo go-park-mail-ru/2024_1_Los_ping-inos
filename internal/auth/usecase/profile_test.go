@@ -450,7 +450,7 @@ func TestHandleInterests(t *testing.T) {
 
 	mockObj := mocks.NewMockInterestStorage(ctrl)
 	mockObj.EXPECT().GetPersonInterests(gomock.Any(), types.UserID(1)).Return(interestsBefore, nil)
-	mockObj.EXPECT().Get(gomock.All(), interestGetFilter).Return(interestsAfter, nil)
+	mockObj.EXPECT().GetInterest(gomock.All(), interestGetFilter).Return(interestsAfter, nil)
 	mockObj.EXPECT().CreatePersonInterests(gomock.Any(), types.UserID(1), []types.InterestID{3}).Return(nil)
 	mockObj.EXPECT().DeletePersonInterests(gomock.Any(), types.UserID(1), []types.InterestID{1, 2}).Return(nil)
 

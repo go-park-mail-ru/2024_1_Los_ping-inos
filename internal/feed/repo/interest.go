@@ -2,6 +2,7 @@ package repo
 
 import (
 	"context"
+
 	qb "github.com/Masterminds/squirrel"
 	"github.com/sirupsen/logrus"
 	. "main.go/config"
@@ -51,12 +52,11 @@ func (storage *PostgresStorage) getInterests(ctx context.Context, filter *feed.I
 
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db get request to ", InterestTableName)
 	rows, err := query.Query()
-	defer rows.Close()
-
 	if err != nil {
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't query: ", err.Error())
 		return nil, err
 	}
+	defer rows.Close()
 
 	interests := make([]*feed.Interest, 0)
 	for rows.Next() {
