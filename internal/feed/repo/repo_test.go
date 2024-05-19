@@ -2,6 +2,7 @@ package repo
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"reflect"
 	"regexp"
@@ -10,6 +11,7 @@ import (
 
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/lib/pq"
+	"github.com/stretchr/testify/require"
 	models "main.go/internal/feed"
 	. "main.go/internal/logs"
 	"main.go/internal/types"
@@ -653,11 +655,6 @@ func TestGetLike(t *testing.T) {
 		rows = rows.AddRow(item.Person1, item.Person2)
 	}
 
-	// tmp := models.Like{
-	// 	Person1: types.UserID(1),
-	// 	Person2: types.UserID(2),
-	// }
-
 	mock.ExpectQuery(
 		regexp.QuoteMeta(`SELECT person_one_id, person_two_id 
 		FROM "like" 
@@ -771,4 +768,331 @@ func TestCreateLike(t *testing.T) {
 		t.Errorf("expected no error, got %v", err)
 	}
 
+}
+
+func TestGetClaimed(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("cant create mock: %s", err)
+	}
+	defer db.Close()
+
+	rows := sqlmock.NewRows([]string{"ID"})
+
+	message := []types.UserID{2}
+
+	for _, item := range message {
+		rows = rows.AddRow(item)
+	}
+
+	mock.ExpectQuery(
+		regexp.QuoteMeta(`SELECT receiver_id 
+		FROM person_claim 
+		WHERE sender_id = $1`)).
+		WithArgs(1).
+		WillReturnRows(rows)
+
+	repo := &PostgresStorage{
+		dbReader: db,
+	}
+
+	logger := InitLog()
+	logger.RequestID = int64(1)
+	contexted := context.WithValue(context.Background(), Logg, logger)
+
+	userID := types.UserID(1)
+
+	result, err := repo.GetClaimed(contexted, userID)
+	if err != nil {
+		t.Errorf("expected no error, got %v", err)
+	}
+
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Errorf("there were unfulfilled expectations: %s", err)
+		return
+	}
+
+	if !reflect.DeepEqual(message, result) {
+		t.Errorf("expected %v, got %v", message, result)
+		return
+	}
+
+	mock.ExpectQuery(
+		regexp.QuoteMeta(`SELECT receiver_id 
+		FROM person_claim 
+		WHERE sender_id = $1`)).
+		WithArgs(1).
+		WillReturnError(fmt.Errorf("db_error"))
+
+	result, err = repo.GetClaimed(contexted, userID)
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Errorf("there were unfulfilled expectations: %s", err)
+		return
+	}
+
+	if err == nil {
+		t.Errorf("expected error, got nil")
+		return
+	}
+
+	if result != nil {
+		t.Errorf("expected empty array, got %v", result)
+		return
+	}
+}
+
+func TestGetFeed(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("cant create mock: %s", err)
+	}
+	defer db.Close()
+
+	rows := sqlmock.NewRows([]string{"Person1", "Person2"})
+
+	message := []types.UserID{2}
+
+	tmp := []models.Like{
+		{
+			Person1: types.UserID(1),
+			Person2: types.UserID(2),
+		},
+	}
+
+	for _, item := range tmp {
+		rows = rows.AddRow(item.Person1, item.Person2)
+	}
+
+	mock.ExpectQuery(
+		regexp.QuoteMeta(`SELECT person_one_id, person_two_id
+		FROM "like"
+		WHERE (person_one_id = $1)`)).
+		WithArgs(1).
+		WillReturnRows(rows)
+
+	rows = sqlmock.NewRows([]string{"ID"})
+
+	message = []types.UserID{2}
+
+	for _, item := range message {
+		rows = rows.AddRow(item)
+	}
+
+	mock.ExpectQuery(
+		regexp.QuoteMeta(`SELECT receiver_id 
+			FROM person_claim 
+			WHERE sender_id = $1`)).
+		WithArgs(1).
+		WillReturnRows(rows)
+
+	rows = sqlmock.NewRows([]string{"ID", "Name", "Birthday", "Description", "Location", "Email",
+		"Password", "CreatedAt", "Premium", "LikesLeft", "Gender"})
+
+	expect := []*models.Person{
+		{ID: 1, Name: "name1", Birthday: time.Now(), Description: "baa", Location: "maam", Email: "email1",
+			Password: "123", CreatedAt: time.Now(), Premium: false, LikesLeft: 5, Gender: "male"},
+	}
+
+	for _, item := range expect {
+		rows = rows.AddRow(item.ID, item.Name, item.Birthday, item.Description, item.Location, item.Email,
+			item.Password, item.CreatedAt, item.Premium, item.LikesLeft, item.Gender)
+	}
+
+	mock.ExpectQuery(
+		regexp.QuoteMeta(`SELECT id, name, birthday, description, 
+		location, email, password, created_at, premium, likes_left, 
+		gender FROM person WHERE id NOT IN ($1,$2,$3)`)).
+		WithArgs(2, 1, 2).
+		WillReturnRows(rows)
+
+	repo := &PostgresStorage{
+		dbReader: db,
+	}
+
+	logger := InitLog()
+	logger.RequestID = int64(1)
+	contexted := context.WithValue(context.Background(), Logg, logger)
+
+	result, err := repo.GetFeed(contexted, types.UserID(1))
+	if err != nil {
+		t.Errorf("expected no error, got %v", err)
+	}
+
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Errorf("there were unfulfilled expectations: %s", err)
+		return
+	}
+
+	if !reflect.DeepEqual(expect, result) {
+		t.Errorf("expected %v, got %v", message, result)
+		return
+	}
+
+	mock.ExpectQuery(
+		regexp.QuoteMeta(`SELECT person_one_id, person_two_id
+		FROM "like"
+		WHERE (person_one_id = $1)`)).
+		WithArgs(1).
+		WillReturnError(fmt.Errorf("db_error"))
+
+	result, err = repo.GetFeed(contexted, types.UserID(1))
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Errorf("there were unfulfilled expectations: %s", err)
+		return
+	}
+
+	if err == nil {
+		t.Errorf("expected error, got nil")
+		return
+	}
+
+	if result != nil {
+		t.Errorf("expected empty array, got %v", result)
+		return
+	}
+
+	rows = sqlmock.NewRows([]string{"Person1", "Person2"})
+
+	message = []types.UserID{2}
+
+	tmp = []models.Like{
+		{
+			Person1: types.UserID(1),
+			Person2: types.UserID(2),
+		},
+	}
+
+	for _, item := range tmp {
+		rows = rows.AddRow(item.Person1, item.Person2)
+	}
+
+	mock.ExpectQuery(
+		regexp.QuoteMeta(`SELECT person_one_id, person_two_id
+		FROM "like"
+		WHERE (person_one_id = $1)`)).
+		WithArgs(1).
+		WillReturnRows(rows)
+
+	mock.ExpectQuery(
+		regexp.QuoteMeta(`SELECT receiver_id
+				FROM person_claim
+				WHERE sender_id = $1`)).
+		WithArgs(1).
+		WillReturnError(fmt.Errorf("db_error"))
+
+	result, err = repo.GetFeed(contexted, types.UserID(1))
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Errorf("there were unfulfilled expectations: %s", err)
+		return
+	}
+
+	if err == nil {
+		t.Errorf("expected error, got nil")
+		return
+	}
+
+	if result != nil {
+		t.Errorf("expected empty array, got %v", result)
+		return
+	}
+
+	rows = sqlmock.NewRows([]string{"Person1", "Person2"})
+
+	message = []types.UserID{2}
+
+	tmp = []models.Like{
+		{
+			Person1: types.UserID(1),
+			Person2: types.UserID(2),
+		},
+	}
+
+	for _, item := range tmp {
+		rows = rows.AddRow(item.Person1, item.Person2)
+	}
+
+	mock.ExpectQuery(
+		regexp.QuoteMeta(`SELECT person_one_id, person_two_id
+		FROM "like"
+		WHERE (person_one_id = $1)`)).
+		WithArgs(1).
+		WillReturnRows(rows)
+
+	rows = sqlmock.NewRows([]string{"ID"})
+
+	message = []types.UserID{2}
+
+	for _, item := range message {
+		rows = rows.AddRow(item)
+	}
+
+	mock.ExpectQuery(
+		regexp.QuoteMeta(`SELECT receiver_id 
+			FROM person_claim 
+			WHERE sender_id = $1`)).
+		WithArgs(1).
+		WillReturnRows(rows)
+
+	mock.ExpectQuery(
+		regexp.QuoteMeta(`SELECT id, name, birthday, description,
+			location, email, password, created_at, premium, likes_left,
+			gender FROM person WHERE id NOT IN ($1,$2,$3)`)).
+		WithArgs(2, 1, 2).
+		WillReturnError(fmt.Errorf("db_error"))
+
+	result, err = repo.GetFeed(contexted, types.UserID(1))
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Errorf("there were unfulfilled expectations: %s", err)
+		return
+	}
+
+	if err == nil {
+		t.Errorf("expected error, got nil")
+		return
+	}
+
+	if result != nil {
+		t.Errorf("expected empty array, got %v", result)
+		return
+	}
+}
+
+func TestNewWebSocStorage(t *testing.T) {
+	storage := NewWebSocStorage()
+	if storage == nil {
+		t.Fatalf("Failed to create ImageStorage instance")
+	}
+}
+
+func TestWSStorage_AddConnection(t *testing.T) {
+	storage := &WSStorage{}
+	ctx := context.Background()
+	//conn := &websocket.Conn{}
+	uid := types.UserID(1)
+
+	// Test case 4: Adding a connection with a nil connection
+	err := storage.AddConnection(ctx, nil, uid)
+	require.Error(t, err)
+}
+
+// func TestGetConnection_NilUserID(t *testing.T) {
+// 	logger := InitLog()
+// 	logger.RequestID = int64(1)
+// 	contexted := context.WithValue(context.Background(), Logg, logger)
+// 	storage := &WSStorage{}
+// 	_, ok := storage.GetConnection(contexted, 0)
+// 	assert.False(t, ok, "GetConnection should return false when userID is nil")
+// }
+
+func TestNewPostgresStorage(t *testing.T) {
+	db, err := sql.Open("postgres", "user=your_user password=your_password dbname=your_db sslmode=disable")
+	if err != nil {
+		t.Fatalf("Failed to open database: %v", err)
+	}
+	defer db.Close()
+
+	storage := NewPostgresStorage(db)
+	if storage == nil {
+		t.Fatalf("Failed to create ImageStorage instance")
+	}
 }

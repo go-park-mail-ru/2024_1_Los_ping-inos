@@ -112,6 +112,9 @@ func NewWebSocStorage() *WSStorage {
 }
 
 func (stor *WSStorage) AddConnection(ctx context.Context, connection *websocket.Conn, UID types.UserID) error {
+	if connection == nil {
+		return fmt.Errorf("connection is nil")
+	}
 	stor.connections.Store(UID, connection)
 	conn, ok := stor.connections.Load(UID)
 	if !ok {
@@ -120,8 +123,8 @@ func (stor *WSStorage) AddConnection(ctx context.Context, connection *websocket.
 	if conn != connection {
 		return fmt.Errorf("sync map error")
 	}
-	logger := ctx.Value(Logg).(Log)
-	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("Stored connection with user ", UID)
+	//logger := ctx.Value(Logg).(Log)
+	//logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("Stored connection with user ", UID)
 	return nil
 }
 

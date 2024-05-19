@@ -1,320 +1,52 @@
-time="2024-05-19T19:54:19+03:00" level=info msg="Get request to message" requestID=1
-time="2024-05-19T19:54:19+03:00" level=warning msg="Db can't query: Query: could not match actual sql: \"SELECT id, data, sender_id, receiver_id, sent_time FROM message WHERE ((sender_id = $1 AND receiver_id = $2) OR (sender_id = $3 AND receiver_id = $4)) ORDER BY sent_time\" with expected regexp \"SELECT id, name FROM interest WHERE \\(id IN \\(\\$1\\)\\)\"" requestID=1
-time="2024-05-19T19:55:41+03:00" level=info msg="Get request to message" requestID=1
-time="2024-05-19T19:55:41+03:00" level=warning msg="Db can't query: Query 'SELECT id, data, sender_id, receiver_id, sent_time FROM message WHERE ((sender_id = $1 AND receiver_id = $2) OR (sender_id = $3 AND receiver_id = $4)) ORDER BY sent_time', arguments do not match: expected 2, but got 4 arguments" requestID=1
-time="2024-05-19T19:56:20+03:00" level=info msg="Get request to message" requestID=1
-time="2024-05-19T19:56:20+03:00" level=warning msg="Db can't query: Query 'SELECT id, data, sender_id, receiver_id, sent_time FROM message WHERE ((sender_id = $1 AND receiver_id = $2) OR (sender_id = $3 AND receiver_id = $4)) ORDER BY sent_time', arguments do not match: argument 1 expected [int64 - 2] does not match actual [int64 - 1]" requestID=1
-time="2024-05-19T19:58:14+03:00" level=info msg="Get request to message" requestID=1
-time="2024-05-19T19:58:14+03:00" level=info msg="Db: send messages" requestID=1
-time="2024-05-19T19:58:57+03:00" level=info msg="Get request to message" requestID=1
-time="2024-05-19T19:58:57+03:00" level=info msg="Db: send messages" requestID=1
-time="2024-05-19T19:58:57+03:00" level=info msg="Get request to message" requestID=1
-time="2024-05-19T19:58:57+03:00" level=warning msg="Db can't query: db_error" requestID=1
-time="2024-05-19T19:59:05+03:00" level=info msg="Get request to message" requestID=1
-time="2024-05-19T19:59:05+03:00" level=info msg="Db: send messages" requestID=1
-time="2024-05-19T19:59:05+03:00" level=info msg="Get request to message" requestID=1
-time="2024-05-19T19:59:05+03:00" level=warning msg="Db can't query: db_error" requestID=1
-time="2024-05-19T20:04:37+03:00" level=info msg="Create request to message" requestID=1
-time="2024-05-19T20:04:37+03:00" level=warning msg="Db can't query: Query: could not match actual sql: \"INSERT INTO message (data, sender_id, receiver_id, sent_time) VALUES ($1,$2,$3,$4)\" with expected regexp \"INSERT INTO person_interest \\(person_id,interest_id\\) VALUES \\(\\$1,\\$2\\)\"" requestID=1
-time="2024-05-19T20:06:34+03:00" level=info msg="Create request to message" requestID=1
-time="2024-05-19T20:06:34+03:00" level=warning msg="Db can't query: Query 'INSERT INTO message (data, sender_id, receiver_id, sent_time) VALUES ($1,$2,$3,$4)', arguments do not match: argument 3 expected [int64 - 267265] does not match actual [time.Time - 1970-01-01 03:04:27.265 +0300 MSK]" requestID=1
-time="2024-05-19T20:07:26+03:00" level=info msg="Create request to message" requestID=1
-time="2024-05-19T20:07:26+03:00" level=info msg="Db: created message" requestID=1
-time="2024-05-19T20:07:48+03:00" level=info msg="Create request to message" requestID=1
-time="2024-05-19T20:07:48+03:00" level=info msg="Db: created message" requestID=1
-time="2024-05-19T20:09:10+03:00" level=info msg="Create request to message" requestID=1
-time="2024-05-19T20:09:10+03:00" level=info msg="Db: created message" requestID=1
-time="2024-05-19T20:09:10+03:00" level=info msg="Create request to message" requestID=1
-time="2024-05-19T20:09:10+03:00" level=warning msg="Db can't query: repo error" requestID=1
-time="2024-05-19T20:09:15+03:00" level=info msg="Get request to message" requestID=1
-time="2024-05-19T20:09:15+03:00" level=info msg="Db: send messages" requestID=1
-time="2024-05-19T20:09:15+03:00" level=info msg="Get request to message" requestID=1
-time="2024-05-19T20:09:15+03:00" level=warning msg="Db can't query: db_error" requestID=1
-time="2024-05-19T20:09:15+03:00" level=info msg="Create request to message" requestID=1
-time="2024-05-19T20:09:15+03:00" level=info msg="Db: created message" requestID=1
-time="2024-05-19T20:09:15+03:00" level=info msg="Create request to message" requestID=1
-time="2024-05-19T20:09:15+03:00" level=warning msg="Db can't query: repo error" requestID=1
-time="2024-05-19T20:14:47+03:00" level=info msg="Get last messages request" requestID=1
-time="2024-05-19T20:14:47+03:00" level=info msg="db can't query: Query: could not match actual sql: \"SELECT DISTINCT ON ( CASE WHEN sender_id < receiver_id THEN sender_id || '_' || receiver_id ELSE receiver_id || '_' || sender_id END) id, data, sender_id, receiver_id, sent_time FROM message WHERE (sender_id = $1 OR receiver_id = $1) AND ((sender_id = ANY($2)) OR (receiver_id = ANY($2))) ORDER BY ( CASE WHEN sender_id < receiver_id THEN sender_id || '_' || receiver_id ELSE receiver_id || '_' || sender_id END), sent_time DESC;\" with expected regexp \"SELECT DISTINCT ON \\(CASE WHEN sender_id < receiver_id THEN sender_id \\|\\| '_' \\|\\| receiver_id ELSE receiver_id \\|\\| '_' \\|\\| sender_id END\\) id, data, sender_id, receiver_id, sent_time FROM message WHERE \\(sender_id = \\$1 OR receiver_id = \\$1\\) AND \\(\\(sender_id = ANY\\(\\$2\\)\\) OR \\(receiver_id = ANY\\(\\$2\\)\\)\\) ORDER BY \\( CASE WHEN sender_id < receiver_id THEN sender_id \\|\\| '_' \\|\\| receiver_id ELSE receiver_id \\|\\| '_' \\|\\| sender_id END\\), sent_time DESC;\"" requestID=1
-time="2024-05-19T20:16:51+03:00" level=info msg="Get last messages request" requestID=1
-time="2024-05-19T20:16:51+03:00" level=info msg="db can't query: Query 'SELECT DISTINCT ON (    CASE        WHEN sender_id < receiver_id THEN sender_id || '_' || receiver_id        ELSE receiver_id || '_' || sender_id    END) id, data, sender_id, receiver_id, sent_time FROM message WHERE     (sender_id = $1 OR receiver_id = $1)    AND ((sender_id = ANY($2)) OR (receiver_id = ANY($2))) ORDER BY (    CASE        WHEN sender_id < receiver_id THEN sender_id || '_' || receiver_id        ELSE receiver_id || '_' || sender_id    END), sent_time DESC;', arguments do not match: argument 1 expected [int64 - 2] does not match actual [string - {2}]" requestID=1
-time="2024-05-19T20:17:53+03:00" level=info msg="Get last messages request" requestID=1
-time="2024-05-19T20:17:53+03:00" level=info msg="db can't query: Query 'SELECT DISTINCT ON (    CASE        WHEN sender_id < receiver_id THEN sender_id || '_' || receiver_id        ELSE receiver_id || '_' || sender_id    END) id, data, sender_id, receiver_id, sent_time FROM message WHERE     (sender_id = $1 OR receiver_id = $1)    AND ((sender_id = ANY($2)) OR (receiver_id = ANY($2))) ORDER BY (    CASE        WHEN sender_id < receiver_id THEN sender_id || '_' || receiver_id        ELSE receiver_id || '_' || sender_id    END), sent_time DESC;', arguments do not match: argument 1 expected [string - 2] does not match actual [string - {2}]" requestID=1
-time="2024-05-19T20:18:09+03:00" level=info msg="Get last messages request" requestID=1
-time="2024-05-19T20:18:09+03:00" level=info msg="db can't query: Query 'SELECT DISTINCT ON (    CASE        WHEN sender_id < receiver_id THEN sender_id || '_' || receiver_id        ELSE receiver_id || '_' || sender_id    END) id, data, sender_id, receiver_id, sent_time FROM message WHERE     (sender_id = $1 OR receiver_id = $1)    AND ((sender_id = ANY($2)) OR (receiver_id = ANY($2))) ORDER BY (    CASE        WHEN sender_id < receiver_id THEN sender_id || '_' || receiver_id        ELSE receiver_id || '_' || sender_id    END), sent_time DESC;', arguments do not match: could not convert 1 argument []string - [2] to driver value: unsupported type []string, a slice of string" requestID=1
-time="2024-05-19T20:18:28+03:00" level=info msg="Get last messages request" requestID=1
-time="2024-05-19T20:18:28+03:00" level=info msg="db can't query: Query 'SELECT DISTINCT ON (    CASE        WHEN sender_id < receiver_id THEN sender_id || '_' || receiver_id        ELSE receiver_id || '_' || sender_id    END) id, data, sender_id, receiver_id, sent_time FROM message WHERE     (sender_id = $1 OR receiver_id = $1)    AND ((sender_id = ANY($2)) OR (receiver_id = ANY($2))) ORDER BY (    CASE        WHEN sender_id < receiver_id THEN sender_id || '_' || receiver_id        ELSE receiver_id || '_' || sender_id    END), sent_time DESC;', arguments do not match: argument 1 expected [string - 2] does not match actual [string - {2}]" requestID=1
-time="2024-05-19T20:18:47+03:00" level=info msg="Get last messages request" requestID=1
-time="2024-05-19T20:18:47+03:00" level=info msg="db can't query: Query 'SELECT DISTINCT ON (    CASE        WHEN sender_id < receiver_id THEN sender_id || '_' || receiver_id        ELSE receiver_id || '_' || sender_id    END) id, data, sender_id, receiver_id, sent_time FROM message WHERE     (sender_id = $1 OR receiver_id = $1)    AND ((sender_id = ANY($2)) OR (receiver_id = ANY($2))) ORDER BY (    CASE        WHEN sender_id < receiver_id THEN sender_id || '_' || receiver_id        ELSE receiver_id || '_' || sender_id    END), sent_time DESC;', arguments do not match: could not convert 1 argument pq.GenericArray - {A:2} to driver value: pq: Unable to convert int to array" requestID=1
-time="2024-05-19T20:19:09+03:00" level=info msg="Get last messages request" requestID=1
-time="2024-05-19T20:19:36+03:00" level=info msg="Get last messages request" requestID=1
-time="2024-05-19T20:19:36+03:00" level=info msg="Get last messages request" requestID=1
-time="2024-05-19T20:19:36+03:00" level=info msg="db can't query: db_error" requestID=1
-time="2024-05-19T20:19:40+03:00" level=info msg="Get request to message" requestID=1
-time="2024-05-19T20:19:40+03:00" level=info msg="Db: send messages" requestID=1
-time="2024-05-19T20:19:40+03:00" level=info msg="Get request to message" requestID=1
-time="2024-05-19T20:19:40+03:00" level=warning msg="Db can't query: db_error" requestID=1
-time="2024-05-19T20:19:40+03:00" level=info msg="Create request to message" requestID=1
-time="2024-05-19T20:19:40+03:00" level=info msg="Db: created message" requestID=1
-time="2024-05-19T20:19:40+03:00" level=info msg="Create request to message" requestID=1
-time="2024-05-19T20:19:40+03:00" level=warning msg="Db can't query: repo error" requestID=1
-time="2024-05-19T20:19:40+03:00" level=info msg="Get last messages request" requestID=1
-time="2024-05-19T20:19:40+03:00" level=info msg="Get last messages request" requestID=1
-time="2024-05-19T20:19:40+03:00" level=info msg="db can't query: db_error" requestID=1
-time="2024-05-19T22:13:31+03:00" level=info msg="db create request to person_claim" requestID=1
-time="2024-05-19T22:14:44+03:00" level=info msg="db create request to person_claim" requestID=1
-time="2024-05-19T22:14:44+03:00" level=info msg="db create request to person_claim" requestID=1
-time="2024-05-19T22:14:44+03:00" level=warning msg="db can't create claim: repo error" requestID=1
-time="2024-05-19T22:14:47+03:00" level=info msg="Get request to message" requestID=1
-time="2024-05-19T22:14:47+03:00" level=info msg="Db: send messages" requestID=1
-time="2024-05-19T22:14:47+03:00" level=info msg="Get request to message" requestID=1
-time="2024-05-19T22:14:47+03:00" level=warning msg="Db can't query: db_error" requestID=1
-time="2024-05-19T22:14:47+03:00" level=info msg="Create request to message" requestID=1
-time="2024-05-19T22:14:47+03:00" level=info msg="Db: created message" requestID=1
-time="2024-05-19T22:14:47+03:00" level=info msg="Create request to message" requestID=1
-time="2024-05-19T22:14:47+03:00" level=warning msg="Db can't query: repo error" requestID=1
-time="2024-05-19T22:14:47+03:00" level=info msg="Get last messages request" requestID=1
-time="2024-05-19T22:14:47+03:00" level=info msg="Get last messages request" requestID=1
-time="2024-05-19T22:14:47+03:00" level=info msg="db can't query: db_error" requestID=1
-time="2024-05-19T22:14:47+03:00" level=info msg="db create request to person_claim" requestID=1
-time="2024-05-19T22:14:47+03:00" level=info msg="db create request to person_claim" requestID=1
-time="2024-05-19T22:14:47+03:00" level=warning msg="db can't create claim: repo error" requestID=1
-time="2024-05-19T22:21:19+03:00" level=info msg="db get request to claim" requestID=1
-time="2024-05-19T22:25:29+03:00" level=info msg="db get request to claim" requestID=1
-time="2024-05-19T22:25:38+03:00" level=info msg="db get request to claim" requestID=1
-time="2024-05-19T22:25:51+03:00" level=info msg="db get request to claim" requestID=1
-time="2024-05-19T22:26:02+03:00" level=info msg="db get request to claim" requestID=1
-time="2024-05-19T22:26:20+03:00" level=info msg="db get request to claim" requestID=1
-time="2024-05-19T22:26:48+03:00" level=info msg="db get request to claim" requestID=1
-time="2024-05-19T22:27:27+03:00" level=info msg="db get request to claim" requestID=1
-time="2024-05-19T22:27:49+03:00" level=info msg="db get request to claim" requestID=1
-time="2024-05-19T22:27:49+03:00" level=info msg="db get request to claim" requestID=1
-time="2024-05-19T22:27:49+03:00" level=warning msg="db can't query: db_error" requestID=1
-time="2024-05-19T22:27:51+03:00" level=info msg="Get request to message" requestID=1
-time="2024-05-19T22:27:51+03:00" level=info msg="Db: send messages" requestID=1
-time="2024-05-19T22:27:51+03:00" level=info msg="Get request to message" requestID=1
-time="2024-05-19T22:27:51+03:00" level=warning msg="Db can't query: db_error" requestID=1
-time="2024-05-19T22:27:51+03:00" level=info msg="Create request to message" requestID=1
-time="2024-05-19T22:27:51+03:00" level=info msg="Db: created message" requestID=1
-time="2024-05-19T22:27:51+03:00" level=info msg="Create request to message" requestID=1
-time="2024-05-19T22:27:51+03:00" level=warning msg="Db can't query: repo error" requestID=1
-time="2024-05-19T22:27:51+03:00" level=info msg="Get last messages request" requestID=1
-time="2024-05-19T22:27:51+03:00" level=info msg="Get last messages request" requestID=1
-time="2024-05-19T22:27:51+03:00" level=info msg="db can't query: db_error" requestID=1
-time="2024-05-19T22:27:51+03:00" level=info msg="db create request to person_claim" requestID=1
-time="2024-05-19T22:27:51+03:00" level=info msg="db create request to person_claim" requestID=1
-time="2024-05-19T22:27:51+03:00" level=warning msg="db can't create claim: repo error" requestID=1
-time="2024-05-19T22:27:51+03:00" level=info msg="db get request to claim" requestID=1
-time="2024-05-19T22:27:51+03:00" level=info msg="db get request to claim" requestID=1
-time="2024-05-19T22:27:51+03:00" level=warning msg="db can't query: db_error" requestID=1
-time="2024-05-19T22:58:42+03:00" level=info msg="GetLike request to person_image" requestID=1
-time="2024-05-19T22:58:42+03:00" level=info msg="Return 5 images" requestID=1
-time="2024-05-19T22:58:42+03:00" level=info msg="GetLike request to person_image" requestID=1
-time="2024-05-19T22:58:46+03:00" level=info msg="Get request to message" requestID=1
-time="2024-05-19T22:58:46+03:00" level=info msg="Db: send messages" requestID=1
-time="2024-05-19T22:58:46+03:00" level=info msg="Get request to message" requestID=1
-time="2024-05-19T22:58:46+03:00" level=warning msg="Db can't query: db_error" requestID=1
-time="2024-05-19T22:58:46+03:00" level=info msg="Create request to message" requestID=1
-time="2024-05-19T22:58:46+03:00" level=info msg="Db: created message" requestID=1
-time="2024-05-19T22:58:46+03:00" level=info msg="Create request to message" requestID=1
-time="2024-05-19T22:58:46+03:00" level=warning msg="Db can't query: repo error" requestID=1
-time="2024-05-19T22:58:46+03:00" level=info msg="Get last messages request" requestID=1
-time="2024-05-19T22:58:46+03:00" level=info msg="Get last messages request" requestID=1
-time="2024-05-19T22:58:46+03:00" level=info msg="db can't query: db_error" requestID=1
-time="2024-05-19T22:58:46+03:00" level=info msg="db create request to person_claim" requestID=1
-time="2024-05-19T22:58:46+03:00" level=info msg="db create request to person_claim" requestID=1
-time="2024-05-19T22:58:46+03:00" level=warning msg="db can't create claim: repo error" requestID=1
-time="2024-05-19T22:58:46+03:00" level=info msg="db get request to claim" requestID=1
-time="2024-05-19T22:58:46+03:00" level=info msg="db get request to claim" requestID=1
-time="2024-05-19T22:58:46+03:00" level=warning msg="db can't query: db_error" requestID=1
-time="2024-05-19T22:58:46+03:00" level=info msg="GetLike request to person_image" requestID=1
-time="2024-05-19T22:58:46+03:00" level=info msg="Return 5 images" requestID=1
-time="2024-05-19T22:58:46+03:00" level=info msg="GetLike request to person_image" requestID=1
-time="2024-05-19T23:02:48+03:00" level=info msg="db get request to interest" requestID=1
-time="2024-05-19T23:02:48+03:00" level=info msg="return 1 interests" requestID=1
-time="2024-05-19T23:02:48+03:00" level=info msg="db get request to interest" requestID=1
-time="2024-05-19T23:02:48+03:00" level=warning msg="can't query: db_error" requestID=1
-time="2024-05-19T23:03:19+03:00" level=info msg="db get request to interest" requestID=1
-time="2024-05-19T23:03:19+03:00" level=info msg="return 1 interests" requestID=1
-time="2024-05-19T23:03:19+03:00" level=info msg="db get request to interest" requestID=1
-time="2024-05-19T23:03:19+03:00" level=warning msg="can't query: db_error" requestID=1
-time="2024-05-19T23:03:27+03:00" level=info msg="Get request to message" requestID=1
-time="2024-05-19T23:03:27+03:00" level=info msg="Db: send messages" requestID=1
-time="2024-05-19T23:03:27+03:00" level=info msg="Get request to message" requestID=1
-time="2024-05-19T23:03:27+03:00" level=warning msg="Db can't query: db_error" requestID=1
-time="2024-05-19T23:03:27+03:00" level=info msg="Create request to message" requestID=1
-time="2024-05-19T23:03:27+03:00" level=info msg="Db: created message" requestID=1
-time="2024-05-19T23:03:27+03:00" level=info msg="Create request to message" requestID=1
-time="2024-05-19T23:03:27+03:00" level=warning msg="Db can't query: repo error" requestID=1
-time="2024-05-19T23:03:27+03:00" level=info msg="Get last messages request" requestID=1
-time="2024-05-19T23:03:27+03:00" level=info msg="Get last messages request" requestID=1
-time="2024-05-19T23:03:27+03:00" level=info msg="db can't query: db_error" requestID=1
-time="2024-05-19T23:03:27+03:00" level=info msg="db create request to person_claim" requestID=1
-time="2024-05-19T23:03:27+03:00" level=info msg="db create request to person_claim" requestID=1
-time="2024-05-19T23:03:27+03:00" level=warning msg="db can't create claim: repo error" requestID=1
-time="2024-05-19T23:03:27+03:00" level=info msg="db get request to claim" requestID=1
-time="2024-05-19T23:03:27+03:00" level=info msg="db get request to claim" requestID=1
-time="2024-05-19T23:03:27+03:00" level=warning msg="db can't query: db_error" requestID=1
-time="2024-05-19T23:03:27+03:00" level=info msg="GetLike request to person_image" requestID=1
-time="2024-05-19T23:03:27+03:00" level=info msg="Return 5 images" requestID=1
-time="2024-05-19T23:03:27+03:00" level=info msg="GetLike request to person_image" requestID=1
-time="2024-05-19T23:03:27+03:00" level=info msg="db get request to interest" requestID=1
-time="2024-05-19T23:03:27+03:00" level=info msg="return 1 interests" requestID=1
-time="2024-05-19T23:03:27+03:00" level=info msg="db get request to interest" requestID=1
-time="2024-05-19T23:03:27+03:00" level=warning msg="can't query: db_error" requestID=1
-time="2024-05-19T23:03:50+03:00" level=info msg="db get request to person_interest" requestID=1
-time="2024-05-19T23:03:50+03:00" level=info msg="db got 1 interest ids" requestID=1
-time="2024-05-19T23:03:50+03:00" level=info msg="db get request to interest" requestID=1
-time="2024-05-19T23:03:50+03:00" level=info msg="return 1 interests" requestID=1
-time="2024-05-19T23:03:50+03:00" level=info msg="db get request to person_interest" requestID=1
-time="2024-05-19T23:03:50+03:00" level=warning msg="db can't query: db_error" requestID=1
-time="2024-05-19T23:03:57+03:00" level=info msg="Get request to message" requestID=1
-time="2024-05-19T23:03:57+03:00" level=info msg="Db: send messages" requestID=1
-time="2024-05-19T23:03:57+03:00" level=info msg="Get request to message" requestID=1
-time="2024-05-19T23:03:57+03:00" level=warning msg="Db can't query: db_error" requestID=1
-time="2024-05-19T23:03:57+03:00" level=info msg="Create request to message" requestID=1
-time="2024-05-19T23:03:57+03:00" level=info msg="Db: created message" requestID=1
-time="2024-05-19T23:03:57+03:00" level=info msg="Create request to message" requestID=1
-time="2024-05-19T23:03:57+03:00" level=warning msg="Db can't query: repo error" requestID=1
-time="2024-05-19T23:03:57+03:00" level=info msg="Get last messages request" requestID=1
-time="2024-05-19T23:03:57+03:00" level=info msg="Get last messages request" requestID=1
-time="2024-05-19T23:03:57+03:00" level=info msg="db can't query: db_error" requestID=1
-time="2024-05-19T23:03:57+03:00" level=info msg="db create request to person_claim" requestID=1
-time="2024-05-19T23:03:57+03:00" level=info msg="db create request to person_claim" requestID=1
-time="2024-05-19T23:03:57+03:00" level=warning msg="db can't create claim: repo error" requestID=1
-time="2024-05-19T23:03:57+03:00" level=info msg="db get request to claim" requestID=1
-time="2024-05-19T23:03:57+03:00" level=info msg="db get request to claim" requestID=1
-time="2024-05-19T23:03:57+03:00" level=warning msg="db can't query: db_error" requestID=1
-time="2024-05-19T23:03:57+03:00" level=info msg="GetLike request to person_image" requestID=1
-time="2024-05-19T23:03:57+03:00" level=info msg="Return 5 images" requestID=1
-time="2024-05-19T23:03:57+03:00" level=info msg="GetLike request to person_image" requestID=1
-time="2024-05-19T23:03:57+03:00" level=info msg="db get request to interest" requestID=1
-time="2024-05-19T23:03:57+03:00" level=info msg="return 1 interests" requestID=1
-time="2024-05-19T23:03:57+03:00" level=info msg="db get request to interest" requestID=1
-time="2024-05-19T23:03:57+03:00" level=warning msg="can't query: db_error" requestID=1
-time="2024-05-19T23:03:57+03:00" level=info msg="db get request to person_interest" requestID=1
-time="2024-05-19T23:03:57+03:00" level=info msg="db got 1 interest ids" requestID=1
-time="2024-05-19T23:03:57+03:00" level=info msg="db get request to interest" requestID=1
-time="2024-05-19T23:03:57+03:00" level=info msg="return 1 interests" requestID=1
-time="2024-05-19T23:03:57+03:00" level=info msg="db get request to person_interest" requestID=1
-time="2024-05-19T23:03:57+03:00" level=warning msg="db can't query: db_error" requestID=1
-time="2024-05-19T23:10:01+03:00" level=info msg="db get request to \"like\"" requestID=1
-time="2024-05-19T23:10:01+03:00" level=warning msg="db can't query: Query: could not match actual sql: \"SELECT person_one_id, person_two_id FROM \"like\" WHERE (person_one_id = $1)\" with expected regexp \"SELECT person_one_id, person_two_id FROM like WHERE person_one_id = \\$1 ORDER BY id\"" requestID=1
-time="2024-05-19T23:10:21+03:00" level=info msg="db get request to \"like\"" requestID=1
-time="2024-05-19T23:10:21+03:00" level=info msg="db can't scan: sql: expected 1 destination arguments in Scan, not 2" requestID=1
-time="2024-05-19T23:14:25+03:00" level=info msg="db get request to \"like\"" requestID=1
-time="2024-05-19T23:15:14+03:00" level=info msg="db get request to \"like\"" requestID=1
-time="2024-05-19T23:15:51+03:00" level=info msg="db get request to \"like\"" requestID=1
-time="2024-05-19T23:15:51+03:00" level=info msg="db get request to \"like\"" requestID=1
-time="2024-05-19T23:15:51+03:00" level=warning msg="db can't query: db_error" requestID=1
-time="2024-05-19T23:16:10+03:00" level=info msg="Get request to message" requestID=1
-time="2024-05-19T23:16:10+03:00" level=info msg="Db: send messages" requestID=1
-time="2024-05-19T23:16:10+03:00" level=info msg="Get request to message" requestID=1
-time="2024-05-19T23:16:10+03:00" level=warning msg="Db can't query: db_error" requestID=1
-time="2024-05-19T23:16:10+03:00" level=info msg="Create request to message" requestID=1
-time="2024-05-19T23:16:10+03:00" level=info msg="Db: created message" requestID=1
-time="2024-05-19T23:16:10+03:00" level=info msg="Create request to message" requestID=1
-time="2024-05-19T23:16:10+03:00" level=warning msg="Db can't query: repo error" requestID=1
-time="2024-05-19T23:16:10+03:00" level=info msg="Get last messages request" requestID=1
-time="2024-05-19T23:16:10+03:00" level=info msg="Get last messages request" requestID=1
-time="2024-05-19T23:16:10+03:00" level=info msg="db can't query: db_error" requestID=1
-time="2024-05-19T23:16:10+03:00" level=info msg="db create request to person_claim" requestID=1
-time="2024-05-19T23:16:10+03:00" level=info msg="db create request to person_claim" requestID=1
-time="2024-05-19T23:16:10+03:00" level=warning msg="db can't create claim: repo error" requestID=1
-time="2024-05-19T23:16:10+03:00" level=info msg="db get request to claim" requestID=1
-time="2024-05-19T23:16:10+03:00" level=info msg="db get request to claim" requestID=1
-time="2024-05-19T23:16:10+03:00" level=warning msg="db can't query: db_error" requestID=1
-time="2024-05-19T23:16:10+03:00" level=info msg="GetLike request to person_image" requestID=1
-time="2024-05-19T23:16:10+03:00" level=info msg="Return 5 images" requestID=1
-time="2024-05-19T23:16:10+03:00" level=info msg="GetLike request to person_image" requestID=1
-time="2024-05-19T23:16:10+03:00" level=info msg="db get request to interest" requestID=1
-time="2024-05-19T23:16:10+03:00" level=info msg="return 1 interests" requestID=1
-time="2024-05-19T23:16:10+03:00" level=info msg="db get request to interest" requestID=1
-time="2024-05-19T23:16:10+03:00" level=warning msg="can't query: db_error" requestID=1
-time="2024-05-19T23:16:10+03:00" level=info msg="db get request to person_interest" requestID=1
-time="2024-05-19T23:16:10+03:00" level=info msg="db got 1 interest ids" requestID=1
-time="2024-05-19T23:16:10+03:00" level=info msg="db get request to interest" requestID=1
-time="2024-05-19T23:16:10+03:00" level=info msg="return 1 interests" requestID=1
-time="2024-05-19T23:16:10+03:00" level=info msg="db get request to person_interest" requestID=1
-time="2024-05-19T23:16:10+03:00" level=warning msg="db can't query: db_error" requestID=1
-time="2024-05-19T23:16:10+03:00" level=info msg="db get request to \"like\"" requestID=1
-time="2024-05-19T23:16:10+03:00" level=info msg="db get request to \"like\"" requestID=1
-time="2024-05-19T23:16:10+03:00" level=warning msg="db can't query: db_error" requestID=1
-time="2024-05-19T23:18:38+03:00" level=info msg="db create request to \"like\"" requestID=1
-time="2024-05-19T23:18:38+03:00" level=warning msg="db can't create like: Query: could not match actual sql: \"INSERT INTO \"like\" (person_one_id,person_two_id) VALUES ($1,$2)\" with expected regexp \"INSERT INTO \"like\" \\(person_one_id, person_two_id\\) VALUES \\(\\$1,\\$2\\)\"" requestID=1
-time="2024-05-19T23:18:50+03:00" level=info msg="db create request to \"like\"" requestID=1
-time="2024-05-19T23:19:10+03:00" level=info msg="db create request to \"like\"" requestID=1
-time="2024-05-19T23:19:10+03:00" level=info msg="db create request to \"like\"" requestID=1
-time="2024-05-19T23:19:10+03:00" level=warning msg="db can't create like: repo error" requestID=1
-time="2024-05-19T23:19:13+03:00" level=info msg="Get request to message" requestID=1
-time="2024-05-19T23:19:13+03:00" level=info msg="Db: send messages" requestID=1
-time="2024-05-19T23:19:13+03:00" level=info msg="Get request to message" requestID=1
-time="2024-05-19T23:19:13+03:00" level=warning msg="Db can't query: db_error" requestID=1
-time="2024-05-19T23:19:13+03:00" level=info msg="Create request to message" requestID=1
-time="2024-05-19T23:19:13+03:00" level=info msg="Db: created message" requestID=1
-time="2024-05-19T23:19:13+03:00" level=info msg="Create request to message" requestID=1
-time="2024-05-19T23:19:13+03:00" level=warning msg="Db can't query: repo error" requestID=1
-time="2024-05-19T23:19:13+03:00" level=info msg="Get last messages request" requestID=1
-time="2024-05-19T23:19:13+03:00" level=info msg="Get last messages request" requestID=1
-time="2024-05-19T23:19:13+03:00" level=info msg="db can't query: db_error" requestID=1
-time="2024-05-19T23:19:13+03:00" level=info msg="db create request to person_claim" requestID=1
-time="2024-05-19T23:19:13+03:00" level=info msg="db create request to person_claim" requestID=1
-time="2024-05-19T23:19:13+03:00" level=warning msg="db can't create claim: repo error" requestID=1
-time="2024-05-19T23:19:13+03:00" level=info msg="db get request to claim" requestID=1
-time="2024-05-19T23:19:13+03:00" level=info msg="db get request to claim" requestID=1
-time="2024-05-19T23:19:13+03:00" level=warning msg="db can't query: db_error" requestID=1
-time="2024-05-19T23:19:13+03:00" level=info msg="GetLike request to person_image" requestID=1
-time="2024-05-19T23:19:13+03:00" level=info msg="Return 5 images" requestID=1
-time="2024-05-19T23:19:13+03:00" level=info msg="GetLike request to person_image" requestID=1
-time="2024-05-19T23:19:13+03:00" level=info msg="db get request to interest" requestID=1
-time="2024-05-19T23:19:13+03:00" level=info msg="return 1 interests" requestID=1
-time="2024-05-19T23:19:13+03:00" level=info msg="db get request to interest" requestID=1
-time="2024-05-19T23:19:13+03:00" level=warning msg="can't query: db_error" requestID=1
-time="2024-05-19T23:19:13+03:00" level=info msg="db get request to person_interest" requestID=1
-time="2024-05-19T23:19:13+03:00" level=info msg="db got 1 interest ids" requestID=1
-time="2024-05-19T23:19:13+03:00" level=info msg="db get request to interest" requestID=1
-time="2024-05-19T23:19:13+03:00" level=info msg="return 1 interests" requestID=1
-time="2024-05-19T23:19:13+03:00" level=info msg="db get request to person_interest" requestID=1
-time="2024-05-19T23:19:13+03:00" level=warning msg="db can't query: db_error" requestID=1
-time="2024-05-19T23:19:13+03:00" level=info msg="db get request to \"like\"" requestID=1
-time="2024-05-19T23:19:13+03:00" level=info msg="db get request to \"like\"" requestID=1
-time="2024-05-19T23:19:13+03:00" level=warning msg="db can't query: db_error" requestID=1
-time="2024-05-19T23:19:13+03:00" level=info msg="db create request to \"like\"" requestID=1
-time="2024-05-19T23:19:13+03:00" level=info msg="db create request to \"like\"" requestID=1
-time="2024-05-19T23:19:13+03:00" level=warning msg="db can't create like: repo error" requestID=1
-time="2024-05-19T23:19:22+03:00" level=info msg="Get request to message" requestID=1
-time="2024-05-19T23:19:22+03:00" level=info msg="Db: send messages" requestID=1
-time="2024-05-19T23:19:22+03:00" level=info msg="Get request to message" requestID=1
-time="2024-05-19T23:19:22+03:00" level=warning msg="Db can't query: db_error" requestID=1
-time="2024-05-19T23:19:22+03:00" level=info msg="Create request to message" requestID=1
-time="2024-05-19T23:19:22+03:00" level=info msg="Db: created message" requestID=1
-time="2024-05-19T23:19:22+03:00" level=info msg="Create request to message" requestID=1
-time="2024-05-19T23:19:22+03:00" level=warning msg="Db can't query: repo error" requestID=1
-time="2024-05-19T23:19:22+03:00" level=info msg="Get last messages request" requestID=1
-time="2024-05-19T23:19:22+03:00" level=info msg="Get last messages request" requestID=1
-time="2024-05-19T23:19:22+03:00" level=info msg="db can't query: db_error" requestID=1
-time="2024-05-19T23:19:22+03:00" level=info msg="db create request to person_claim" requestID=1
-time="2024-05-19T23:19:22+03:00" level=info msg="db create request to person_claim" requestID=1
-time="2024-05-19T23:19:22+03:00" level=warning msg="db can't create claim: repo error" requestID=1
-time="2024-05-19T23:19:22+03:00" level=info msg="db get request to claim" requestID=1
-time="2024-05-19T23:19:22+03:00" level=info msg="db get request to claim" requestID=1
-time="2024-05-19T23:19:22+03:00" level=warning msg="db can't query: db_error" requestID=1
-time="2024-05-19T23:19:22+03:00" level=info msg="GetLike request to person_image" requestID=1
-time="2024-05-19T23:19:22+03:00" level=info msg="Return 5 images" requestID=1
-time="2024-05-19T23:19:22+03:00" level=info msg="GetLike request to person_image" requestID=1
-time="2024-05-19T23:19:22+03:00" level=info msg="db get request to interest" requestID=1
-time="2024-05-19T23:19:22+03:00" level=info msg="return 1 interests" requestID=1
-time="2024-05-19T23:19:22+03:00" level=info msg="db get request to interest" requestID=1
-time="2024-05-19T23:19:22+03:00" level=warning msg="can't query: db_error" requestID=1
-time="2024-05-19T23:19:22+03:00" level=info msg="db get request to person_interest" requestID=1
-time="2024-05-19T23:19:22+03:00" level=info msg="db got 1 interest ids" requestID=1
-time="2024-05-19T23:19:22+03:00" level=info msg="db get request to interest" requestID=1
-time="2024-05-19T23:19:22+03:00" level=info msg="return 1 interests" requestID=1
-time="2024-05-19T23:19:22+03:00" level=info msg="db get request to person_interest" requestID=1
-time="2024-05-19T23:19:22+03:00" level=warning msg="db can't query: db_error" requestID=1
-time="2024-05-19T23:19:22+03:00" level=info msg="db get request to \"like\"" requestID=1
-time="2024-05-19T23:19:22+03:00" level=info msg="db get request to \"like\"" requestID=1
-time="2024-05-19T23:19:22+03:00" level=warning msg="db can't query: db_error" requestID=1
-time="2024-05-19T23:19:22+03:00" level=info msg="db create request to \"like\"" requestID=1
-time="2024-05-19T23:19:22+03:00" level=info msg="db create request to \"like\"" requestID=1
-time="2024-05-19T23:19:22+03:00" level=warning msg="db can't create like: repo error" requestID=1
+time="2024-05-20T01:14:26+03:00" level=info msg="Get request to message" requestID=1
+time="2024-05-20T01:14:26+03:00" level=info msg="Db: send messages" requestID=1
+time="2024-05-20T01:14:26+03:00" level=info msg="Get request to message" requestID=1
+time="2024-05-20T01:14:26+03:00" level=warning msg="Db can't query: db_error" requestID=1
+time="2024-05-20T01:14:26+03:00" level=info msg="Create request to message" requestID=1
+time="2024-05-20T01:14:26+03:00" level=info msg="Db: created message" requestID=1
+time="2024-05-20T01:14:26+03:00" level=info msg="Create request to message" requestID=1
+time="2024-05-20T01:14:26+03:00" level=warning msg="Db can't query: repo error" requestID=1
+time="2024-05-20T01:14:26+03:00" level=info msg="Get last messages request" requestID=1
+time="2024-05-20T01:14:26+03:00" level=info msg="Get last messages request" requestID=1
+time="2024-05-20T01:14:26+03:00" level=info msg="db can't query: db_error" requestID=1
+time="2024-05-20T01:14:26+03:00" level=info msg="db create request to person_claim" requestID=1
+time="2024-05-20T01:14:26+03:00" level=info msg="db create request to person_claim" requestID=1
+time="2024-05-20T01:14:26+03:00" level=warning msg="db can't create claim: repo error" requestID=1
+time="2024-05-20T01:14:26+03:00" level=info msg="db get request to claim" requestID=1
+time="2024-05-20T01:14:26+03:00" level=info msg="db get request to claim" requestID=1
+time="2024-05-20T01:14:26+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-20T01:14:26+03:00" level=info msg="GetLike request to person_image" requestID=1
+time="2024-05-20T01:14:26+03:00" level=info msg="Return 5 images" requestID=1
+time="2024-05-20T01:14:26+03:00" level=info msg="GetLike request to person_image" requestID=1
+time="2024-05-20T01:14:26+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-20T01:14:26+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-20T01:14:26+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-20T01:14:26+03:00" level=warning msg="can't query: db_error" requestID=1
+time="2024-05-20T01:14:26+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-20T01:14:26+03:00" level=info msg="db got 1 interest ids" requestID=1
+time="2024-05-20T01:14:26+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-20T01:14:26+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-20T01:14:26+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-20T01:14:26+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-20T01:14:26+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-20T01:14:26+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-20T01:14:26+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-20T01:14:26+03:00" level=info msg="db create request to \"like\"" requestID=1
+time="2024-05-20T01:14:26+03:00" level=info msg="db create request to \"like\"" requestID=1
+time="2024-05-20T01:14:26+03:00" level=warning msg="db can't create like: repo error" requestID=1
+time="2024-05-20T01:14:26+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-20T01:14:26+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-20T01:14:26+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-20T01:14:26+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-20T01:14:26+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-20T01:14:26+03:00" level=info msg="db get request to person" requestID=1
+time="2024-05-20T01:14:26+03:00" level=info msg="db returning records" requestID=1
+time="2024-05-20T01:14:26+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-20T01:14:26+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-20T01:14:26+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-20T01:14:26+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-20T01:14:26+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-20T01:14:26+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-20T01:14:26+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-20T01:14:26+03:00" level=info msg="db get request to person" requestID=1
+time="2024-05-20T01:14:26+03:00" level=warning msg="db read can't query: db_error" requestID=1

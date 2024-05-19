@@ -1,6 +1,8 @@
 module main.go
 
-go 1.19
+go 1.21
+
+toolchain go1.22.2
 
 require (
 	github.com/Masterminds/squirrel v1.5.4
@@ -78,6 +80,7 @@ require (
 	github.com/pelletier/go-toml/v2 v2.1.0 // indirect
 	github.com/sagikazarmark/locafero v0.4.0 // indirect
 	github.com/sagikazarmark/slog-shim v0.1.0 // indirect
+	github.com/silently/wsmock v0.2.0
 	github.com/sourcegraph/conc v0.3.0 // indirect
 	github.com/spf13/afero v1.11.0 // indirect
 	github.com/spf13/cast v1.6.0 // indirect

@@ -24,61 +24,6 @@ type MockUseCaseMockRecorder struct {
 	mock *MockUseCase
 }
 
-// NewMockUseCase creates a new mock instance.
-func NewMockUseCase(ctrl *gomock.Controller) *MockUseCase {
-	mock := &MockUseCase{ctrl: ctrl}
-	mock.recorder = &MockUseCaseMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockUseCase) EXPECT() *MockUseCaseMockRecorder {
-	return m.recorder
-}
-
-// AddImage mocks base method.
-func (m *MockUseCase) AddImage(userImage image.Image, img multipart.File, ctx context.Context) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "AddImage", userImage, img, ctx)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// AddImage indicates an expected call of AddImage.
-func (mr *MockUseCaseMockRecorder) AddImage(userImage, img, ctx interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddImage", reflect.TypeOf((*MockUseCase)(nil).AddImage), userImage, img, ctx)
-}
-
-// DeleteImage mocks base method.
-func (m *MockUseCase) DeleteImage(userImage image.Image, ctx context.Context) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DeleteImage", userImage, ctx)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// DeleteImage indicates an expected call of DeleteImage.
-func (mr *MockUseCaseMockRecorder) DeleteImage(userImage, ctx interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteImage", reflect.TypeOf((*MockUseCase)(nil).DeleteImage), userImage, ctx)
-}
-
-// GetImage mocks base method.
-func (m *MockUseCase) GetImage(userID int64, cell string, ctx context.Context) (string, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetImage", userID, cell, ctx)
-	ret0, _ := ret[0].(string)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// GetImage indicates an expected call of GetImage.
-func (mr *MockUseCaseMockRecorder) GetImage(userID, cell, ctx interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetImage", reflect.TypeOf((*MockUseCase)(nil).GetImage), userID, cell, ctx)
-}
-
 // MockImgStorage is a mock of ImgStorage interface.
 type MockImgStorage struct {
 	ctrl     *gomock.Controller

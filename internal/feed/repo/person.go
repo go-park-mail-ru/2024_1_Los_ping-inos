@@ -2,6 +2,7 @@ package repo
 
 import (
 	"context"
+
 	"main.go/internal/types"
 
 	qb "github.com/Masterminds/squirrel"
@@ -80,6 +81,7 @@ func (storage *PostgresStorage) GetClaimed(ctx context.Context, id types.UserID)
 		return nil, err
 	}
 	defer rows.Close()
+
 	var res []types.UserID
 	var tmp types.UserID
 	for rows.Next() {

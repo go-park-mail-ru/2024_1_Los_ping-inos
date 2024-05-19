@@ -15,7 +15,6 @@ type (
 		CreateLike(profile1, profile2 types.UserID, ctx context.Context) error
 		GetChat(ctx context.Context, user1, user2 types.UserID) ([]Message, error)
 		GetLastMessages(ctx context.Context, UID int64, ids []int64) ([]Message, error)
-
 		AddConnection(ctx context.Context, connection *websocket.Conn, UID types.UserID) error
 		GetConnection(ctx context.Context, UID types.UserID) (*websocket.Conn, bool)
 		DeleteConnection(ctx context.Context, UID types.UserID) error
@@ -28,7 +27,6 @@ type (
 		GetPersonInterests(ctx context.Context, personID types.UserID) ([]*Interest, error)
 		GetLike(ctx context.Context, filter *LikeGetFilter) ([]types.UserID, error)
 		CreateLike(ctx context.Context, person1ID, person2ID types.UserID) error
-		GetImages(ctx context.Context, userID int64) ([]Image, error)
 		GetChat(ctx context.Context, user1, user2 types.UserID) ([]Message, error)
 		CreateMessage(ctx context.Context, message MessageToReceive) (*MessageToReceive, error)
 		GetLastMessages(ctx context.Context, id int64, ids []int) ([]Message, error)
