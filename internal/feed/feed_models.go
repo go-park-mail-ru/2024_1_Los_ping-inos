@@ -79,6 +79,12 @@ type (
 		Time     time.Time    `json:"time"`
 	}
 
+	Chat struct {
+		Messages []Message `json:"messages"`
+		Name     string    `json:"name"`
+		Images   []Image   `json:"images"`
+	}
+
 	GetChatRequest struct {
 		Person types.UserID `json:"person"`
 	}

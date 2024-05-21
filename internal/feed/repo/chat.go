@@ -2,6 +2,9 @@ package repo
 
 import (
 	"context"
+	"sync"
+	"time"
+
 	qb "github.com/Masterminds/squirrel"
 	"github.com/gorilla/websocket"
 	"github.com/lib/pq"
@@ -9,8 +12,6 @@ import (
 	"main.go/internal/feed"
 	. "main.go/internal/logs"
 	"main.go/internal/types"
-	"sync"
-	"time"
 )
 
 const (
@@ -19,7 +20,7 @@ const (
 	getLastMessQuery = "SELECT DISTINCT ON (    CASE        WHEN sender_id < receiver_id THEN sender_id || '_' || receiver_id        ELSE receiver_id || '_' || sender_id    END) id, data, sender_id, receiver_id, sent_time FROM message WHERE     (sender_id = $1 OR receiver_id = $1)    AND ((sender_id = ANY($2)) OR (receiver_id = ANY($2))) ORDER BY (    CASE        WHEN sender_id < receiver_id THEN sender_id || '_' || receiver_id        ELSE receiver_id || '_' || sender_id    END), sent_time DESC;"
 )
 
-func (storage *PostgresStorage) GetChat(ctx context.Context, user1, user2 types.UserID) ([]feed.Message, error) {
+func (storage *PostgresStorage) GetChat(ctx context.Context, user1, user2 types.UserID) ([]feed.Message, string, error) {
 	logger := ctx.Value(Logg).(Log)
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("Get request to message")
 
@@ -36,7 +37,7 @@ func (storage *PostgresStorage) GetChat(ctx context.Context, user1, user2 types.
 	rows, err := query.Query()
 	if err != nil {
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("Db can't query: ", err.Error())
-		return nil, err
+		return nil, "", err
 	}
 	defer rows.Close()
 
@@ -49,13 +50,31 @@ func (storage *PostgresStorage) GetChat(ctx context.Context, user1, user2 types.
 		err = rows.Scan(&message.Id, &message.Data, &message.Sender, &message.Receiver, &message.Time)
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("Db can't scan: ", err.Error())
-			return nil, err
+			return nil, "", err
 		}
 		messages = append(messages, message)
 	}
 
+	qq := "SELECT name FROM person WHERE id = $1"
+
+	rows, err = storage.dbReader.Query(qq, user2)
+	if err != nil {
+		return []feed.Message{}, "", err
+	}
+	defer rows.Close()
+
+	var name string
+
+	for rows.Next() {
+
+		err := rows.Scan(name)
+		if err != nil {
+			return []feed.Message{}, "", err
+		}
+	}
+
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("Db: send messages")
-	return messages, nil
+	return messages, name, nil
 }
 
 func (storage *PostgresStorage) CreateMessage(ctx context.Context, message feed.MessageToReceive) (*feed.MessageToReceive, error) {

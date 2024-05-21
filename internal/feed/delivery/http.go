@@ -3,17 +3,18 @@ package delivery
 import (
 	"context"
 	"encoding/json"
+	"io"
+	"net/http"
+	"time"
+
 	"github.com/gorilla/websocket"
 	"github.com/sirupsen/logrus"
-	"io"
 	. "main.go/config"
 	gen "main.go/internal/auth/proto"
 	"main.go/internal/feed"
 	. "main.go/internal/logs"
 	requests "main.go/internal/pkg"
 	"main.go/internal/types"
-	"net/http"
-	"time"
 )
 
 type FeedHandler struct {
@@ -123,7 +124,7 @@ func (deliver *FeedHandler) GetChat() func(respWriter http.ResponseWriter, reque
 			return
 		}
 
-		messages, err := deliver.usecase.GetChat(request.Context(), request.Context().Value(RequestUserID).(types.UserID), requestBody.Person)
+		messages, name, image, err := deliver.usecase.GetChat(request.Context(), request.Context().Value(RequestUserID).(types.UserID), requestBody.Person)
 		err = json.Unmarshal(body, &requestBody)
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn(err.Error())
@@ -133,7 +134,14 @@ func (deliver *FeedHandler) GetChat() func(respWriter http.ResponseWriter, reque
 		if messages == nil {
 			messages = []feed.Message{}
 		}
-		requests.SendResponse(respWriter, request, http.StatusOK, messages)
+
+		responce := feed.Chat{
+			Messages: messages,
+			Name:     name,
+			Images:   image,
+		}
+
+		requests.SendResponse(respWriter, request, http.StatusOK, responce)
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("sent chat")
 	}
 }
