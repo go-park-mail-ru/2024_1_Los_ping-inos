@@ -125,6 +125,12 @@ func (deliver *FeedHandler) GetChat() func(respWriter http.ResponseWriter, reque
 		}
 
 		messages, name, image, err := deliver.usecase.GetChat(request.Context(), request.Context().Value(RequestUserID).(types.UserID), requestBody.Person)
+		if err != nil {
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn(err.Error())
+			requests.SendResponse(respWriter, request, http.StatusInternalServerError, err.Error())
+			return
+		}
+
 		err = json.Unmarshal(body, &requestBody)
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn(err.Error())
