@@ -46,11 +46,12 @@ func (storage *PostgresStorage) GetChat(ctx context.Context, user1, user2 types.
 	)
 
 	for rows.Next() {
-		err = rows.Scan(&message.Id, &message.Data, &message.Sender, &message.Receiver, &message.Time)
+		err = rows.Scan(&message.Properties.Id, &message.Properties.Data, &message.Properties.Sender, &message.Properties.Receiver, &message.Properties.Time)
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("Db can't scan: ", err.Error())
 			return nil, err
 		}
+		message.MsgType = "message"
 		messages = append(messages, message)
 	}
 
@@ -63,11 +64,11 @@ func (storage *PostgresStorage) CreateMessage(ctx context.Context, message feed.
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("Create request to message")
 	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
 
-	t := time.UnixMilli(message.Time)
+	t := time.UnixMilli(message.Properties.Time)
 	query := stBuilder.
 		Insert(messageTable).
 		Columns("data, sender_id, receiver_id, sent_time").
-		Values(message.Data, message.Sender, message.Receiver, t).
+		Values(message.Properties.Data, message.Properties.Sender, message.Properties.Receiver, t).
 		RunWith(storage.dbReader)
 
 	rows, err := query.Query()
@@ -93,7 +94,8 @@ func (storage *PostgresStorage) GetLastMessages(ctx context.Context, id int64, i
 	var res []feed.Message
 	for rows.Next() {
 		tmp := feed.Message{}
-		rows.Scan(&tmp.Id, &tmp.Data, &tmp.Sender, &tmp.Receiver, &tmp.Time)
+		rows.Scan(&tmp.Properties.Id, &tmp.Properties.Data, &tmp.Properties.Sender, &tmp.Properties.Receiver, &tmp.Properties.Time)
+		tmp.MsgType = "message"
 		res = append(res, tmp)
 	}
 	return res, nil

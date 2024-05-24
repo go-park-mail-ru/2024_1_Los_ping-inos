@@ -69,7 +69,6 @@ func AllowedMethodMiddleware(next http.Handler, methods *hashset.Set) http.Handl
 			SendResponse(respWriter, request, http.StatusOK, nil)
 			return
 		}
-
 		if !methods.Contains(request.Method) {
 			log.Logger.WithFields(logrus.Fields{RequestID: log.RequestID}).Info("method not allowed")
 			SendResponse(respWriter, request, http.StatusMethodNotAllowed, "method not allowed")

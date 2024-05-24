@@ -64,14 +64,22 @@ type (
 	}
 
 	MessageToReceive struct {
-		Id       int64        `json:"id"`
-		Data     string       `json:"data"`
-		Sender   types.UserID `json:"sender"`
-		Receiver types.UserID `json:"receiver"`
-		Time     int64        `json:"time"`
+		MsgType    string `json:"Type"`
+		Properties struct {
+			Id       int64        `json:"id"`
+			Data     string       `json:"data"`
+			Sender   types.UserID `json:"sender"`
+			Receiver types.UserID `json:"receiver"`
+			Time     int64        `json:"time"`
+		} `json:"properties"`
 	}
 
 	Message struct {
+		MsgType    string `json:"Type"`
+		Properties MsgProperties
+	}
+
+	MsgProperties struct {
 		Id       int64        `json:"id"`
 		Data     string       `json:"data"`
 		Sender   types.UserID `json:"sender"`

@@ -72,5 +72,19 @@ func (storage *PostgresStorage) CreateLike(ctx context.Context, person1ID, perso
 		return err
 	}
 	defer rows.Close()
-	return nil
+
+	query2 := stBuilder.
+		Select("person_one_id").
+		From(LikeTableName).
+		Where(qb.And{qb.Eq{"person_one_id": person2ID}, qb.Eq{"person_two_id": person1ID}}).
+		RunWith(storage.dbReader)
+	rows, err = query2.Query()
+	if err != nil {
+		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("db can't get match: ", err.Error())
+		return err
+	}
+	defer rows.Close()
+	var res types.UserID
+	rows.Next()
+	return rows.Scan(&res)
 }

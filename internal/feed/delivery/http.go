@@ -69,7 +69,7 @@ func (deliver *FeedHandler) GetCardsHandler() func(http.ResponseWriter, *http.Re
 func (deliver *FeedHandler) CreateLike() func(respWriter http.ResponseWriter, request *http.Request) {
 	return func(respWriter http.ResponseWriter, request *http.Request) {
 		logger := request.Context().Value(Logg).(Log)
-
+		UID := request.Context().Value(RequestUserID).(types.UserID)
 		body, err := io.ReadAll(request.Body)
 		if err != nil { // TODO эти два блока вынести в отдельную функцию и напихать её во все ручки
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("bad body: ", err.Error())
@@ -85,16 +85,37 @@ func (deliver *FeedHandler) CreateLike() func(respWriter http.ResponseWriter, re
 			return
 		}
 
-		err = deliver.usecase.CreateLike(request.Context().Value(RequestUserID).(types.UserID), requestBody.Profile2, request.Context())
-		if err != nil {
+		err = deliver.usecase.CreateLike(UID, requestBody.Profile2, request.Context())
+		if err != nil && err.Error() != "sql: Rows are closed" {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't update profile: ", err.Error())
 			requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
 			return
 		}
 
+		err = deliver.sendMatchNotice(request.Context(), requestBody.Profile2, UID)
+		err = deliver.sendMatchNotice(request.Context(), UID, requestBody.Profile2)
+
+		if err != nil {
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't send match: ", err.Error())
+			requests.SendResponse(respWriter, request, http.StatusInternalServerError, err.Error())
+		}
+
 		requests.SendResponse(respWriter, request, http.StatusOK, nil)
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("create like sent response")
 	}
+}
+
+func (deliver *FeedHandler) sendMatchNotice(ctx context.Context, id1, id2 types.UserID) error {
+	connection, ok := deliver.usecase.GetConnection(ctx, id1)
+	if !ok {
+		return nil
+	}
+	resp := feed.Message{MsgType: "match", Properties: feed.MsgProperties{Sender: id1, Receiver: id2}}
+	respCoded, err := json.Marshal(resp)
+	if err != nil {
+		return err
+	}
+	return connection.WriteMessage(1, respCoded)
 }
 
 func (deliver *FeedHandler) CreateDislike() func(respWriter http.ResponseWriter, request *http.Request) {
@@ -181,7 +202,7 @@ func (deliver *FeedHandler) handleWebsocket(ctx context.Context, connection *web
 
 		_ = connection.WriteMessage(mt, mess)
 
-		message.Sender = sender
+		message.Properties.Sender = sender
 		_, err = deliver.usecase.SaveMessage(ctx, message)
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("Error saving message: ", err.Error())
@@ -189,7 +210,7 @@ func (deliver *FeedHandler) handleWebsocket(ctx context.Context, connection *web
 		}
 
 		// отправляем сообщение получателю
-		resConnection, ok := deliver.usecase.GetConnection(ctx, message.Receiver)
+		resConnection, ok := deliver.usecase.GetConnection(ctx, message.Properties.Receiver)
 		if !ok {
 			continue
 		}
@@ -232,13 +253,16 @@ func (deliver *FeedHandler) GetAllChats() func(respWriter http.ResponseWriter, r
 			}
 
 			for j := range messages {
-				if int64(messages[j].Sender) == allChats.Chats[i].PersonID || int64(messages[j].Receiver) == allChats.Chats[i].PersonID {
+				if int64(messages[j].Properties.Sender) == allChats.Chats[i].PersonID || int64(messages[j].Properties.Receiver) == allChats.Chats[i].PersonID {
 					allChats.Chats[i].LastMessage = feed.Message{
-						Id:       messages[j].Id,
-						Data:     messages[j].Data,
-						Sender:   messages[j].Sender,
-						Receiver: messages[j].Receiver,
-						Time:     messages[j].Time,
+						MsgType: "message",
+						Properties: feed.MsgProperties{
+							Id:       messages[j].Properties.Id,
+							Data:     messages[j].Properties.Data,
+							Sender:   messages[j].Properties.Sender,
+							Receiver: messages[j].Properties.Receiver,
+							Time:     messages[j].Properties.Time,
+						},
 					}
 					break
 				}
