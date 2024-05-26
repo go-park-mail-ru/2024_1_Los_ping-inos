@@ -9,9 +9,9 @@ CREATE TABLE IF NOT EXISTS person (
   password TEXT NOT NULL,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   premium BOOLEAN NOT NULL DEFAULT FALSE,
-  premium_expires_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   likes_left INTEGER NOT NULL DEFAULT '10',
   gender text not null,
+  premium_expires_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   check(gender = 'male' or gender = 'female')
 );
 
