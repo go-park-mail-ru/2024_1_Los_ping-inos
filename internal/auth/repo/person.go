@@ -212,22 +212,3 @@ func processEmailFilter(filter *auth.PersonGetFilter, whereMap *qb.And) {
 		*whereMap = append(*whereMap, qb.Eq{"email": filter.Email})
 	}
 }
-
-func (storage *PersonStorage) ActivateSub(ctx context.Context, UID types.UserID) error {
-	logger := ctx.Value(Logg).(Log)
-	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db activating sub ", PersonTableName)
-	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
-	setMap := map[string]interface{}{}
-	setMap["premium"] = true
-	setMap["premium_expires_at"] = time.Now().Add(31 * 24 * time.Hour)
-	query := stBuilder.Update(PersonTableName).SetMap(setMap).Where(qb.Eq{"id": UID}).RunWith(storage.dbReader)
-
-	rows, err := query.Query()
-	if err != nil {
-		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("db can't add premium: ", err.Error())
-		return err
-	}
-	defer rows.Close()
-	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("premium activated for user ", UID)
-	return nil
-}

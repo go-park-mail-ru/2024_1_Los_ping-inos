@@ -100,6 +100,14 @@ create table if not exists claim (
    id SERIAL PRIMARY KEY,
    title TEXT NOT NULL
 );
+
+create table if not exists person_payment (
+    id SERIAL PRIMARY KEY,
+    person_id int not null references person(id)
+       on delete cascade
+       on update cascade,
+    paymentTime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
 ---- create above / drop below ----
 -- drop table person;
 --

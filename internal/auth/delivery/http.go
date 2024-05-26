@@ -549,3 +549,21 @@ func (deliver *AuthHandler) checkSubStatus(UID types.UserID) error {
 	}
 	return auth.NoPaymentErr
 }
+
+func (deliver *AuthHandler) GetSubHistory() func(w http.ResponseWriter, r *http.Request) {
+	return func(respWriter http.ResponseWriter, request *http.Request) {
+		logger := request.Context().Value(Logg).(Log)
+		UID := request.Context().Value(RequestUserID).(types.UserID)
+
+		res, err := deliver.UseCase.GetSubHistory(request.Context(), UID)
+
+		if err != nil {
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't read sub history: ", err.Error())
+			requests.SendResponse(respWriter, request, http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("sent history")
+		requests.SendResponse(respWriter, request, http.StatusOK, res)
+	}
+}

@@ -110,6 +110,10 @@ type (
 		Label    string    `json:"label"`
 		Datetime time.Time `json:"datetime"`
 	}
+
+	PaymentHistory struct {
+		Times []int64 `json:"times"`
+	}
 )
 
 var (
