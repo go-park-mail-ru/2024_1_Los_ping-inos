@@ -18,19 +18,20 @@ type (
 	}
 
 	Person struct {
-		ID          types.UserID `json:"ID"`
-		Name        string       `json:"name"`
-		Birthday    time.Time    `json:"birthday"`
-		Description string       `json:"description"`
-		Location    string       `json:"-"`
-		Photo       string       `json:"photo"`
-		Email       string       `json:"email"`
-		Password    string       `json:"-"`
-		Gender      string       `json:"gender"`
-		CreatedAt   time.Time    `json:"-"`
-		Premium     bool         `json:"premium"`
-		LikesLeft   int          `json:"-"`
-		SessionID   string       `json:"session_id"`
+		ID             types.UserID `json:"ID"`
+		Name           string       `json:"name"`
+		Birthday       time.Time    `json:"birthday"`
+		Description    string       `json:"description"`
+		Location       string       `json:"-"`
+		Photo          string       `json:"photo"`
+		Email          string       `json:"email"`
+		Password       string       `json:"-"`
+		Gender         string       `json:"gender"`
+		CreatedAt      time.Time    `json:"-"`
+		Premium        bool         `json:"premium"`
+		PremiumExpires int64        `json:"premiumExpires"`
+		LikesLeft      int          `json:"-"`
+		SessionID      string       `json:"session_id"`
 	}
 
 	ProfileGetParams struct {
@@ -57,16 +58,17 @@ type (
 	}
 
 	Profile struct {
-		ID          types.UserID  `json:"id"`
-		Name        string        `json:"name"`
-		Birthday    time.Time     `json:"birthday"`
-		Description string        `json:"description"`
-		Email       string        `json:"email"`
-		Premium     bool          `json:"premium"`
-		LikesLeft   int           `json:"likesLeft"`
-		Interests   []*Interest   `json:"interests"`
-		Photos      []ImageToSend `json:"photos"`
-		CSRFT       string        `json:"csrft"`
+		ID             types.UserID  `json:"id"`
+		Name           string        `json:"name"`
+		Birthday       time.Time     `json:"birthday"`
+		Description    string        `json:"description"`
+		Email          string        `json:"email"`
+		Premium        bool          `json:"premium"`
+		PremiumExpires int64         `json:"premiumExpires"`
+		LikesLeft      int           `json:"likesLeft"`
+		Interests      []*Interest   `json:"interests"`
+		Photos         []ImageToSend `json:"photos"`
+		CSRFT          string        `json:"csrft"`
 	}
 
 	Image struct {

@@ -140,7 +140,6 @@ func startServer(cfg *config.Config, logger Log, deliver Delivers) error {
 	mux.Handle(apiPath+"claimTypes", RequestIDMiddleware(
 		AllowedMethodMiddleware(http.HandlerFunc(feedDel.GetAlClaims()), hashset.New("GET")),
 		"get claim types", logger))
-
 	metricHandler := Delivery.MetricTimeMiddleware(mux)
 
 	server := http.Server{

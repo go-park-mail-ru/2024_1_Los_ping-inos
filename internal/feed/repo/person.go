@@ -3,6 +3,7 @@ package repo
 import (
 	"context"
 	"main.go/internal/types"
+	"time"
 
 	qb "github.com/Masterminds/squirrel"
 	"github.com/sirupsen/logrus"
@@ -12,7 +13,7 @@ import (
 )
 
 const (
-	personFields = "id, name, birthday, description, location, email, password, created_at, premium, likes_left, gender"
+	personFields = "id, name, birthday, description, location, email, password, created_at, premium, likes_left, gender, premium_expires_at"
 )
 
 func (storage *PostgresStorage) GetFeed(ctx context.Context, filter types.UserID) ([]*feed.Person, error) {
@@ -49,8 +50,9 @@ func (storage *PostgresStorage) GetFeed(ctx context.Context, filter types.UserID
 
 	for rows.Next() {
 		person := &feed.Person{}
+		var tmp time.Time
 		err = rows.Scan(&person.ID, &person.Name, &person.Birthday, &person.Description, &person.Location,
-			&person.Email, &person.Password, &person.CreatedAt, &person.Premium, &person.LikesLeft, &person.Gender)
+			&person.Email, &person.Password, &person.CreatedAt, &person.Premium, &person.LikesLeft, &person.Gender, &tmp)
 
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("db can't scan person: ", err.Error())

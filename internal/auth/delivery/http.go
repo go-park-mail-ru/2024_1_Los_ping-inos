@@ -427,6 +427,7 @@ func (deliver *AuthHandler) GetUsername() func(w http.ResponseWriter, r *http.Re
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn(err.Error())
 			requests.SendResponse(respWriter, request, http.StatusInternalServerError, "can't get name")
+			return
 		}
 		requests.SendResponse(respWriter, request, http.StatusOK, name)
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("sent username")
@@ -479,5 +480,22 @@ func (deliver *AuthHandler) PaymentUrl() func(w http.ResponseWriter, r *http.Req
 
 		requests.SendResponse(respWriter, request, http.StatusOK, url)
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("sent paymentUrl")
+	}
+}
+
+func (deliver *AuthHandler) ActivateSub() func(w http.ResponseWriter, r *http.Request) {
+	return func(respWriter http.ResponseWriter, request *http.Request) {
+		logger := request.Context().Value(Logg).(Log)
+		UID := request.Context().Value(RequestUserID).(types.UserID)
+
+		err := deliver.UseCase.ActivateSub(request.Context(), UID)
+		if err != nil {
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't activate sub: ", err.Error())
+			requests.SendResponse(respWriter, request, http.StatusInternalServerError, err.Error())
+			return
+		}
+		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("sent response activating sub")
+		requests.SendResponse(respWriter, request, http.StatusOK, nil)
+		return
 	}
 }

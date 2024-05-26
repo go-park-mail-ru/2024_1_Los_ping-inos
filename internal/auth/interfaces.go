@@ -19,6 +19,7 @@ type (
 		DeleteProfile(UID types.UserID, ctx context.Context) error
 		GetMatches(profile types.UserID, nameFilter string, ctx context.Context) ([]Profile, error)
 		GenPaymentUrl(UID types.UserID) string
+		ActivateSub(ctx context.Context, UID types.UserID) error
 	}
 	PersonStorage interface {
 		AddAccount(ctx context.Context, Name string, Birhday string, Gender string, Email string, Password string) error
@@ -26,6 +27,7 @@ type (
 		Update(ctx context.Context, person Person) error
 		Delete(ctx context.Context, UID types.UserID) error
 		GetMatch(ctx context.Context, person1ID types.UserID) ([]types.UserID, error)
+		ActivateSub(ctx context.Context, UID types.UserID) error
 		//GetUserCards(ctx context.Context, persons []types.UserID) ([][]*Interest, [][]Image, error)
 	}
 

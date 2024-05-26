@@ -164,6 +164,11 @@ func startServer(cfg *config.Config, logger Log, deliver Delivers) error {
 			IsAuthenticatedMiddleware(http.HandlerFunc(httpDeliver.GetMatches()), authManager), hashset.New("POST")),
 		"matches", logger))
 
+	mux.Handle(apiPath+"activatePremium", RequestIDMiddleware(
+		AllowedMethodMiddleware(
+			IsAuthenticatedMiddleware(http.HandlerFunc(httpDeliver.ActivateSub()), authManager), hashset.New("POST")),
+		"activate premium", logger))
+
 	metricHandler := Delivery.MetricTimeMiddleware(mux)
 	server := http.Server{
 		Addr:         cfg.Server.Host + cfg.Server.Port,

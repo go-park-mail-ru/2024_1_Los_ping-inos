@@ -153,3 +153,7 @@ func (service *UseCase) GenPaymentUrl(UID types.UserID) string {
 	res := paymentUrl + strconv.Itoa(int(UID)) + "&" + redirectUrl
 	return res
 }
+
+func (service *UseCase) ActivateSub(ctx context.Context, UID types.UserID) error {
+	return service.personStorage.ActivateSub(ctx, UID)
+}

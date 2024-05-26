@@ -9,10 +9,11 @@ import (
 	"main.go/internal/auth"
 	. "main.go/internal/logs"
 	"main.go/internal/types"
+	"time"
 )
 
 const (
-	personFields    = "id, name, birthday, description, location, email, password, created_at, premium, likes_left, gender"
+	personFields    = "id, name, birthday, description, location, email, password, created_at, premium, likes_left, gender, premium_expires_at"
 	PersonTableName = "person"
 	LikeTableName   = "\"like\""
 )
@@ -58,9 +59,10 @@ func (storage *PersonStorage) Get(ctx context.Context, filter *auth.PersonGetFil
 
 	for rows.Next() {
 		person := &auth.Person{}
+		var t time.Time
 		err = rows.Scan(&person.ID, &person.Name, &person.Birthday, &person.Description, &person.Location,
-			&person.Email, &person.Password, &person.CreatedAt, &person.Premium, &person.LikesLeft, &person.Gender)
-
+			&person.Email, &person.Password, &person.CreatedAt, &person.Premium, &person.LikesLeft, &person.Gender, &t)
+		person.PremiumExpires = t.Unix()
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("db can't scan person: ", err.Error())
 			return nil, err
@@ -209,4 +211,23 @@ func processEmailFilter(filter *auth.PersonGetFilter, whereMap *qb.And) {
 	if filter.Email != nil {
 		*whereMap = append(*whereMap, qb.Eq{"email": filter.Email})
 	}
+}
+
+func (storage *PersonStorage) ActivateSub(ctx context.Context, UID types.UserID) error {
+	logger := ctx.Value(Logg).(Log)
+	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db activating sub ", PersonTableName)
+	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
+	setMap := map[string]interface{}{}
+	setMap["premium"] = true
+	setMap["premium_expires_at"] = time.Now().Add(31 * 24 * time.Hour)
+	query := stBuilder.Update(PersonTableName).SetMap(setMap).Where(qb.Eq{"id": UID}).RunWith(storage.dbReader)
+
+	rows, err := query.Query()
+	if err != nil {
+		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("db can't add premium: ", err.Error())
+		return err
+	}
+	defer rows.Close()
+	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("premium activated for user ", UID)
+	return nil
 }
