@@ -29,6 +29,7 @@ type ServerConfig struct {
 	Port        string        `json:"port" yaml:"port"`
 	SwaggerPort string        `json:"swaggerPort" yaml:"swaggerPort"`
 	Timeout     time.Duration `json:"timeout" yaml:"timeout"`
+	Yoomoney    Yoomoney      `yaml:"yoomoney"`
 }
 
 type DatabaseConfig struct {
@@ -50,6 +51,10 @@ type AwsConfig struct {
 	Id     string `json:"key_id" yaml:"id"`
 	Access string `json:"key_access" yaml:"access"`
 	Region string `json:"region" yaml:"region"`
+}
+
+type Yoomoney struct {
+	Key string `yaml:"key"`
 }
 
 type FilesPathsConfig struct {
@@ -112,6 +117,10 @@ func LoadConfig(path string) (*Config, error) {
 		return nil, err
 	}
 	err = viper.BindEnv("aws.region", "AWS_DEFAULT_REGION")
+	if err != nil {
+		return nil, err
+	}
+	err = viper.BindEnv("yoomoney.key", "YOOMONEY_KEY")
 	if err != nil {
 		return nil, err
 	}

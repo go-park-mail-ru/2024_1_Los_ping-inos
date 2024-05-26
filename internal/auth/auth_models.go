@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"errors"
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
@@ -100,9 +101,20 @@ type (
 	GetMatchesRequest struct {
 		Name string `json:"name"`
 	}
+
+	Operations struct {
+		Operations []PaymentOperation `json:"operations"`
+	}
+
+	PaymentOperation struct {
+		Label    string    `json:"label"`
+		Datetime time.Time `json:"datetime"`
+	}
 )
 
 var (
+	NoPaymentErr = errors.New("no payment got")
+
 	TotalHits = prometheus.NewCounterVec(
 		prometheus.CounterOpts{
 			Name: "auth_total_hits",
