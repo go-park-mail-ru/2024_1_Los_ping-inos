@@ -463,7 +463,7 @@ func generateCookie(name, value string, expires time.Time, httpOnly bool) *http.
 		Path:     "/",
 		Expires:  expires,
 		HttpOnly: httpOnly,
-		Domain:   "127.0.0.1",
+		Domain:   ".jimder.ru",
 		SameSite: http.SameSiteNoneMode,
 		Secure:   true,
 	}

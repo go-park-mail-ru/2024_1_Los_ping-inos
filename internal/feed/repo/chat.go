@@ -30,7 +30,7 @@ func (storage *PostgresStorage) GetChat(ctx context.Context, user1, user2 types.
 		From(messageTable).
 		Where(qb.Or{qb.And{qb.Eq{"sender_id": user1}, qb.Eq{"receiver_id": user2}},
 			qb.And{qb.Eq{"sender_id": user2}, qb.Eq{"receiver_id": user1}}}).
-		OrderBy("sent_time").
+		OrderBy("sent_time DESC").
 		RunWith(storage.dbReader)
 
 	rows, err := query.Query()
