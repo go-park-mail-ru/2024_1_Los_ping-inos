@@ -10,13 +10,13 @@ import (
 	"time"
 )
 
-func (storage *PersonStorage) ActivateSub(ctx context.Context, UID types.UserID) error {
+func (storage *PersonStorage) ActivateSub(ctx context.Context, UID types.UserID, datetime time.Time) error {
 	logger := ctx.Value(Logg).(Log)
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db activating sub ", PersonTableName)
 	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
 	setMap := map[string]interface{}{}
 	setMap["premium"] = true
-	setMap["premium_expires_at"] = time.Now().Add(31 * 24 * time.Hour)
+	setMap["premium_expires_at"] = datetime.Add(31 * 24 * time.Hour)
 	query := stBuilder.Update(PersonTableName).SetMap(setMap).Where(qb.Eq{"id": UID}).RunWith(storage.dbReader)
 
 	rows, err := query.Query()
@@ -30,7 +30,7 @@ func (storage *PersonStorage) ActivateSub(ctx context.Context, UID types.UserID)
 	query2 := stBuilder.
 		Insert("person_payment").
 		Columns("person_id", "paymentTime").
-		Values(UID, time.Now()).
+		Values(UID, datetime).
 		RunWith(storage.dbReader)
 	rows2, err := query2.Query()
 	if err != nil {

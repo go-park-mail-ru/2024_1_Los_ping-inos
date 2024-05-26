@@ -154,8 +154,8 @@ func (service *UseCase) GenPaymentUrl(UID types.UserID) string {
 	return res
 }
 
-func (service *UseCase) ActivateSub(ctx context.Context, UID types.UserID) error {
-	return service.personStorage.ActivateSub(ctx, UID)
+func (service *UseCase) ActivateSub(ctx context.Context, UID types.UserID, datetime time.Time) error {
+	return service.personStorage.ActivateSub(ctx, UID, datetime)
 }
 
 func (service *UseCase) GetSubHistory(ctx context.Context, UID types.UserID) (*auth.PaymentHistory, error) {

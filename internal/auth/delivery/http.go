@@ -490,7 +490,7 @@ func (deliver *AuthHandler) ActivateSub() func(w http.ResponseWriter, r *http.Re
 		logger := request.Context().Value(Logg).(Log)
 		UID := request.Context().Value(RequestUserID).(types.UserID)
 
-		activated := deliver.checkSubStatus(UID)
+		datetime, activated := deliver.checkSubStatus(UID)
 		if activated != nil && errors.As(activated, &auth.NoPaymentErr) {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("payment not provided")
 			requests.SendResponse(respWriter, request, http.StatusConflict, "payment not provided")
@@ -502,7 +502,7 @@ func (deliver *AuthHandler) ActivateSub() func(w http.ResponseWriter, r *http.Re
 			return
 		}
 
-		err := deliver.UseCase.ActivateSub(request.Context(), UID)
+		err := deliver.UseCase.ActivateSub(request.Context(), UID, datetime)
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't activate sub: ", err.Error())
 			requests.SendResponse(respWriter, request, http.StatusInternalServerError, err.Error())
@@ -514,7 +514,7 @@ func (deliver *AuthHandler) ActivateSub() func(w http.ResponseWriter, r *http.Re
 	}
 }
 
-func (deliver *AuthHandler) checkSubStatus(UID types.UserID) error {
+func (deliver *AuthHandler) checkSubStatus(UID types.UserID) (time.Time, error) {
 	u := url.URL{
 		Scheme: "https",
 		Host:   "yoomoney.ru",
@@ -522,13 +522,13 @@ func (deliver *AuthHandler) checkSubStatus(UID types.UserID) error {
 	}
 	req, err := http.NewRequest("POST", u.String(), nil)
 	if err != nil {
-		return err
+		return time.Now(), err
 	}
 	key := viper.Get("yoomoney.key").(string)
 	req.Header.Add("Authorization", "Bearer "+key)
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		return err
+		return time.Now(), err
 	}
 	defer resp.Body.Close()
 
@@ -536,18 +536,18 @@ func (deliver *AuthHandler) checkSubStatus(UID types.UserID) error {
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return err
+		return time.Now(), err
 	}
 	err = json.Unmarshal(body, &operations)
 	uid := strconv.Itoa(int(UID))
 	for _, i := range operations.Operations {
 		if i.Label == uid {
 			if time.Since(i.Datetime) <= 31*24*time.Hour {
-				return nil
+				return i.Datetime, nil
 			}
 		}
 	}
-	return auth.NoPaymentErr
+	return time.Now(), auth.NoPaymentErr
 }
 
 func (deliver *AuthHandler) GetSubHistory() func(w http.ResponseWriter, r *http.Request) {

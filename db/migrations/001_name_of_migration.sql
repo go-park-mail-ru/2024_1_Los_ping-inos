@@ -106,7 +106,7 @@ create table if not exists person_payment (
     person_id int not null references person(id)
        on delete cascade
        on update cascade,
-    paymentTime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    paymentTime TIMESTAMP NOT NULL UNIQUE DEFAULT CURRENT_TIMESTAMP
 );
 ---- create above / drop below ----
 -- drop table person;

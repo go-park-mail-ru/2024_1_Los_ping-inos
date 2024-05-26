@@ -2,6 +2,7 @@ package auth
 
 import (
 	"context"
+	"time"
 
 	"main.go/internal/types"
 )
@@ -19,7 +20,7 @@ type (
 		DeleteProfile(UID types.UserID, ctx context.Context) error
 		GetMatches(profile types.UserID, nameFilter string, ctx context.Context) ([]Profile, error)
 		GenPaymentUrl(UID types.UserID) string
-		ActivateSub(ctx context.Context, UID types.UserID) error
+		ActivateSub(ctx context.Context, UID types.UserID, datetime time.Time) error
 		GetSubHistory(ctx context.Context, UID types.UserID) (*PaymentHistory, error)
 	}
 	PersonStorage interface {
@@ -28,7 +29,7 @@ type (
 		Update(ctx context.Context, person Person) error
 		Delete(ctx context.Context, UID types.UserID) error
 		GetMatch(ctx context.Context, person1ID types.UserID) ([]types.UserID, error)
-		ActivateSub(ctx context.Context, UID types.UserID) error
+		ActivateSub(ctx context.Context, UID types.UserID, datetime time.Time) error
 		GetSubHistory(ctx context.Context, UID types.UserID) (*PaymentHistory, error)
 		//GetUserCards(ctx context.Context, persons []types.UserID) ([][]*Interest, [][]Image, error)
 	}
