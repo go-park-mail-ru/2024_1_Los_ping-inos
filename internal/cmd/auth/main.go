@@ -154,6 +154,11 @@ func startServer(cfg *config.Config, logger Log, deliver Delivers) error {
 			IsAuthenticatedMiddleware(CSRFMiddleware(http.HandlerFunc(httpDeliver.ProfileHandlers())), authManager), hashset.New("GET", "POST", "DELETE")),
 		"profile", logger))
 
+	mux.Handle(apiPath+"payment", RequestIDMiddleware(
+		AllowedMethodMiddleware(
+			IsAuthenticatedMiddleware(CSRFMiddleware(http.HandlerFunc(httpDeliver.PaymentUrl())), authManager), hashset.New("POST")),
+		"payment", logger))
+
 	mux.Handle(apiPath+"matches", RequestIDMiddleware(
 		AllowedMethodMiddleware(
 			IsAuthenticatedMiddleware(http.HandlerFunc(httpDeliver.GetMatches()), authManager), hashset.New("POST")),

@@ -5,6 +5,7 @@ import (
 	"github.com/emirpasic/gods/sets/hashset"
 	"main.go/internal/auth"
 	"main.go/internal/types"
+	"strconv"
 	"time"
 )
 
@@ -141,5 +142,14 @@ func normalizeFromSet(input []interface{}) []types.InterestID {
 	for i := range input {
 		res[i] = input[i].(types.InterestID)
 	}
+	return res
+}
+
+const paymentUrl = "https://yoomoney.ru/quickpay/confirm?receiver=4100118687037094&quickpay-form=button&paymentType=AC&sum=2&label="
+
+const redirectUrl = "successURL=https://jimder.ru/profile?sub=success"
+
+func (service *UseCase) GenPaymentUrl(UID types.UserID) string {
+	res := paymentUrl + strconv.Itoa(int(UID)) + "&" + redirectUrl
 	return res
 }

@@ -18,6 +18,7 @@ type (
 		UpdateProfile(UID types.UserID, profile ProfileUpdateRequest, ctx context.Context) error
 		DeleteProfile(UID types.UserID, ctx context.Context) error
 		GetMatches(profile types.UserID, nameFilter string, ctx context.Context) ([]Profile, error)
+		GenPaymentUrl(UID types.UserID) string
 	}
 	PersonStorage interface {
 		AddAccount(ctx context.Context, Name string, Birhday string, Gender string, Email string, Password string) error

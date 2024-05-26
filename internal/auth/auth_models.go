@@ -28,7 +28,7 @@ type (
 		Password    string       `json:"-"`
 		Gender      string       `json:"gender"`
 		CreatedAt   time.Time    `json:"-"`
-		Premium     bool         `json:"-"`
+		Premium     bool         `json:"premium"`
 		LikesLeft   int          `json:"-"`
 		SessionID   string       `json:"session_id"`
 	}
@@ -62,6 +62,8 @@ type (
 		Birthday    time.Time     `json:"birthday"`
 		Description string        `json:"description"`
 		Email       string        `json:"email"`
+		Premium     bool          `json:"premium"`
+		LikesLeft   int           `json:"likesLeft"`
 		Interests   []*Interest   `json:"interests"`
 		Photos      []ImageToSend `json:"photos"`
 		CSRFT       string        `json:"csrft"`

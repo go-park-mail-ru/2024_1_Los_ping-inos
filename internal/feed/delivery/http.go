@@ -3,6 +3,7 @@ package delivery
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"github.com/gorilla/websocket"
 	"github.com/sirupsen/logrus"
 	"io"
@@ -89,6 +90,17 @@ func (deliver *FeedHandler) CreateLike() func(respWriter http.ResponseWriter, re
 		if err != nil && err.Error() != "sql: Rows are closed" {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't update profile: ", err.Error())
 			requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
+			return
+		}
+
+		if errors.As(err, &feed.NoMatchFoundErr) {
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("created like")
+			requests.SendResponse(respWriter, request, http.StatusOK, nil)
+			return
+		}
+		if errors.As(err, &feed.NoLikesLeftErr) {
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("no likes left")
+			requests.SendResponse(respWriter, request, http.StatusConflict, err.Error())
 			return
 		}
 

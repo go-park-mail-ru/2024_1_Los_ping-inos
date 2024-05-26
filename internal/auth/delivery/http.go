@@ -469,3 +469,15 @@ func generateCookie(name, value string, expires time.Time, httpOnly bool) *http.
 func oneDayExpiration() time.Time { return time.Now().Add(24 * time.Hour) }
 
 var expiredYear = time.Date(1970, 1, 1, 0, 0, 0, 0, time.UTC)
+
+func (deliver *AuthHandler) PaymentUrl() func(w http.ResponseWriter, r *http.Request) {
+	return func(respWriter http.ResponseWriter, request *http.Request) {
+		logger := request.Context().Value(Logg).(Log)
+		UID := request.Context().Value(RequestUserID).(types.UserID)
+
+		url := deliver.UseCase.GenPaymentUrl(UID)
+
+		requests.SendResponse(respWriter, request, http.StatusOK, url)
+		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("sent paymentUrl")
+	}
+}

@@ -1,6 +1,7 @@
 package feed
 
 import (
+	"errors"
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
@@ -121,7 +122,9 @@ type (
 )
 
 var (
-	TotalHits = prometheus.NewCounterVec(
+	NoLikesLeftErr  = errors.New("no likes left")
+	NoMatchFoundErr = errors.New("sql: Rows are closed")
+	TotalHits       = prometheus.NewCounterVec(
 		prometheus.CounterOpts{
 			Name: "feed_total_hits",
 			Help: "Count of hits in feed service.",

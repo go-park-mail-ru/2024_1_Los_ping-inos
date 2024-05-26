@@ -25,6 +25,7 @@ type (
 		GetPersonInterests(ctx context.Context, personID types.UserID) ([]*Interest, error)
 		GetLike(ctx context.Context, filter *LikeGetFilter) ([]types.UserID, error)
 		CreateLike(ctx context.Context, person1ID, person2ID types.UserID) error
+		DecreaseLikesCount(ctx context.Context, personID types.UserID) (int, error)
 		GetChat(ctx context.Context, user1, user2 types.UserID) ([]Message, error)
 		CreateMessage(ctx context.Context, message MessageToReceive) (*MessageToReceive, error)
 		GetLastMessages(ctx context.Context, id int64, ids []int) ([]Message, error)

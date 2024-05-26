@@ -86,5 +86,55 @@ func (storage *PostgresStorage) CreateLike(ctx context.Context, person1ID, perso
 	defer rows.Close()
 	var res types.UserID
 	rows.Next()
-	return rows.Scan(&res)
+	err = rows.Scan(&res)
+	if err != nil {
+		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("db can't get match: ", err.Error())
+		return err
+	}
+	return nil
+}
+
+func (storage *PostgresStorage) DecreaseLikesCount(ctx context.Context, personID types.UserID) (int, error) {
+	logger := ctx.Value(Logg).(Log)
+	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db decrease likes count request to ", LikeTableName)
+
+	query := "SELECT premium, likes_left FROM person WHERE id = $1"
+
+	rows, err := storage.dbReader.Query(query, personID)
+	if err != nil {
+		return 0, err
+	}
+	defer rows.Close()
+
+	var (
+		likes   int
+		premium bool
+	)
+
+	for rows.Next() {
+		err = rows.Scan(&premium, &likes)
+		if err != nil {
+			return 0, err
+		}
+	}
+
+	if premium {
+		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("premium found")
+		return 100, nil
+	}
+	if likes <= 0 {
+		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("no likes left for user ", personID)
+		return -1, nil
+	}
+
+	likes--
+
+	_, err = storage.dbReader.Exec("UPDATE person SET likes_left = $1 WHERE id = $2", likes, personID)
+	if err != nil {
+		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't query: ", err.Error())
+		return 0, err
+	}
+
+	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("decreased likes left")
+	return likes, nil
 }

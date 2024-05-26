@@ -40,7 +40,14 @@ func (service *UseCase) GetCards(userID types.UserID, ctx context.Context) ([]fe
 }
 
 func (service *UseCase) CreateLike(profile1, profile2 types.UserID, ctx context.Context) error {
-	return service.storage.CreateLike(ctx, profile1, profile2)
+	likesLeft, err := service.storage.DecreaseLikesCount(ctx, profile1)
+	if err != nil {
+		return err
+	}
+	if likesLeft >= 0 {
+		return service.storage.CreateLike(ctx, profile1, profile2)
+	}
+	return feed.NoLikesLeftErr
 }
 
 func (service *UseCase) GetChat(ctx context.Context, user1, user2 types.UserID) ([]feed.Message, error) {
