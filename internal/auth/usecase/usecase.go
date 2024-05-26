@@ -210,7 +210,7 @@ func combineToCards(persons []*auth.Person, interests [][]*auth.Interest, images
 			return cmp.Compare(a.Cell, b.Cell)
 		})
 		res[i] = auth.Profile{ID: persons[i].ID, Name: persons[i].Name, Birthday: persons[i].Birthday, Description: persons[i].Description,
-			Email: persons[i].Email, Interests: interests[i], Photos: photos[i], Premium: persons[i].Premium, LikesLeft: persons[i].LikesLeft}
+			Email: persons[i].Email, Interests: interests[i], Photos: photos[i], Premium: persons[i].Premium, PremiumExpires: persons[i].PremiumExpires, LikesLeft: persons[i].LikesLeft}
 	}
 	return res
 }
