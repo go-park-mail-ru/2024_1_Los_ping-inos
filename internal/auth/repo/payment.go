@@ -69,7 +69,7 @@ func (storage *PersonStorage) GetSubHistory(ctx context.Context, UID types.UserI
 		record := auth.HistoryRecord{
 			Time:  tmp.Unix(),
 			Sum:   "2",
-			Title: "subscription",
+			Title: "Подписка",
 		}
 		res.Times = append(res.Times, record)
 	}
