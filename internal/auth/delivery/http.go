@@ -68,9 +68,9 @@ func (deliver *AuthHandler) ReadProfile(respWriter http.ResponseWriter, request 
 			requests.SendResponse(respWriter, request, http.StatusInternalServerError, err.Error())
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("get profile err: ", err.Error())
 		}
-		prof, err = deliver.UseCase.GetProfile(auth.ProfileGetParams{ID: []types.UserID{types.UserID(id)}}, request.Context())
+		prof, err = deliver.UseCase.GetProfile(auth.ProfileGetParams{ID: []types.UserID{types.UserID(id)}, NeedEmail: false}, request.Context())
 	} else { // свой профиль
-		prof, err = deliver.UseCase.GetProfile(auth.ProfileGetParams{ID: []types.UserID{request.Context().Value(RequestUserID).(types.UserID)}}, request.Context())
+		prof, err = deliver.UseCase.GetProfile(auth.ProfileGetParams{ID: []types.UserID{request.Context().Value(RequestUserID).(types.UserID)}, NeedEmail: true}, request.Context())
 	}
 
 	if err != nil {

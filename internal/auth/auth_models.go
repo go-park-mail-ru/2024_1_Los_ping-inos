@@ -39,6 +39,7 @@ type (
 		ID        []types.UserID
 		SessionID []string
 		Name      string
+		NeedEmail bool
 	}
 
 	PersonGetFilter struct {

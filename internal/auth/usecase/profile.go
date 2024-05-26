@@ -24,7 +24,7 @@ func (service *UseCase) GetProfile(params auth.ProfileGetParams, ctx context.Con
 		return nil, err
 	}
 
-	if params.ID != nil { // сокрытие email'a чужого профиля
+	if !params.NeedEmail { // сокрытие email'a чужого профиля
 		persons[0].Email = ""
 	}
 
