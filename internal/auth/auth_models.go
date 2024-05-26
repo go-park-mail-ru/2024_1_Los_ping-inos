@@ -113,7 +113,13 @@ type (
 	}
 
 	PaymentHistory struct {
-		Times []int64 `json:"times"`
+		Times []HistoryRecord `json:"records"`
+	}
+
+	HistoryRecord struct {
+		Time  int64  `json:"time"`
+		Sum   string `json:"sum"`
+		Title string `json:"title"`
 	}
 )
 

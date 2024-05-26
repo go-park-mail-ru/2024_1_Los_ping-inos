@@ -66,7 +66,12 @@ func (storage *PersonStorage) GetSubHistory(ctx context.Context, UID types.UserI
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("db can't scan sub history row: ", err.Error())
 			return nil, err
 		}
-		res.Times = append(res.Times, tmp.Unix())
+		record := auth.HistoryRecord{
+			Time:  tmp.Unix(),
+			Sum:   "2",
+			Title: "subscription",
+		}
+		res.Times = append(res.Times, record)
 	}
 
 	return res, nil
