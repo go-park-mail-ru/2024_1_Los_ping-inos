@@ -95,6 +95,10 @@ func (storage *PersonStorage) Update(ctx context.Context, person auth.Person) er
 	setMap["password"] = person.Password
 	delete(setMap, "photo")
 	delete(setMap, "session_id")
+	if _, ok := setMap["premiumExpires"]; ok {
+		setMap["premium_expires_at"] = setMap["premiumExpires"]
+		delete(setMap, "premiumExpires")
+	}
 	query := stBuilder.
 		Update(PersonTableName).
 		SetMap(setMap).
