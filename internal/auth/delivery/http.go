@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/sirupsen/logrus"
@@ -193,6 +194,7 @@ func (deliver *AuthHandler) GetMatches() func(respWriter http.ResponseWriter, re
 			return
 		}
 
+		requestBody.Name = strings.ToLower(requestBody.Name)
 		matches, err := deliver.UseCase.GetMatches(userID, requestBody.Name, request.Context())
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't get matches: ", err.Error())

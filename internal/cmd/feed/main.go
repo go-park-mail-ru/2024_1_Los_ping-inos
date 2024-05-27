@@ -149,7 +149,7 @@ func startServer(cfg *config.Config, logger Log, deliver Delivers) error {
 		WriteTimeout: cfg.Server.Timeout * time.Second,
 	}
 
-	logger.Logger.Infof("started auth http server at %v", server.Addr)
-	fmt.Printf("started auth http server at %v\n", server.Addr)
+	logger.Logger.Infof("started feed http server at %v", server.Addr)
+	fmt.Printf("started feed http server at %v\n", server.Addr)
 	return server.ListenAndServe()
 }
