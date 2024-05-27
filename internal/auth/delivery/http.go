@@ -511,7 +511,7 @@ func (deliver *AuthHandler) ActivateSub() func(w http.ResponseWriter, r *http.Re
 			return
 		}
 
-		exp := datetime.Add(31 * 24 * time.Hour)
+		exp := datetime.Add(31 * 24 * time.Hour).Unix()
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("sent response activating sub")
 		requests.SendResponse(respWriter, request, http.StatusOK, exp)
 		return
