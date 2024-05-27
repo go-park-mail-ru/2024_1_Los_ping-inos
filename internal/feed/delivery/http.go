@@ -127,7 +127,12 @@ func (deliver *FeedHandler) sendMatchNotice(ctx context.Context, id1, id2 types.
 	if err != nil {
 		return err
 	}
-	return connection.WriteMessage(1, respCoded)
+	err = connection.WriteMessage(1, respCoded)
+	if errors.As(err, &feed.WSClosedErr) {
+		deliver.usecase.DeleteConnection(ctx, id1)
+		return nil
+	}
+	return err
 }
 
 func (deliver *FeedHandler) CreateDislike() func(respWriter http.ResponseWriter, request *http.Request) {

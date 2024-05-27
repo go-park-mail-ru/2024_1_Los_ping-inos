@@ -121,10 +121,10 @@ func (stor *WSStorage) GetConnection(ctx context.Context, UID types.UserID) (*we
 	logger := ctx.Value(Logg).(Log)
 	con, ok := stor.connections.Load(UID)
 	if ok {
-		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("Got no connection with user ", UID)
+		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("Got connection with user ", UID)
 		return con.(*websocket.Conn), ok
 	}
-	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("Got connection with user ", UID)
+	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("Got no connection with user ", UID)
 	return nil, ok
 }
 

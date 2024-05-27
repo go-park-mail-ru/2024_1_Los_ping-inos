@@ -124,6 +124,7 @@ type (
 var (
 	NoLikesLeftErr  = errors.New("no likes left")
 	NoMatchFoundErr = errors.New("sql: Rows are closed")
+	WSClosedErr     = errors.New("websocket: close sent")
 	TotalHits       = prometheus.NewCounterVec(
 		prometheus.CounterOpts{
 			Name: "feed_total_hits",
