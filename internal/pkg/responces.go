@@ -27,6 +27,7 @@ func SendResponse(w http.ResponseWriter, r *http.Request, code int, Body any) {
 	w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
 	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, Csrft")
 	w.Header().Set("Access-Control-Allow-Credentials", "true")
+	w.Header().Set("Cache-Control", "must-revalidate")
 	w.Header().Set("Access-Control-Max-Age", "86400")
 
 	w.WriteHeader(code)
