@@ -7,6 +7,7 @@ package mock
 import (
 	context "context"
 	reflect "reflect"
+	time "time"
 
 	gomock "github.com/golang/mock/gomock"
 	auth "main.go/internal/auth"
@@ -36,6 +37,20 @@ func (m *MockIUseCase) EXPECT() *MockIUseCaseMockRecorder {
 	return m.recorder
 }
 
+// ActivateSub mocks base method.
+func (m *MockIUseCase) ActivateSub(ctx context.Context, UID types.UserID, datetime time.Time) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ActivateSub", ctx, UID, datetime)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// ActivateSub indicates an expected call of ActivateSub.
+func (mr *MockIUseCaseMockRecorder) ActivateSub(ctx, UID, datetime interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ActivateSub", reflect.TypeOf((*MockIUseCase)(nil).ActivateSub), ctx, UID, datetime)
+}
+
 // DeleteProfile mocks base method.
 func (m *MockIUseCase) DeleteProfile(UID types.UserID, ctx context.Context) error {
 	m.ctrl.T.Helper()
@@ -48,6 +63,20 @@ func (m *MockIUseCase) DeleteProfile(UID types.UserID, ctx context.Context) erro
 func (mr *MockIUseCaseMockRecorder) DeleteProfile(UID, ctx interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteProfile", reflect.TypeOf((*MockIUseCase)(nil).DeleteProfile), UID, ctx)
+}
+
+// GenPaymentUrl mocks base method.
+func (m *MockIUseCase) GenPaymentUrl(UID types.UserID) string {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GenPaymentUrl", UID)
+	ret0, _ := ret[0].(string)
+	return ret0
+}
+
+// GenPaymentUrl indicates an expected call of GenPaymentUrl.
+func (mr *MockIUseCaseMockRecorder) GenPaymentUrl(UID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenPaymentUrl", reflect.TypeOf((*MockIUseCase)(nil).GenPaymentUrl), UID)
 }
 
 // GetAllInterests mocks base method.
@@ -108,6 +137,21 @@ func (m *MockIUseCase) GetProfile(params auth.ProfileGetParams, ctx context.Cont
 func (mr *MockIUseCaseMockRecorder) GetProfile(params, ctx interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetProfile", reflect.TypeOf((*MockIUseCase)(nil).GetProfile), params, ctx)
+}
+
+// GetSubHistory mocks base method.
+func (m *MockIUseCase) GetSubHistory(ctx context.Context, UID types.UserID) (*auth.PaymentHistory, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetSubHistory", ctx, UID)
+	ret0, _ := ret[0].(*auth.PaymentHistory)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetSubHistory indicates an expected call of GetSubHistory.
+func (mr *MockIUseCaseMockRecorder) GetSubHistory(ctx, UID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetSubHistory", reflect.TypeOf((*MockIUseCase)(nil).GetSubHistory), ctx, UID)
 }
 
 // IsAuthenticated mocks base method.
@@ -209,6 +253,20 @@ func (m *MockPersonStorage) EXPECT() *MockPersonStorageMockRecorder {
 	return m.recorder
 }
 
+// ActivateSub mocks base method.
+func (m *MockPersonStorage) ActivateSub(ctx context.Context, UID types.UserID, datetime time.Time) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ActivateSub", ctx, UID, datetime)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// ActivateSub indicates an expected call of ActivateSub.
+func (mr *MockPersonStorageMockRecorder) ActivateSub(ctx, UID, datetime interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ActivateSub", reflect.TypeOf((*MockPersonStorage)(nil).ActivateSub), ctx, UID, datetime)
+}
+
 // AddAccount mocks base method.
 func (m *MockPersonStorage) AddAccount(ctx context.Context, Name, Birhday, Gender, Email, Password string) error {
 	m.ctrl.T.Helper()
@@ -265,6 +323,21 @@ func (m *MockPersonStorage) GetMatch(ctx context.Context, person1ID types.UserID
 func (mr *MockPersonStorageMockRecorder) GetMatch(ctx, person1ID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMatch", reflect.TypeOf((*MockPersonStorage)(nil).GetMatch), ctx, person1ID)
+}
+
+// GetSubHistory mocks base method.
+func (m *MockPersonStorage) GetSubHistory(ctx context.Context, UID types.UserID) (*auth.PaymentHistory, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetSubHistory", ctx, UID)
+	ret0, _ := ret[0].(*auth.PaymentHistory)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetSubHistory indicates an expected call of GetSubHistory.
+func (mr *MockPersonStorageMockRecorder) GetSubHistory(ctx, UID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetSubHistory", reflect.TypeOf((*MockPersonStorage)(nil).GetSubHistory), ctx, UID)
 }
 
 // Update mocks base method.
@@ -426,42 +499,4 @@ func (m *MockInterestStorage) GetPersonInterests(ctx context.Context, personID t
 func (mr *MockInterestStorageMockRecorder) GetPersonInterests(ctx, personID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetPersonInterests", reflect.TypeOf((*MockInterestStorage)(nil).GetPersonInterests), ctx, personID)
-}
-
-// MockImageStorage is a mock of ImageStorage interface.
-type MockImageStorage struct {
-	ctrl     *gomock.Controller
-	recorder *MockImageStorageMockRecorder
-}
-
-// MockImageStorageMockRecorder is the mock recorder for MockImageStorage.
-type MockImageStorageMockRecorder struct {
-	mock *MockImageStorage
-}
-
-// NewMockImageStorage creates a new mock instance.
-func NewMockImageStorage(ctrl *gomock.Controller) *MockImageStorage {
-	mock := &MockImageStorage{ctrl: ctrl}
-	mock.recorder = &MockImageStorageMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockImageStorage) EXPECT() *MockImageStorageMockRecorder {
-	return m.recorder
-}
-
-// Get mocks base method.
-func (m *MockImageStorage) Get(ctx context.Context, userID int64) ([]auth.Image, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Get", ctx, userID)
-	ret0, _ := ret[0].([]auth.Image)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// Get indicates an expected call of Get.
-func (mr *MockImageStorageMockRecorder) Get(ctx, userID interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockImageStorage)(nil).Get), ctx, userID)
 }
