@@ -1,9 +1,9 @@
 package delivery
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/mailru/easyjson"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"io"
@@ -110,11 +110,11 @@ func (deliver *ImageHandler) GetImageHandler() func(w http.ResponseWriter, r *ht
 		images, err := deliver.useCase.GetImage(userId, cell, request.Context())
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn(err.Error())
-			requests.SendResponse(respWriter, request, http.StatusInternalServerError, err.Error())
+			requests.SendSimpleResponse(respWriter, request, http.StatusInternalServerError, err.Error())
 			return
 		}
 
-		requests.SendResponse(respWriter, request, http.StatusOK, images)
+		requests.SendSimpleResponse(respWriter, request, http.StatusOK, images)
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("sent image")
 	}
 }
@@ -126,7 +126,7 @@ func (deliver *ImageHandler) AddImageHandler() func(w http.ResponseWriter, r *ht
 		err := request.ParseMultipartForm(10 << 20)
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn(err.Error())
-			requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
+			requests.SendSimpleResponse(respWriter, request, http.StatusBadRequest, err.Error())
 			return
 		}
 
@@ -134,7 +134,7 @@ func (deliver *ImageHandler) AddImageHandler() func(w http.ResponseWriter, r *ht
 		img, handler, err := request.FormFile("image")
 		if err != nil && errors.Is(err, http.ErrMissingFile) {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn(err.Error())
-			requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
+			requests.SendSimpleResponse(respWriter, request, http.StatusBadRequest, err.Error())
 			return
 		}
 		defer img.Close()
@@ -151,7 +151,7 @@ func (deliver *ImageHandler) AddImageHandler() func(w http.ResponseWriter, r *ht
 
 		if !isValidImage {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("wrong format")
-			requests.SendResponse(respWriter, request, http.StatusBadRequest, "Wrong format")
+			requests.SendSimpleResponse(respWriter, request, http.StatusBadRequest, "Wrong format")
 			return
 		}
 
@@ -168,12 +168,12 @@ func (deliver *ImageHandler) AddImageHandler() func(w http.ResponseWriter, r *ht
 		err = deliver.useCase.AddImage(userImage, img, request.Context())
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn(err.Error())
-			requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
+			requests.SendSimpleResponse(respWriter, request, http.StatusBadRequest, err.Error())
 			return
 		}
 
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("image added")
-		requests.SendResponse(respWriter, request, http.StatusOK, objectURL)
+		requests.SendSimpleResponse(respWriter, request, http.StatusOK, objectURL)
 
 	}
 }
@@ -183,19 +183,19 @@ func (deliver *ImageHandler) DeleteImageHandler() func(w http.ResponseWriter, r 
 		logger := request.Context().Value(Logg).(Log)
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("delete image")
 		userId := int64(request.Context().Value(RequestUserID).(types.UserID))
-		var r requests.ImageRequest
+		var r image.ImgRequest
 
 		body, err := io.ReadAll(request.Body)
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("bad body: ", err.Error())
-			requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
+			requests.SendSimpleResponse(respWriter, request, http.StatusBadRequest, err.Error())
 			return
 		}
 
-		err = json.Unmarshal(body, &r)
+		err = easyjson.Unmarshal(body, &r)
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't unmarshal body: ", err.Error())
-			requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
+			requests.SendSimpleResponse(respWriter, request, http.StatusBadRequest, err.Error())
 			return
 		}
 
@@ -207,12 +207,12 @@ func (deliver *ImageHandler) DeleteImageHandler() func(w http.ResponseWriter, r 
 		err = deliver.useCase.DeleteImage(userImage, request.Context())
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn(err.Error())
-			requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
+			requests.SendSimpleResponse(respWriter, request, http.StatusBadRequest, err.Error())
 			return
 		}
 
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("image added")
-		requests.SendResponse(respWriter, request, http.StatusOK, nil)
+		requests.SendSimpleResponse(respWriter, request, http.StatusOK, "")
 	}
 }
 

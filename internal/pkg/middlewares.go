@@ -33,7 +33,7 @@ func IsAuthenticatedMiddleware(next http.Handler, uc auth.AuthHandlClient) http.
 			sess, err := request.Cookie("session_id") // проверка авторизации
 			if err != nil || sess == nil {
 				log.Logger.WithFields(logrus.Fields{RequestID: log.RequestID}).Info("unauthorized")
-				SendResponse(respWriter, request, http.StatusUnauthorized, "unauthorized")
+				SendSimpleResponse(respWriter, request, http.StatusUnauthorized, "unauthorized")
 				return
 			}
 			session = sess.Value
@@ -43,13 +43,13 @@ func IsAuthenticatedMiddleware(next http.Handler, uc auth.AuthHandlClient) http.
 
 		if err != nil {
 			log.Logger.WithFields(logrus.Fields{RequestID: log.RequestID}).Info("unauthorized: ", err.Error())
-			SendResponse(respWriter, request, http.StatusUnauthorized, "unauthorized: "+err.Error())
+			SendSimpleResponse(respWriter, request, http.StatusUnauthorized, "unauthorized: "+err.Error())
 			return
 		}
 
 		if !authResponse.IsAuthenticated {
 			log.Logger.WithFields(logrus.Fields{RequestID: log.RequestID}).Info("unauthorized")
-			SendResponse(respWriter, request, http.StatusUnauthorized, "unauthorized")
+			SendSimpleResponse(respWriter, request, http.StatusUnauthorized, "unauthorized")
 			return
 		}
 
@@ -66,12 +66,12 @@ func AllowedMethodMiddleware(next http.Handler, methods *hashset.Set) http.Handl
 
 		if request.Method == http.MethodOptions {
 			log.Logger.WithFields(logrus.Fields{RequestID: log.RequestID}).Info("preflight")
-			SendResponse(respWriter, request, http.StatusOK, nil)
+			SendSimpleResponse(respWriter, request, http.StatusOK, "")
 			return
 		}
 		if !methods.Contains(request.Method) {
 			log.Logger.WithFields(logrus.Fields{RequestID: log.RequestID}).Info("method not allowed")
-			SendResponse(respWriter, request, http.StatusMethodNotAllowed, "method not allowed")
+			SendSimpleResponse(respWriter, request, http.StatusMethodNotAllowed, "method not allowed")
 			return
 		}
 		log.Logger.WithFields(logrus.Fields{RequestID: log.RequestID}).Info("methods checked")
@@ -101,7 +101,7 @@ func CSRFMiddleware(next http.Handler) http.Handler {
 			request.Context().Value(RequestUserID).(types.UserID), tok); !correct || err != nil {
 
 			log.Logger.WithFields(logrus.Fields{RequestID: log.RequestID}).Info("CSRF not correct")
-			SendResponse(respWriter, request, http.StatusForbidden, "CSRF not correct")
+			SendSimpleResponse(respWriter, request, http.StatusForbidden, "CSRF not correct")
 			return
 		}
 		next.ServeHTTP(respWriter, request)

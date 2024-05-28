@@ -1,8 +1,8 @@
 package delivery
 
 import (
-	"encoding/json"
 	"errors"
+	"github.com/mailru/easyjson"
 	"github.com/spf13/viper"
 	"io"
 	"net/http"
@@ -66,7 +66,7 @@ func (deliver *AuthHandler) ReadProfile(respWriter http.ResponseWriter, request 
 	if request.URL.Query().Has("id") { // просмотр профиля по id (чужой профиль из ленты)
 		id, err = strconv.Atoi(request.URL.Query().Get("id"))
 		if err != nil {
-			requests.SendResponse(respWriter, request, http.StatusInternalServerError, err.Error())
+			requests.SendSimpleResponse(respWriter, request, http.StatusInternalServerError, err.Error())
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("get profile err: ", err.Error())
 		}
 		prof, err = deliver.UseCase.GetProfile(auth.ProfileGetParams{ID: []types.UserID{types.UserID(id)}, NeedEmail: false}, request.Context())
@@ -75,13 +75,13 @@ func (deliver *AuthHandler) ReadProfile(respWriter http.ResponseWriter, request 
 	}
 
 	if err != nil {
-		requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
+		requests.SendSimpleResponse(respWriter, request, http.StatusBadRequest, err.Error())
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("get profile err: ", err.Error())
 		return
 	}
 
 	if len(prof) == 0 {
-		requests.SendResponse(respWriter, request, http.StatusBadRequest, "no such profile")
+		requests.SendSimpleResponse(respWriter, request, http.StatusBadRequest, "no such profile")
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("no such profile")
 		return
 	}
@@ -97,7 +97,7 @@ func (deliver *AuthHandler) ReadProfile(respWriter http.ResponseWriter, request 
 // @Router  /profile [post]
 // @Accept  json
 // @Param   session_id header string false "cookie session_id"
-// @Param   userData  formData requests.ProfileUpdateRequest true "user data"
+// @Param   userData  formData auth.ProfileUpdateRequest true "user data"
 // @Success 200
 // @Failure 400       {string} string
 // @Failure 401       {string} string
@@ -111,29 +111,29 @@ func (deliver *AuthHandler) UpdateProfile(respWriter http.ResponseWriter, reques
 	body, err := io.ReadAll(request.Body)
 	if err != nil {
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("bad body: ", err.Error())
-		requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
+		requests.SendSimpleResponse(respWriter, request, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	err = json.Unmarshal(body, &requestBody)
-	if err != nil {
+	//err = json.Unmarshal(body, &requestBody) TODO
+	if err = easyjson.Unmarshal(body, &requestBody); err != nil {
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't unmarshal body: ", err.Error())
-		requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
+		requests.SendSimpleResponse(respWriter, request, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	err = deliver.UseCase.UpdateProfile(request.Context().Value(RequestUserID).(types.UserID), requestBody, request.Context())
 	if err != nil {
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't update profile: ", err.Error())
-		if errors.As(err, &types.DifferentPasswordsError) {
-			requests.SendResponse(respWriter, request, http.StatusConflict, err.Error())
+		if errors.As(err, &types.MyErr{Err: types.DifferentPasswordsError}) {
+			requests.SendSimpleResponse(respWriter, request, http.StatusConflict, err.Error())
 		} else {
-			requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
+			requests.SendSimpleResponse(respWriter, request, http.StatusBadRequest, err.Error())
 		}
 		return
 	}
 
-	requests.SendResponse(respWriter, request, http.StatusOK, nil)
+	requests.SendSimpleResponse(respWriter, request, http.StatusOK, "")
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("update profile sent response")
 }
 
@@ -155,13 +155,13 @@ func (deliver *AuthHandler) DeleteProfile(respWriter http.ResponseWriter, reques
 
 	if err != nil {
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't delete: ", err.Error())
-		requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
+		requests.SendSimpleResponse(respWriter, request, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	setLoginCookie("", expiredYear, respWriter)
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("deleted profile")
-	requests.SendResponse(respWriter, request, http.StatusOK, nil)
+	requests.SendSimpleResponse(respWriter, request, http.StatusOK, "")
 }
 
 // GetMatches godoc
@@ -183,14 +183,14 @@ func (deliver *AuthHandler) GetMatches() func(respWriter http.ResponseWriter, re
 		body, err := io.ReadAll(request.Body)
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("bad body: ", err.Error())
-			requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
+			requests.SendSimpleResponse(respWriter, request, http.StatusBadRequest, err.Error())
 			return
 		}
 
-		err = json.Unmarshal(body, &requestBody)
-		if err != nil {
+		//err = json.Unmarshal(body, &requestBody) TODO
+		if err = easyjson.Unmarshal(body, &requestBody); err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't unmarshal body: ", err.Error())
-			requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
+			requests.SendSimpleResponse(respWriter, request, http.StatusBadRequest, err.Error())
 			return
 		}
 
@@ -198,11 +198,11 @@ func (deliver *AuthHandler) GetMatches() func(respWriter http.ResponseWriter, re
 		matches, err := deliver.UseCase.GetMatches(userID, requestBody.Name, request.Context())
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't get matches: ", err.Error())
-			requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
+			requests.SendSimpleResponse(respWriter, request, http.StatusBadRequest, err.Error())
 			return
 		}
 
-		requests.SendResponse(respWriter, request, http.StatusOK, matches)
+		requests.SendResponse(respWriter, request, http.StatusOK, auth.Matches{Match: matches})
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("get matches sent response")
 	}
 }
@@ -226,18 +226,18 @@ func (deliver *AuthHandler) IsAuthenticatedHandler() func(w http.ResponseWriter,
 		}
 		if err != nil || session == nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("not authorized")
-			requests.SendResponse(respWriter, request, http.StatusUnauthorized, nil)
+			requests.SendSimpleResponse(respWriter, request, http.StatusUnauthorized, "")
 			return
 		}
 		UID, ok, err := deliver.UseCase.IsAuthenticated(session.Value, request.Context())
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info(err.Error())
-			requests.SendResponse(respWriter, request, http.StatusUnauthorized, nil)
+			requests.SendSimpleResponse(respWriter, request, http.StatusUnauthorized, "")
 			return
 		}
 		if !ok {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("not authorized")
-			requests.SendResponse(respWriter, request, http.StatusUnauthorized, nil)
+			requests.SendSimpleResponse(respWriter, request, http.StatusUnauthorized, "")
 			return
 		}
 
@@ -245,10 +245,10 @@ func (deliver *AuthHandler) IsAuthenticatedHandler() func(w http.ResponseWriter,
 		tok, err := requests.CreateCSRFToken(session.Value, UID, oneDayExpiration().Unix())
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't generate csrf token: ", err.Error())
-			requests.SendResponse(respWriter, request, http.StatusInternalServerError, err.Error())
+			requests.SendSimpleResponse(respWriter, request, http.StatusInternalServerError, err.Error())
 			return
 		}
-		requests.SendResponse(respWriter, request, http.StatusOK, requests.CSRFTokenResponse{Csrft: tok})
+		requests.SendResponse(respWriter, request, http.StatusOK, auth.CSRFTokenResponse{Csrft: tok})
 	}
 }
 
@@ -266,26 +266,26 @@ func (deliver *AuthHandler) LoginHandler() func(respWriter http.ResponseWriter, 
 	return func(w http.ResponseWriter, r *http.Request) {
 		logger := r.Context().Value(Logg).(Log)
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("login")
-		var request requests.LoginRequest
+		var request auth.LoginRequest
 
 		body, err := io.ReadAll(r.Body)
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("bad body: ", err.Error())
-			requests.SendResponse(w, r, http.StatusBadRequest, err.Error())
+			requests.SendSimpleResponse(w, r, http.StatusBadRequest, err.Error())
 			return
 		}
 
-		err = json.Unmarshal(body, &request)
-		if err != nil {
+		//err = json.Unmarshal(body, &request) TODO
+		if err = easyjson.Unmarshal(body, &request); err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't unmarshal body: ", err.Error())
-			requests.SendResponse(w, r, http.StatusBadRequest, err.Error())
+			requests.SendSimpleResponse(w, r, http.StatusBadRequest, err.Error())
 			return
 		}
 
 		prof, SID, err := deliver.UseCase.Login(request.Email, request.Password, r.Context())
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't login: ", err.Error())
-			requests.SendResponse(w, r, http.StatusUnauthorized, err.Error())
+			requests.SendSimpleResponse(w, r, http.StatusUnauthorized, err.Error())
 			return
 		}
 
@@ -293,7 +293,7 @@ func (deliver *AuthHandler) LoginHandler() func(respWriter http.ResponseWriter, 
 		tok, err := requests.CreateCSRFToken(SID, prof.ID, oneDayExpiration().Unix())
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't generate csrf token: ", err.Error())
-			requests.SendResponse(w, r, http.StatusInternalServerError, err.Error())
+			requests.SendSimpleResponse(w, r, http.StatusInternalServerError, err.Error())
 			return
 		}
 		w.Header().Set("csrft", tok)
@@ -322,44 +322,44 @@ func (deliver *AuthHandler) RegistrationHandler() func(http.ResponseWriter, *htt
 			body, err := deliver.UseCase.GetAllInterests(r.Context())
 			if err != nil {
 				logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't get interests: ", err.Error())
-				requests.SendResponse(w, r, http.StatusInternalServerError, err.Error())
+				requests.SendSimpleResponse(w, r, http.StatusInternalServerError, err.Error())
 				return
 			}
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("sent interests")
-			requests.SendResponse(w, r, http.StatusOK, body)
+			requests.SendResponse(w, r, http.StatusOK, auth.Interests{Interes: body})
 			return
 		}
 
-		var request requests.RegistrationRequest
+		var request auth.RegistrationRequest
 
 		body, err := io.ReadAll(r.Body)
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("bad body: ", err.Error())
-			requests.SendResponse(w, r, http.StatusBadRequest, err.Error())
+			requests.SendSimpleResponse(w, r, http.StatusBadRequest, err.Error())
 			return
 		}
 
-		err = json.Unmarshal(body, &request)
-		if err != nil {
+		//err = json.Unmarshal(body, &request) TODO
+		if err = easyjson.Unmarshal(body, &request); err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't unmarshal body: ", err.Error())
-			requests.SendResponse(w, r, http.StatusBadRequest, err.Error())
+			requests.SendSimpleResponse(w, r, http.StatusBadRequest, err.Error())
 			return
 		}
-		prof, SID, err := deliver.UseCase.Registration(auth.RegitstrationBody{request.Name, request.Birthday,
-			request.Gender, request.Email, request.Password, request.Interests}, r.Context())
+		prof, SID, err := deliver.UseCase.Registration(auth.RegitstrationBody{Name: request.Name, Birthday: request.Birthday,
+			Gender: request.Gender, Email: request.Email, Password: request.Password, Interests: request.Interests}, r.Context())
 
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't auth: ", err.Error())
-			if errors.As(err, &SeveralEmailsError) {
-				requests.SendResponse(w, r, http.StatusConflict, err.Error())
+			if errors.As(err, &types.MyErr{Err: SeveralEmailsError}) {
+				requests.SendSimpleResponse(w, r, http.StatusConflict, err.Error())
 			} else {
-				requests.SendResponse(w, r, http.StatusBadRequest, err.Error())
+				requests.SendSimpleResponse(w, r, http.StatusBadRequest, err.Error())
 			}
 			return
 		}
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("can't update interests: ", err.Error())
-			requests.SendResponse(w, r, http.StatusBadRequest, err.Error())
+			requests.SendSimpleResponse(w, r, http.StatusBadRequest, err.Error())
 			return
 		}
 
@@ -367,7 +367,7 @@ func (deliver *AuthHandler) RegistrationHandler() func(http.ResponseWriter, *htt
 		tok, err := requests.CreateCSRFToken(SID, prof.ID, oneDayExpiration().Unix())
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't generate csrf token: ", err.Error())
-			requests.SendResponse(w, r, http.StatusInternalServerError, err.Error())
+			requests.SendSimpleResponse(w, r, http.StatusInternalServerError, err.Error())
 			return
 		}
 		w.Header().Set("csrft", tok)
@@ -395,20 +395,20 @@ func (deliver *AuthHandler) LogoutHandler() func(respWriter http.ResponseWriter,
 		session, err := r.Cookie("session_id")
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("no cookie 0-0 ", err.Error())
-			requests.SendResponse(w, r, http.StatusUnauthorized, err.Error())
+			requests.SendSimpleResponse(w, r, http.StatusUnauthorized, err.Error())
 			return
 		}
 
 		err = deliver.UseCase.Logout(session.Value, r.Context())
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't logout: ", err.Error())
-			requests.SendResponse(w, r, http.StatusBadRequest, err.Error())
+			requests.SendSimpleResponse(w, r, http.StatusBadRequest, err.Error())
 			return
 		}
 
 		setLoginCookie("", expiredYear, w)
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("logout end")
-		requests.SendResponse(w, r, http.StatusOK, nil)
+		requests.SendSimpleResponse(w, r, http.StatusOK, "")
 	}
 }
 
@@ -430,10 +430,10 @@ func (deliver *AuthHandler) GetUsername() func(w http.ResponseWriter, r *http.Re
 		name, err := deliver.UseCase.GetName(request.Context().Value(RequestUserID).(types.UserID), request.Context())
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn(err.Error())
-			requests.SendResponse(respWriter, request, http.StatusInternalServerError, "can't get name")
+			requests.SendSimpleResponse(respWriter, request, http.StatusInternalServerError, "can't get name")
 			return
 		}
-		requests.SendResponse(respWriter, request, http.StatusOK, name)
+		requests.SendSimpleResponse(respWriter, request, http.StatusOK, name)
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("sent username")
 	}
 }
@@ -480,9 +480,9 @@ func (deliver *AuthHandler) PaymentUrl() func(w http.ResponseWriter, r *http.Req
 		logger := request.Context().Value(Logg).(Log)
 		UID := request.Context().Value(RequestUserID).(types.UserID)
 
-		url := deliver.UseCase.GenPaymentUrl(UID)
+		urll := deliver.UseCase.GenPaymentUrl(UID)
 
-		requests.SendResponse(respWriter, request, http.StatusOK, url)
+		requests.SendSimpleResponse(respWriter, request, http.StatusOK, urll)
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("sent paymentUrl")
 	}
 }
@@ -493,27 +493,27 @@ func (deliver *AuthHandler) ActivateSub() func(w http.ResponseWriter, r *http.Re
 		UID := request.Context().Value(RequestUserID).(types.UserID)
 
 		datetime, activated := deliver.checkSubStatus(UID)
-		if activated != nil && errors.As(activated, &auth.NoPaymentErr) {
+		if activated != nil && errors.As(activated, &types.MyErr{Err: auth.NoPaymentErr}) {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("payment not provided")
-			requests.SendResponse(respWriter, request, http.StatusConflict, "payment not provided")
+			requests.SendSimpleResponse(respWriter, request, http.StatusConflict, "payment not provided")
 			return
 		}
 		if activated != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't check payment: ", activated.Error())
-			requests.SendResponse(respWriter, request, http.StatusConflict, "can't check payment: "+activated.Error())
+			requests.SendSimpleResponse(respWriter, request, http.StatusConflict, "can't check payment: "+activated.Error())
 			return
 		}
 
 		err := deliver.UseCase.ActivateSub(request.Context(), UID, datetime)
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't activate sub: ", err.Error())
-			requests.SendResponse(respWriter, request, http.StatusInternalServerError, err.Error())
+			requests.SendSimpleResponse(respWriter, request, http.StatusInternalServerError, err.Error())
 			return
 		}
 
 		exp := datetime.Add(31 * 24 * time.Hour).Unix()
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("sent response activating sub")
-		requests.SendResponse(respWriter, request, http.StatusOK, exp)
+		requests.SendSimpleResponse(respWriter, request, http.StatusOK, strconv.Itoa(int(exp)))
 		return
 	}
 }
@@ -542,7 +542,7 @@ func (deliver *AuthHandler) checkSubStatus(UID types.UserID) (time.Time, error) 
 	if err != nil {
 		return time.Now(), err
 	}
-	err = json.Unmarshal(body, &operations)
+	err = easyjson.Unmarshal(body, &operations)
 	uid := strconv.Itoa(int(UID))
 	for _, i := range operations.Operations {
 		if i.Label == uid {
@@ -563,7 +563,7 @@ func (deliver *AuthHandler) GetSubHistory() func(w http.ResponseWriter, r *http.
 
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't read sub history: ", err.Error())
-			requests.SendResponse(respWriter, request, http.StatusInternalServerError, err.Error())
+			requests.SendSimpleResponse(respWriter, request, http.StatusInternalServerError, err.Error())
 			return
 		}
 

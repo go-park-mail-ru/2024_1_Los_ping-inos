@@ -64,6 +64,7 @@ type (
 		Person2 types.UserID
 	}
 
+	//easyjson:json
 	MessageToReceive struct {
 		MsgType    string `json:"Type"`
 		Properties struct {
@@ -75,11 +76,13 @@ type (
 		} `json:"properties"`
 	}
 
+	//easyjson:json
 	Message struct {
 		MsgType    string `json:"Type"`
 		Properties MsgProperties
 	}
 
+	//easyjson:json
 	MsgProperties struct {
 		Id       int64        `json:"id"`
 		Data     string       `json:"data"`
@@ -88,6 +91,7 @@ type (
 		Time     time.Time    `json:"time"`
 	}
 
+	//easyjson:json
 	GetChatRequest struct {
 		Person types.UserID `json:"person"`
 	}
@@ -99,6 +103,12 @@ type (
 		LastMessage Message `json:"lastMessage"`
 	}
 
+	//easyjson:json
+	CreateLikeRequest struct {
+		Profile2 types.UserID `json:"id"`
+	}
+
+	//easyjson:json
 	AllChats struct {
 		Chats []ChatPreview `json:"chats"`
 	}
@@ -110,6 +120,7 @@ type (
 		ReceiverID int64 `json:"receiverID"`
 	}
 
+	//easyjson:json
 	CreateClaimRequest struct {
 		Type       int64 `json:"type"`
 		ReceiverID int64 `json:"receiverID"`
@@ -118,6 +129,21 @@ type (
 	PureClaim struct {
 		Id    int64  `json:"id"`
 		Title string `json:"title"`
+	}
+
+	//easyjson:json
+	CardsToSend struct {
+		Cards []Card `json:"cards"`
+	}
+
+	//easyjson:json
+	MessagesToSend struct {
+		Messages []Message `json:"messages"`
+	}
+
+	//easyjson:json
+	ClaimsToSend struct {
+		Claims []PureClaim `json:"claims"`
 	}
 )
 
