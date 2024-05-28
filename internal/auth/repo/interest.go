@@ -3,6 +3,7 @@ package repo
 import (
 	"context"
 	"database/sql"
+
 	qb "github.com/Masterminds/squirrel"
 	"github.com/sirupsen/logrus"
 	"main.go/internal/auth"
@@ -50,7 +51,7 @@ func (storage *InterestStorage) CreatePersonInterests(ctx context.Context, perso
 	return nil
 }
 
-func (storage *InterestStorage) Get(ctx context.Context, filter *auth.InterestGetFilter) ([]*auth.Interest, error) {
+func (storage *InterestStorage) GetInterest(ctx context.Context, filter *auth.InterestGetFilter) ([]*auth.Interest, error) {
 	logger := ctx.Value(Logg).(Log)
 	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
 	whereMap := qb.And{}
@@ -74,12 +75,11 @@ func (storage *InterestStorage) Get(ctx context.Context, filter *auth.InterestGe
 
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db get request to ", InterestTableName)
 	rows, err := query.Query()
-	defer rows.Close()
-
 	if err != nil {
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't query: ", err.Error())
 		return nil, err
 	}
+	defer rows.Close()
 
 	interests := make([]*auth.Interest, 0)
 	for rows.Next() {
@@ -140,7 +140,7 @@ func (storage *InterestStorage) GetPersonInterests(ctx context.Context, personID
 		ids = append(ids, interestID)
 	}
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db got ", len(ids), " interest ids")
-	return storage.Get(ctx, &auth.InterestGetFilter{ID: ids})
+	return storage.GetInterest(ctx, &auth.InterestGetFilter{ID: ids})
 }
 
 func (storage *InterestStorage) DeletePersonInterests(ctx context.Context, personID types.UserID, interestID []types.InterestID) error {
@@ -153,11 +153,12 @@ func (storage *InterestStorage) DeletePersonInterests(ctx context.Context, perso
 		RunWith(storage.dbReader)
 
 	rows, err := query.Query()
-	defer rows.Close()
 	if err != nil {
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("db delete can't query: ", err.Error())
 		return err
 	}
+	defer rows.Close()
+
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db person interest deleted")
 	return nil
 }

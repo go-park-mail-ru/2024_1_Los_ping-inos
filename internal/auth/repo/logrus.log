@@ -1,0 +1,229 @@
+time="2024-05-28T21:21:04+03:00" level=info msg="db add request to person_interest" requestID=1
+time="2024-05-28T21:21:27+03:00" level=info msg="db add request to person_interest" requestID=1
+time="2024-05-28T21:21:27+03:00" level=info msg="db add request to person_interest" requestID=1
+time="2024-05-28T21:21:27+03:00" level=warning msg="db insert can't query: repo error" requestID=1
+time="2024-05-28T21:21:31+03:00" level=info msg="db add request to person_interest" requestID=1
+time="2024-05-28T21:21:31+03:00" level=info msg="db add request to person_interest" requestID=1
+time="2024-05-28T21:21:31+03:00" level=warning msg="db insert can't query: repo error" requestID=1
+time="2024-05-28T21:21:34+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-28T21:21:34+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-28T21:21:34+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-28T21:21:34+03:00" level=warning msg="can't query: db_error" requestID=1
+time="2024-05-28T21:22:57+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-28T21:22:57+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-28T21:22:57+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-28T21:22:57+03:00" level=warning msg="can't query: db_error" requestID=1
+time="2024-05-28T21:23:01+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-28T21:23:01+03:00" level=info msg="db got 1 interest ids" requestID=1
+time="2024-05-28T21:23:01+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-28T21:23:01+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-28T21:23:01+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-28T21:23:01+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-28T21:23:05+03:00" level=info msg="db delete request to person_interest" requestID=1
+time="2024-05-28T21:23:05+03:00" level=info msg="db person interest deleted" requestID=1
+time="2024-05-28T21:23:05+03:00" level=info msg="db delete request to person_interest" requestID=1
+time="2024-05-28T21:23:05+03:00" level=warning msg="db delete can't query: repo err" requestID=1
+time="2024-05-28T21:23:27+03:00" level=info msg="db delete request to person_interest" requestID=1
+time="2024-05-28T21:23:27+03:00" level=info msg="db person interest deleted" requestID=1
+time="2024-05-28T21:23:27+03:00" level=info msg="db delete request to person_interest" requestID=1
+time="2024-05-28T21:23:27+03:00" level=warning msg="db delete can't query: repo err" requestID=1
+time="2024-05-28T21:23:29+03:00" level=info msg="SELECT id, name, birthday, description, location, email, password, created_at, premium, likes_left, gender, premium_expires_at FROM person WHERE ((id IN ($1)) AND LOWER(name) LIKE $2)[1 %name1%] <nil>"
+time="2024-05-28T21:23:29+03:00" level=info msg="db get request to person" requestID=1
+time="2024-05-28T21:23:29+03:00" level=warning msg="db read can't query: Query: could not match actual sql: \"SELECT id, name, birthday, description, location, email, password, created_at, premium, likes_left, gender, premium_expires_at FROM person WHERE ((id IN ($1)) AND LOWER(name) LIKE $2)\" with expected regexp \"SELECT id, name, birthday, description, location, email, password, created_at, premium, likes_left, gender FROM person WHERE \\(\\(id IN \\(\\$1\\)\\) AND name LIKE \\$2\\)\"" requestID=1
+time="2024-05-28T21:25:07+03:00" level=info msg="SELECT id, name, birthday, description, location, email, password, created_at, premium, likes_left, gender, premium_expires_at FROM person WHERE ((id IN ($1)) AND LOWER(name) LIKE $2)[1 %name1%] <nil>"
+time="2024-05-28T21:25:07+03:00" level=info msg="db get request to person" requestID=1
+time="2024-05-28T21:25:07+03:00" level=warning msg="db read can't query: Query: could not match actual sql: \"SELECT id, name, birthday, description, location, email, password, created_at, premium, likes_left, gender, premium_expires_at FROM person WHERE ((id IN ($1)) AND LOWER(name) LIKE $2)\" with expected regexp \"SELECT id, name, birthday, description, location, email, password, created_at, premium, likes_left, gender, premium_expires_at FROM person WHERE \\(\\(id IN \\(\\$1\\)\\) AND name LIKE \\$2\\)\"" requestID=1
+time="2024-05-28T21:25:51+03:00" level=info msg="SELECT id, name, birthday, description, location, email, password, created_at, premium, likes_left, gender, premium_expires_at FROM person WHERE ((id IN ($1)) AND LOWER(name) LIKE $2)[1 %name1%] <nil>"
+time="2024-05-28T21:25:51+03:00" level=info msg="db get request to person" requestID=1
+time="2024-05-28T21:25:51+03:00" level=warning msg="db read can't query: Query: could not match actual sql: \"SELECT id, name, birthday, description, location, email, password, created_at, premium, likes_left, gender, premium_expires_at FROM person WHERE ((id IN ($1)) AND LOWER(name) LIKE $2)\" with expected regexp \"\"SELECT id, name, birthday, description, location, email, password, created_at, premium, likes_left, gender, premium_expires_at FROM person WHERE \\(\\(id IN \\(\\$1\\)\\) AND LOWER\\(name\\) LIKE \\$2\\)\"\"" requestID=1
+time="2024-05-28T21:26:21+03:00" level=info msg="SELECT id, name, birthday, description, location, email, password, created_at, premium, likes_left, gender, premium_expires_at FROM person WHERE ((id IN ($1)) AND LOWER(name) LIKE $2)[1 %name1%] <nil>"
+time="2024-05-28T21:26:21+03:00" level=info msg="db get request to person" requestID=1
+time="2024-05-28T21:26:21+03:00" level=warning msg="db can't scan person: sql: Scan error on column index 11, name \"Expires\": unsupported Scan, storing driver.Value type int64 into type *time.Time" requestID=1
+time="2024-05-28T21:27:19+03:00" level=info msg="SELECT id, name, birthday, description, location, email, password, created_at, premium, likes_left, gender, premium_expires_at FROM person WHERE ((id IN ($1)) AND LOWER(name) LIKE $2)[1 %name1%] <nil>"
+time="2024-05-28T21:27:19+03:00" level=info msg="db get request to person" requestID=1
+time="2024-05-28T21:27:19+03:00" level=warning msg="db can't scan person: sql: Scan error on column index 11, name \"Expires\": unsupported Scan, storing driver.Value type int64 into type *time.Time" requestID=1
+time="2024-05-28T21:30:45+03:00" level=info msg="SELECT id, name, birthday, description, location, email, password, created_at, premium, likes_left, gender, premium_expires_at FROM person WHERE ((id IN ($1)) AND LOWER(name) LIKE $2)[1 %name1%] <nil>"
+time="2024-05-28T21:30:45+03:00" level=info msg="db get request to person" requestID=1
+time="2024-05-28T21:30:45+03:00" level=warning msg="db can't scan person: sql: Scan error on column index 11, name \"Expires\": unsupported Scan, storing driver.Value type int64 into type *time.Time" requestID=1
+time="2024-05-28T21:30:55+03:00" level=info msg="SELECT id, name, birthday, description, location, email, password, created_at, premium, likes_left, gender, premium_expires_at FROM person WHERE ((id IN ($1)) AND LOWER(name) LIKE $2)[1 %name1%] <nil>"
+time="2024-05-28T21:30:55+03:00" level=info msg="db get request to person" requestID=1
+time="2024-05-28T21:30:55+03:00" level=warning msg="db can't scan person: sql: Scan error on column index 11, name \"Expires\": unsupported Scan, storing driver.Value type int64 into type *time.Time" requestID=1
+time="2024-05-28T21:35:57+03:00" level=info msg="SELECT id, name, birthday, description, location, email, password, created_at, premium, likes_left, gender, premium_expires_at FROM person WHERE ((id IN ($1)) AND LOWER(name) LIKE $2)[1 %name1%] <nil>"
+time="2024-05-28T21:35:57+03:00" level=info msg="db get request to person" requestID=1
+time="2024-05-28T21:35:57+03:00" level=warning msg="db can't scan person: sql: Scan error on column index 11, name \"Expires\": unsupported Scan, storing driver.Value type int64 into type *time.Time" requestID=1
+time="2024-05-28T21:40:09+03:00" level=info msg="SELECT id, name, birthday, description, location, email, password, created_at, premium, likes_left, gender, premium_expires_at FROM person WHERE ((id IN ($1)) AND LOWER(name) LIKE $2)[1 %name1%] <nil>"
+time="2024-05-28T21:40:09+03:00" level=info msg="db get request to person" requestID=1
+time="2024-05-28T21:40:09+03:00" level=warning msg="db can't scan person: sql: Scan error on column index 11, name \"Expires\": unsupported Scan, storing driver.Value type int64 into type *time.Time" requestID=1
+time="2024-05-28T21:42:38+03:00" level=info msg="SELECT id, name, birthday, description, location, email, password, created_at, premium, likes_left, gender, premium_expires_at FROM person WHERE ((id IN ($1)) AND LOWER(name) LIKE $2)[1 %name1%] <nil>"
+time="2024-05-28T21:42:38+03:00" level=info msg="db get request to person" requestID=1
+time="2024-05-28T21:42:38+03:00" level=info msg="db returning records" requestID=1
+time="2024-05-28T21:43:04+03:00" level=info msg="SELECT id, name, birthday, description, location, email, password, created_at, premium, likes_left, gender, premium_expires_at FROM person WHERE ((id IN ($1)) AND LOWER(name) LIKE $2)[1 %name1%] <nil>"
+time="2024-05-28T21:43:04+03:00" level=info msg="db get request to person" requestID=1
+time="2024-05-28T21:43:04+03:00" level=info msg="db returning records" requestID=1
+time="2024-05-28T21:43:04+03:00" level=info msg="SELECT id, name, birthday, description, location, email, password, created_at, premium, likes_left, gender, premium_expires_at FROM person WHERE ((id IN ($1)) AND LOWER(name) LIKE $2)[1 %%name1%%] <nil>"
+time="2024-05-28T21:43:04+03:00" level=info msg="db get request to person" requestID=1
+time="2024-05-28T21:43:04+03:00" level=warning msg="db read can't query: Query 'SELECT id, name, birthday, description, location, email, password, created_at, premium, likes_left, gender, premium_expires_at FROM person WHERE ((id IN ($1)) AND LOWER(name) LIKE $2)', arguments do not match: argument 1 expected [string - %name1%] does not match actual [string - %%name1%%]" requestID=1
+time="2024-05-28T21:43:31+03:00" level=info msg="SELECT id, name, birthday, description, location, email, password, created_at, premium, likes_left, gender, premium_expires_at FROM person WHERE ((id IN ($1)) AND LOWER(name) LIKE $2)[1 %name1%] <nil>"
+time="2024-05-28T21:43:31+03:00" level=info msg="db get request to person" requestID=1
+time="2024-05-28T21:43:31+03:00" level=info msg="db returning records" requestID=1
+time="2024-05-28T21:43:31+03:00" level=info msg="SELECT id, name, birthday, description, location, email, password, created_at, premium, likes_left, gender, premium_expires_at FROM person WHERE ((id IN ($1)) AND LOWER(name) LIKE $2)[1 %%name1%%] <nil>"
+time="2024-05-28T21:43:31+03:00" level=info msg="db get request to person" requestID=1
+time="2024-05-28T21:43:31+03:00" level=warning msg="db read can't query: Query 'SELECT id, name, birthday, description, location, email, password, created_at, premium, likes_left, gender, premium_expires_at FROM person WHERE ((id IN ($1)) AND LOWER(name) LIKE $2)', arguments do not match: argument 1 expected [string - %name1%] does not match actual [string - %%name1%%]" requestID=1
+time="2024-05-28T21:49:20+03:00" level=info msg="SELECT id, name, birthday, description, location, email, password, created_at, premium, likes_left, gender, premium_expires_at FROM person WHERE ((id IN ($1)) AND LOWER(name) LIKE $2)[1 %name1%] <nil>"
+time="2024-05-28T21:49:20+03:00" level=info msg="db get request to person" requestID=1
+time="2024-05-28T21:49:20+03:00" level=info msg="db returning records" requestID=1
+time="2024-05-28T21:49:20+03:00" level=info msg="SELECT id, name, birthday, description, location, email, password, created_at, premium, likes_left, gender, premium_expires_at FROM person WHERE ((id IN ($1)) AND LOWER(name) LIKE $2)[1 %%name1%%] <nil>"
+time="2024-05-28T21:49:20+03:00" level=info msg="db get request to person" requestID=1
+time="2024-05-28T21:49:20+03:00" level=warning msg="db read can't query: Query 'SELECT id, name, birthday, description, location, email, password, created_at, premium, likes_left, gender, premium_expires_at FROM person WHERE ((id IN ($1)) AND LOWER(name) LIKE $2)', arguments do not match: argument 1 expected [string - %name1%] does not match actual [string - %%name1%%]" requestID=1
+time="2024-05-28T21:50:00+03:00" level=info msg="SELECT id, name, birthday, description, location, email, password, created_at, premium, likes_left, gender, premium_expires_at FROM person WHERE ((id IN ($1)) AND LOWER(name) LIKE $2)[1 %name1%] <nil>"
+time="2024-05-28T21:50:00+03:00" level=info msg="db get request to person" requestID=1
+time="2024-05-28T21:50:00+03:00" level=info msg="db returning records" requestID=1
+time="2024-05-28T21:50:00+03:00" level=info msg="SELECT id, name, birthday, description, location, email, password, created_at, premium, likes_left, gender, premium_expires_at FROM person WHERE ((id IN ($1)) AND LOWER(name) LIKE $2)[1 %%name1%%] <nil>"
+time="2024-05-28T21:50:00+03:00" level=info msg="db get request to person" requestID=1
+time="2024-05-28T21:50:00+03:00" level=warning msg="db read can't query: Query 'SELECT id, name, birthday, description, location, email, password, created_at, premium, likes_left, gender, premium_expires_at FROM person WHERE ((id IN ($1)) AND LOWER(name) LIKE $2)', arguments do not match: argument 1 expected [string - %name1%] does not match actual [string - %%name1%%]" requestID=1
+time="2024-05-28T21:52:28+03:00" level=info msg="SELECT id, name, birthday, description, location, email, password, created_at, premium, likes_left, gender, premium_expires_at FROM person WHERE ((id IN ($1)) AND LOWER(name) LIKE $2)[1 %name1%] <nil>"
+time="2024-05-28T21:52:28+03:00" level=info msg="db get request to person" requestID=1
+time="2024-05-28T21:52:28+03:00" level=info msg="db returning records" requestID=1
+time="2024-05-28T21:52:34+03:00" level=info msg="db update request to person" requestID=1
+time="2024-05-28T21:52:34+03:00" level=warning msg="db update can't query: Query: could not match actual sql: \"UPDATE person SET ID = $1, birthday = $2, description = $3, email = $4, gender = $5, name = $6, password = $7, premium = $8, premium_expires_at = $9 WHERE id = $10\" with expected regexp \"UPDATE person SET ID = \\$1, birthday = \\$2, description = \\$3, email = \\$4, gender = \\$5, name = \\$6, password = \\$7 WHERE id = \\$8\"" requestID=1
+time="2024-05-28T21:53:59+03:00" level=info msg="db update request to person" requestID=1
+time="2024-05-28T21:53:59+03:00" level=warning msg="db update can't query: Query: could not match actual sql: \"UPDATE person SET ID = $1, birthday = $2, description = $3, email = $4, gender = $5, name = $6, password = $7, premium = $8, premium_expires_at = $9 WHERE id = $10\" with expected regexp \"UPDATE person SET ID = \\$1, birthday = \\$2, description = \\$3, email = \\$4, gender = \\$5, name = \\$6, password = \\$7, premium = \\$8, premium_expires_at = \\$9 WHERE id = \\$10\"\"" requestID=1
+time="2024-05-28T21:54:07+03:00" level=info msg="db update request to person" requestID=1
+time="2024-05-28T21:54:07+03:00" level=warning msg="db update can't query: Query 'UPDATE person SET ID = $1, birthday = $2, description = $3, email = $4, gender = $5, name = $6, password = $7, premium = $8, premium_expires_at = $9 WHERE id = $10', arguments do not match: expected 8, but got 10 arguments" requestID=1
+time="2024-05-28T21:56:43+03:00" level=info msg="db update request to person" requestID=1
+time="2024-05-28T21:56:43+03:00" level=warning msg="db update can't query: Query 'UPDATE person SET ID = $1, birthday = $2, description = $3, email = $4, gender = $5, name = $6, password = $7, premium = $8, premium_expires_at = $9 WHERE id = $10', arguments do not match: argument 8 expected [int64 - -62135596800] does not match actual [float64 - -6.21355968e+10]" requestID=1
+time="2024-05-28T21:59:23+03:00" level=info msg="db update request to person" requestID=1
+time="2024-05-28T21:59:23+03:00" level=warning msg="db update can't query: Query 'UPDATE person SET ID = $1, birthday = $2, description = $3, email = $4, gender = $5, name = $6, password = $7, premium = $8, premium_expires_at = $9 WHERE id = $10', arguments do not match: argument 8 expected [int64 - 267265] does not match actual [float64 - -6.21355968e+10]" requestID=1
+time="2024-05-28T21:59:35+03:00" level=info msg="db update request to person" requestID=1
+time="2024-05-28T21:59:35+03:00" level=warning msg="db update can't query: Query 'UPDATE person SET ID = $1, birthday = $2, description = $3, email = $4, gender = $5, name = $6, password = $7, premium = $8, premium_expires_at = $9 WHERE id = $10', arguments do not match: argument 8 expected [int64 - 267265] does not match actual [float64 - -6.21355968e+10]" requestID=1
+time="2024-05-28T21:59:37+03:00" level=info msg="db update request to person" requestID=1
+time="2024-05-28T21:59:37+03:00" level=warning msg="db update can't query: Query 'UPDATE person SET ID = $1, birthday = $2, description = $3, email = $4, gender = $5, name = $6, password = $7, premium = $8, premium_expires_at = $9 WHERE id = $10', arguments do not match: argument 8 expected [int64 - 267265] does not match actual [float64 - -6.21355968e+10]" requestID=1
+time="2024-05-28T21:59:47+03:00" level=info msg="db update request to person" requestID=1
+time="2024-05-28T21:59:47+03:00" level=warning msg="db update can't query: Query 'UPDATE person SET ID = $1, birthday = $2, description = $3, email = $4, gender = $5, name = $6, password = $7, premium = $8, premium_expires_at = $9 WHERE id = $10', arguments do not match: argument 8 expected [int64 - -62135596800] does not match actual [float64 - -6.21355968e+10]" requestID=1
+time="2024-05-28T22:00:08+03:00" level=info msg="db update request to person" requestID=1
+time="2024-05-28T22:00:08+03:00" level=info msg="db person updated" requestID=1
+time="2024-05-28T22:00:08+03:00" level=info msg="db update request to person" requestID=1
+time="2024-05-28T22:00:08+03:00" level=warning msg="db update can't query: Query 'UPDATE person SET ID = $1, birthday = $2, description = $3, email = $4, gender = $5, name = $6, password = $7, premium = $8, premium_expires_at = $9 WHERE id = $10', arguments do not match: argument 8 expected [int64 - -62135596800] does not match actual [float64 - -6.21355968e+10]" requestID=1
+time="2024-05-28T22:00:28+03:00" level=info msg="db update request to person" requestID=1
+time="2024-05-28T22:00:28+03:00" level=info msg="db person updated" requestID=1
+time="2024-05-28T22:00:28+03:00" level=info msg="db update request to person" requestID=1
+time="2024-05-28T22:00:28+03:00" level=warning msg="db update can't query: repo error" requestID=1
+time="2024-05-28T22:01:13+03:00" level=info msg="db delete request to person" requestID=1
+time="2024-05-28T22:01:13+03:00" level=info msg="db person deleted" requestID=1
+time="2024-05-28T22:01:13+03:00" level=info msg="db delete request to person" requestID=1
+time="2024-05-28T22:01:13+03:00" level=warning msg="db delete can't query: repo err" requestID=1
+time="2024-05-28T22:01:16+03:00" level=info msg="db create request to person" requestID=1
+time="2024-05-28T22:01:17+03:00" level=info msg="db created person" requestID=1
+time="2024-05-28T22:01:17+03:00" level=info msg="db create request to person" requestID=1
+time="2024-05-28T22:01:18+03:00" level=warning msg="db can't query: repo error" requestID=1
+time="2024-05-28T22:01:21+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-28T22:01:21+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-28T22:01:21+03:00" level=warning msg="db can't query:  db_error" requestID=1
+time="2024-05-28T22:01:45+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-28T22:01:45+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-28T22:01:45+03:00" level=warning msg="db can't query:  db_error" requestID=1
+time="2024-05-28T23:05:32+03:00" level=info msg="db add request to person_interest" requestID=1
+time="2024-05-28T23:05:32+03:00" level=info msg="db add request to person_interest" requestID=1
+time="2024-05-28T23:05:32+03:00" level=warning msg="db insert can't query: repo error" requestID=1
+time="2024-05-28T23:05:32+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-28T23:05:32+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-28T23:05:32+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-28T23:05:32+03:00" level=warning msg="can't query: db_error" requestID=1
+time="2024-05-28T23:05:32+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-28T23:05:32+03:00" level=info msg="db got 1 interest ids" requestID=1
+time="2024-05-28T23:05:32+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-28T23:05:32+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-28T23:05:32+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-28T23:05:32+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-28T23:05:32+03:00" level=info msg="db delete request to person_interest" requestID=1
+time="2024-05-28T23:05:32+03:00" level=info msg="db person interest deleted" requestID=1
+time="2024-05-28T23:05:32+03:00" level=info msg="db delete request to person_interest" requestID=1
+time="2024-05-28T23:05:32+03:00" level=warning msg="db delete can't query: repo err" requestID=1
+time="2024-05-28T23:05:32+03:00" level=info msg="SELECT id, name, birthday, description, location, email, password, created_at, premium, likes_left, gender, premium_expires_at FROM person WHERE ((id IN ($1)) AND LOWER(name) LIKE $2)[1 %name1%] <nil>"
+time="2024-05-28T23:05:32+03:00" level=info msg="db get request to person" requestID=1
+time="2024-05-28T23:05:32+03:00" level=info msg="db returning records" requestID=1
+time="2024-05-28T23:05:32+03:00" level=info msg="db update request to person" requestID=1
+time="2024-05-28T23:05:32+03:00" level=info msg="db person updated" requestID=1
+time="2024-05-28T23:05:32+03:00" level=info msg="db update request to person" requestID=1
+time="2024-05-28T23:05:32+03:00" level=warning msg="db update can't query: repo error" requestID=1
+time="2024-05-28T23:05:32+03:00" level=info msg="db delete request to person" requestID=1
+time="2024-05-28T23:05:32+03:00" level=info msg="db person deleted" requestID=1
+time="2024-05-28T23:05:32+03:00" level=info msg="db delete request to person" requestID=1
+time="2024-05-28T23:05:32+03:00" level=warning msg="db delete can't query: repo err" requestID=1
+time="2024-05-28T23:05:32+03:00" level=info msg="db create request to person" requestID=1
+time="2024-05-28T23:05:32+03:00" level=info msg="db created person" requestID=1
+time="2024-05-28T23:05:32+03:00" level=info msg="db create request to person" requestID=1
+time="2024-05-28T23:05:33+03:00" level=warning msg="db can't query: repo error" requestID=1
+time="2024-05-28T23:05:33+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-28T23:05:33+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-28T23:05:33+03:00" level=warning msg="db can't query:  db_error" requestID=1
+time="2024-05-28T23:07:24+03:00" level=info msg="db add request to person_interest" requestID=1
+time="2024-05-28T23:07:24+03:00" level=info msg="db add request to person_interest" requestID=1
+time="2024-05-28T23:07:24+03:00" level=warning msg="db insert can't query: repo error" requestID=1
+time="2024-05-28T23:07:24+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-28T23:07:24+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-28T23:07:24+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-28T23:07:24+03:00" level=warning msg="can't query: db_error" requestID=1
+time="2024-05-28T23:07:24+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-28T23:07:24+03:00" level=info msg="db got 1 interest ids" requestID=1
+time="2024-05-28T23:07:24+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-28T23:07:24+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-28T23:07:24+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-28T23:07:24+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-28T23:07:24+03:00" level=info msg="db delete request to person_interest" requestID=1
+time="2024-05-28T23:07:24+03:00" level=info msg="db person interest deleted" requestID=1
+time="2024-05-28T23:07:24+03:00" level=info msg="db delete request to person_interest" requestID=1
+time="2024-05-28T23:07:24+03:00" level=warning msg="db delete can't query: repo err" requestID=1
+time="2024-05-28T23:07:24+03:00" level=info msg="SELECT id, name, birthday, description, location, email, password, created_at, premium, likes_left, gender, premium_expires_at FROM person WHERE ((id IN ($1)) AND LOWER(name) LIKE $2)[1 %name1%] <nil>"
+time="2024-05-28T23:07:24+03:00" level=info msg="db get request to person" requestID=1
+time="2024-05-28T23:07:24+03:00" level=info msg="db returning records" requestID=1
+time="2024-05-28T23:07:24+03:00" level=info msg="db update request to person" requestID=1
+time="2024-05-28T23:07:24+03:00" level=info msg="db person updated" requestID=1
+time="2024-05-28T23:07:24+03:00" level=info msg="db update request to person" requestID=1
+time="2024-05-28T23:07:24+03:00" level=warning msg="db update can't query: repo error" requestID=1
+time="2024-05-28T23:07:24+03:00" level=info msg="db delete request to person" requestID=1
+time="2024-05-28T23:07:24+03:00" level=info msg="db person deleted" requestID=1
+time="2024-05-28T23:07:24+03:00" level=info msg="db delete request to person" requestID=1
+time="2024-05-28T23:07:24+03:00" level=warning msg="db delete can't query: repo err" requestID=1
+time="2024-05-28T23:07:24+03:00" level=info msg="db create request to person" requestID=1
+time="2024-05-28T23:07:25+03:00" level=info msg="db created person" requestID=1
+time="2024-05-28T23:07:25+03:00" level=info msg="db create request to person" requestID=1
+time="2024-05-28T23:07:26+03:00" level=warning msg="db can't query: repo error" requestID=1
+time="2024-05-28T23:07:26+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-28T23:07:26+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-28T23:07:26+03:00" level=warning msg="db can't query:  db_error" requestID=1
+time="2024-05-28T23:08:24+03:00" level=info msg="db add request to person_interest" requestID=1
+time="2024-05-28T23:08:24+03:00" level=info msg="db add request to person_interest" requestID=1
+time="2024-05-28T23:08:24+03:00" level=warning msg="db insert can't query: repo error" requestID=1
+time="2024-05-28T23:08:29+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-28T23:08:29+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-28T23:08:29+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-28T23:08:29+03:00" level=warning msg="can't query: db_error" requestID=1
+time="2024-05-28T23:08:32+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-28T23:08:32+03:00" level=info msg="db got 1 interest ids" requestID=1
+time="2024-05-28T23:08:32+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-28T23:08:32+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-28T23:08:32+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-28T23:08:32+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-28T23:08:35+03:00" level=info msg="db delete request to person_interest" requestID=1
+time="2024-05-28T23:08:35+03:00" level=info msg="db person interest deleted" requestID=1
+time="2024-05-28T23:08:35+03:00" level=info msg="db delete request to person_interest" requestID=1
+time="2024-05-28T23:08:35+03:00" level=warning msg="db delete can't query: repo err" requestID=1
+time="2024-05-28T23:08:38+03:00" level=info msg="SELECT id, name, birthday, description, location, email, password, created_at, premium, likes_left, gender, premium_expires_at FROM person WHERE ((id IN ($1)) AND LOWER(name) LIKE $2)[1 %name1%] <nil>"
+time="2024-05-28T23:08:38+03:00" level=info msg="db get request to person" requestID=1
+time="2024-05-28T23:08:38+03:00" level=info msg="db returning records" requestID=1
+time="2024-05-28T23:08:42+03:00" level=info msg="db update request to person" requestID=1
+time="2024-05-28T23:08:42+03:00" level=info msg="db person updated" requestID=1
+time="2024-05-28T23:08:42+03:00" level=info msg="db update request to person" requestID=1
+time="2024-05-28T23:08:42+03:00" level=warning msg="db update can't query: repo error" requestID=1
+time="2024-05-28T23:08:44+03:00" level=info msg="db delete request to person" requestID=1
+time="2024-05-28T23:08:44+03:00" level=info msg="db person deleted" requestID=1
+time="2024-05-28T23:08:44+03:00" level=info msg="db delete request to person" requestID=1
+time="2024-05-28T23:08:44+03:00" level=warning msg="db delete can't query: repo err" requestID=1
+time="2024-05-28T23:08:46+03:00" level=info msg="db create request to person" requestID=1
+time="2024-05-28T23:08:47+03:00" level=info msg="db created person" requestID=1
+time="2024-05-28T23:08:47+03:00" level=info msg="db create request to person" requestID=1
+time="2024-05-28T23:08:48+03:00" level=warning msg="db can't query: repo error" requestID=1
+time="2024-05-28T23:08:50+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-28T23:08:50+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-28T23:08:50+03:00" level=warning msg="db can't query:  db_error" requestID=1
