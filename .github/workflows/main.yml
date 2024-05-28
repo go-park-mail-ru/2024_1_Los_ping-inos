@@ -44,10 +44,10 @@ jobs:
             # Делаем тесты
             - name: Run tests
               run: go test -coverprofile=coverage.out `go list ./... | grep -v ./internal/image/protos | grep -v ./internal/feed/protos | grep -v ./internal/auth/proto | grep -v ./internal/auth/auth_easyjson.go | grep -v ./internal/feed/feed_easyjson.go | grep -v ./internal/image/image_easyjson.go`
-            - name: deploy
-              uses: garygrossgarten/github-action-ssh@release
-              with:
-                host: ${{ secrets.DEPLOY_SERVER_HOST }}
-                username: ${{ secrets.DEPLOY_SERVER_USERNAME }}
-                privateKey: ${{ secrets.DEPLOY_SERVER_KEY}}
-                command: cd /home/ubuntu/project/server && git checkout ${{ steps.extract_branch.outputs.branch }} && git pull && cd .. && docker compose up -d --build && docker image prune -a -f
+#            - name: deploy
+#              uses: garygrossgarten/github-action-ssh@release
+#              with:
+#                host: ${{ secrets.DEPLOY_SERVER_HOST }}
+#                username: ${{ secrets.DEPLOY_SERVER_USERNAME }}
+#                privateKey: ${{ secrets.DEPLOY_SERVER_KEY}}
+#                command: cd /home/ubuntu/project/server && git checkout ${{ steps.extract_branch.outputs.branch }} && git pull && cd .. && docker compose up -d --build && docker image prune -a -f

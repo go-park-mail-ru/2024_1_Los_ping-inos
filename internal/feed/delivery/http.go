@@ -93,12 +93,12 @@ func (deliver *FeedHandler) CreateLike() func(respWriter http.ResponseWriter, re
 			return
 		}
 
-		if errors.As(err, &feed.NoMatchFoundErr) {
+		if errors.As(err, &types.MyErr{Err: feed.NoMatchFoundErr}) {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("created like")
 			requests.SendSimpleResponse(respWriter, request, http.StatusOK, "")
 			return
 		}
-		if errors.As(err, &feed.NoLikesLeftErr) {
+		if errors.As(err, &types.MyErr{Err: feed.NoLikesLeftErr}) {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("no likes left")
 			requests.SendSimpleResponse(respWriter, request, http.StatusConflict, err.Error())
 			return
@@ -128,7 +128,7 @@ func (deliver *FeedHandler) sendMatchNotice(ctx context.Context, id1, id2 types.
 		return err
 	}
 	err = connection.WriteMessage(1, respCoded)
-	if errors.As(err, &feed.WSClosedErr) {
+	if errors.As(err, &types.MyErr{Err: feed.WSClosedErr}) {
 		deliver.usecase.DeleteConnection(ctx, id1)
 		return nil
 	}

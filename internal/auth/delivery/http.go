@@ -125,7 +125,7 @@ func (deliver *AuthHandler) UpdateProfile(respWriter http.ResponseWriter, reques
 	err = deliver.UseCase.UpdateProfile(request.Context().Value(RequestUserID).(types.UserID), requestBody, request.Context())
 	if err != nil {
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't update profile: ", err.Error())
-		if errors.As(err, &types.DifferentPasswordsError) {
+		if errors.As(err, &types.MyErr{Err: types.DifferentPasswordsError}) {
 			requests.SendSimpleResponse(respWriter, request, http.StatusConflict, err.Error())
 		} else {
 			requests.SendSimpleResponse(respWriter, request, http.StatusBadRequest, err.Error())
@@ -345,12 +345,12 @@ func (deliver *AuthHandler) RegistrationHandler() func(http.ResponseWriter, *htt
 			requests.SendSimpleResponse(w, r, http.StatusBadRequest, err.Error())
 			return
 		}
-		prof, SID, err := deliver.UseCase.Registration(auth.RegitstrationBody{request.Name, request.Birthday,
-			request.Gender, request.Email, request.Password, request.Interests}, r.Context())
+		prof, SID, err := deliver.UseCase.Registration(auth.RegitstrationBody{Name: request.Name, Birthday: request.Birthday,
+			Gender: request.Gender, Email: request.Email, Password: request.Password, Interests: request.Interests}, r.Context())
 
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't auth: ", err.Error())
-			if errors.As(err, &SeveralEmailsError) {
+			if errors.As(err, &types.MyErr{Err: SeveralEmailsError}) {
 				requests.SendSimpleResponse(w, r, http.StatusConflict, err.Error())
 			} else {
 				requests.SendSimpleResponse(w, r, http.StatusBadRequest, err.Error())
@@ -480,9 +480,9 @@ func (deliver *AuthHandler) PaymentUrl() func(w http.ResponseWriter, r *http.Req
 		logger := request.Context().Value(Logg).(Log)
 		UID := request.Context().Value(RequestUserID).(types.UserID)
 
-		url := deliver.UseCase.GenPaymentUrl(UID)
+		urll := deliver.UseCase.GenPaymentUrl(UID)
 
-		requests.SendSimpleResponse(respWriter, request, http.StatusOK, url)
+		requests.SendSimpleResponse(respWriter, request, http.StatusOK, urll)
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("sent paymentUrl")
 	}
 }
@@ -493,7 +493,7 @@ func (deliver *AuthHandler) ActivateSub() func(w http.ResponseWriter, r *http.Re
 		UID := request.Context().Value(RequestUserID).(types.UserID)
 
 		datetime, activated := deliver.checkSubStatus(UID)
-		if activated != nil && errors.As(activated, &auth.NoPaymentErr) {
+		if activated != nil && errors.As(activated, &types.MyErr{Err: auth.NoPaymentErr}) {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("payment not provided")
 			requests.SendSimpleResponse(respWriter, request, http.StatusConflict, "payment not provided")
 			return
