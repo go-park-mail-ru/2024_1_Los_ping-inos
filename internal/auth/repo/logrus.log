@@ -227,3 +227,38 @@ time="2024-05-28T23:08:48+03:00" level=warning msg="db can't query: repo error" 
 time="2024-05-28T23:08:50+03:00" level=info msg="db get request to \"like\"" requestID=1
 time="2024-05-28T23:08:50+03:00" level=info msg="db get request to \"like\"" requestID=1
 time="2024-05-28T23:08:50+03:00" level=warning msg="db can't query:  db_error" requestID=1
+time="2024-05-29T01:03:51+03:00" level=info msg="db add request to person_interest" requestID=1
+time="2024-05-29T01:03:51+03:00" level=info msg="db add request to person_interest" requestID=1
+time="2024-05-29T01:03:51+03:00" level=warning msg="db insert can't query: repo error" requestID=1
+time="2024-05-29T01:03:51+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T01:03:51+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T01:03:51+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T01:03:51+03:00" level=warning msg="can't query: db_error" requestID=1
+time="2024-05-29T01:03:51+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T01:03:51+03:00" level=info msg="db got 1 interest ids" requestID=1
+time="2024-05-29T01:03:51+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T01:03:51+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T01:03:51+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T01:03:51+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T01:03:51+03:00" level=info msg="db delete request to person_interest" requestID=1
+time="2024-05-29T01:03:51+03:00" level=info msg="db person interest deleted" requestID=1
+time="2024-05-29T01:03:51+03:00" level=info msg="db delete request to person_interest" requestID=1
+time="2024-05-29T01:03:51+03:00" level=warning msg="db delete can't query: repo err" requestID=1
+time="2024-05-29T01:03:51+03:00" level=info msg="SELECT id, name, birthday, description, location, email, password, created_at, premium, likes_left, gender, premium_expires_at FROM person WHERE ((id IN ($1)) AND LOWER(name) LIKE $2)[1 %name1%] <nil>"
+time="2024-05-29T01:03:51+03:00" level=info msg="db get request to person" requestID=1
+time="2024-05-29T01:03:51+03:00" level=info msg="db returning records" requestID=1
+time="2024-05-29T01:03:51+03:00" level=info msg="db update request to person" requestID=1
+time="2024-05-29T01:03:51+03:00" level=info msg="db person updated" requestID=1
+time="2024-05-29T01:03:51+03:00" level=info msg="db update request to person" requestID=1
+time="2024-05-29T01:03:51+03:00" level=warning msg="db update can't query: repo error" requestID=1
+time="2024-05-29T01:03:51+03:00" level=info msg="db delete request to person" requestID=1
+time="2024-05-29T01:03:51+03:00" level=info msg="db person deleted" requestID=1
+time="2024-05-29T01:03:51+03:00" level=info msg="db delete request to person" requestID=1
+time="2024-05-29T01:03:51+03:00" level=warning msg="db delete can't query: repo err" requestID=1
+time="2024-05-29T01:03:51+03:00" level=info msg="db create request to person" requestID=1
+time="2024-05-29T01:03:52+03:00" level=info msg="db created person" requestID=1
+time="2024-05-29T01:03:52+03:00" level=info msg="db create request to person" requestID=1
+time="2024-05-29T01:03:53+03:00" level=warning msg="db can't query: repo error" requestID=1
+time="2024-05-29T01:03:53+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T01:03:53+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T01:03:53+03:00" level=warning msg="db can't query:  db_error" requestID=1
