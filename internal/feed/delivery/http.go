@@ -2,9 +2,9 @@ package delivery
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"github.com/gorilla/websocket"
+	"github.com/mailru/easyjson"
 	"github.com/sirupsen/logrus"
 	"io"
 	. "main.go/config"
@@ -47,11 +47,11 @@ func (deliver *FeedHandler) GetCardsHandler() func(http.ResponseWriter, *http.Re
 		cards, err := deliver.usecase.GetCards(request.Context().Value(RequestUserID).(types.UserID), request.Context())
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn(err.Error())
-			requests.SendResponse(respWriter, request, http.StatusInternalServerError, err.Error())
+			requests.SendSimpleResponse(respWriter, request, http.StatusInternalServerError, err.Error())
 			return
 		}
 
-		requests.SendResponse(respWriter, request, http.StatusOK, cards)
+		requests.SendResponse(respWriter, request, http.StatusOK, feed.CardsToSend{Cards: cards})
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("sent cards")
 	}
 }
@@ -74,33 +74,33 @@ func (deliver *FeedHandler) CreateLike() func(respWriter http.ResponseWriter, re
 		body, err := io.ReadAll(request.Body)
 		if err != nil { // TODO эти два блока вынести в отдельную функцию и напихать её во все ручки
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("bad body: ", err.Error())
-			requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
+			requests.SendSimpleResponse(respWriter, request, http.StatusBadRequest, err.Error())
 			return
 		}
 
-		var requestBody requests.CreateLikeRequest
-		err = json.Unmarshal(body, &requestBody)
+		var requestBody feed.CreateLikeRequest
+		err = easyjson.Unmarshal(body, &requestBody)
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't unmarshal body: ", err.Error())
-			requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
+			requests.SendSimpleResponse(respWriter, request, http.StatusBadRequest, err.Error())
 			return
 		}
 
 		err = deliver.usecase.CreateLike(UID, requestBody.Profile2, request.Context())
 		if err != nil && err.Error() != "sql: Rows are closed" {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't update profile: ", err.Error())
-			requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
+			requests.SendSimpleResponse(respWriter, request, http.StatusBadRequest, err.Error())
 			return
 		}
 
 		if errors.As(err, &feed.NoMatchFoundErr) {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("created like")
-			requests.SendResponse(respWriter, request, http.StatusOK, nil)
+			requests.SendSimpleResponse(respWriter, request, http.StatusOK, "")
 			return
 		}
 		if errors.As(err, &feed.NoLikesLeftErr) {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("no likes left")
-			requests.SendResponse(respWriter, request, http.StatusConflict, err.Error())
+			requests.SendSimpleResponse(respWriter, request, http.StatusConflict, err.Error())
 			return
 		}
 
@@ -109,10 +109,10 @@ func (deliver *FeedHandler) CreateLike() func(respWriter http.ResponseWriter, re
 
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't send match: ", err.Error())
-			requests.SendResponse(respWriter, request, http.StatusInternalServerError, err.Error())
+			requests.SendSimpleResponse(respWriter, request, http.StatusInternalServerError, err.Error())
 		}
 
-		requests.SendResponse(respWriter, request, http.StatusOK, nil)
+		requests.SendSimpleResponse(respWriter, request, http.StatusOK, "")
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("create like sent response")
 	}
 }
@@ -123,7 +123,7 @@ func (deliver *FeedHandler) sendMatchNotice(ctx context.Context, id1, id2 types.
 		return nil
 	}
 	resp := feed.Message{MsgType: "match", Properties: feed.MsgProperties{Sender: id1, Receiver: id2}}
-	respCoded, err := json.Marshal(resp)
+	respCoded, err := easyjson.Marshal(resp)
 	if err != nil {
 		return err
 	}
@@ -139,7 +139,7 @@ func (deliver *FeedHandler) CreateDislike() func(respWriter http.ResponseWriter,
 	return func(respWriter http.ResponseWriter, request *http.Request) {
 		logger := request.Context().Value(Logg).(Log)
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("not implemented dislike")
-		requests.SendResponse(respWriter, request, http.StatusOK, nil)
+		requests.SendSimpleResponse(respWriter, request, http.StatusOK, "")
 	}
 }
 
@@ -149,29 +149,28 @@ func (deliver *FeedHandler) GetChat() func(respWriter http.ResponseWriter, reque
 		body, err := io.ReadAll(request.Body)
 		if err != nil { // TODO эти два блока вынести в отдельную функцию и напихать её во все ручки
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("bad body: ", err.Error())
-			requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
+			requests.SendSimpleResponse(respWriter, request, http.StatusBadRequest, err.Error())
 			return
 		}
 
 		var requestBody feed.GetChatRequest
-		err = json.Unmarshal(body, &requestBody)
+		err = easyjson.Unmarshal(body, &requestBody)
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't unmarshal body: ", err.Error())
-			requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
+			requests.SendSimpleResponse(respWriter, request, http.StatusBadRequest, err.Error())
 			return
 		}
 
 		messages, err := deliver.usecase.GetChat(request.Context(), request.Context().Value(RequestUserID).(types.UserID), requestBody.Person)
-		err = json.Unmarshal(body, &requestBody)
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn(err.Error())
-			requests.SendResponse(respWriter, request, http.StatusInternalServerError, err.Error())
+			requests.SendSimpleResponse(respWriter, request, http.StatusInternalServerError, err.Error())
 			return
 		}
 		if messages == nil {
 			messages = []feed.Message{}
 		}
-		requests.SendResponse(respWriter, request, http.StatusOK, messages)
+		requests.SendResponse(respWriter, request, http.StatusOK, feed.MessagesToSend{Messages: messages})
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("sent chat")
 	}
 }
@@ -192,7 +191,7 @@ func (deliver *FeedHandler) ServeMessages() func(respWriter http.ResponseWriter,
 		connection, err := upgrader.Upgrade(respWriter, request, nil)
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Error("can't open connection: ", err.Error())
-			requests.SendResponse(respWriter, request, http.StatusInternalServerError, err.Error())
+			requests.SendSimpleResponse(respWriter, request, http.StatusInternalServerError, err.Error())
 			return
 		}
 		deliver.handleWebsocket(request.Context(), connection)
@@ -210,7 +209,7 @@ func (deliver *FeedHandler) handleWebsocket(ctx context.Context, connection *web
 			break
 		}
 		var message feed.MessageToReceive
-		err = json.Unmarshal(mess, &message)
+		err = easyjson.Unmarshal(mess, &message)
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("Error unmarshalling message: ", err.Error())
 			continue
@@ -247,7 +246,7 @@ func (deliver *FeedHandler) GetAllChats() func(respWriter http.ResponseWriter, r
 		})
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Error("can't get chats: ", err.Error())
-			requests.SendResponse(respWriter, request, http.StatusInternalServerError, err.Error())
+			requests.SendSimpleResponse(respWriter, request, http.StatusInternalServerError, err.Error())
 			return
 		}
 
@@ -256,7 +255,7 @@ func (deliver *FeedHandler) GetAllChats() func(respWriter http.ResponseWriter, r
 
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Error("can't get chats: ", err.Error())
-			requests.SendResponse(respWriter, request, http.StatusInternalServerError, err.Error())
+			requests.SendSimpleResponse(respWriter, request, http.StatusInternalServerError, err.Error())
 			return
 		}
 
@@ -304,14 +303,14 @@ func (deliver *FeedHandler) CreateClaim() func(respWriter http.ResponseWriter, r
 		body, err := io.ReadAll(request.Body)
 		if err != nil { // TODO эти два блока вынести в отдельную функцию и напихать её во все ручки
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("bad body: ", err.Error())
-			requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
+			requests.SendSimpleResponse(respWriter, request, http.StatusBadRequest, err.Error())
 			return
 		}
 		var requestBody feed.CreateClaimRequest
-		err = json.Unmarshal(body, &requestBody)
+		err = easyjson.Unmarshal(body, &requestBody)
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("can't unmarshal body: ", err.Error())
-			requests.SendResponse(respWriter, request, http.StatusBadRequest, err.Error())
+			requests.SendSimpleResponse(respWriter, request, http.StatusBadRequest, err.Error())
 			return
 		}
 
@@ -320,11 +319,11 @@ func (deliver *FeedHandler) CreateClaim() func(respWriter http.ResponseWriter, r
 
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't create claim: ", err.Error())
-			requests.SendResponse(respWriter, request, http.StatusInternalServerError, err.Error())
+			requests.SendSimpleResponse(respWriter, request, http.StatusInternalServerError, err.Error())
 			return
 		}
 
-		requests.SendResponse(respWriter, request, http.StatusOK, nil)
+		requests.SendSimpleResponse(respWriter, request, http.StatusOK, "")
 	}
 }
 
@@ -334,10 +333,10 @@ func (deliver *FeedHandler) GetAlClaims() func(respWriter http.ResponseWriter, r
 		claims, err := deliver.usecase.GetClaims(request.Context())
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't get claim types: ", err.Error())
-			requests.SendResponse(respWriter, request, http.StatusInternalServerError, err.Error())
+			requests.SendSimpleResponse(respWriter, request, http.StatusInternalServerError, err.Error())
 			return
 		}
-		requests.SendResponse(respWriter, request, http.StatusOK, claims)
+		requests.SendResponse(respWriter, request, http.StatusOK, feed.ClaimsToSend{Claims: claims})
 	}
 }
 

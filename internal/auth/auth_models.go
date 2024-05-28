@@ -49,6 +49,7 @@ type (
 		Name      string
 	}
 
+	//easyjson:json
 	Interest struct {
 		ID   types.InterestID
 		Name string `json:"name"`
@@ -59,6 +60,7 @@ type (
 		Name []string
 	}
 
+	//easyjson:json
 	Profile struct {
 		ID             types.UserID  `json:"id"`
 		Name           string        `json:"name"`
@@ -73,17 +75,40 @@ type (
 		CSRFT          string        `json:"csrft"`
 	}
 
+	//easyjson:json
+	CSRFTokenResponse struct {
+		Csrft string `json:"csrft"`
+	}
+
+	//easyjson:json
+	LoginRequest struct {
+		Email    string `json:"email"`
+		Password string `json:"password"`
+	}
+
+	//easyjson:json
+	RegistrationRequest struct {
+		Name      string   `json:"name"`
+		Birthday  string   `json:"birthday"`
+		Gender    string   `json:"gender"`
+		Email     string   `json:"email"`
+		Password  string   `json:"password"`
+		Interests []string `json:"interests"`
+	}
+
 	Image struct {
 		UserId     int64  `json:"person_id"`
 		Url        string `json:"image_url"`
 		CellNumber string `json:"cell"`
 	}
 
+	//easyjson:json
 	ImageToSend struct {
 		Cell string `json:"cell"`
 		Url  string `json:"url"`
 	}
 
+	//easyjson:json
 	ProfileUpdateRequest struct {
 		Name        string   `json:"name"`
 		Email       string   `json:"email"`
@@ -99,19 +124,23 @@ type (
 		SID string       `json:"SID"`
 	}
 
+	//easyjson:json
 	GetMatchesRequest struct {
 		Name string `json:"name"`
 	}
 
+	//easyjson:json
 	Operations struct {
 		Operations []PaymentOperation `json:"operations"`
 	}
 
+	//easyjson:json
 	PaymentOperation struct {
 		Label    string    `json:"label"`
 		Datetime time.Time `json:"datetime"`
 	}
 
+	//easyjson:json
 	PaymentHistory struct {
 		Times []HistoryRecord `json:"records"`
 	}
@@ -120,6 +149,15 @@ type (
 		Time  int64  `json:"time"`
 		Sum   string `json:"sum"`
 		Title string `json:"title"`
+	}
+
+	//easyjson:json
+	Matches struct {
+		Match []Profile `json:"matches"`
+	}
+	//easyjson:json
+	Interests struct {
+		Interes []*Interest `json:"interests"`
 	}
 )
 

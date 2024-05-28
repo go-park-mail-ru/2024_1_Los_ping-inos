@@ -43,7 +43,7 @@ jobs:
               run: go build internal/cmd/images/main.go
             # Делаем тесты
             - name: Run tests
-              run: go test -coverprofile=coverage.out `go list ./... | grep -v ./internal/image/protos | grep -v ./internal/feed/protos | grep -v ./internal/auth/proto`       
+              run: go test -coverprofile=coverage.out `go list ./... | grep -v ./internal/image/protos | grep -v ./internal/feed/protos | grep -v ./internal/auth/proto | grep -v ./internal/auth/auth_easyjson.go | grep -v ./internal/feed/feed_easyjson.go | grep -v ./internal/image/image_easyjson.go`
             - name: deploy
               uses: garygrossgarten/github-action-ssh@release
               with:

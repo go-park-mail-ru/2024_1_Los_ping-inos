@@ -9,6 +9,10 @@ type (
 		CellNumber string `json:"cell"`
 		FileName   string `json:"filename"`
 	}
+	//easyjson:json
+	ImgRequest struct {
+		CellNumber string `json:"cell"`
+	}
 )
 
 var (

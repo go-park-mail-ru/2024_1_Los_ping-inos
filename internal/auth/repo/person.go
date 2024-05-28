@@ -96,7 +96,8 @@ func (storage *PersonStorage) Update(ctx context.Context, person auth.Person) er
 	delete(setMap, "photo")
 	delete(setMap, "session_id")
 	if _, ok := setMap["premiumExpires"]; ok {
-		setMap["premium_expires_at"] = setMap["premiumExpires"]
+		tm := time.Unix(int64(setMap["premiumExpires"].(float64)), 0)
+		setMap["premium_expires_at"] = tm
 		delete(setMap, "premiumExpires")
 	}
 	query := stBuilder.
@@ -138,8 +139,8 @@ func (storage *PersonStorage) AddAccount(ctx context.Context, Name string, Birth
 	logger := ctx.Value(Logg).(Log)
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db create request to ", PersonTableName)
 	_, err := storage.dbReader.Exec(
-		"INSERT INTO person(name, birthday, email, password, gender) "+
-			"VALUES ($1, $2, $3, $4, $5)", Name, Birthday, Email, Password, Gender)
+		"INSERT INTO person(name, birthday, email, password, gender, premium_expires_at) "+
+			"VALUES ($1, $2, $3, $4, $5, $6)", Name, Birthday, Email, Password, Gender, time.Now())
 	if err != nil {
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("db can't query: ", err.Error())
 
