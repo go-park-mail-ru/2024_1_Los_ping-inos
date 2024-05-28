@@ -4,12 +4,14 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
+	"time"
+
 	qb "github.com/Masterminds/squirrel"
 	"github.com/sirupsen/logrus"
+	"golang.org/x/crypto/bcrypt"
 	"main.go/internal/auth"
 	. "main.go/internal/logs"
 	"main.go/internal/types"
-	"time"
 )
 
 const (
@@ -135,20 +137,27 @@ func (storage *PersonStorage) Delete(ctx context.Context, UID types.UserID) erro
 	return nil
 }
 
-func (storage *PersonStorage) AddAccount(ctx context.Context, Name string, Birthday string, Gender string, Email string, Password string) error {
+func (storage *PersonStorage) AddAccount(ctx context.Context, Name string, Birthday string, Gender string, Email string, Password string) (string, error) {
 	logger := ctx.Value(Logg).(Log)
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db create request to ", PersonTableName)
-	_, err := storage.dbReader.Exec(
+
+	hashedPassword, err := hashPassword(Password)
+	if err != nil {
+		return "", err
+	}
+
+	_, err = storage.dbReader.Exec(
 		"INSERT INTO person(name, birthday, email, password, gender, premium_expires_at) "+
 			"VALUES ($1, $2, $3, $4, $5, $6)", Name, Birthday, Email, Password, Gender, time.Now())
+
 	if err != nil {
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("db can't query: ", err.Error())
 
-		return err
+		return "", err
 	}
 
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db created person")
-	return nil
+	return hashedPassword, nil
 }
 
 func (storage *PersonStorage) GetMatch(ctx context.Context, person1ID types.UserID) ([]types.UserID, error) {
@@ -163,11 +172,12 @@ func (storage *PersonStorage) GetMatch(ctx context.Context, person1ID types.User
 		RunWith(storage.dbReader)
 
 	rows, err := query.Query()
-	defer rows.Close()
+
 	if err != nil {
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("db can't query:  ", err.Error())
 		return nil, err
 	}
+	defer rows.Close()
 
 	res := make([]types.UserID, 0)
 	var scan types.UserID
@@ -217,4 +227,9 @@ func processEmailFilter(filter *auth.PersonGetFilter, whereMap *qb.And) {
 	if filter.Email != nil {
 		*whereMap = append(*whereMap, qb.Eq{"email": filter.Email})
 	}
+}
+
+func hashPassword(password string) (string, error) {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
+	return string(bytes), err
 }

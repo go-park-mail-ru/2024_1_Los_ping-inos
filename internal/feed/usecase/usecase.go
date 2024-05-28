@@ -4,21 +4,22 @@ import (
 	"context"
 	"fmt"
 
-	"google.golang.org/grpc"
 	"main.go/internal/feed"
 	image "main.go/internal/image/protos/gen"
 	"main.go/internal/types"
 )
 
 type UseCase struct {
-	storage feed.PostgresStorage
-	ws      feed.WebSocStorage
+	storage    feed.PostgresStorage
+	ws         feed.WebSocStorage
+	grpcClient image.ImageClient
 }
 
-func New(pstor feed.PostgresStorage, wsstor feed.WebSocStorage) *UseCase {
+func New(pstor feed.PostgresStorage, wsstor feed.WebSocStorage, grpcClient image.ImageClient) *UseCase {
 	return &UseCase{
-		storage: pstor,
-		ws:      wsstor,
+		storage:    pstor,
+		ws:         wsstor,
+		grpcClient: grpcClient,
 	}
 }
 
@@ -63,15 +64,10 @@ func (service *UseCase) getUserCards(persons []*feed.Person, ctx context.Context
 	interests := make([][]*feed.Interest, len(persons))
 	images := make([][]feed.Image, len(persons))
 
-	grpcConn, err := grpc.Dial("images:50052", grpc.WithInsecure())
-	if err != nil {
-		return nil, nil, err
-	}
 	for j := range persons {
-		imageManager := image.NewImageClient(grpcConn)
 		imagePerson := []feed.Image{}
-		for i := 0; i < 6; i++ {
-			image, err := imageManager.GetImage(ctx, &image.GetImageRequest{Id: int64(persons[j].ID), Cell: fmt.Sprintf("%v", i)})
+		for i := 0; i < 5; i++ {
+			image, err := service.grpcClient.GetImage(ctx, &image.GetImageRequest{Id: int64(persons[j].ID), Cell: fmt.Sprintf("%v", i)})
 			imagePiece := feed.Image{}
 			if err != nil {
 				imagePiece = feed.Image{

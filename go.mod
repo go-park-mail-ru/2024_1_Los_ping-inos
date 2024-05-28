@@ -54,6 +54,7 @@ require (
 )
 
 require (
+	github.com/DATA-DOG/go-sqlmock v1.5.2
 	github.com/KyleBanks/depth v1.2.1 // indirect
 	github.com/aws/aws-sdk-go v1.51.14
 	github.com/aws/aws-sdk-go-v2/config v1.27.10

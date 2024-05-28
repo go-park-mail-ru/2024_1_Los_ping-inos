@@ -5,26 +5,27 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/google/uuid"
+	"slices"
+
 	"golang.org/x/crypto/bcrypt"
-	"google.golang.org/grpc"
 	"main.go/internal/auth"
 	image "main.go/internal/image/protos/gen"
 	"main.go/internal/types"
-	"slices"
 )
 
 type UseCase struct {
 	personStorage   auth.PersonStorage
 	sessionStorage  auth.SessionStorage
 	interestStorage auth.InterestStorage
+	grpcClient      image.ImageClient
 }
 
-func NewAuthUseCase(dbReader auth.PersonStorage, sstore auth.SessionStorage, istore auth.InterestStorage) *UseCase {
+func NewAuthUseCase(dbReader auth.PersonStorage, sstore auth.SessionStorage, istore auth.InterestStorage, grpcClient image.ImageClient) *UseCase {
 	return &UseCase{
 		personStorage:   dbReader,
 		sessionStorage:  sstore,
 		interestStorage: istore,
+		grpcClient:      grpcClient,
 	}
 }
 
@@ -54,11 +55,7 @@ func (service *UseCase) Login(email, password string, ctx context.Context) (*aut
 		return nil, "", err
 	}
 
-	SID := uuid.NewString()
-	err = service.sessionStorage.CreateSession(ctx, auth.Session{
-		UID: user.ID,
-		SID: SID,
-	})
+	SID, err := service.sessionStorage.CreateSession(ctx, user.ID) // перенес создание сессии в бд ===)
 	if err != nil {
 		return nil, "", err
 	}
@@ -72,16 +69,12 @@ func (service *UseCase) Login(email, password string, ctx context.Context) (*aut
 }
 
 func (service *UseCase) GetAllInterests(ctx context.Context) ([]*auth.Interest, error) {
-	return service.interestStorage.Get(ctx, nil)
+	return service.interestStorage.GetInterest(ctx, nil)
 }
 
 func (service *UseCase) Registration(body auth.RegitstrationBody, ctx context.Context) (*auth.Profile, string, error) {
-	hashedPassword, err := hashPassword(body.Password)
-	if err != nil {
-		return nil, "", err
-	}
 
-	err = service.personStorage.AddAccount(ctx, body.Name, body.Birthday, body.Gender, body.Email, hashedPassword)
+	_, err := service.personStorage.AddAccount(ctx, body.Name, body.Birthday, body.Gender, body.Email, body.Password)
 	if err != nil {
 		return nil, "", err
 	}
@@ -91,7 +84,7 @@ func (service *UseCase) Registration(body auth.RegitstrationBody, ctx context.Co
 		return nil, "", err
 	}
 
-	interests, err := service.interestStorage.Get(ctx, &auth.InterestGetFilter{Name: body.Interests})
+	interests, err := service.interestStorage.GetInterest(ctx, &auth.InterestGetFilter{Name: body.Interests})
 	if err != nil {
 		return nil, "", err
 	}
@@ -144,15 +137,16 @@ func (service *UseCase) getUserCards(persons []*auth.Person, ctx context.Context
 	interests := make([][]*auth.Interest, len(persons))
 	images := make([][]auth.Image, len(persons))
 
-	grpcConn, err := grpc.Dial("images:50052", grpc.WithInsecure())
-	if err != nil {
-		return nil, nil, err
-	}
+	// ───▄██▄─██▄───▄
+	// ─▄██████████▄███▄
+	// ─▌████████████▌
+	// ▐▐█░█▌░▀████▀░░
+	// ░▐▄▐▄░░░▐▄▐▄░░░░
+
 	for j := range persons {
-		imageManager := image.NewImageClient(grpcConn)
 		imagePerson := []auth.Image{}
-		for i := 0; i < 6; i++ {
-			image, err := imageManager.GetImage(ctx, &image.GetImageRequest{Id: int64(persons[j].ID), Cell: fmt.Sprintf("%v", i)})
+		for i := 0; i < 5; i++ {
+			image, err := service.grpcClient.GetImage(ctx, &image.GetImageRequest{Id: int64(persons[j].ID), Cell: fmt.Sprintf("%v", i)})
 			imagePiece := auth.Image{}
 			if err != nil {
 				imagePiece = auth.Image{

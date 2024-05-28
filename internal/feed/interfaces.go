@@ -2,6 +2,7 @@ package feed
 
 import (
 	"context"
+
 	"github.com/gorilla/websocket"
 	"main.go/internal/types"
 )
@@ -13,9 +14,9 @@ type (
 		GetChat(ctx context.Context, user1, user2 types.UserID) ([]Message, error)
 		GetLastMessages(ctx context.Context, UID int64, ids []int64) ([]Message, error)
 
-		AddConnection(ctx context.Context, connection *websocket.Conn, UID types.UserID)
+		AddConnection(ctx context.Context, connection *websocket.Conn, UID types.UserID) error
 		GetConnection(ctx context.Context, UID types.UserID) (*websocket.Conn, bool)
-		DeleteConnection(ctx context.Context, UID types.UserID)
+		DeleteConnection(ctx context.Context, UID types.UserID) error
 		SaveMessage(ctx context.Context, message MessageToReceive) (*MessageToReceive, error)
 		CreateClaim(ctx context.Context, typeID, senderID, receiverID int64) error
 		GetClaims(ctx context.Context) ([]PureClaim, error)
@@ -34,8 +35,8 @@ type (
 	}
 
 	WebSocStorage interface {
-		AddConnection(ctx context.Context, connection *websocket.Conn, UID types.UserID)
+		AddConnection(ctx context.Context, connection *websocket.Conn, UID types.UserID) error
 		GetConnection(ctx context.Context, UID types.UserID) (*websocket.Conn, bool)
-		DeleteConnection(ctx context.Context, UID types.UserID)
+		DeleteConnection(ctx context.Context, UID types.UserID) error
 	}
 )

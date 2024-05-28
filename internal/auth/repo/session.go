@@ -2,12 +2,14 @@ package repo
 
 import (
 	"context"
+	"strconv"
+
+	"github.com/google/uuid"
 	"github.com/redis/go-redis/v9"
 	"github.com/sirupsen/logrus"
 	"main.go/internal/auth"
 	. "main.go/internal/logs"
 	"main.go/internal/types"
-	"strconv"
 )
 
 type SessionStorage struct {
@@ -40,11 +42,12 @@ func (stor *SessionStorage) GetBySID(ctx context.Context, SID string) (*auth.Ses
 	return session, nil
 }
 
-func (stor *SessionStorage) CreateSession(ctx context.Context, session auth.Session) error {
+func (stor *SessionStorage) CreateSession(ctx context.Context, UID types.UserID) (string, error) {
 	logger := ctx.Value(Logg).(Log)
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db create request to session storage")
-	err := stor.db.Set(context.TODO(), session.SID, strconv.Itoa(int(session.UID)), 0).Err()
-	return err
+	SID := uuid.NewString()
+	err := stor.db.Set(context.TODO(), SID, strconv.Itoa(int(UID)), 0).Err()
+	return SID, err
 }
 
 func (stor *SessionStorage) DeleteSession(ctx context.Context, SID string) error {

@@ -4,12 +4,13 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"main.go/internal/auth"
 	"net"
 	"net/http"
 	"time"
+
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"main.go/internal/auth"
 
 	"github.com/emirpasic/gods/sets/hashset"
 	_ "github.com/lib/pq"
@@ -21,6 +22,7 @@ import (
 	gen "main.go/internal/auth/proto"
 	authRepo "main.go/internal/auth/repo"
 	authUsecase "main.go/internal/auth/usecase"
+	image "main.go/internal/image/protos/gen"
 	. "main.go/internal/logs"
 	. "main.go/internal/pkg"
 )
@@ -79,8 +81,15 @@ func main() {
 		logger.Logger.Fatal(err)
 	}
 
+	grpcConn, err := grpc.Dial("images:50052", grpc.WithInsecure())
+	if err != nil {
+		logger.Logger.Fatal(err)
+	}
+
+	imageManager := image.NewImageClient(grpcConn)
+
 	useCase := authUsecase.NewAuthUseCase(authRepo.NewAuthPersonStorage(db),
-		authRepo.NewSessionStorage(redisCli), authRepo.NewInterestStorage(db))
+		authRepo.NewSessionStorage(redisCli), authRepo.NewInterestStorage(db), imageManager)
 
 	srv, ok := net.Listen("tcp", grpcCfg.Server.Port)
 	if ok != nil {

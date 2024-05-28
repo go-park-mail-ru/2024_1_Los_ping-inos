@@ -24,7 +24,7 @@ type (
 		GetSubHistory(ctx context.Context, UID types.UserID) (*PaymentHistory, error)
 	}
 	PersonStorage interface {
-		AddAccount(ctx context.Context, Name string, Birhday string, Gender string, Email string, Password string) error
+		AddAccount(ctx context.Context, Name string, Birthday string, Gender string, Email string, Password string) (string, error)
 		Get(ctx context.Context, filter *PersonGetFilter) ([]*Person, error)
 		Update(ctx context.Context, person Person) error
 		Delete(ctx context.Context, UID types.UserID) error
@@ -36,12 +36,12 @@ type (
 
 	SessionStorage interface {
 		GetBySID(ctx context.Context, SID string) (*Session, error)
-		CreateSession(ctx context.Context, session Session) error
+		CreateSession(ctx context.Context, UID types.UserID) (string, error)
 		DeleteSession(ctx context.Context, SID string) error
 	}
 
 	InterestStorage interface {
-		Get(ctx context.Context, filter *InterestGetFilter) ([]*Interest, error)
+		GetInterest(ctx context.Context, filter *InterestGetFilter) ([]*Interest, error)
 		CreatePersonInterests(ctx context.Context, personID types.UserID, interestID []types.InterestID) error
 		GetPersonInterests(ctx context.Context, personID types.UserID) ([]*Interest, error)
 		DeletePersonInterests(ctx context.Context, personID types.UserID, interestID []types.InterestID) error
