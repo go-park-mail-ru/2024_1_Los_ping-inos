@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - road_to_rk4
   pull_request:
     branches: 
       - main
