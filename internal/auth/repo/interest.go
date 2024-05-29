@@ -71,6 +71,7 @@ func (storage *InterestStorage) GetInterest(ctx context.Context, filter *auth.In
 		Select(interestFields).
 		From(InterestTableName).
 		Where(whereMap).
+		OrderBy("id").
 		RunWith(storage.dbReader)
 
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db get request to ", InterestTableName)

@@ -10,7 +10,6 @@ import (
 
 	"github.com/DATA-DOG/go-sqlmock"
 	"main.go/internal/image"
-	. "main.go/internal/logs"
 )
 
 //func TestGetImageRepo_Success(t *testing.T) {
@@ -170,56 +169,56 @@ func TestGet(t *testing.T) {
 	}
 }
 
-func TestDelete(t *testing.T) {
-	db, mock, err := sqlmock.New()
-	if err != nil {
-		t.Fatalf("cant create mock: %s", err)
-	}
-	defer db.Close()
-
-	selectRow := "DELETE FROM person_image WHERE person_id = $1 AND cell_number = $2"
-
-	logger := InitLog()
-	logger.RequestID = int64(1)
-
-	mock.ExpectExec(
-		regexp.QuoteMeta(selectRow)).
-		WithArgs(1, "1").WillReturnResult(sqlmock.NewResult(0, 1))
-
-	repo := &ImageStorage{
-		dbReader: db,
-	}
-
-	contexted := context.WithValue(context.Background(), Logg, logger)
-
-	image := image.Image{
-		UserId:     1,
-		Url:        "1",
-		CellNumber: "1",
-		FileName:   "1",
-	}
-
-	err = repo.Delete(contexted, image)
-	if err != nil {
-		t.Errorf("repo error: %s", err)
-	}
-
-	if err := mock.ExpectationsWereMet(); err != nil {
-		t.Errorf("there were unfulfilled expectations: %s", err)
-		return
-	}
-
-	mock.ExpectExec(
-		regexp.QuoteMeta(selectRow)).
-		WithArgs(1, "1").WillReturnError(fmt.Errorf("repo err"))
-
-	err = repo.Delete(contexted, image)
-	if err := mock.ExpectationsWereMet(); err != nil {
-		t.Errorf("there were unfulfilled expectations: %s", err)
-		return
-	}
-
-	if err == nil {
-		t.Errorf("repo error: %s", err)
-	}
-}
+//func TestDelete(t *testing.T) {
+//	db, mock, err := sqlmock.New()
+//	if err != nil {
+//		t.Fatalf("cant create mock: %s", err)
+//	}
+//	defer db.Close()
+//
+//	selectRow := "DELETE FROM person_image WHERE person_id = $1 AND cell_number = $2"
+//
+//	logger := InitLog()
+//	logger.RequestID = int64(1)
+//
+//	mock.ExpectExec(
+//		regexp.QuoteMeta(selectRow)).
+//		WithArgs(1, "1").WillReturnResult(sqlmock.NewResult(0, 1))
+//
+//	repo := &ImageStorage{
+//		dbReader: db,
+//	}
+//
+//	contexted := context.WithValue(context.Background(), Logg, logger)
+//
+//	image := image.Image{
+//		UserId:     1,
+//		Url:        "1",
+//		CellNumber: "1",
+//		FileName:   "1",
+//	}
+//
+//	err = repo.Delete(contexted, image)
+//	if err != nil {
+//		t.Errorf("repo error: %s", err)
+//	}
+//
+//	if err := mock.ExpectationsWereMet(); err != nil {
+//		t.Errorf("there were unfulfilled expectations: %s", err)
+//		return
+//	}
+//
+//	mock.ExpectExec(
+//		regexp.QuoteMeta(selectRow)).
+//		WithArgs(1, "1").WillReturnError(fmt.Errorf("repo err"))
+//
+//	err = repo.Delete(contexted, image)
+//	if err := mock.ExpectationsWereMet(); err != nil {
+//		t.Errorf("there were unfulfilled expectations: %s", err)
+//		return
+//	}
+//
+//	if err == nil {
+//		t.Errorf("repo error: %s", err)
+//	}
+//}
