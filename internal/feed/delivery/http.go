@@ -95,7 +95,7 @@ func (deliver *FeedHandler) CreateLike() func(respWriter http.ResponseWriter, re
 
 		if errors.As(err, &types.MyErr{Err: feed.NoMatchFoundErr}) {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("created like")
-			requests.SendSimpleResponse(respWriter, request, http.StatusOK, "")
+			requests.SendSimpleResponse(respWriter, request, http.StatusOK, "ok")
 			return
 		}
 		if errors.As(err, &types.MyErr{Err: feed.NoLikesLeftErr}) {
@@ -112,7 +112,7 @@ func (deliver *FeedHandler) CreateLike() func(respWriter http.ResponseWriter, re
 			requests.SendSimpleResponse(respWriter, request, http.StatusInternalServerError, err.Error())
 		}
 
-		requests.SendSimpleResponse(respWriter, request, http.StatusOK, "")
+		requests.SendSimpleResponse(respWriter, request, http.StatusOK, "ok")
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("create like sent response")
 	}
 }
@@ -139,7 +139,7 @@ func (deliver *FeedHandler) CreateDislike() func(respWriter http.ResponseWriter,
 	return func(respWriter http.ResponseWriter, request *http.Request) {
 		logger := request.Context().Value(Logg).(Log)
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("not implemented dislike")
-		requests.SendSimpleResponse(respWriter, request, http.StatusOK, "")
+		requests.SendSimpleResponse(respWriter, request, http.StatusOK, "ok")
 	}
 }
 
@@ -323,7 +323,7 @@ func (deliver *FeedHandler) CreateClaim() func(respWriter http.ResponseWriter, r
 			return
 		}
 
-		requests.SendSimpleResponse(respWriter, request, http.StatusOK, "")
+		requests.SendSimpleResponse(respWriter, request, http.StatusOK, "ok")
 	}
 }
 

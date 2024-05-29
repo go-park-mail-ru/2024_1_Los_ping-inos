@@ -212,7 +212,7 @@ func (deliver *ImageHandler) DeleteImageHandler() func(w http.ResponseWriter, r 
 		}
 
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("image added")
-		requests.SendSimpleResponse(respWriter, request, http.StatusOK, "")
+		requests.SendSimpleResponse(respWriter, request, http.StatusOK, "ok")
 	}
 }
 

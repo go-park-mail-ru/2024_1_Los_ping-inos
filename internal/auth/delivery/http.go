@@ -134,7 +134,7 @@ func (deliver *AuthHandler) UpdateProfile(respWriter http.ResponseWriter, reques
 		return
 	}
 
-	requests.SendSimpleResponse(respWriter, request, http.StatusOK, "")
+	requests.SendSimpleResponse(respWriter, request, http.StatusOK, "ok")
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("update profile sent response")
 }
 
@@ -162,7 +162,7 @@ func (deliver *AuthHandler) DeleteProfile(respWriter http.ResponseWriter, reques
 
 	setLoginCookie("", expiredYear, respWriter)
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("deleted profile")
-	requests.SendSimpleResponse(respWriter, request, http.StatusOK, "")
+	requests.SendSimpleResponse(respWriter, request, http.StatusOK, "ok")
 }
 
 // GetMatches godoc
@@ -227,18 +227,18 @@ func (deliver *AuthHandler) IsAuthenticatedHandler() func(w http.ResponseWriter,
 		}
 		if err != nil || session == nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("not authorized")
-			requests.SendSimpleResponse(respWriter, request, http.StatusUnauthorized, "")
+			requests.SendSimpleResponse(respWriter, request, http.StatusUnauthorized, "unauth")
 			return
 		}
 		UID, ok, err := deliver.UseCase.IsAuthenticated(session.Value, request.Context())
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info(err.Error())
-			requests.SendSimpleResponse(respWriter, request, http.StatusUnauthorized, "")
+			requests.SendSimpleResponse(respWriter, request, http.StatusUnauthorized, "unauth")
 			return
 		}
 		if !ok {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("not authorized")
-			requests.SendSimpleResponse(respWriter, request, http.StatusUnauthorized, "")
+			requests.SendSimpleResponse(respWriter, request, http.StatusUnauthorized, "unauth")
 			return
 		}
 
@@ -409,7 +409,7 @@ func (deliver *AuthHandler) LogoutHandler() func(respWriter http.ResponseWriter,
 
 		setLoginCookie("", expiredYear, w)
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("logout end")
-		requests.SendSimpleResponse(w, r, http.StatusOK, "")
+		requests.SendSimpleResponse(w, r, http.StatusOK, "ok")
 	}
 }
 
