@@ -1060,3 +1060,73 @@ func TestNewPostgresStorage(t *testing.T) {
 		t.Fatalf("Failed to create ImageStorage instance")
 	}
 }
+
+func TestDecreaseLikesCount(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("cant create mock: %s", err)
+	}
+	defer db.Close()
+
+	rows := sqlmock.NewRows([]string{"Premiun", "likes"})
+
+	rows = rows.AddRow(false, 5)
+
+	mock.ExpectQuery(
+		regexp.QuoteMeta(`SELECT premium, likes_left 
+		FROM person 
+		WHERE id = $1`)).
+		WithArgs(1).
+		WillReturnRows(rows)
+
+	mock.ExpectExec(
+		regexp.QuoteMeta(`UPDATE person 
+		SET likes_left = $1 
+		WHERE id = $2`)).
+		WithArgs(4, 1).
+		WillReturnResult(sqlmock.NewResult(0, 1))
+
+	repo := &PostgresStorage{
+		dbReader: db,
+	}
+
+	logger := InitLog()
+	logger.RequestID = int64(1)
+	contexted := context.WithValue(context.Background(), Logg, logger)
+
+	userID := types.UserID(1)
+
+	result, err := repo.DecreaseLikesCount(contexted, userID)
+	if err != nil {
+		t.Errorf("expected no error, got %v", err)
+	}
+
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Errorf("there were unfulfilled expectations: %s", err)
+		return
+	}
+
+	if !reflect.DeepEqual(4, result) {
+		t.Errorf("expected %v, got %v", 4, result)
+		return
+	}
+
+	mock.ExpectQuery(
+		regexp.QuoteMeta(`SELECT premium, likes_left 
+		FROM person 
+		WHERE id = $1`)).
+		WithArgs(1).
+		WillReturnError(fmt.Errorf("db_error"))
+
+	result, err = repo.DecreaseLikesCount(contexted, userID)
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Errorf("there were unfulfilled expectations: %s", err)
+		return
+	}
+
+	if err == nil {
+		t.Errorf("expected error, got nil")
+		return
+	}
+
+}

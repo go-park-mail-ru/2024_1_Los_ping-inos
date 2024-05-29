@@ -174,3 +174,722 @@ time="2024-05-29T01:03:51+03:00" level=warning msg="db can't query: db_error" re
 time="2024-05-29T01:03:51+03:00" level=info msg="db get request to \"like\"" requestID=1
 time="2024-05-29T01:03:51+03:00" level=info msg="db get request to person_claim" requestID=1
 time="2024-05-29T01:03:51+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:18:28+03:00" level=info msg="Get request to message" requestID=1
+time="2024-05-29T02:18:28+03:00" level=info msg="Db: send messages" requestID=1
+time="2024-05-29T02:18:28+03:00" level=info msg="Get request to message" requestID=1
+time="2024-05-29T02:18:28+03:00" level=warning msg="Db can't query: db_error" requestID=1
+time="2024-05-29T02:18:28+03:00" level=info msg="Create request to message" requestID=1
+time="2024-05-29T02:18:28+03:00" level=info msg="Db: created message" requestID=1
+time="2024-05-29T02:18:28+03:00" level=info msg="Create request to message" requestID=1
+time="2024-05-29T02:18:28+03:00" level=warning msg="Db can't query: repo error" requestID=1
+time="2024-05-29T02:18:28+03:00" level=info msg="Get last messages request" requestID=1
+time="2024-05-29T02:18:28+03:00" level=info msg="Get last messages request" requestID=1
+time="2024-05-29T02:18:28+03:00" level=info msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:18:28+03:00" level=info msg="db create request to person_claim" requestID=1
+time="2024-05-29T02:18:28+03:00" level=info msg="db create request to person_claim" requestID=1
+time="2024-05-29T02:18:28+03:00" level=warning msg="db can't create claim: repo error" requestID=1
+time="2024-05-29T02:18:28+03:00" level=info msg="db get request to claim" requestID=1
+time="2024-05-29T02:18:28+03:00" level=info msg="db get request to claim" requestID=1
+time="2024-05-29T02:18:28+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:18:28+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T02:18:28+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T02:18:28+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T02:18:28+03:00" level=warning msg="can't query: db_error" requestID=1
+time="2024-05-29T02:18:28+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T02:18:28+03:00" level=info msg="db got 1 interest ids" requestID=1
+time="2024-05-29T02:18:28+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T02:18:28+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T02:18:28+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T02:18:28+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:18:28+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T02:18:28+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T02:18:28+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:18:28+03:00" level=info msg="db create request to \"like\"" requestID=1
+time="2024-05-29T02:18:28+03:00" level=info msg="db create request to \"like\"" requestID=1
+time="2024-05-29T02:18:28+03:00" level=warning msg="db can't create like: repo error" requestID=1
+time="2024-05-29T02:18:28+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-29T02:18:28+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-29T02:18:28+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:18:28+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T02:18:28+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-29T02:18:28+03:00" level=info msg="db get request to person" requestID=1
+time="2024-05-29T02:18:28+03:00" level=info msg="db returning records" requestID=1
+time="2024-05-29T02:18:28+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T02:18:28+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:18:28+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T02:18:28+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-29T02:18:28+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:21:15+03:00" level=info msg="Get request to message" requestID=1
+time="2024-05-29T02:21:15+03:00" level=info msg="Db: send messages" requestID=1
+time="2024-05-29T02:21:15+03:00" level=info msg="Get request to message" requestID=1
+time="2024-05-29T02:21:15+03:00" level=warning msg="Db can't query: db_error" requestID=1
+time="2024-05-29T02:21:15+03:00" level=info msg="Create request to message" requestID=1
+time="2024-05-29T02:21:15+03:00" level=info msg="Db: created message" requestID=1
+time="2024-05-29T02:21:15+03:00" level=info msg="Create request to message" requestID=1
+time="2024-05-29T02:21:15+03:00" level=warning msg="Db can't query: repo error" requestID=1
+time="2024-05-29T02:21:15+03:00" level=info msg="Get last messages request" requestID=1
+time="2024-05-29T02:21:15+03:00" level=info msg="Get last messages request" requestID=1
+time="2024-05-29T02:21:15+03:00" level=info msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:21:15+03:00" level=info msg="db create request to person_claim" requestID=1
+time="2024-05-29T02:21:15+03:00" level=info msg="db create request to person_claim" requestID=1
+time="2024-05-29T02:21:15+03:00" level=warning msg="db can't create claim: repo error" requestID=1
+time="2024-05-29T02:21:15+03:00" level=info msg="db get request to claim" requestID=1
+time="2024-05-29T02:21:15+03:00" level=info msg="db get request to claim" requestID=1
+time="2024-05-29T02:21:15+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:21:15+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T02:21:15+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T02:21:15+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T02:21:15+03:00" level=warning msg="can't query: db_error" requestID=1
+time="2024-05-29T02:21:15+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T02:21:15+03:00" level=info msg="db got 1 interest ids" requestID=1
+time="2024-05-29T02:21:15+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T02:21:15+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T02:21:15+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T02:21:15+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:21:15+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T02:21:15+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T02:21:15+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:21:15+03:00" level=info msg="db create request to \"like\"" requestID=1
+time="2024-05-29T02:21:15+03:00" level=info msg="db create request to \"like\"" requestID=1
+time="2024-05-29T02:21:15+03:00" level=warning msg="db can't create like: repo error" requestID=1
+time="2024-05-29T02:21:15+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-29T02:21:15+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-29T02:21:15+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:21:15+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T02:21:15+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-29T02:21:15+03:00" level=info msg="db get request to person" requestID=1
+time="2024-05-29T02:21:15+03:00" level=info msg="db returning records" requestID=1
+time="2024-05-29T02:21:15+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T02:21:15+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:21:15+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T02:21:15+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-29T02:21:15+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:22:18+03:00" level=info msg="Get request to message" requestID=1
+time="2024-05-29T02:22:18+03:00" level=info msg="Db: send messages" requestID=1
+time="2024-05-29T02:22:18+03:00" level=info msg="Get request to message" requestID=1
+time="2024-05-29T02:22:18+03:00" level=warning msg="Db can't query: db_error" requestID=1
+time="2024-05-29T02:22:18+03:00" level=info msg="Create request to message" requestID=1
+time="2024-05-29T02:22:18+03:00" level=info msg="Db: created message" requestID=1
+time="2024-05-29T02:22:18+03:00" level=info msg="Create request to message" requestID=1
+time="2024-05-29T02:22:18+03:00" level=warning msg="Db can't query: repo error" requestID=1
+time="2024-05-29T02:22:18+03:00" level=info msg="Get last messages request" requestID=1
+time="2024-05-29T02:22:18+03:00" level=info msg="Get last messages request" requestID=1
+time="2024-05-29T02:22:18+03:00" level=info msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:22:18+03:00" level=info msg="db create request to person_claim" requestID=1
+time="2024-05-29T02:22:18+03:00" level=info msg="db create request to person_claim" requestID=1
+time="2024-05-29T02:22:18+03:00" level=warning msg="db can't create claim: repo error" requestID=1
+time="2024-05-29T02:22:18+03:00" level=info msg="db get request to claim" requestID=1
+time="2024-05-29T02:22:18+03:00" level=info msg="db get request to claim" requestID=1
+time="2024-05-29T02:22:18+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:22:18+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T02:22:18+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T02:22:19+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T02:22:19+03:00" level=warning msg="can't query: db_error" requestID=1
+time="2024-05-29T02:22:19+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T02:22:19+03:00" level=info msg="db got 1 interest ids" requestID=1
+time="2024-05-29T02:22:19+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T02:22:19+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T02:22:19+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T02:22:19+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:22:19+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T02:22:19+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T02:22:19+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:22:19+03:00" level=info msg="db create request to \"like\"" requestID=1
+time="2024-05-29T02:22:19+03:00" level=info msg="db create request to \"like\"" requestID=1
+time="2024-05-29T02:22:19+03:00" level=warning msg="db can't create like: repo error" requestID=1
+time="2024-05-29T02:22:19+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-29T02:22:19+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-29T02:22:19+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:22:19+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T02:22:19+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-29T02:22:19+03:00" level=info msg="db get request to person" requestID=1
+time="2024-05-29T02:22:19+03:00" level=info msg="db returning records" requestID=1
+time="2024-05-29T02:22:19+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T02:22:19+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:22:19+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T02:22:19+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-29T02:22:19+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:22:55+03:00" level=info msg="Get request to message" requestID=1
+time="2024-05-29T02:22:55+03:00" level=info msg="Db: send messages" requestID=1
+time="2024-05-29T02:22:55+03:00" level=info msg="Get request to message" requestID=1
+time="2024-05-29T02:22:55+03:00" level=warning msg="Db can't query: db_error" requestID=1
+time="2024-05-29T02:22:55+03:00" level=info msg="Create request to message" requestID=1
+time="2024-05-29T02:22:55+03:00" level=info msg="Db: created message" requestID=1
+time="2024-05-29T02:22:55+03:00" level=info msg="Create request to message" requestID=1
+time="2024-05-29T02:22:55+03:00" level=warning msg="Db can't query: repo error" requestID=1
+time="2024-05-29T02:22:55+03:00" level=info msg="Get last messages request" requestID=1
+time="2024-05-29T02:22:55+03:00" level=info msg="Get last messages request" requestID=1
+time="2024-05-29T02:22:55+03:00" level=info msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:22:55+03:00" level=info msg="db create request to person_claim" requestID=1
+time="2024-05-29T02:22:55+03:00" level=info msg="db create request to person_claim" requestID=1
+time="2024-05-29T02:22:55+03:00" level=warning msg="db can't create claim: repo error" requestID=1
+time="2024-05-29T02:22:55+03:00" level=info msg="db get request to claim" requestID=1
+time="2024-05-29T02:22:55+03:00" level=info msg="db get request to claim" requestID=1
+time="2024-05-29T02:22:55+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:22:55+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T02:22:55+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T02:22:55+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T02:22:55+03:00" level=warning msg="can't query: db_error" requestID=1
+time="2024-05-29T02:22:55+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T02:22:55+03:00" level=info msg="db got 1 interest ids" requestID=1
+time="2024-05-29T02:22:55+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T02:22:55+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T02:22:55+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T02:22:55+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:22:55+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T02:22:55+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T02:22:55+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:22:55+03:00" level=info msg="db create request to \"like\"" requestID=1
+time="2024-05-29T02:22:55+03:00" level=info msg="db create request to \"like\"" requestID=1
+time="2024-05-29T02:22:55+03:00" level=warning msg="db can't create like: repo error" requestID=1
+time="2024-05-29T02:22:55+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-29T02:22:55+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-29T02:22:55+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:22:55+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T02:22:55+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-29T02:22:55+03:00" level=info msg="db get request to person" requestID=1
+time="2024-05-29T02:22:55+03:00" level=info msg="db returning records" requestID=1
+time="2024-05-29T02:22:55+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T02:22:55+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:22:55+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T02:22:55+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-29T02:22:55+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:24:56+03:00" level=info msg="Get request to message" requestID=1
+time="2024-05-29T02:24:56+03:00" level=info msg="Db: send messages" requestID=1
+time="2024-05-29T02:24:56+03:00" level=info msg="Get request to message" requestID=1
+time="2024-05-29T02:24:56+03:00" level=warning msg="Db can't query: db_error" requestID=1
+time="2024-05-29T02:24:56+03:00" level=info msg="Create request to message" requestID=1
+time="2024-05-29T02:24:56+03:00" level=info msg="Db: created message" requestID=1
+time="2024-05-29T02:24:56+03:00" level=info msg="Create request to message" requestID=1
+time="2024-05-29T02:24:56+03:00" level=warning msg="Db can't query: repo error" requestID=1
+time="2024-05-29T02:24:56+03:00" level=info msg="Get last messages request" requestID=1
+time="2024-05-29T02:24:56+03:00" level=info msg="Get last messages request" requestID=1
+time="2024-05-29T02:24:56+03:00" level=info msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:24:56+03:00" level=info msg="db create request to person_claim" requestID=1
+time="2024-05-29T02:24:56+03:00" level=info msg="db create request to person_claim" requestID=1
+time="2024-05-29T02:24:56+03:00" level=warning msg="db can't create claim: repo error" requestID=1
+time="2024-05-29T02:24:56+03:00" level=info msg="db get request to claim" requestID=1
+time="2024-05-29T02:24:56+03:00" level=info msg="db get request to claim" requestID=1
+time="2024-05-29T02:24:56+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:24:56+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T02:24:56+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T02:24:56+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T02:24:56+03:00" level=warning msg="can't query: db_error" requestID=1
+time="2024-05-29T02:24:56+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T02:24:56+03:00" level=info msg="db got 1 interest ids" requestID=1
+time="2024-05-29T02:24:56+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T02:24:56+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T02:24:56+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T02:24:56+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:24:56+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T02:24:56+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T02:24:56+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:24:56+03:00" level=info msg="db create request to \"like\"" requestID=1
+time="2024-05-29T02:24:56+03:00" level=info msg="db create request to \"like\"" requestID=1
+time="2024-05-29T02:24:56+03:00" level=warning msg="db can't create like: repo error" requestID=1
+time="2024-05-29T02:24:56+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-29T02:24:56+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-29T02:24:56+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:24:56+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T02:24:56+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-29T02:24:56+03:00" level=info msg="db get request to person" requestID=1
+time="2024-05-29T02:24:56+03:00" level=info msg="db returning records" requestID=1
+time="2024-05-29T02:24:56+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T02:24:56+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:24:56+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T02:24:56+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-29T02:24:56+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:32:56+03:00" level=info msg="Get request to message" requestID=1
+time="2024-05-29T02:32:56+03:00" level=info msg="Db: send messages" requestID=1
+time="2024-05-29T02:32:56+03:00" level=info msg="Get request to message" requestID=1
+time="2024-05-29T02:32:56+03:00" level=warning msg="Db can't query: db_error" requestID=1
+time="2024-05-29T02:32:56+03:00" level=info msg="Create request to message" requestID=1
+time="2024-05-29T02:32:56+03:00" level=info msg="Db: created message" requestID=1
+time="2024-05-29T02:32:56+03:00" level=info msg="Create request to message" requestID=1
+time="2024-05-29T02:32:56+03:00" level=warning msg="Db can't query: repo error" requestID=1
+time="2024-05-29T02:32:56+03:00" level=info msg="Get last messages request" requestID=1
+time="2024-05-29T02:32:56+03:00" level=info msg="Get last messages request" requestID=1
+time="2024-05-29T02:32:56+03:00" level=info msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:32:56+03:00" level=info msg="db create request to person_claim" requestID=1
+time="2024-05-29T02:32:56+03:00" level=info msg="db create request to person_claim" requestID=1
+time="2024-05-29T02:32:56+03:00" level=warning msg="db can't create claim: repo error" requestID=1
+time="2024-05-29T02:32:56+03:00" level=info msg="db get request to claim" requestID=1
+time="2024-05-29T02:32:56+03:00" level=info msg="db get request to claim" requestID=1
+time="2024-05-29T02:32:56+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:32:56+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T02:32:56+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T02:32:56+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T02:32:56+03:00" level=warning msg="can't query: db_error" requestID=1
+time="2024-05-29T02:32:56+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T02:32:56+03:00" level=info msg="db got 1 interest ids" requestID=1
+time="2024-05-29T02:32:56+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T02:32:56+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T02:32:56+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T02:32:56+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:32:56+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T02:32:56+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T02:32:56+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:32:56+03:00" level=info msg="db create request to \"like\"" requestID=1
+time="2024-05-29T02:32:56+03:00" level=info msg="db create request to \"like\"" requestID=1
+time="2024-05-29T02:32:56+03:00" level=warning msg="db can't create like: repo error" requestID=1
+time="2024-05-29T02:32:56+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-29T02:32:56+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-29T02:32:56+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:32:56+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T02:32:56+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-29T02:32:56+03:00" level=info msg="db get request to person" requestID=1
+time="2024-05-29T02:32:56+03:00" level=info msg="db returning records" requestID=1
+time="2024-05-29T02:32:56+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T02:32:56+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:32:56+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T02:32:56+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-29T02:32:56+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:34:03+03:00" level=info msg="Get request to message" requestID=1
+time="2024-05-29T02:34:03+03:00" level=info msg="Db: send messages" requestID=1
+time="2024-05-29T02:34:03+03:00" level=info msg="Get request to message" requestID=1
+time="2024-05-29T02:34:03+03:00" level=warning msg="Db can't query: db_error" requestID=1
+time="2024-05-29T02:34:03+03:00" level=info msg="Create request to message" requestID=1
+time="2024-05-29T02:34:03+03:00" level=info msg="Db: created message" requestID=1
+time="2024-05-29T02:34:03+03:00" level=info msg="Create request to message" requestID=1
+time="2024-05-29T02:34:03+03:00" level=warning msg="Db can't query: repo error" requestID=1
+time="2024-05-29T02:34:03+03:00" level=info msg="Get last messages request" requestID=1
+time="2024-05-29T02:34:03+03:00" level=info msg="Get last messages request" requestID=1
+time="2024-05-29T02:34:03+03:00" level=info msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:34:03+03:00" level=info msg="db create request to person_claim" requestID=1
+time="2024-05-29T02:34:03+03:00" level=info msg="db create request to person_claim" requestID=1
+time="2024-05-29T02:34:03+03:00" level=warning msg="db can't create claim: repo error" requestID=1
+time="2024-05-29T02:34:03+03:00" level=info msg="db get request to claim" requestID=1
+time="2024-05-29T02:34:03+03:00" level=info msg="db get request to claim" requestID=1
+time="2024-05-29T02:34:03+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:34:03+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T02:34:03+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T02:34:03+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T02:34:03+03:00" level=warning msg="can't query: db_error" requestID=1
+time="2024-05-29T02:34:03+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T02:34:03+03:00" level=info msg="db got 1 interest ids" requestID=1
+time="2024-05-29T02:34:03+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T02:34:03+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T02:34:03+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T02:34:03+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:34:03+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T02:34:03+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T02:34:03+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:34:03+03:00" level=info msg="db create request to \"like\"" requestID=1
+time="2024-05-29T02:34:03+03:00" level=info msg="db create request to \"like\"" requestID=1
+time="2024-05-29T02:34:03+03:00" level=warning msg="db can't create like: repo error" requestID=1
+time="2024-05-29T02:34:03+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-29T02:34:03+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-29T02:34:03+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:34:03+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T02:34:03+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-29T02:34:03+03:00" level=info msg="db get request to person" requestID=1
+time="2024-05-29T02:34:03+03:00" level=info msg="db returning records" requestID=1
+time="2024-05-29T02:34:03+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T02:34:03+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:34:03+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T02:34:03+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-29T02:34:03+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:38:27+03:00" level=info msg="Get request to message" requestID=1
+time="2024-05-29T02:38:27+03:00" level=info msg="Db: send messages" requestID=1
+time="2024-05-29T02:38:27+03:00" level=info msg="Get request to message" requestID=1
+time="2024-05-29T02:38:27+03:00" level=warning msg="Db can't query: db_error" requestID=1
+time="2024-05-29T02:38:27+03:00" level=info msg="Create request to message" requestID=1
+time="2024-05-29T02:38:27+03:00" level=info msg="Db: created message" requestID=1
+time="2024-05-29T02:38:27+03:00" level=info msg="Create request to message" requestID=1
+time="2024-05-29T02:38:27+03:00" level=warning msg="Db can't query: repo error" requestID=1
+time="2024-05-29T02:38:27+03:00" level=info msg="Get last messages request" requestID=1
+time="2024-05-29T02:38:27+03:00" level=info msg="Get last messages request" requestID=1
+time="2024-05-29T02:38:27+03:00" level=info msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:38:27+03:00" level=info msg="db create request to person_claim" requestID=1
+time="2024-05-29T02:38:27+03:00" level=info msg="db create request to person_claim" requestID=1
+time="2024-05-29T02:38:27+03:00" level=warning msg="db can't create claim: repo error" requestID=1
+time="2024-05-29T02:38:27+03:00" level=info msg="db get request to claim" requestID=1
+time="2024-05-29T02:38:27+03:00" level=info msg="db get request to claim" requestID=1
+time="2024-05-29T02:38:27+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:38:27+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T02:38:27+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T02:38:27+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T02:38:27+03:00" level=warning msg="can't query: db_error" requestID=1
+time="2024-05-29T02:38:27+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T02:38:27+03:00" level=info msg="db got 1 interest ids" requestID=1
+time="2024-05-29T02:38:27+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T02:38:27+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T02:38:27+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T02:38:27+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:38:27+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T02:38:27+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T02:38:27+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:38:27+03:00" level=info msg="db create request to \"like\"" requestID=1
+time="2024-05-29T02:38:27+03:00" level=info msg="db create request to \"like\"" requestID=1
+time="2024-05-29T02:38:27+03:00" level=warning msg="db can't create like: repo error" requestID=1
+time="2024-05-29T02:38:27+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-29T02:38:27+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-29T02:38:27+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:38:27+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T02:38:27+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-29T02:38:27+03:00" level=info msg="db get request to person" requestID=1
+time="2024-05-29T02:38:27+03:00" level=info msg="db returning records" requestID=1
+time="2024-05-29T02:38:27+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T02:38:27+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:38:27+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T02:38:27+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-29T02:38:27+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:59:56+03:00" level=info msg="Get request to message" requestID=1
+time="2024-05-29T02:59:56+03:00" level=info msg="Db: send messages" requestID=1
+time="2024-05-29T02:59:56+03:00" level=info msg="Get request to message" requestID=1
+time="2024-05-29T02:59:56+03:00" level=warning msg="Db can't query: db_error" requestID=1
+time="2024-05-29T02:59:56+03:00" level=info msg="Create request to message" requestID=1
+time="2024-05-29T02:59:56+03:00" level=info msg="Db: created message" requestID=1
+time="2024-05-29T02:59:56+03:00" level=info msg="Create request to message" requestID=1
+time="2024-05-29T02:59:56+03:00" level=warning msg="Db can't query: repo error" requestID=1
+time="2024-05-29T02:59:56+03:00" level=info msg="Get last messages request" requestID=1
+time="2024-05-29T02:59:56+03:00" level=info msg="Get last messages request" requestID=1
+time="2024-05-29T02:59:56+03:00" level=info msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:59:56+03:00" level=info msg="db create request to person_claim" requestID=1
+time="2024-05-29T02:59:56+03:00" level=info msg="db create request to person_claim" requestID=1
+time="2024-05-29T02:59:56+03:00" level=warning msg="db can't create claim: repo error" requestID=1
+time="2024-05-29T02:59:56+03:00" level=info msg="db get request to claim" requestID=1
+time="2024-05-29T02:59:56+03:00" level=info msg="db get request to claim" requestID=1
+time="2024-05-29T02:59:56+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:59:56+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T02:59:56+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T02:59:56+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T02:59:56+03:00" level=warning msg="can't query: db_error" requestID=1
+time="2024-05-29T02:59:56+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T02:59:56+03:00" level=info msg="db got 1 interest ids" requestID=1
+time="2024-05-29T02:59:56+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T02:59:56+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T02:59:56+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T02:59:56+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:59:56+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T02:59:56+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T02:59:56+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:59:56+03:00" level=info msg="db create request to \"like\"" requestID=1
+time="2024-05-29T02:59:56+03:00" level=info msg="db create request to \"like\"" requestID=1
+time="2024-05-29T02:59:56+03:00" level=warning msg="db can't create like: repo error" requestID=1
+time="2024-05-29T02:59:56+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-29T02:59:56+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-29T02:59:56+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:59:56+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T02:59:56+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-29T02:59:56+03:00" level=info msg="db get request to person" requestID=1
+time="2024-05-29T02:59:56+03:00" level=info msg="db returning records" requestID=1
+time="2024-05-29T02:59:56+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T02:59:56+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T02:59:56+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T02:59:56+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-29T02:59:56+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T03:43:38+03:00" level=info msg="Get request to message" requestID=1
+time="2024-05-29T03:43:38+03:00" level=info msg="Db: send messages" requestID=1
+time="2024-05-29T03:43:38+03:00" level=info msg="Get request to message" requestID=1
+time="2024-05-29T03:43:38+03:00" level=warning msg="Db can't query: db_error" requestID=1
+time="2024-05-29T03:43:38+03:00" level=info msg="Create request to message" requestID=1
+time="2024-05-29T03:43:38+03:00" level=info msg="Db: created message" requestID=1
+time="2024-05-29T03:43:38+03:00" level=info msg="Create request to message" requestID=1
+time="2024-05-29T03:43:38+03:00" level=warning msg="Db can't query: repo error" requestID=1
+time="2024-05-29T03:43:38+03:00" level=info msg="Get last messages request" requestID=1
+time="2024-05-29T03:43:38+03:00" level=info msg="Get last messages request" requestID=1
+time="2024-05-29T03:43:38+03:00" level=info msg="db can't query: db_error" requestID=1
+time="2024-05-29T03:43:38+03:00" level=info msg="db create request to person_claim" requestID=1
+time="2024-05-29T03:43:38+03:00" level=info msg="db create request to person_claim" requestID=1
+time="2024-05-29T03:43:38+03:00" level=warning msg="db can't create claim: repo error" requestID=1
+time="2024-05-29T03:43:38+03:00" level=info msg="db get request to claim" requestID=1
+time="2024-05-29T03:43:38+03:00" level=info msg="db get request to claim" requestID=1
+time="2024-05-29T03:43:38+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T03:43:38+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T03:43:38+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T03:43:38+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T03:43:38+03:00" level=warning msg="can't query: db_error" requestID=1
+time="2024-05-29T03:43:38+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T03:43:38+03:00" level=info msg="db got 1 interest ids" requestID=1
+time="2024-05-29T03:43:38+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T03:43:38+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T03:43:38+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T03:43:38+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T03:43:38+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T03:43:38+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T03:43:38+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T03:43:38+03:00" level=info msg="db create request to \"like\"" requestID=1
+time="2024-05-29T03:43:38+03:00" level=info msg="db create request to \"like\"" requestID=1
+time="2024-05-29T03:43:38+03:00" level=warning msg="db can't create like: repo error" requestID=1
+time="2024-05-29T03:43:38+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-29T03:43:38+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-29T03:43:38+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T03:43:38+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T03:43:38+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-29T03:43:38+03:00" level=info msg="db get request to person" requestID=1
+time="2024-05-29T03:43:38+03:00" level=info msg="db returning records" requestID=1
+time="2024-05-29T03:43:38+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T03:43:38+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T03:43:38+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T03:43:38+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-29T03:43:38+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T03:46:15+03:00" level=info msg="Get request to message" requestID=1
+time="2024-05-29T03:46:15+03:00" level=info msg="Db: send messages" requestID=1
+time="2024-05-29T03:46:15+03:00" level=info msg="Get request to message" requestID=1
+time="2024-05-29T03:46:15+03:00" level=warning msg="Db can't query: db_error" requestID=1
+time="2024-05-29T03:46:15+03:00" level=info msg="Create request to message" requestID=1
+time="2024-05-29T03:46:15+03:00" level=info msg="Db: created message" requestID=1
+time="2024-05-29T03:46:15+03:00" level=info msg="Create request to message" requestID=1
+time="2024-05-29T03:46:15+03:00" level=warning msg="Db can't query: repo error" requestID=1
+time="2024-05-29T03:46:15+03:00" level=info msg="Get last messages request" requestID=1
+time="2024-05-29T03:46:15+03:00" level=info msg="Get last messages request" requestID=1
+time="2024-05-29T03:46:15+03:00" level=info msg="db can't query: db_error" requestID=1
+time="2024-05-29T03:46:15+03:00" level=info msg="db create request to person_claim" requestID=1
+time="2024-05-29T03:46:15+03:00" level=info msg="db create request to person_claim" requestID=1
+time="2024-05-29T03:46:15+03:00" level=warning msg="db can't create claim: repo error" requestID=1
+time="2024-05-29T03:46:15+03:00" level=info msg="db get request to claim" requestID=1
+time="2024-05-29T03:46:15+03:00" level=info msg="db get request to claim" requestID=1
+time="2024-05-29T03:46:15+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T03:46:15+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T03:46:15+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T03:46:15+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T03:46:15+03:00" level=warning msg="can't query: db_error" requestID=1
+time="2024-05-29T03:46:15+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T03:46:15+03:00" level=info msg="db got 1 interest ids" requestID=1
+time="2024-05-29T03:46:15+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T03:46:15+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T03:46:15+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T03:46:15+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T03:46:15+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T03:46:15+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T03:46:15+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T03:46:15+03:00" level=info msg="db create request to \"like\"" requestID=1
+time="2024-05-29T03:46:15+03:00" level=info msg="db create request to \"like\"" requestID=1
+time="2024-05-29T03:46:15+03:00" level=warning msg="db can't create like: repo error" requestID=1
+time="2024-05-29T03:46:15+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-29T03:46:15+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-29T03:46:15+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T03:46:15+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T03:46:15+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-29T03:46:15+03:00" level=info msg="db get request to person" requestID=1
+time="2024-05-29T03:46:15+03:00" level=info msg="db returning records" requestID=1
+time="2024-05-29T03:46:15+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T03:46:15+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T03:46:15+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T03:46:15+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-29T03:46:15+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T04:14:01+03:00" level=info msg="Get request to message" requestID=1
+time="2024-05-29T04:14:01+03:00" level=info msg="Db: send messages" requestID=1
+time="2024-05-29T04:14:01+03:00" level=info msg="Get request to message" requestID=1
+time="2024-05-29T04:14:01+03:00" level=warning msg="Db can't query: db_error" requestID=1
+time="2024-05-29T04:14:01+03:00" level=info msg="Create request to message" requestID=1
+time="2024-05-29T04:14:01+03:00" level=info msg="Db: created message" requestID=1
+time="2024-05-29T04:14:01+03:00" level=info msg="Create request to message" requestID=1
+time="2024-05-29T04:14:01+03:00" level=warning msg="Db can't query: repo error" requestID=1
+time="2024-05-29T04:14:01+03:00" level=info msg="Get last messages request" requestID=1
+time="2024-05-29T04:14:01+03:00" level=info msg="Get last messages request" requestID=1
+time="2024-05-29T04:14:01+03:00" level=info msg="db can't query: db_error" requestID=1
+time="2024-05-29T04:14:01+03:00" level=info msg="db create request to person_claim" requestID=1
+time="2024-05-29T04:14:01+03:00" level=info msg="db create request to person_claim" requestID=1
+time="2024-05-29T04:14:01+03:00" level=warning msg="db can't create claim: repo error" requestID=1
+time="2024-05-29T04:14:01+03:00" level=info msg="db get request to claim" requestID=1
+time="2024-05-29T04:14:01+03:00" level=info msg="db get request to claim" requestID=1
+time="2024-05-29T04:14:01+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T04:14:01+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T04:14:01+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T04:14:01+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T04:14:01+03:00" level=warning msg="can't query: db_error" requestID=1
+time="2024-05-29T04:14:01+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T04:14:01+03:00" level=info msg="db got 1 interest ids" requestID=1
+time="2024-05-29T04:14:01+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T04:14:01+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T04:14:01+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T04:14:01+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T04:14:01+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T04:14:01+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T04:14:01+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T04:14:01+03:00" level=info msg="db create request to \"like\"" requestID=1
+time="2024-05-29T04:14:01+03:00" level=info msg="db create request to \"like\"" requestID=1
+time="2024-05-29T04:14:01+03:00" level=warning msg="db can't create like: repo error" requestID=1
+time="2024-05-29T04:14:01+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-29T04:14:01+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-29T04:14:01+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T04:14:01+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T04:14:01+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-29T04:14:01+03:00" level=info msg="db get request to person" requestID=1
+time="2024-05-29T04:14:01+03:00" level=info msg="db returning records" requestID=1
+time="2024-05-29T04:14:01+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T04:14:01+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T04:14:01+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T04:14:01+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-29T04:14:01+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T04:28:58+03:00" level=info msg="db decrease likes count request to \"like\"" requestID=1
+time="2024-05-29T04:28:58+03:00" level=warning msg="can't query: all expectations were already fulfilled, call to ExecQuery 'UPDATE person SET likes_left = $1 WHERE id = $2' with args [{Name: Ordinal:1 Value:4} {Name: Ordinal:2 Value:1}] was not expected" requestID=1
+time="2024-05-29T04:29:53+03:00" level=info msg="db decrease likes count request to \"like\"" requestID=1
+time="2024-05-29T04:29:53+03:00" level=warning msg="can't query: call to ExecQuery 'UPDATE person SET likes_left = $1 WHERE id = $2' with args [{Name: Ordinal:1 Value:4} {Name: Ordinal:2 Value:1}], was not expected, next expectation is: ExpectedQuery => expecting Query, QueryContext or QueryRow which:\n  - matches sql: 'UPDATE person \n\t\tSET likes_left = \\$1 \n\t\tWHERE id = \\$2'\n  - is with arguments:\n    0 - 1\n    1 - 1\n  - should return rows:\n    row 0 - [false 5]" requestID=1
+time="2024-05-29T04:35:33+03:00" level=info msg="db decrease likes count request to \"like\"" requestID=1
+time="2024-05-29T04:35:33+03:00" level=warning msg="can't query: call to ExecQuery 'UPDATE person SET likes_left = $1 WHERE id = $2' with args [{Name: Ordinal:1 Value:4} {Name: Ordinal:2 Value:1}], was not expected, next expectation is: ExpectedQuery => expecting Query, QueryContext or QueryRow which:\n  - matches sql: 'UPDATE person \n\t\tSET likes_left = \\$1 \n\t\tWHERE id = \\$2'\n  - is with arguments:\n    0 - 1\n    1 - 1\n  - should return rows:\n    row 0 - [false 5]" requestID=1
+time="2024-05-29T04:36:26+03:00" level=info msg="db decrease likes count request to \"like\"" requestID=1
+time="2024-05-29T04:36:26+03:00" level=warning msg="can't query: call to ExecQuery 'UPDATE person SET likes_left = $1 WHERE id = $2' with args [{Name: Ordinal:1 Value:4} {Name: Ordinal:2 Value:1}], was not expected, next expectation is: ExpectedQuery => expecting Query, QueryContext or QueryRow which:\n  - matches sql: 'UPDATE person \n\t\tSET likes_left = \\$1 \n\t\tWHERE id = \\$2'\n  - is with arguments:\n    0 - 1\n    1 - 1\n  - with empty rows" requestID=1
+time="2024-05-29T04:37:06+03:00" level=info msg="db decrease likes count request to \"like\"" requestID=1
+time="2024-05-29T04:37:06+03:00" level=warning msg="can't query: call to ExecQuery 'UPDATE person SET likes_left = $1 WHERE id = $2' with args [{Name: Ordinal:1 Value:4} {Name: Ordinal:2 Value:1}], was not expected, next expectation is: ExpectedQuery => expecting Query, QueryContext or QueryRow which:\n  - matches sql: 'UPDATE person \n\t\tSET likes_left = \\$1 \n\t\tWHERE id = \\$2'\n  - is with arguments:\n    0 - 4\n    1 - 1\n  - with empty rows" requestID=1
+time="2024-05-29T04:37:20+03:00" level=info msg="db decrease likes count request to \"like\"" requestID=1
+time="2024-05-29T04:37:20+03:00" level=warning msg="can't query: call to ExecQuery 'UPDATE person SET likes_left = $1 WHERE id = $2' with args [{Name: Ordinal:1 Value:4} {Name: Ordinal:2 Value:1}], was not expected, next expectation is: ExpectedQuery => expecting Query, QueryContext or QueryRow which:\n  - matches sql: 'UPDATE person \n\t\tSET likes_left = \\$1 \n\t\tWHERE id = \\$2'\n  - is with arguments:\n    0 - 4\n    1 - 1\n  - should return rows:\n    row 0 - [false 5]" requestID=1
+time="2024-05-29T04:38:51+03:00" level=info msg="db decrease likes count request to \"like\"" requestID=1
+time="2024-05-29T04:38:51+03:00" level=warning msg="can't query: call to ExecQuery 'UPDATE person SET likes_left = $1 WHERE id = $2' with args [{Name: Ordinal:1 Value:4} {Name: Ordinal:2 Value:1}], was not expected, next expectation is: ExpectedQuery => expecting Query, QueryContext or QueryRow which:\n  - matches sql: 'UPDATE person \n\t\tSET likes_left = \\$1 \n\t\tWHERE id = \\$2'\n  - is with arguments:\n    0 - 4\n    1 - 1\n  - should return rows:\n    row 0 - [false 5]" requestID=1
+time="2024-05-29T04:39:03+03:00" level=info msg="db decrease likes count request to \"like\"" requestID=1
+time="2024-05-29T04:39:03+03:00" level=warning msg="can't query: call to ExecQuery 'UPDATE person SET likes_left = $1 WHERE id = $2' with args [{Name: Ordinal:1 Value:4} {Name: Ordinal:2 Value:1}], was not expected, next expectation is: ExpectedQuery => expecting Query, QueryContext or QueryRow which:\n  - matches sql: 'UPDATE person \n\t\tSET likes_left = \\$1 \n\t\tWHERE id = \\$2'\n  - is with arguments:\n    0 - 4\n    1 - 1\n  - should return rows:\n    row 0 - [false 5]" requestID=1
+time="2024-05-29T04:39:26+03:00" level=info msg="db decrease likes count request to \"like\"" requestID=1
+time="2024-05-29T04:39:26+03:00" level=warning msg="can't query: call to ExecQuery 'UPDATE person SET likes_left = $1 WHERE id = $2' with args [{Name: Ordinal:1 Value:4} {Name: Ordinal:2 Value:1}], was not expected, next expectation is: ExpectedQuery => expecting Query, QueryContext or QueryRow which:\n  - matches sql: 'UPDATE person \n\t\tSET likes_left = \\$1 \n\t\tWHERE id = \\$2'\n  - is with arguments:\n    0 - 4\n    1 - 1\n  - with empty rows" requestID=1
+time="2024-05-29T04:40:36+03:00" level=info msg="db decrease likes count request to \"like\"" requestID=1
+time="2024-05-29T04:40:36+03:00" level=warning msg="can't query: ExecQuery 'UPDATE person SET likes_left = $1 WHERE id = $2' with args [{Name: Ordinal:1 Value:4} {Name: Ordinal:2 Value:1}], must return a database/sql/driver.Result, but it was not set for expectation *sqlmock.ExpectedExec as ExpectedExec => expecting Exec or ExecContext which:\n  - matches sql: 'UPDATE person \n\t\tSET likes_left = \\$1 \n\t\tWHERE id = \\$2'\n  - is with arguments:\n    0 - 4\n    1 - 1" requestID=1
+time="2024-05-29T04:41:32+03:00" level=info msg="db decrease likes count request to \"like\"" requestID=1
+time="2024-05-29T04:41:32+03:00" level=info msg="decreased likes left" requestID=1
+time="2024-05-29T04:41:55+03:00" level=info msg="db decrease likes count request to \"like\"" requestID=1
+time="2024-05-29T04:41:55+03:00" level=info msg="decreased likes left" requestID=1
+time="2024-05-29T04:42:36+03:00" level=info msg="db decrease likes count request to \"like\"" requestID=1
+time="2024-05-29T04:42:36+03:00" level=info msg="decreased likes left" requestID=1
+time="2024-05-29T04:42:36+03:00" level=info msg="db decrease likes count request to \"like\"" requestID=1
+time="2024-05-29T04:42:59+03:00" level=info msg="db decrease likes count request to \"like\"" requestID=1
+time="2024-05-29T04:42:59+03:00" level=info msg="decreased likes left" requestID=1
+time="2024-05-29T04:42:59+03:00" level=info msg="db decrease likes count request to \"like\"" requestID=1
+time="2024-05-29T04:42:59+03:00" level=info msg="db decrease likes count request to \"like\"" requestID=1
+time="2024-05-29T04:42:59+03:00" level=warning msg="no likes left for user 1" requestID=1
+time="2024-05-29T04:43:57+03:00" level=info msg="db decrease likes count request to \"like\"" requestID=1
+time="2024-05-29T04:43:57+03:00" level=info msg="decreased likes left" requestID=1
+time="2024-05-29T04:43:57+03:00" level=info msg="db decrease likes count request to \"like\"" requestID=1
+time="2024-05-29T04:44:03+03:00" level=info msg="Get request to message" requestID=1
+time="2024-05-29T04:44:03+03:00" level=info msg="Db: send messages" requestID=1
+time="2024-05-29T04:44:03+03:00" level=info msg="Get request to message" requestID=1
+time="2024-05-29T04:44:03+03:00" level=warning msg="Db can't query: db_error" requestID=1
+time="2024-05-29T04:44:03+03:00" level=info msg="Create request to message" requestID=1
+time="2024-05-29T04:44:03+03:00" level=info msg="Db: created message" requestID=1
+time="2024-05-29T04:44:03+03:00" level=info msg="Create request to message" requestID=1
+time="2024-05-29T04:44:03+03:00" level=warning msg="Db can't query: repo error" requestID=1
+time="2024-05-29T04:44:03+03:00" level=info msg="Get last messages request" requestID=1
+time="2024-05-29T04:44:03+03:00" level=info msg="Get last messages request" requestID=1
+time="2024-05-29T04:44:03+03:00" level=info msg="db can't query: db_error" requestID=1
+time="2024-05-29T04:44:03+03:00" level=info msg="db create request to person_claim" requestID=1
+time="2024-05-29T04:44:03+03:00" level=info msg="db create request to person_claim" requestID=1
+time="2024-05-29T04:44:03+03:00" level=warning msg="db can't create claim: repo error" requestID=1
+time="2024-05-29T04:44:03+03:00" level=info msg="db get request to claim" requestID=1
+time="2024-05-29T04:44:03+03:00" level=info msg="db get request to claim" requestID=1
+time="2024-05-29T04:44:03+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T04:44:03+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T04:44:03+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T04:44:03+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T04:44:03+03:00" level=warning msg="can't query: db_error" requestID=1
+time="2024-05-29T04:44:03+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T04:44:03+03:00" level=info msg="db got 1 interest ids" requestID=1
+time="2024-05-29T04:44:03+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T04:44:03+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T04:44:03+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T04:44:03+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T04:44:03+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T04:44:03+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T04:44:03+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T04:44:03+03:00" level=info msg="db create request to \"like\"" requestID=1
+time="2024-05-29T04:44:03+03:00" level=info msg="db create request to \"like\"" requestID=1
+time="2024-05-29T04:44:03+03:00" level=warning msg="db can't create like: repo error" requestID=1
+time="2024-05-29T04:44:03+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-29T04:44:03+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-29T04:44:03+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T04:44:03+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T04:44:03+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-29T04:44:03+03:00" level=info msg="db get request to person" requestID=1
+time="2024-05-29T04:44:03+03:00" level=info msg="db returning records" requestID=1
+time="2024-05-29T04:44:03+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T04:44:03+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T04:44:03+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T04:44:03+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-29T04:44:03+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T04:44:03+03:00" level=info msg="db decrease likes count request to \"like\"" requestID=1
+time="2024-05-29T04:44:03+03:00" level=info msg="decreased likes left" requestID=1
+time="2024-05-29T04:44:03+03:00" level=info msg="db decrease likes count request to \"like\"" requestID=1
+time="2024-05-29T04:50:45+03:00" level=info msg="Get request to message" requestID=1
+time="2024-05-29T04:50:45+03:00" level=info msg="Db: send messages" requestID=1
+time="2024-05-29T04:50:45+03:00" level=info msg="Get request to message" requestID=1
+time="2024-05-29T04:50:45+03:00" level=warning msg="Db can't query: db_error" requestID=1
+time="2024-05-29T04:50:45+03:00" level=info msg="Create request to message" requestID=1
+time="2024-05-29T04:50:45+03:00" level=info msg="Db: created message" requestID=1
+time="2024-05-29T04:50:45+03:00" level=info msg="Create request to message" requestID=1
+time="2024-05-29T04:50:45+03:00" level=warning msg="Db can't query: repo error" requestID=1
+time="2024-05-29T04:50:45+03:00" level=info msg="Get last messages request" requestID=1
+time="2024-05-29T04:50:45+03:00" level=info msg="Get last messages request" requestID=1
+time="2024-05-29T04:50:45+03:00" level=info msg="db can't query: db_error" requestID=1
+time="2024-05-29T04:50:45+03:00" level=info msg="db create request to person_claim" requestID=1
+time="2024-05-29T04:50:45+03:00" level=info msg="db create request to person_claim" requestID=1
+time="2024-05-29T04:50:45+03:00" level=warning msg="db can't create claim: repo error" requestID=1
+time="2024-05-29T04:50:45+03:00" level=info msg="db get request to claim" requestID=1
+time="2024-05-29T04:50:45+03:00" level=info msg="db get request to claim" requestID=1
+time="2024-05-29T04:50:45+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T04:50:45+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T04:50:45+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T04:50:45+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T04:50:45+03:00" level=warning msg="can't query: db_error" requestID=1
+time="2024-05-29T04:50:45+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T04:50:45+03:00" level=info msg="db got 1 interest ids" requestID=1
+time="2024-05-29T04:50:45+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T04:50:45+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T04:50:45+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T04:50:45+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T04:50:45+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T04:50:45+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T04:50:45+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T04:50:45+03:00" level=info msg="db create request to \"like\"" requestID=1
+time="2024-05-29T04:50:45+03:00" level=info msg="db create request to \"like\"" requestID=1
+time="2024-05-29T04:50:45+03:00" level=warning msg="db can't create like: repo error" requestID=1
+time="2024-05-29T04:50:45+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-29T04:50:45+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-29T04:50:45+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T04:50:45+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T04:50:45+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-29T04:50:45+03:00" level=info msg="db get request to person" requestID=1
+time="2024-05-29T04:50:45+03:00" level=info msg="db returning records" requestID=1
+time="2024-05-29T04:50:45+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T04:50:45+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T04:50:45+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T04:50:45+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-29T04:50:45+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T04:50:45+03:00" level=info msg="db decrease likes count request to \"like\"" requestID=1
+time="2024-05-29T04:50:45+03:00" level=info msg="decreased likes left" requestID=1
+time="2024-05-29T04:50:45+03:00" level=info msg="db decrease likes count request to \"like\"" requestID=1
+time="2024-05-29T04:50:55+03:00" level=info msg="Get request to message" requestID=1
+time="2024-05-29T04:50:55+03:00" level=info msg="Db: send messages" requestID=1
+time="2024-05-29T04:50:55+03:00" level=info msg="Get request to message" requestID=1
+time="2024-05-29T04:50:55+03:00" level=warning msg="Db can't query: db_error" requestID=1
+time="2024-05-29T04:50:55+03:00" level=info msg="Create request to message" requestID=1
+time="2024-05-29T04:50:55+03:00" level=info msg="Db: created message" requestID=1
+time="2024-05-29T04:50:55+03:00" level=info msg="Create request to message" requestID=1
+time="2024-05-29T04:50:55+03:00" level=warning msg="Db can't query: repo error" requestID=1
+time="2024-05-29T04:50:55+03:00" level=info msg="Get last messages request" requestID=1
+time="2024-05-29T04:50:55+03:00" level=info msg="Get last messages request" requestID=1
+time="2024-05-29T04:50:55+03:00" level=info msg="db can't query: db_error" requestID=1
+time="2024-05-29T04:50:55+03:00" level=info msg="db create request to person_claim" requestID=1
+time="2024-05-29T04:50:55+03:00" level=info msg="db create request to person_claim" requestID=1
+time="2024-05-29T04:50:55+03:00" level=warning msg="db can't create claim: repo error" requestID=1
+time="2024-05-29T04:50:55+03:00" level=info msg="db get request to claim" requestID=1
+time="2024-05-29T04:50:55+03:00" level=info msg="db get request to claim" requestID=1
+time="2024-05-29T04:50:55+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T04:50:55+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T04:50:55+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T04:50:55+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T04:50:55+03:00" level=warning msg="can't query: db_error" requestID=1
+time="2024-05-29T04:50:55+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T04:50:55+03:00" level=info msg="db got 1 interest ids" requestID=1
+time="2024-05-29T04:50:55+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T04:50:55+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T04:50:55+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T04:50:55+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T04:50:55+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T04:50:55+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T04:50:55+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T04:50:55+03:00" level=info msg="db create request to \"like\"" requestID=1
+time="2024-05-29T04:50:55+03:00" level=info msg="db create request to \"like\"" requestID=1
+time="2024-05-29T04:50:55+03:00" level=warning msg="db can't create like: repo error" requestID=1
+time="2024-05-29T04:50:55+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-29T04:50:55+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-29T04:50:55+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T04:50:55+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T04:50:55+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-29T04:50:55+03:00" level=info msg="db get request to person" requestID=1
+time="2024-05-29T04:50:55+03:00" level=info msg="db returning records" requestID=1
+time="2024-05-29T04:50:55+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T04:50:55+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T04:50:55+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T04:50:55+03:00" level=info msg="db get request to person_claim" requestID=1
+time="2024-05-29T04:50:55+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T04:50:55+03:00" level=info msg="db decrease likes count request to \"like\"" requestID=1
+time="2024-05-29T04:50:55+03:00" level=info msg="decreased likes left" requestID=1
+time="2024-05-29T04:50:55+03:00" level=info msg="db decrease likes count request to \"like\"" requestID=1

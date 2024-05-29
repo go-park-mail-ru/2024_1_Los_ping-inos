@@ -594,3 +594,94 @@ func TestGetMatches(t *testing.T) {
 		//require.Equal(t, profiles, curr.profiles)
 	}
 }
+
+func TestGenPaymentUrl(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockPerson := mocks.NewMockPersonStorage(ctrl)
+	mockSession := mocks.NewMockSessionStorage(ctrl)
+	mockInterest := mocks.NewMockInterestStorage(ctrl)
+	mockGrpc := mocks.NewMockImageClient(ctrl)
+
+	useCase := NewAuthUseCase(mockPerson, mockSession, mockInterest, mockGrpc)
+
+	if useCase.personStorage == nil {
+		t.Error("personStorage should not be nil")
+	}
+	if useCase.sessionStorage == nil {
+		t.Error("sessionStorage should not be nil")
+	}
+	if useCase.interestStorage == nil {
+		t.Error("interestStorage should not be nil")
+	}
+	if useCase.grpcClient == nil {
+		t.Error("grpcClient should not be nil")
+	}
+}
+
+func TestGenPaymentUrl_NumericUID(t *testing.T) {
+	service := &UseCase{}
+	UID := types.UserID(12345)
+	expected := "https://yoomoney.ru/quickpay/confirm?receiver=4100118687037094&quickpay-form=button&paymentType=AC&sum=2&label=12345&successURL=https://jimder.ru/profile?sub=success"
+
+	result := service.GenPaymentUrl(UID)
+	if result != expected {
+		t.Errorf("Expected: %s, got: %s", expected, result)
+	}
+}
+
+func TestActivateSub(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockObj := mocks.NewMockPersonStorage(ctrl)
+
+	tmp := time.Now()
+
+	mockObj.EXPECT().ActivateSub(gomock.Any(), types.UserID(1), tmp).Return(nil)
+
+	core := UseCase{personStorage: mockObj}
+
+	err := core.ActivateSub(context.Background(), types.UserID(1), tmp)
+	if err != nil {
+		t.Errorf("unexpected err result")
+		t.Error(err)
+		return
+	}
+}
+
+func TestGetSubHistory(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockObj := mocks.NewMockPersonStorage(ctrl)
+
+	hist := []models.HistoryRecord{
+		{
+			Time:  1,
+			Sum:   "1",
+			Title: "1",
+		},
+	}
+
+	try := &models.PaymentHistory{
+		Times: hist,
+	}
+
+	mockObj.EXPECT().GetSubHistory(gomock.Any(), types.UserID(1)).Return(try, nil)
+
+	core := UseCase{personStorage: mockObj}
+
+	sub, err := core.GetSubHistory(context.Background(), types.UserID(1))
+	if err != nil {
+		t.Errorf("unexpected err result")
+		t.Error(err)
+		return
+	}
+	if !reflect.DeepEqual(sub, try) {
+		t.Errorf("unexpected err result")
+		t.Error(err)
+		return
+	}
+}

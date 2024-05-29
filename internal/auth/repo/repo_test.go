@@ -59,6 +59,143 @@ func TestCreatePersonInterest(t *testing.T) {
 
 }
 
+func TestActivateSub(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("cant create mock: %s", err)
+	}
+	defer db.Close()
+
+	rows := sqlmock.NewRows([]string{})
+
+	mock.ExpectQuery(regexp.QuoteMeta("UPDATE person SET premium = $1, premium_expires_at = $2 WHERE id = $3")).
+		WithArgs(true, sqlmock.AnyArg(), 1).WillReturnRows(rows)
+
+	mock.ExpectQuery(regexp.QuoteMeta("INSERT INTO person_payment (person_id,paymentTime) VALUES ($1,$2)")).
+		WithArgs(1, sqlmock.AnyArg()).WillReturnRows(rows)
+
+	repo := &PersonStorage{
+		dbReader: db,
+	}
+
+	logger := InitLog()
+	logger.RequestID = int64(1)
+	contexted := context.WithValue(context.Background(), Logg, logger)
+
+	err = repo.ActivateSub(contexted, 1, time.Now())
+	if err != nil {
+		t.Errorf("expected no error, got %v", err)
+	}
+
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Errorf("there were unfulfilled expectations: %s", err)
+		return
+	}
+
+	mock.ExpectQuery(regexp.QuoteMeta("UPDATE person SET premium = $1, premium_expires_at = $2 WHERE id = $3")).
+		WithArgs(true, sqlmock.AnyArg(), 1).WillReturnError(fmt.Errorf("repo error"))
+
+	err = repo.ActivateSub(contexted, 1, time.Now())
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Errorf("there were unfulfilled expectations: %s", err)
+		return
+	}
+
+	if err == nil {
+		t.Errorf("expected no error, got %v", err)
+	}
+
+	mock.ExpectQuery(regexp.QuoteMeta("UPDATE person SET premium = $1, premium_expires_at = $2 WHERE id = $3")).
+		WithArgs(true, sqlmock.AnyArg(), 1).WillReturnRows(rows)
+
+	mock.ExpectQuery(regexp.QuoteMeta("INSERT INTO person_payment (person_id,paymentTime) VALUES ($1,$2)")).
+		WithArgs(1, sqlmock.AnyArg()).WillReturnError(fmt.Errorf("repo error"))
+
+	err = repo.ActivateSub(contexted, 1, time.Now())
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Errorf("there were unfulfilled expectations: %s", err)
+		return
+	}
+
+	if err == nil {
+		t.Errorf("expected no error, got %v", err)
+	}
+
+}
+
+func TestGetSubHistory(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("cant create mock: %s", err)
+	}
+	defer db.Close()
+
+	rows := sqlmock.NewRows([]string{"Time"})
+
+	var tmp time.Time
+
+	expect := []*models.PaymentHistory{
+		{Times: []models.HistoryRecord{
+			{
+				Time:  tmp.Unix(),
+				Sum:   "2",
+				Title: "Подписка",
+			},
+		}},
+	}
+
+	rows = rows.AddRow(tmp)
+
+	mock.ExpectQuery(
+		regexp.QuoteMeta("SELECT paymentTime FROM person_payment WHERE person_id = $1")).
+		WithArgs(1).
+		WillReturnRows(rows)
+
+	repo := &PersonStorage{
+		dbReader: db,
+	}
+
+	logger := InitLog()
+	logger.RequestID = int64(1)
+	contexted := context.WithValue(context.Background(), Logg, logger)
+
+	images, err := repo.GetSubHistory(contexted, 1)
+	if err != nil {
+		t.Errorf("expected no error, got %v", err)
+	}
+
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Errorf("there were unfulfilled expectations: %s", err)
+		return
+	}
+
+	if !reflect.DeepEqual(images, expect[0]) {
+		t.Errorf("expected %v, got %v", expect[0], images)
+		return
+	}
+
+	mock.ExpectQuery(
+		regexp.QuoteMeta("SELECT paymentTime FROM person_payment WHERE person_id = $1")).
+		WithArgs(1).
+		WillReturnError(fmt.Errorf("db_error"))
+
+	images, err = repo.GetSubHistory(contexted, 1)
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Errorf("there were unfulfilled expectations: %s", err)
+		return
+	}
+
+	if err == nil {
+		t.Errorf("expected error, got nil")
+		return
+	}
+
+	if images != nil {
+		t.Errorf("expected empty array, got %v", images)
+		return
+	}
+}
+
 func TestGetInterest(t *testing.T) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
@@ -374,6 +511,10 @@ func TestUpdate(t *testing.T) {
 		PremiumExpires: tt.Unix(),
 	}
 
+	setMap := make(map[string]interface{})
+
+	setMap["premiumExpires"] = float64(person.PremiumExpires)
+
 	mock.ExpectQuery(regexp.QuoteMeta(`
 					UPDATE person 
 					SET ID = $1, birthday = $2, description = $3, 
@@ -382,7 +523,7 @@ func TestUpdate(t *testing.T) {
 					premium = $8, premium_expires_at = $9 
 					WHERE id = $10`)).
 		WithArgs(float64(1), "0001-01-01T00:00:00Z", person.Description,
-			person.Email, person.Gender, person.Name, person.Password, person.Premium, float64(person.PremiumExpires), person.ID).
+			person.Email, person.Gender, person.Name, person.Password, person.Premium, time.Unix(int64(setMap["premiumExpires"].(float64)), 0), person.ID).
 		WillReturnRows(rows)
 
 	repo := &PersonStorage{
@@ -411,7 +552,7 @@ func TestUpdate(t *testing.T) {
 					premium = $8, premium_expires_at = $9 
 					WHERE id = $10`)).
 		WithArgs(float64(1), "0001-01-01T00:00:00Z", person.Description,
-			person.Email, person.Gender, person.Name, person.Password, person.Premium, float64(person.PremiumExpires), person.ID).
+			person.Email, person.Gender, person.Name, person.Password, person.Premium, time.Unix(int64(setMap["premiumExpires"].(float64)), 0), person.ID).
 		WillReturnError(fmt.Errorf("repo error"))
 
 	err = repo.Update(contexted, person)
@@ -482,8 +623,7 @@ func TestAddAccount(t *testing.T) {
 	}
 	defer db.Close()
 
-	selectRow := "INSERT INTO person(name, birthday, email, password, gender) " +
-		"VALUES ($1, $2, $3, $4, $5)"
+	selectRow := "INSERT INTO person(name, birthday, email, password, gender, premium_expires_at) VALUES ($1, $2, $3, $4, $5, $6)"
 
 	logger := InitLog()
 	logger.RequestID = int64(1)
@@ -492,7 +632,7 @@ func TestAddAccount(t *testing.T) {
 
 	mock.ExpectExec(
 		regexp.QuoteMeta(selectRow)).
-		WithArgs("name1", "01012001", "mail.com", sqlmock.AnyArg(), "male").
+		WithArgs("name1", "01012001", "mail.com", sqlmock.AnyArg(), "male", sqlmock.AnyArg()).
 		WillReturnResult(sqlmock.NewResult(0, 1))
 
 	repo := &PersonStorage{
@@ -513,7 +653,7 @@ func TestAddAccount(t *testing.T) {
 
 	mock.ExpectExec(
 		regexp.QuoteMeta(selectRow)).
-		WithArgs("name1", "01012001", "mail.com", sqlmock.AnyArg(), "male").
+		WithArgs("name1", "01012001", "mail.com", sqlmock.AnyArg(), "male", sqlmock.AnyArg()).
 		WillReturnError(fmt.Errorf("repo error"))
 
 	_, err = repo.AddAccount(contexted, "name1", "01012001", "male", "mail.com", "password")

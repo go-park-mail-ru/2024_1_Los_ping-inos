@@ -2,14 +2,15 @@ package delivery
 
 import (
 	"errors"
-	"github.com/mailru/easyjson"
-	"github.com/spf13/viper"
 	"io"
 	"net/http"
 	"net/url"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/mailru/easyjson"
+	"github.com/spf13/viper"
 
 	"github.com/sirupsen/logrus"
 	. "main.go/config"

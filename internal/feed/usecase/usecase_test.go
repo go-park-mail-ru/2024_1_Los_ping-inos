@@ -517,3 +517,21 @@ func TestGetClaims(t *testing.T) {
 	}
 	require.Equal(t, claim, result)
 }
+
+func TestCreateLike(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockObj := mocks.NewMockPostgresStorage(ctrl)
+	mockObj.EXPECT().DecreaseLikesCount(gomock.Any(), types.UserID(1)).Return(4, nil)
+	mockObj.EXPECT().CreateLike(gomock.Any(), types.UserID(1), types.UserID(2)).Return(nil)
+
+	core := UseCase{storage: mockObj}
+
+	err := core.CreateLike(1, 2, context.TODO())
+	if err != nil {
+		t.Errorf("unexpected err result")
+		t.Error(err)
+		return
+	}
+}
