@@ -3,13 +3,14 @@ package delivery
 import (
 	"errors"
 	"fmt"
-	"github.com/mailru/easyjson"
-	"github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"io"
 	"math/rand"
 	"net/http"
 	"time"
+
+	"github.com/mailru/easyjson"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 
 	"github.com/emirpasic/gods/sets/hashset"
 	"github.com/sirupsen/logrus"

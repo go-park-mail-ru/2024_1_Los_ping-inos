@@ -62,33 +62,33 @@ func (deliver *AuthHandler) ReadProfile(respWriter http.ResponseWriter, request 
 		prof []auth.Profile
 	)
 
-	logger := request.Context().Value(Logg).(Log)
+	//logger := request.Context().Value(Logg).(Log)
 
 	if request.URL.Query().Has("id") { // просмотр профиля по id (чужой профиль из ленты)
 		id, err = strconv.Atoi(request.URL.Query().Get("id"))
 		if err != nil {
 			requests.SendSimpleResponse(respWriter, request, http.StatusInternalServerError, err.Error())
-			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("get profile err: ", err.Error())
+			//logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("get profile err: ", err.Error())
 		}
 		prof, err = deliver.UseCase.GetProfile(auth.ProfileGetParams{ID: []types.UserID{types.UserID(id)}, NeedEmail: false}, request.Context())
 	} else { // свой профиль
-		prof, err = deliver.UseCase.GetProfile(auth.ProfileGetParams{ID: []types.UserID{request.Context().Value(RequestUserID).(types.UserID)}, NeedEmail: true}, request.Context())
+		prof, err = deliver.UseCase.GetProfile(auth.ProfileGetParams{ID: []types.UserID{types.UserID(id)}, NeedEmail: true}, request.Context())
 	}
 
 	if err != nil {
 		requests.SendSimpleResponse(respWriter, request, http.StatusBadRequest, err.Error())
-		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("get profile err: ", err.Error())
+		//logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("get profile err: ", err.Error())
 		return
 	}
 
 	if len(prof) == 0 {
 		requests.SendSimpleResponse(respWriter, request, http.StatusBadRequest, "no such profile")
-		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("no such profile")
+		//logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("no such profile")
 		return
 	}
 
 	requests.SendResponse(respWriter, request, http.StatusOK, prof[0])
-	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("get profile sent response")
+	//logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("get profile sent response")
 }
 
 // UpdateProfile godoc
@@ -105,27 +105,27 @@ func (deliver *AuthHandler) ReadProfile(respWriter http.ResponseWriter, request 
 // @Failure 405       {string} string
 // @Failure 409       {string} string // TODO
 func (deliver *AuthHandler) UpdateProfile(respWriter http.ResponseWriter, request *http.Request) {
-	logger := request.Context().Value(Logg).(Log)
+	//logger := request.Context().Value(Logg).(Log)
 
 	var requestBody auth.ProfileUpdateRequest
 
 	body, err := io.ReadAll(request.Body)
 	if err != nil {
-		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("bad body: ", err.Error())
+		//logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("bad body: ", err.Error())
 		requests.SendSimpleResponse(respWriter, request, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	//err = json.Unmarshal(body, &requestBody) TODO
 	if err = easyjson.Unmarshal(body, &requestBody); err != nil {
-		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't unmarshal body: ", err.Error())
+		//logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't unmarshal body: ", err.Error())
 		requests.SendSimpleResponse(respWriter, request, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	err = deliver.UseCase.UpdateProfile(request.Context().Value(RequestUserID).(types.UserID), requestBody, request.Context())
+	err = deliver.UseCase.UpdateProfile(request.Context().Value(1).(types.UserID), requestBody, request.Context())
 	if err != nil {
-		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't update profile: ", err.Error())
+		//logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't update profile: ", err.Error())
 		if errors.As(err, &types.MyErr{Err: types.DifferentPasswordsError}) {
 			requests.SendSimpleResponse(respWriter, request, http.StatusConflict, err.Error())
 		} else {
@@ -135,7 +135,7 @@ func (deliver *AuthHandler) UpdateProfile(respWriter http.ResponseWriter, reques
 	}
 
 	requests.SendSimpleResponse(respWriter, request, http.StatusOK, "")
-	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("update profile sent response")
+	//logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("update profile sent response")
 }
 
 // DeleteProfile godoc
@@ -410,32 +410,6 @@ func (deliver *AuthHandler) LogoutHandler() func(respWriter http.ResponseWriter,
 		setLoginCookie("", expiredYear, w)
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("logout end")
 		requests.SendSimpleResponse(w, r, http.StatusOK, "")
-	}
-}
-
-// GetUsername godoc
-// @Summary Получить имя пользователя по его session_id (для отображения в ленте)
-// @Tags Продукт
-// @Router  /me [get]
-// @Accept  json
-// @Param   session_id header string false "cookie session_id"
-// @Success 200		  {string}  string
-// @Failure 400       {string} string
-// @Failure 401       {string} string
-// @Failure 405       {string} string
-// @Failure 500       {string} string
-func (deliver *AuthHandler) GetUsername() func(w http.ResponseWriter, r *http.Request) {
-	return func(respWriter http.ResponseWriter, request *http.Request) {
-		logger := request.Context().Value(Logg).(Log)
-
-		name, err := deliver.UseCase.GetName(request.Context().Value(RequestUserID).(types.UserID), request.Context())
-		if err != nil {
-			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn(err.Error())
-			requests.SendSimpleResponse(respWriter, request, http.StatusInternalServerError, "can't get name")
-			return
-		}
-		requests.SendSimpleResponse(respWriter, request, http.StatusOK, name)
-		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("sent username")
 	}
 }
 
