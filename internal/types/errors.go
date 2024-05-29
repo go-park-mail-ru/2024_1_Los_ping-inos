@@ -12,3 +12,5 @@ type MyErr struct {
 func (m MyErr) Error() string {
 	return m.Err.Error()
 }
+
+// some work was done here
