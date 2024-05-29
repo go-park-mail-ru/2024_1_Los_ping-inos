@@ -49,6 +49,9 @@ func GetImageRepo(config string) (*ImageStorage, error) {
 	if err != nil {
 		println(err.Error())
 	}
+	db.SetConnMaxLifetime(time.Minute * 3)
+	db.SetMaxOpenConns(10)
+	db.SetMaxIdleConns(10)
 	if err = db.Ping(); err != nil {
 		println(err.Error())
 		//logger.Logger.Fatal(err)
@@ -65,6 +68,7 @@ func (storage *ImageStorage) pingDb(timer uint32) {
 	for {
 		err := storage.dbReader.Ping()
 		if err != nil {
+			println(err.Error())
 			//logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("Repo Profile db ping error ", err.Error())
 		}
 
@@ -79,7 +83,12 @@ func (storage *ImageStorage) Get(ctx context.Context, userID int64, cell string)
 
 	query := "SELECT " + personImageFields + " FROM person_image WHERE person_id = $1 AND cell_number = $2"
 
-	rows, err := storage.dbReader.Query(query, userID, cell)
+	stmt, err := storage.dbReader.Prepare(query) // using prepared statement
+	if err != nil {
+		return "", err
+	}
+	rows, err := stmt.Query(userID, cell)
+	//rows, err := storage.dbReader.Query(query, userID, cell)
 	if err != nil {
 		return "", err
 	}
@@ -124,6 +133,10 @@ func (storage *ImageStorage) Get(ctx context.Context, userID int64, cell string)
 		}, func(opts *s3.PresignOptions) {
 			opts.Expires = time.Duration(lifeTimeSeconds * int64(time.Second))
 		})
+		if err != nil {
+			println(err.Error())
+			return "", err
+		}
 		//url = req.URL
 		//println(url)
 		obj = img.Url
@@ -138,7 +151,14 @@ func (storage *ImageStorage) Add(ctx context.Context, image image.Image, img mul
 	query := "INSERT INTO person_image (person_id, image_url, cell_number) VALUES ($1, $2, $3) ON CONFLICT (person_id, cell_number) DO UPDATE SET image_url = EXCLUDED.image_url;"
 
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("hehe ", image.UserId, image.CellNumber, image.Url)
-	_, err := storage.dbReader.Exec(query, image.UserId, image.Url, image.CellNumber)
+	stmt, err := storage.dbReader.Prepare(query) // using prepared statement
+	if err != nil {
+		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't query: ", err.Error())
+		return fmt.Errorf("Add img %w", err)
+	}
+
+	_, err = stmt.Exec(image.UserId, image.Url, image.CellNumber)
+	//_, err := storage.dbReader.Exec(query, image.UserId, image.Url, image.CellNumber)
 	if err != nil {
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't query: ", err.Error())
 		return fmt.Errorf("Add img %w", err)
@@ -172,7 +192,13 @@ func (storage *ImageStorage) Delete(ctx context.Context, image image.Image) erro
 	logger := ctx.Value(Logg).(Log)
 	query := "DELETE FROM person_image WHERE person_id = $1 AND cell_number = $2"
 
-	_, err := storage.dbReader.Exec(query, image.UserId, image.CellNumber)
+	stmt, err := storage.dbReader.Prepare(query) // using prepared statement
+	if err != nil {
+		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't query: ", err.Error())
+		return fmt.Errorf("Add img %w", err)
+	}
+	_, err = stmt.Exec(image.UserId, image.CellNumber)
+	//_, err := storage.dbReader.Exec(query, image.UserId, image.CellNumber)
 	if err != nil {
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't query: ", err.Error())
 		return fmt.Errorf("Add img %w", err)

@@ -52,6 +52,10 @@ func main() {
 	if err != nil {
 		logger.Logger.Fatalf("can't open db: %v", err.Error())
 	}
+	db.SetConnMaxLifetime(time.Minute * 3)
+	db.SetMaxOpenConns(10)
+	db.SetMaxIdleConns(10)
+
 	if err = db.Ping(); err != nil {
 		println(err.Error())
 		logger.Logger.Fatal(err)

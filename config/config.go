@@ -33,13 +33,14 @@ type ServerConfig struct {
 }
 
 type DatabaseConfig struct {
-	Host     string `json:"host"`
-	Port     int    `json:"port"`
-	Database string `json:"database"`
-	User     string `json:"username"`
-	Password string `json:"password"`
-	Timer    uint32 `json:"timer"`
-	GrpcPort string `json:"grpc_port"`
+	Host            string `json:"host"`
+	Port            int    `json:"port"`
+	Database        string `json:"database"`
+	User            string `json:"username"`
+	Password        string `json:"password"`
+	Timer           uint32 `json:"timer"`
+	GrpcPort        string `json:"grpc_port"`
+	SetMaxOpenConns int    `json:"set_max_open_conns"`
 }
 
 type RedisConfig struct {
