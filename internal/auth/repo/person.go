@@ -148,7 +148,7 @@ func (storage *PersonStorage) AddAccount(ctx context.Context, Name string, Birth
 
 	_, err = storage.dbReader.Exec(
 		"INSERT INTO person(name, birthday, email, password, gender, premium_expires_at) "+
-			"VALUES ($1, $2, $3, $4, $5, $6)", Name, Birthday, Email, Password, Gender, time.Now())
+			"VALUES ($1, $2, $3, $4, $5, $6)", Name, Birthday, Email, hashedPassword, Gender, time.Now())
 
 	if err != nil {
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("db can't query: ", err.Error())

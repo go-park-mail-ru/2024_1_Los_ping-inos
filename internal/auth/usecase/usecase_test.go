@@ -7,6 +7,7 @@ import (
 	"testing"
 	"time"
 
+	"google.golang.org/grpc"
 	mocks "main.go/internal/auth/mocks"
 
 	"github.com/golang/mock/gomock"
@@ -20,12 +21,19 @@ func TestNewAuthUseCase(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
+	grpcConn, err := grpc.Dial("images:50052", grpc.WithInsecure())
+	if err != nil {
+		return
+	}
+
+	imageManager := image.NewImageClient(grpcConn)
+
 	mockPerson := mocks.NewMockPersonStorage(ctrl)
 	mockSession := mocks.NewMockSessionStorage(ctrl)
 	mockInterest := mocks.NewMockInterestStorage(ctrl)
-	mockGrpc := mocks.NewMockImageClient(ctrl)
+	//mockGrpc := mocks.NewMockImageClient(ctrl)
 
-	useCase := NewAuthUseCase(mockPerson, mockSession, mockInterest, mockGrpc)
+	useCase := NewAuthUseCase(mockPerson, mockSession, mockInterest, imageManager)
 
 	if useCase.personStorage == nil {
 		t.Error("personStorage should not be nil")
@@ -714,4 +722,19 @@ func TestLogout(t *testing.T) {
 			return
 		}
 	}
+}
+
+func TestGetUserIDs(t *testing.T) {
+	persons := []*models.Person{
+		{ID: 1},
+		{ID: 2},
+		{ID: 3},
+	}
+
+	userIDs := getUserIDs(persons)
+
+	require.Equal(t, 3, len(userIDs))
+	require.Equal(t, types.UserID(1), userIDs[0])
+	require.Equal(t, types.UserID(2), userIDs[1])
+	require.Equal(t, types.UserID(3), userIDs[2])
 }

@@ -1,8 +1,9 @@
 package requests
 
 import (
-	"github.com/mailru/easyjson"
 	"net/http"
+
+	"github.com/mailru/easyjson"
 
 	"github.com/sirupsen/logrus"
 )
@@ -13,6 +14,17 @@ import (
 //		{name surname}
 //		{name surname}
 // } json Marshall - preobrazuet interface to json format
+
+type Response struct {
+	Status int         `json:"status"`
+	Body   interface{} `json:"body"`
+}
+
+// func (r *Response) UnmarshalEasyJSON(data []byte) error {
+// 	return easyjson.UnmarshalEasyJSON(data, r)
+// }
+
+// UnmarshalEasyJSON implements easyjson.Unmarshaler.
 
 func SendResponse[T easyjson.Marshaler](w http.ResponseWriter, r *http.Request, code int, Body T) {
 	jsonResponse, err := easyjson.Marshal(Body)

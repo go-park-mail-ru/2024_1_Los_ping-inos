@@ -380,11 +380,6 @@ func TestUpdateProfile(t *testing.T) {
 			t.Error(err)
 			return
 		}
-		// if err != nil {
-		// 	t.Errorf("unexpected err result")
-		// 	t.Error(err)
-		// 	return
-		// }
 		if !curr.hasErr && err != nil {
 			t.Errorf("unexpected err result")
 			t.Error(err)

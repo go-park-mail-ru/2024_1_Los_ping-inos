@@ -1058,3 +1058,817 @@ time="2024-05-29T04:50:57+03:00" level=warning msg="db can't query: repo error" 
 time="2024-05-29T04:50:57+03:00" level=info msg="db get request to \"like\"" requestID=1
 time="2024-05-29T04:50:57+03:00" level=info msg="db get request to \"like\"" requestID=1
 time="2024-05-29T04:50:57+03:00" level=warning msg="db can't query:  db_error" requestID=1
+time="2024-05-29T15:22:01+03:00" level=info msg="db add request to person_interest" requestID=1
+time="2024-05-29T15:22:01+03:00" level=info msg="db add request to person_interest" requestID=1
+time="2024-05-29T15:22:01+03:00" level=warning msg="db insert can't query: repo error" requestID=1
+time="2024-05-29T15:22:01+03:00" level=info msg="db activating sub person" requestID=1
+time="2024-05-29T15:22:01+03:00" level=info msg="premium activated for user 1" requestID=1
+time="2024-05-29T15:22:01+03:00" level=info msg="db activating sub person" requestID=1
+time="2024-05-29T15:22:01+03:00" level=warning msg="db can't add premium: repo error" requestID=1
+time="2024-05-29T15:22:01+03:00" level=info msg="db activating sub person" requestID=1
+time="2024-05-29T15:22:01+03:00" level=info msg="premium activated for user 1" requestID=1
+time="2024-05-29T15:22:01+03:00" level=warning msg="db can't add premium to history: repo error" requestID=1
+time="2024-05-29T15:22:01+03:00" level=info msg="db getting sub history for user 1" requestID=1
+time="2024-05-29T15:22:01+03:00" level=info msg="db getting sub history for user 1" requestID=1
+time="2024-05-29T15:22:01+03:00" level=warning msg="db can't read sub history: db_error" requestID=1
+time="2024-05-29T15:22:01+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T15:22:01+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T15:22:01+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T15:22:01+03:00" level=warning msg="can't query: db_error" requestID=1
+time="2024-05-29T15:22:01+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T15:22:01+03:00" level=info msg="db got 1 interest ids" requestID=1
+time="2024-05-29T15:22:01+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T15:22:01+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T15:22:01+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T15:22:01+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T15:22:01+03:00" level=info msg="db delete request to person_interest" requestID=1
+time="2024-05-29T15:22:01+03:00" level=info msg="db person interest deleted" requestID=1
+time="2024-05-29T15:22:01+03:00" level=info msg="db delete request to person_interest" requestID=1
+time="2024-05-29T15:22:01+03:00" level=warning msg="db delete can't query: repo err" requestID=1
+time="2024-05-29T15:22:01+03:00" level=info msg="SELECT id, name, birthday, description, location, email, password, created_at, premium, likes_left, gender, premium_expires_at FROM person WHERE ((id IN ($1)) AND LOWER(name) LIKE $2)[1 %name1%] <nil>"
+time="2024-05-29T15:22:01+03:00" level=info msg="db get request to person" requestID=1
+time="2024-05-29T15:22:01+03:00" level=info msg="db returning records" requestID=1
+time="2024-05-29T15:22:01+03:00" level=info msg="db update request to person" requestID=1
+time="2024-05-29T15:22:01+03:00" level=info msg="db person updated" requestID=1
+time="2024-05-29T15:22:01+03:00" level=info msg="db update request to person" requestID=1
+time="2024-05-29T15:22:01+03:00" level=warning msg="db update can't query: repo error" requestID=1
+time="2024-05-29T15:22:01+03:00" level=info msg="db delete request to person" requestID=1
+time="2024-05-29T15:22:01+03:00" level=info msg="db person deleted" requestID=1
+time="2024-05-29T15:22:01+03:00" level=info msg="db delete request to person" requestID=1
+time="2024-05-29T15:22:01+03:00" level=warning msg="db delete can't query: repo err" requestID=1
+time="2024-05-29T15:22:01+03:00" level=info msg="db create request to person" requestID=1
+time="2024-05-29T15:22:01+03:00" level=info msg="db created person" requestID=1
+time="2024-05-29T15:22:01+03:00" level=info msg="db create request to person" requestID=1
+time="2024-05-29T15:22:02+03:00" level=warning msg="db can't query: repo error" requestID=1
+time="2024-05-29T15:22:02+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T15:22:02+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T15:22:02+03:00" level=warning msg="db can't query:  db_error" requestID=1
+time="2024-05-29T15:22:40+03:00" level=info msg="db add request to person_interest" requestID=1
+time="2024-05-29T15:22:40+03:00" level=info msg="db add request to person_interest" requestID=1
+time="2024-05-29T15:22:40+03:00" level=warning msg="db insert can't query: repo error" requestID=1
+time="2024-05-29T15:22:40+03:00" level=info msg="db activating sub person" requestID=1
+time="2024-05-29T15:22:40+03:00" level=info msg="premium activated for user 1" requestID=1
+time="2024-05-29T15:22:40+03:00" level=info msg="db activating sub person" requestID=1
+time="2024-05-29T15:22:40+03:00" level=warning msg="db can't add premium: repo error" requestID=1
+time="2024-05-29T15:22:40+03:00" level=info msg="db activating sub person" requestID=1
+time="2024-05-29T15:22:40+03:00" level=info msg="premium activated for user 1" requestID=1
+time="2024-05-29T15:22:40+03:00" level=warning msg="db can't add premium to history: repo error" requestID=1
+time="2024-05-29T15:22:40+03:00" level=info msg="db getting sub history for user 1" requestID=1
+time="2024-05-29T15:22:40+03:00" level=info msg="db getting sub history for user 1" requestID=1
+time="2024-05-29T15:22:40+03:00" level=warning msg="db can't read sub history: db_error" requestID=1
+time="2024-05-29T15:22:40+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T15:22:40+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T15:22:40+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T15:22:40+03:00" level=warning msg="can't query: db_error" requestID=1
+time="2024-05-29T15:22:40+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T15:22:40+03:00" level=info msg="db got 1 interest ids" requestID=1
+time="2024-05-29T15:22:40+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T15:22:40+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T15:22:40+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T15:22:40+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T15:22:40+03:00" level=info msg="db delete request to person_interest" requestID=1
+time="2024-05-29T15:22:40+03:00" level=info msg="db person interest deleted" requestID=1
+time="2024-05-29T15:22:40+03:00" level=info msg="db delete request to person_interest" requestID=1
+time="2024-05-29T15:22:40+03:00" level=warning msg="db delete can't query: repo err" requestID=1
+time="2024-05-29T15:22:40+03:00" level=info msg="SELECT id, name, birthday, description, location, email, password, created_at, premium, likes_left, gender, premium_expires_at FROM person WHERE ((id IN ($1)) AND LOWER(name) LIKE $2)[1 %name1%] <nil>"
+time="2024-05-29T15:22:40+03:00" level=info msg="db get request to person" requestID=1
+time="2024-05-29T15:22:40+03:00" level=info msg="db returning records" requestID=1
+time="2024-05-29T15:22:40+03:00" level=info msg="db update request to person" requestID=1
+time="2024-05-29T15:22:40+03:00" level=info msg="db person updated" requestID=1
+time="2024-05-29T15:22:40+03:00" level=info msg="db update request to person" requestID=1
+time="2024-05-29T15:22:40+03:00" level=warning msg="db update can't query: repo error" requestID=1
+time="2024-05-29T15:22:40+03:00" level=info msg="db delete request to person" requestID=1
+time="2024-05-29T15:22:40+03:00" level=info msg="db person deleted" requestID=1
+time="2024-05-29T15:22:40+03:00" level=info msg="db delete request to person" requestID=1
+time="2024-05-29T15:22:40+03:00" level=warning msg="db delete can't query: repo err" requestID=1
+time="2024-05-29T15:22:40+03:00" level=info msg="db create request to person" requestID=1
+time="2024-05-29T15:22:41+03:00" level=info msg="db created person" requestID=1
+time="2024-05-29T15:22:41+03:00" level=info msg="db create request to person" requestID=1
+time="2024-05-29T15:22:42+03:00" level=warning msg="db can't query: repo error" requestID=1
+time="2024-05-29T15:22:42+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T15:22:42+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T15:22:42+03:00" level=warning msg="db can't query:  db_error" requestID=1
+time="2024-05-29T15:34:44+03:00" level=info msg="db add request to person_interest" requestID=1
+time="2024-05-29T15:34:44+03:00" level=info msg="db add request to person_interest" requestID=1
+time="2024-05-29T15:34:44+03:00" level=warning msg="db insert can't query: repo error" requestID=1
+time="2024-05-29T15:34:44+03:00" level=info msg="db activating sub person" requestID=1
+time="2024-05-29T15:34:44+03:00" level=info msg="premium activated for user 1" requestID=1
+time="2024-05-29T15:34:44+03:00" level=info msg="db activating sub person" requestID=1
+time="2024-05-29T15:34:44+03:00" level=warning msg="db can't add premium: repo error" requestID=1
+time="2024-05-29T15:34:44+03:00" level=info msg="db activating sub person" requestID=1
+time="2024-05-29T15:34:44+03:00" level=info msg="premium activated for user 1" requestID=1
+time="2024-05-29T15:34:44+03:00" level=warning msg="db can't add premium to history: repo error" requestID=1
+time="2024-05-29T15:34:44+03:00" level=info msg="db getting sub history for user 1" requestID=1
+time="2024-05-29T15:34:44+03:00" level=info msg="db getting sub history for user 1" requestID=1
+time="2024-05-29T15:34:44+03:00" level=warning msg="db can't read sub history: db_error" requestID=1
+time="2024-05-29T15:34:44+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T15:34:44+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T15:34:44+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T15:34:44+03:00" level=warning msg="can't query: db_error" requestID=1
+time="2024-05-29T15:34:44+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T15:34:44+03:00" level=info msg="db got 1 interest ids" requestID=1
+time="2024-05-29T15:34:44+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T15:34:44+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T15:34:44+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T15:34:44+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T15:34:44+03:00" level=info msg="db delete request to person_interest" requestID=1
+time="2024-05-29T15:34:44+03:00" level=info msg="db person interest deleted" requestID=1
+time="2024-05-29T15:34:44+03:00" level=info msg="db delete request to person_interest" requestID=1
+time="2024-05-29T15:34:44+03:00" level=warning msg="db delete can't query: repo err" requestID=1
+time="2024-05-29T15:34:44+03:00" level=info msg="SELECT id, name, birthday, description, location, email, password, created_at, premium, likes_left, gender, premium_expires_at FROM person WHERE ((id IN ($1)) AND LOWER(name) LIKE $2)[1 %name1%] <nil>"
+time="2024-05-29T15:34:44+03:00" level=info msg="db get request to person" requestID=1
+time="2024-05-29T15:34:44+03:00" level=info msg="db returning records" requestID=1
+time="2024-05-29T15:34:44+03:00" level=info msg="db update request to person" requestID=1
+time="2024-05-29T15:34:44+03:00" level=info msg="db person updated" requestID=1
+time="2024-05-29T15:34:44+03:00" level=info msg="db update request to person" requestID=1
+time="2024-05-29T15:34:44+03:00" level=warning msg="db update can't query: repo error" requestID=1
+time="2024-05-29T15:34:44+03:00" level=info msg="db delete request to person" requestID=1
+time="2024-05-29T15:34:44+03:00" level=info msg="db person deleted" requestID=1
+time="2024-05-29T15:34:44+03:00" level=info msg="db delete request to person" requestID=1
+time="2024-05-29T15:34:44+03:00" level=warning msg="db delete can't query: repo err" requestID=1
+time="2024-05-29T15:34:44+03:00" level=info msg="db create request to person" requestID=1
+time="2024-05-29T15:34:45+03:00" level=info msg="db created person" requestID=1
+time="2024-05-29T15:34:45+03:00" level=info msg="db create request to person" requestID=1
+time="2024-05-29T15:34:46+03:00" level=warning msg="db can't query: repo error" requestID=1
+time="2024-05-29T15:34:46+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T15:34:46+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T15:34:46+03:00" level=warning msg="db can't query:  db_error" requestID=1
+time="2024-05-29T15:46:06+03:00" level=info msg="db get request to session storage" requestID=1
+time="2024-05-29T15:46:06+03:00" level=warning msg="db can't query: redis: nil" requestID=1
+time="2024-05-29T15:47:55+03:00" level=info msg="db get request to session storage" requestID=1
+time="2024-05-29T15:47:55+03:00" level=warning msg="db can't query: redis: nil" requestID=1
+time="2024-05-29T15:53:18+03:00" level=info msg="db get request to session storage" requestID=1
+time="2024-05-29T15:53:18+03:00" level=warning msg="db can't query: redis: nil" requestID=1
+time="2024-05-29T15:53:23+03:00" level=info msg="db add request to person_interest" requestID=1
+time="2024-05-29T15:53:23+03:00" level=info msg="db add request to person_interest" requestID=1
+time="2024-05-29T15:53:23+03:00" level=warning msg="db insert can't query: repo error" requestID=1
+time="2024-05-29T15:53:23+03:00" level=info msg="db activating sub person" requestID=1
+time="2024-05-29T15:53:23+03:00" level=info msg="premium activated for user 1" requestID=1
+time="2024-05-29T15:53:23+03:00" level=info msg="db activating sub person" requestID=1
+time="2024-05-29T15:53:23+03:00" level=warning msg="db can't add premium: repo error" requestID=1
+time="2024-05-29T15:53:23+03:00" level=info msg="db activating sub person" requestID=1
+time="2024-05-29T15:53:23+03:00" level=info msg="premium activated for user 1" requestID=1
+time="2024-05-29T15:53:23+03:00" level=warning msg="db can't add premium to history: repo error" requestID=1
+time="2024-05-29T15:53:23+03:00" level=info msg="db getting sub history for user 1" requestID=1
+time="2024-05-29T15:53:23+03:00" level=info msg="db getting sub history for user 1" requestID=1
+time="2024-05-29T15:53:23+03:00" level=warning msg="db can't read sub history: db_error" requestID=1
+time="2024-05-29T15:53:23+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T15:53:23+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T15:53:23+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T15:53:23+03:00" level=warning msg="can't query: db_error" requestID=1
+time="2024-05-29T15:53:23+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T15:53:23+03:00" level=info msg="db got 1 interest ids" requestID=1
+time="2024-05-29T15:53:23+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T15:53:23+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T15:53:23+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T15:53:23+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T15:53:23+03:00" level=info msg="db delete request to person_interest" requestID=1
+time="2024-05-29T15:53:23+03:00" level=info msg="db person interest deleted" requestID=1
+time="2024-05-29T15:53:23+03:00" level=info msg="db delete request to person_interest" requestID=1
+time="2024-05-29T15:53:23+03:00" level=warning msg="db delete can't query: repo err" requestID=1
+time="2024-05-29T15:53:23+03:00" level=info msg="SELECT id, name, birthday, description, location, email, password, created_at, premium, likes_left, gender, premium_expires_at FROM person WHERE ((id IN ($1)) AND LOWER(name) LIKE $2)[1 %name1%] <nil>"
+time="2024-05-29T15:53:23+03:00" level=info msg="db get request to person" requestID=1
+time="2024-05-29T15:53:23+03:00" level=info msg="db returning records" requestID=1
+time="2024-05-29T15:53:23+03:00" level=info msg="db update request to person" requestID=1
+time="2024-05-29T15:53:23+03:00" level=info msg="db person updated" requestID=1
+time="2024-05-29T15:53:23+03:00" level=info msg="db update request to person" requestID=1
+time="2024-05-29T15:53:23+03:00" level=warning msg="db update can't query: repo error" requestID=1
+time="2024-05-29T15:53:23+03:00" level=info msg="db delete request to person" requestID=1
+time="2024-05-29T15:53:23+03:00" level=info msg="db person deleted" requestID=1
+time="2024-05-29T15:53:23+03:00" level=info msg="db delete request to person" requestID=1
+time="2024-05-29T15:53:23+03:00" level=warning msg="db delete can't query: repo err" requestID=1
+time="2024-05-29T15:53:23+03:00" level=info msg="db create request to person" requestID=1
+time="2024-05-29T15:53:24+03:00" level=info msg="db created person" requestID=1
+time="2024-05-29T15:53:24+03:00" level=info msg="db create request to person" requestID=1
+time="2024-05-29T15:53:25+03:00" level=warning msg="db can't query: repo error" requestID=1
+time="2024-05-29T15:53:25+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T15:53:25+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T15:53:25+03:00" level=warning msg="db can't query:  db_error" requestID=1
+time="2024-05-29T15:53:25+03:00" level=info msg="db get request to session storage" requestID=1
+time="2024-05-29T15:53:25+03:00" level=warning msg="db can't query: redis: nil" requestID=1
+time="2024-05-29T15:55:55+03:00" level=info msg="db delete request to session storage" requestID=1
+time="2024-05-29T15:56:06+03:00" level=info msg="db delete request to session storage" requestID=1
+time="2024-05-29T15:56:11+03:00" level=info msg="db add request to person_interest" requestID=1
+time="2024-05-29T15:56:11+03:00" level=info msg="db add request to person_interest" requestID=1
+time="2024-05-29T15:56:11+03:00" level=warning msg="db insert can't query: repo error" requestID=1
+time="2024-05-29T15:56:11+03:00" level=info msg="db activating sub person" requestID=1
+time="2024-05-29T15:56:11+03:00" level=info msg="premium activated for user 1" requestID=1
+time="2024-05-29T15:56:11+03:00" level=info msg="db activating sub person" requestID=1
+time="2024-05-29T15:56:11+03:00" level=warning msg="db can't add premium: repo error" requestID=1
+time="2024-05-29T15:56:11+03:00" level=info msg="db activating sub person" requestID=1
+time="2024-05-29T15:56:11+03:00" level=info msg="premium activated for user 1" requestID=1
+time="2024-05-29T15:56:11+03:00" level=warning msg="db can't add premium to history: repo error" requestID=1
+time="2024-05-29T15:56:11+03:00" level=info msg="db getting sub history for user 1" requestID=1
+time="2024-05-29T15:56:11+03:00" level=info msg="db getting sub history for user 1" requestID=1
+time="2024-05-29T15:56:11+03:00" level=warning msg="db can't read sub history: db_error" requestID=1
+time="2024-05-29T15:56:11+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T15:56:11+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T15:56:11+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T15:56:11+03:00" level=warning msg="can't query: db_error" requestID=1
+time="2024-05-29T15:56:11+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T15:56:11+03:00" level=info msg="db got 1 interest ids" requestID=1
+time="2024-05-29T15:56:11+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T15:56:11+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T15:56:11+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T15:56:11+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T15:56:11+03:00" level=info msg="db delete request to person_interest" requestID=1
+time="2024-05-29T15:56:11+03:00" level=info msg="db person interest deleted" requestID=1
+time="2024-05-29T15:56:11+03:00" level=info msg="db delete request to person_interest" requestID=1
+time="2024-05-29T15:56:11+03:00" level=warning msg="db delete can't query: repo err" requestID=1
+time="2024-05-29T15:56:11+03:00" level=info msg="SELECT id, name, birthday, description, location, email, password, created_at, premium, likes_left, gender, premium_expires_at FROM person WHERE ((id IN ($1)) AND LOWER(name) LIKE $2)[1 %name1%] <nil>"
+time="2024-05-29T15:56:11+03:00" level=info msg="db get request to person" requestID=1
+time="2024-05-29T15:56:11+03:00" level=info msg="db returning records" requestID=1
+time="2024-05-29T15:56:11+03:00" level=info msg="db update request to person" requestID=1
+time="2024-05-29T15:56:11+03:00" level=info msg="db person updated" requestID=1
+time="2024-05-29T15:56:11+03:00" level=info msg="db update request to person" requestID=1
+time="2024-05-29T15:56:11+03:00" level=warning msg="db update can't query: repo error" requestID=1
+time="2024-05-29T15:56:11+03:00" level=info msg="db delete request to person" requestID=1
+time="2024-05-29T15:56:11+03:00" level=info msg="db person deleted" requestID=1
+time="2024-05-29T15:56:11+03:00" level=info msg="db delete request to person" requestID=1
+time="2024-05-29T15:56:11+03:00" level=warning msg="db delete can't query: repo err" requestID=1
+time="2024-05-29T15:56:11+03:00" level=info msg="db create request to person" requestID=1
+time="2024-05-29T15:56:12+03:00" level=info msg="db created person" requestID=1
+time="2024-05-29T15:56:12+03:00" level=info msg="db create request to person" requestID=1
+time="2024-05-29T15:56:13+03:00" level=warning msg="db can't query: repo error" requestID=1
+time="2024-05-29T15:56:13+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T15:56:13+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T15:56:13+03:00" level=warning msg="db can't query:  db_error" requestID=1
+time="2024-05-29T15:56:13+03:00" level=info msg="db get request to session storage" requestID=1
+time="2024-05-29T15:56:13+03:00" level=warning msg="db can't query: redis: nil" requestID=1
+time="2024-05-29T15:56:13+03:00" level=info msg="db delete request to session storage" requestID=1
+time="2024-05-29T16:39:28+03:00" level=info msg="db add request to person_interest" requestID=1
+time="2024-05-29T16:39:28+03:00" level=info msg="db add request to person_interest" requestID=1
+time="2024-05-29T16:39:28+03:00" level=warning msg="db insert can't query: repo error" requestID=1
+time="2024-05-29T16:39:28+03:00" level=info msg="db activating sub person" requestID=1
+time="2024-05-29T16:39:28+03:00" level=info msg="premium activated for user 1" requestID=1
+time="2024-05-29T16:39:28+03:00" level=info msg="db activating sub person" requestID=1
+time="2024-05-29T16:39:28+03:00" level=warning msg="db can't add premium: repo error" requestID=1
+time="2024-05-29T16:39:28+03:00" level=info msg="db activating sub person" requestID=1
+time="2024-05-29T16:39:28+03:00" level=info msg="premium activated for user 1" requestID=1
+time="2024-05-29T16:39:28+03:00" level=warning msg="db can't add premium to history: repo error" requestID=1
+time="2024-05-29T16:39:28+03:00" level=info msg="db getting sub history for user 1" requestID=1
+time="2024-05-29T16:39:28+03:00" level=info msg="db getting sub history for user 1" requestID=1
+time="2024-05-29T16:39:28+03:00" level=warning msg="db can't read sub history: db_error" requestID=1
+time="2024-05-29T16:39:28+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T16:39:28+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T16:39:28+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T16:39:28+03:00" level=warning msg="can't query: db_error" requestID=1
+time="2024-05-29T16:39:28+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T16:39:28+03:00" level=info msg="db got 1 interest ids" requestID=1
+time="2024-05-29T16:39:28+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T16:39:28+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T16:39:28+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T16:39:28+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T16:39:28+03:00" level=info msg="db delete request to person_interest" requestID=1
+time="2024-05-29T16:39:28+03:00" level=info msg="db person interest deleted" requestID=1
+time="2024-05-29T16:39:28+03:00" level=info msg="db delete request to person_interest" requestID=1
+time="2024-05-29T16:39:28+03:00" level=warning msg="db delete can't query: repo err" requestID=1
+time="2024-05-29T16:39:28+03:00" level=info msg="SELECT id, name, birthday, description, location, email, password, created_at, premium, likes_left, gender, premium_expires_at FROM person WHERE ((id IN ($1)) AND LOWER(name) LIKE $2)[1 %name1%] <nil>"
+time="2024-05-29T16:39:28+03:00" level=info msg="db get request to person" requestID=1
+time="2024-05-29T16:39:28+03:00" level=info msg="db returning records" requestID=1
+time="2024-05-29T16:39:28+03:00" level=info msg="db update request to person" requestID=1
+time="2024-05-29T16:39:28+03:00" level=info msg="db person updated" requestID=1
+time="2024-05-29T16:39:28+03:00" level=info msg="db update request to person" requestID=1
+time="2024-05-29T16:39:28+03:00" level=warning msg="db update can't query: repo error" requestID=1
+time="2024-05-29T16:39:28+03:00" level=info msg="db delete request to person" requestID=1
+time="2024-05-29T16:39:28+03:00" level=info msg="db person deleted" requestID=1
+time="2024-05-29T16:39:28+03:00" level=info msg="db delete request to person" requestID=1
+time="2024-05-29T16:39:28+03:00" level=warning msg="db delete can't query: repo err" requestID=1
+time="2024-05-29T16:39:28+03:00" level=info msg="db create request to person" requestID=1
+time="2024-05-29T16:39:29+03:00" level=info msg="db created person" requestID=1
+time="2024-05-29T16:39:29+03:00" level=info msg="db create request to person" requestID=1
+time="2024-05-29T16:39:30+03:00" level=warning msg="db can't query: repo error" requestID=1
+time="2024-05-29T16:39:30+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T16:39:30+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T16:39:30+03:00" level=warning msg="db can't query:  db_error" requestID=1
+time="2024-05-29T16:39:30+03:00" level=info msg="db get request to session storage" requestID=1
+time="2024-05-29T16:39:30+03:00" level=warning msg="db can't query: redis: nil" requestID=1
+time="2024-05-29T16:39:30+03:00" level=info msg="db delete request to session storage" requestID=1
+time="2024-05-29T16:40:24+03:00" level=info msg="db add request to person_interest" requestID=1
+time="2024-05-29T16:40:24+03:00" level=info msg="db add request to person_interest" requestID=1
+time="2024-05-29T16:40:24+03:00" level=warning msg="db insert can't query: repo error" requestID=1
+time="2024-05-29T16:40:24+03:00" level=info msg="db activating sub person" requestID=1
+time="2024-05-29T16:40:24+03:00" level=info msg="premium activated for user 1" requestID=1
+time="2024-05-29T16:40:24+03:00" level=info msg="db activating sub person" requestID=1
+time="2024-05-29T16:40:24+03:00" level=warning msg="db can't add premium: repo error" requestID=1
+time="2024-05-29T16:40:24+03:00" level=info msg="db activating sub person" requestID=1
+time="2024-05-29T16:40:24+03:00" level=info msg="premium activated for user 1" requestID=1
+time="2024-05-29T16:40:24+03:00" level=warning msg="db can't add premium to history: repo error" requestID=1
+time="2024-05-29T16:40:24+03:00" level=info msg="db getting sub history for user 1" requestID=1
+time="2024-05-29T16:40:24+03:00" level=info msg="db getting sub history for user 1" requestID=1
+time="2024-05-29T16:40:24+03:00" level=warning msg="db can't read sub history: db_error" requestID=1
+time="2024-05-29T16:40:24+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T16:40:24+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T16:40:24+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T16:40:24+03:00" level=warning msg="can't query: db_error" requestID=1
+time="2024-05-29T16:40:24+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T16:40:24+03:00" level=info msg="db got 1 interest ids" requestID=1
+time="2024-05-29T16:40:24+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T16:40:24+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T16:40:24+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T16:40:24+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T16:40:24+03:00" level=info msg="db delete request to person_interest" requestID=1
+time="2024-05-29T16:40:24+03:00" level=info msg="db person interest deleted" requestID=1
+time="2024-05-29T16:40:24+03:00" level=info msg="db delete request to person_interest" requestID=1
+time="2024-05-29T16:40:24+03:00" level=warning msg="db delete can't query: repo err" requestID=1
+time="2024-05-29T16:40:24+03:00" level=info msg="SELECT id, name, birthday, description, location, email, password, created_at, premium, likes_left, gender, premium_expires_at FROM person WHERE ((id IN ($1)) AND LOWER(name) LIKE $2)[1 %name1%] <nil>"
+time="2024-05-29T16:40:24+03:00" level=info msg="db get request to person" requestID=1
+time="2024-05-29T16:40:24+03:00" level=info msg="db returning records" requestID=1
+time="2024-05-29T16:40:24+03:00" level=info msg="db update request to person" requestID=1
+time="2024-05-29T16:40:24+03:00" level=info msg="db person updated" requestID=1
+time="2024-05-29T16:40:24+03:00" level=info msg="db update request to person" requestID=1
+time="2024-05-29T16:40:24+03:00" level=warning msg="db update can't query: repo error" requestID=1
+time="2024-05-29T16:40:24+03:00" level=info msg="db delete request to person" requestID=1
+time="2024-05-29T16:40:24+03:00" level=info msg="db person deleted" requestID=1
+time="2024-05-29T16:40:24+03:00" level=info msg="db delete request to person" requestID=1
+time="2024-05-29T16:40:24+03:00" level=warning msg="db delete can't query: repo err" requestID=1
+time="2024-05-29T16:40:24+03:00" level=info msg="db create request to person" requestID=1
+time="2024-05-29T16:40:25+03:00" level=info msg="db created person" requestID=1
+time="2024-05-29T16:40:25+03:00" level=info msg="db create request to person" requestID=1
+time="2024-05-29T16:40:26+03:00" level=warning msg="db can't query: repo error" requestID=1
+time="2024-05-29T16:40:26+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T16:40:26+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T16:40:26+03:00" level=warning msg="db can't query:  db_error" requestID=1
+time="2024-05-29T16:40:26+03:00" level=info msg="db get request to session storage" requestID=1
+time="2024-05-29T16:40:26+03:00" level=warning msg="db can't query: redis: nil" requestID=1
+time="2024-05-29T16:40:26+03:00" level=info msg="db delete request to session storage" requestID=1
+time="2024-05-29T16:42:55+03:00" level=info msg="db add request to person_interest" requestID=1
+time="2024-05-29T16:42:55+03:00" level=info msg="db add request to person_interest" requestID=1
+time="2024-05-29T16:42:55+03:00" level=warning msg="db insert can't query: repo error" requestID=1
+time="2024-05-29T16:42:55+03:00" level=info msg="db activating sub person" requestID=1
+time="2024-05-29T16:42:55+03:00" level=info msg="premium activated for user 1" requestID=1
+time="2024-05-29T16:42:55+03:00" level=info msg="db activating sub person" requestID=1
+time="2024-05-29T16:42:55+03:00" level=warning msg="db can't add premium: repo error" requestID=1
+time="2024-05-29T16:42:55+03:00" level=info msg="db activating sub person" requestID=1
+time="2024-05-29T16:42:55+03:00" level=info msg="premium activated for user 1" requestID=1
+time="2024-05-29T16:42:55+03:00" level=warning msg="db can't add premium to history: repo error" requestID=1
+time="2024-05-29T16:42:55+03:00" level=info msg="db getting sub history for user 1" requestID=1
+time="2024-05-29T16:42:55+03:00" level=info msg="db getting sub history for user 1" requestID=1
+time="2024-05-29T16:42:55+03:00" level=warning msg="db can't read sub history: db_error" requestID=1
+time="2024-05-29T16:42:55+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T16:42:55+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T16:42:55+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T16:42:55+03:00" level=warning msg="can't query: db_error" requestID=1
+time="2024-05-29T16:42:55+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T16:42:55+03:00" level=info msg="db got 1 interest ids" requestID=1
+time="2024-05-29T16:42:55+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T16:42:55+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T16:42:55+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T16:42:55+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T16:42:55+03:00" level=info msg="db delete request to person_interest" requestID=1
+time="2024-05-29T16:42:55+03:00" level=info msg="db person interest deleted" requestID=1
+time="2024-05-29T16:42:55+03:00" level=info msg="db delete request to person_interest" requestID=1
+time="2024-05-29T16:42:55+03:00" level=warning msg="db delete can't query: repo err" requestID=1
+time="2024-05-29T16:42:55+03:00" level=info msg="SELECT id, name, birthday, description, location, email, password, created_at, premium, likes_left, gender, premium_expires_at FROM person WHERE ((id IN ($1)) AND LOWER(name) LIKE $2)[1 %name1%] <nil>"
+time="2024-05-29T16:42:55+03:00" level=info msg="db get request to person" requestID=1
+time="2024-05-29T16:42:55+03:00" level=info msg="db returning records" requestID=1
+time="2024-05-29T16:42:55+03:00" level=info msg="db update request to person" requestID=1
+time="2024-05-29T16:42:55+03:00" level=info msg="db person updated" requestID=1
+time="2024-05-29T16:42:55+03:00" level=info msg="db update request to person" requestID=1
+time="2024-05-29T16:42:55+03:00" level=warning msg="db update can't query: repo error" requestID=1
+time="2024-05-29T16:42:55+03:00" level=info msg="db delete request to person" requestID=1
+time="2024-05-29T16:42:55+03:00" level=info msg="db person deleted" requestID=1
+time="2024-05-29T16:42:55+03:00" level=info msg="db delete request to person" requestID=1
+time="2024-05-29T16:42:55+03:00" level=warning msg="db delete can't query: repo err" requestID=1
+time="2024-05-29T16:42:55+03:00" level=info msg="db create request to person" requestID=1
+time="2024-05-29T16:42:56+03:00" level=info msg="db created person" requestID=1
+time="2024-05-29T16:42:56+03:00" level=info msg="db create request to person" requestID=1
+time="2024-05-29T16:42:57+03:00" level=warning msg="db can't query: repo error" requestID=1
+time="2024-05-29T16:42:57+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T16:42:57+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T16:42:57+03:00" level=warning msg="db can't query:  db_error" requestID=1
+time="2024-05-29T16:42:57+03:00" level=info msg="db get request to session storage" requestID=1
+time="2024-05-29T16:42:57+03:00" level=warning msg="db can't query: redis: nil" requestID=1
+time="2024-05-29T16:42:57+03:00" level=info msg="db delete request to session storage" requestID=1
+time="2024-05-29T16:43:51+03:00" level=info msg="db add request to person_interest" requestID=1
+time="2024-05-29T16:43:51+03:00" level=info msg="db add request to person_interest" requestID=1
+time="2024-05-29T16:43:51+03:00" level=warning msg="db insert can't query: repo error" requestID=1
+time="2024-05-29T16:43:51+03:00" level=info msg="db activating sub person" requestID=1
+time="2024-05-29T16:43:51+03:00" level=info msg="premium activated for user 1" requestID=1
+time="2024-05-29T16:43:51+03:00" level=info msg="db activating sub person" requestID=1
+time="2024-05-29T16:43:51+03:00" level=warning msg="db can't add premium: repo error" requestID=1
+time="2024-05-29T16:43:51+03:00" level=info msg="db activating sub person" requestID=1
+time="2024-05-29T16:43:51+03:00" level=info msg="premium activated for user 1" requestID=1
+time="2024-05-29T16:43:51+03:00" level=warning msg="db can't add premium to history: repo error" requestID=1
+time="2024-05-29T16:43:51+03:00" level=info msg="db getting sub history for user 1" requestID=1
+time="2024-05-29T16:43:51+03:00" level=info msg="db getting sub history for user 1" requestID=1
+time="2024-05-29T16:43:51+03:00" level=warning msg="db can't read sub history: db_error" requestID=1
+time="2024-05-29T16:43:51+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T16:43:51+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T16:43:51+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T16:43:51+03:00" level=warning msg="can't query: db_error" requestID=1
+time="2024-05-29T16:43:51+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T16:43:51+03:00" level=info msg="db got 1 interest ids" requestID=1
+time="2024-05-29T16:43:51+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T16:43:51+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T16:43:51+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T16:43:51+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T16:43:51+03:00" level=info msg="db delete request to person_interest" requestID=1
+time="2024-05-29T16:43:51+03:00" level=info msg="db person interest deleted" requestID=1
+time="2024-05-29T16:43:51+03:00" level=info msg="db delete request to person_interest" requestID=1
+time="2024-05-29T16:43:51+03:00" level=warning msg="db delete can't query: repo err" requestID=1
+time="2024-05-29T16:43:51+03:00" level=info msg="SELECT id, name, birthday, description, location, email, password, created_at, premium, likes_left, gender, premium_expires_at FROM person WHERE ((id IN ($1)) AND LOWER(name) LIKE $2)[1 %name1%] <nil>"
+time="2024-05-29T16:43:51+03:00" level=info msg="db get request to person" requestID=1
+time="2024-05-29T16:43:51+03:00" level=info msg="db returning records" requestID=1
+time="2024-05-29T16:43:51+03:00" level=info msg="db update request to person" requestID=1
+time="2024-05-29T16:43:51+03:00" level=info msg="db person updated" requestID=1
+time="2024-05-29T16:43:51+03:00" level=info msg="db update request to person" requestID=1
+time="2024-05-29T16:43:51+03:00" level=warning msg="db update can't query: repo error" requestID=1
+time="2024-05-29T16:43:51+03:00" level=info msg="db delete request to person" requestID=1
+time="2024-05-29T16:43:51+03:00" level=info msg="db person deleted" requestID=1
+time="2024-05-29T16:43:51+03:00" level=info msg="db delete request to person" requestID=1
+time="2024-05-29T16:43:51+03:00" level=warning msg="db delete can't query: repo err" requestID=1
+time="2024-05-29T16:43:51+03:00" level=info msg="db create request to person" requestID=1
+time="2024-05-29T16:43:52+03:00" level=info msg="db created person" requestID=1
+time="2024-05-29T16:43:52+03:00" level=info msg="db create request to person" requestID=1
+time="2024-05-29T16:43:53+03:00" level=warning msg="db can't query: repo error" requestID=1
+time="2024-05-29T16:43:53+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T16:43:53+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T16:43:53+03:00" level=warning msg="db can't query:  db_error" requestID=1
+time="2024-05-29T16:43:53+03:00" level=info msg="db get request to session storage" requestID=1
+time="2024-05-29T16:43:53+03:00" level=warning msg="db can't query: redis: nil" requestID=1
+time="2024-05-29T16:43:53+03:00" level=info msg="db delete request to session storage" requestID=1
+time="2024-05-29T16:56:24+03:00" level=info msg="db add request to person_interest" requestID=1
+time="2024-05-29T16:56:24+03:00" level=info msg="db add request to person_interest" requestID=1
+time="2024-05-29T16:56:24+03:00" level=warning msg="db insert can't query: repo error" requestID=1
+time="2024-05-29T16:56:24+03:00" level=info msg="db activating sub person" requestID=1
+time="2024-05-29T16:56:24+03:00" level=info msg="premium activated for user 1" requestID=1
+time="2024-05-29T16:56:24+03:00" level=info msg="db activating sub person" requestID=1
+time="2024-05-29T16:56:24+03:00" level=warning msg="db can't add premium: repo error" requestID=1
+time="2024-05-29T16:56:24+03:00" level=info msg="db activating sub person" requestID=1
+time="2024-05-29T16:56:24+03:00" level=info msg="premium activated for user 1" requestID=1
+time="2024-05-29T16:56:24+03:00" level=warning msg="db can't add premium to history: repo error" requestID=1
+time="2024-05-29T16:56:24+03:00" level=info msg="db getting sub history for user 1" requestID=1
+time="2024-05-29T16:56:24+03:00" level=info msg="db getting sub history for user 1" requestID=1
+time="2024-05-29T16:56:24+03:00" level=warning msg="db can't read sub history: db_error" requestID=1
+time="2024-05-29T16:56:24+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T16:56:24+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T16:56:24+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T16:56:24+03:00" level=warning msg="can't query: db_error" requestID=1
+time="2024-05-29T16:56:24+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T16:56:24+03:00" level=info msg="db got 1 interest ids" requestID=1
+time="2024-05-29T16:56:24+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T16:56:24+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T16:56:24+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T16:56:24+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T16:56:24+03:00" level=info msg="db delete request to person_interest" requestID=1
+time="2024-05-29T16:56:24+03:00" level=info msg="db person interest deleted" requestID=1
+time="2024-05-29T16:56:24+03:00" level=info msg="db delete request to person_interest" requestID=1
+time="2024-05-29T16:56:24+03:00" level=warning msg="db delete can't query: repo err" requestID=1
+time="2024-05-29T16:56:24+03:00" level=info msg="SELECT id, name, birthday, description, location, email, password, created_at, premium, likes_left, gender, premium_expires_at FROM person WHERE ((id IN ($1)) AND LOWER(name) LIKE $2)[1 %name1%] <nil>"
+time="2024-05-29T16:56:24+03:00" level=info msg="db get request to person" requestID=1
+time="2024-05-29T16:56:24+03:00" level=info msg="db returning records" requestID=1
+time="2024-05-29T16:56:24+03:00" level=info msg="db update request to person" requestID=1
+time="2024-05-29T16:56:24+03:00" level=info msg="db person updated" requestID=1
+time="2024-05-29T16:56:24+03:00" level=info msg="db update request to person" requestID=1
+time="2024-05-29T16:56:24+03:00" level=warning msg="db update can't query: repo error" requestID=1
+time="2024-05-29T16:56:24+03:00" level=info msg="db delete request to person" requestID=1
+time="2024-05-29T16:56:24+03:00" level=info msg="db person deleted" requestID=1
+time="2024-05-29T16:56:24+03:00" level=info msg="db delete request to person" requestID=1
+time="2024-05-29T16:56:24+03:00" level=warning msg="db delete can't query: repo err" requestID=1
+time="2024-05-29T16:56:24+03:00" level=info msg="db create request to person" requestID=1
+time="2024-05-29T16:56:25+03:00" level=info msg="db created person" requestID=1
+time="2024-05-29T16:56:25+03:00" level=info msg="db create request to person" requestID=1
+time="2024-05-29T16:56:26+03:00" level=warning msg="db can't query: repo error" requestID=1
+time="2024-05-29T16:56:26+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T16:56:26+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T16:56:26+03:00" level=warning msg="db can't query:  db_error" requestID=1
+time="2024-05-29T16:56:26+03:00" level=info msg="db get request to session storage" requestID=1
+time="2024-05-29T16:56:26+03:00" level=warning msg="db can't query: redis: nil" requestID=1
+time="2024-05-29T16:56:26+03:00" level=info msg="db delete request to session storage" requestID=1
+time="2024-05-29T17:06:40+03:00" level=info msg="db add request to person_interest" requestID=1
+time="2024-05-29T17:06:40+03:00" level=info msg="db add request to person_interest" requestID=1
+time="2024-05-29T17:06:40+03:00" level=warning msg="db insert can't query: repo error" requestID=1
+time="2024-05-29T17:06:40+03:00" level=info msg="db activating sub person" requestID=1
+time="2024-05-29T17:06:40+03:00" level=info msg="premium activated for user 1" requestID=1
+time="2024-05-29T17:06:40+03:00" level=info msg="db activating sub person" requestID=1
+time="2024-05-29T17:06:40+03:00" level=warning msg="db can't add premium: repo error" requestID=1
+time="2024-05-29T17:06:40+03:00" level=info msg="db activating sub person" requestID=1
+time="2024-05-29T17:06:40+03:00" level=info msg="premium activated for user 1" requestID=1
+time="2024-05-29T17:06:40+03:00" level=warning msg="db can't add premium to history: repo error" requestID=1
+time="2024-05-29T17:06:40+03:00" level=info msg="db getting sub history for user 1" requestID=1
+time="2024-05-29T17:06:40+03:00" level=info msg="db getting sub history for user 1" requestID=1
+time="2024-05-29T17:06:40+03:00" level=warning msg="db can't read sub history: db_error" requestID=1
+time="2024-05-29T17:06:40+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T17:06:40+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T17:06:40+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T17:06:40+03:00" level=warning msg="can't query: db_error" requestID=1
+time="2024-05-29T17:06:40+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T17:06:40+03:00" level=info msg="db got 1 interest ids" requestID=1
+time="2024-05-29T17:06:40+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T17:06:40+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T17:06:40+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T17:06:40+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T17:06:40+03:00" level=info msg="db delete request to person_interest" requestID=1
+time="2024-05-29T17:06:40+03:00" level=info msg="db person interest deleted" requestID=1
+time="2024-05-29T17:06:40+03:00" level=info msg="db delete request to person_interest" requestID=1
+time="2024-05-29T17:06:40+03:00" level=warning msg="db delete can't query: repo err" requestID=1
+time="2024-05-29T17:06:40+03:00" level=info msg="SELECT id, name, birthday, description, location, email, password, created_at, premium, likes_left, gender, premium_expires_at FROM person WHERE ((id IN ($1)) AND LOWER(name) LIKE $2)[1 %name1%] <nil>"
+time="2024-05-29T17:06:40+03:00" level=info msg="db get request to person" requestID=1
+time="2024-05-29T17:06:40+03:00" level=info msg="db returning records" requestID=1
+time="2024-05-29T17:06:40+03:00" level=info msg="db update request to person" requestID=1
+time="2024-05-29T17:06:40+03:00" level=info msg="db person updated" requestID=1
+time="2024-05-29T17:06:40+03:00" level=info msg="db update request to person" requestID=1
+time="2024-05-29T17:06:40+03:00" level=warning msg="db update can't query: repo error" requestID=1
+time="2024-05-29T17:06:40+03:00" level=info msg="db delete request to person" requestID=1
+time="2024-05-29T17:06:40+03:00" level=info msg="db person deleted" requestID=1
+time="2024-05-29T17:06:40+03:00" level=info msg="db delete request to person" requestID=1
+time="2024-05-29T17:06:40+03:00" level=warning msg="db delete can't query: repo err" requestID=1
+time="2024-05-29T17:06:40+03:00" level=info msg="db create request to person" requestID=1
+time="2024-05-29T17:06:41+03:00" level=info msg="db created person" requestID=1
+time="2024-05-29T17:06:41+03:00" level=info msg="db create request to person" requestID=1
+time="2024-05-29T17:06:42+03:00" level=warning msg="db can't query: repo error" requestID=1
+time="2024-05-29T17:06:42+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T17:06:42+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T17:06:42+03:00" level=warning msg="db can't query:  db_error" requestID=1
+time="2024-05-29T17:06:42+03:00" level=info msg="db get request to session storage" requestID=1
+time="2024-05-29T17:06:42+03:00" level=warning msg="db can't query: redis: nil" requestID=1
+time="2024-05-29T17:06:42+03:00" level=info msg="db delete request to session storage" requestID=1
+time="2024-05-29T17:11:23+03:00" level=info msg="db add request to person_interest" requestID=1
+time="2024-05-29T17:11:23+03:00" level=info msg="db add request to person_interest" requestID=1
+time="2024-05-29T17:11:23+03:00" level=warning msg="db insert can't query: repo error" requestID=1
+time="2024-05-29T17:11:24+03:00" level=info msg="db activating sub person" requestID=1
+time="2024-05-29T17:11:24+03:00" level=info msg="premium activated for user 1" requestID=1
+time="2024-05-29T17:11:24+03:00" level=info msg="db activating sub person" requestID=1
+time="2024-05-29T17:11:24+03:00" level=warning msg="db can't add premium: repo error" requestID=1
+time="2024-05-29T17:11:24+03:00" level=info msg="db activating sub person" requestID=1
+time="2024-05-29T17:11:24+03:00" level=info msg="premium activated for user 1" requestID=1
+time="2024-05-29T17:11:24+03:00" level=warning msg="db can't add premium to history: repo error" requestID=1
+time="2024-05-29T17:11:24+03:00" level=info msg="db getting sub history for user 1" requestID=1
+time="2024-05-29T17:11:24+03:00" level=info msg="db getting sub history for user 1" requestID=1
+time="2024-05-29T17:11:24+03:00" level=warning msg="db can't read sub history: db_error" requestID=1
+time="2024-05-29T17:11:24+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T17:11:24+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T17:11:24+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T17:11:24+03:00" level=warning msg="can't query: db_error" requestID=1
+time="2024-05-29T17:11:24+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T17:11:24+03:00" level=info msg="db got 1 interest ids" requestID=1
+time="2024-05-29T17:11:24+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T17:11:24+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T17:11:24+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T17:11:24+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T17:11:24+03:00" level=info msg="db delete request to person_interest" requestID=1
+time="2024-05-29T17:11:24+03:00" level=info msg="db person interest deleted" requestID=1
+time="2024-05-29T17:11:24+03:00" level=info msg="db delete request to person_interest" requestID=1
+time="2024-05-29T17:11:24+03:00" level=warning msg="db delete can't query: repo err" requestID=1
+time="2024-05-29T17:11:24+03:00" level=info msg="SELECT id, name, birthday, description, location, email, password, created_at, premium, likes_left, gender, premium_expires_at FROM person WHERE ((id IN ($1)) AND LOWER(name) LIKE $2)[1 %name1%] <nil>"
+time="2024-05-29T17:11:24+03:00" level=info msg="db get request to person" requestID=1
+time="2024-05-29T17:11:24+03:00" level=info msg="db returning records" requestID=1
+time="2024-05-29T17:11:24+03:00" level=info msg="db update request to person" requestID=1
+time="2024-05-29T17:11:24+03:00" level=info msg="db person updated" requestID=1
+time="2024-05-29T17:11:24+03:00" level=info msg="db update request to person" requestID=1
+time="2024-05-29T17:11:24+03:00" level=warning msg="db update can't query: repo error" requestID=1
+time="2024-05-29T17:11:24+03:00" level=info msg="db delete request to person" requestID=1
+time="2024-05-29T17:11:24+03:00" level=info msg="db person deleted" requestID=1
+time="2024-05-29T17:11:24+03:00" level=info msg="db delete request to person" requestID=1
+time="2024-05-29T17:11:24+03:00" level=warning msg="db delete can't query: repo err" requestID=1
+time="2024-05-29T17:11:24+03:00" level=info msg="db create request to person" requestID=1
+time="2024-05-29T17:11:24+03:00" level=info msg="db created person" requestID=1
+time="2024-05-29T17:11:24+03:00" level=info msg="db create request to person" requestID=1
+time="2024-05-29T17:11:25+03:00" level=warning msg="db can't query: repo error" requestID=1
+time="2024-05-29T17:11:25+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T17:11:25+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T17:11:25+03:00" level=warning msg="db can't query:  db_error" requestID=1
+time="2024-05-29T17:11:25+03:00" level=info msg="db get request to session storage" requestID=1
+time="2024-05-29T17:11:25+03:00" level=warning msg="db can't query: redis: nil" requestID=1
+time="2024-05-29T17:11:25+03:00" level=info msg="db delete request to session storage" requestID=1
+time="2024-05-29T17:13:29+03:00" level=info msg="db add request to person_interest" requestID=1
+time="2024-05-29T17:13:29+03:00" level=info msg="db add request to person_interest" requestID=1
+time="2024-05-29T17:13:29+03:00" level=warning msg="db insert can't query: repo error" requestID=1
+time="2024-05-29T17:13:29+03:00" level=info msg="db activating sub person" requestID=1
+time="2024-05-29T17:13:29+03:00" level=info msg="premium activated for user 1" requestID=1
+time="2024-05-29T17:13:29+03:00" level=info msg="db activating sub person" requestID=1
+time="2024-05-29T17:13:29+03:00" level=warning msg="db can't add premium: repo error" requestID=1
+time="2024-05-29T17:13:29+03:00" level=info msg="db activating sub person" requestID=1
+time="2024-05-29T17:13:29+03:00" level=info msg="premium activated for user 1" requestID=1
+time="2024-05-29T17:13:29+03:00" level=warning msg="db can't add premium to history: repo error" requestID=1
+time="2024-05-29T17:13:29+03:00" level=info msg="db getting sub history for user 1" requestID=1
+time="2024-05-29T17:13:29+03:00" level=info msg="db getting sub history for user 1" requestID=1
+time="2024-05-29T17:13:29+03:00" level=warning msg="db can't read sub history: db_error" requestID=1
+time="2024-05-29T17:13:29+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T17:13:29+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T17:13:29+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T17:13:29+03:00" level=warning msg="can't query: db_error" requestID=1
+time="2024-05-29T17:13:29+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T17:13:29+03:00" level=info msg="db got 1 interest ids" requestID=1
+time="2024-05-29T17:13:29+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T17:13:29+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T17:13:29+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T17:13:29+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T17:13:29+03:00" level=info msg="db delete request to person_interest" requestID=1
+time="2024-05-29T17:13:29+03:00" level=info msg="db person interest deleted" requestID=1
+time="2024-05-29T17:13:29+03:00" level=info msg="db delete request to person_interest" requestID=1
+time="2024-05-29T17:13:29+03:00" level=warning msg="db delete can't query: repo err" requestID=1
+time="2024-05-29T17:13:29+03:00" level=info msg="SELECT id, name, birthday, description, location, email, password, created_at, premium, likes_left, gender, premium_expires_at FROM person WHERE ((id IN ($1)) AND LOWER(name) LIKE $2)[1 %name1%] <nil>"
+time="2024-05-29T17:13:29+03:00" level=info msg="db get request to person" requestID=1
+time="2024-05-29T17:13:29+03:00" level=info msg="db returning records" requestID=1
+time="2024-05-29T17:13:29+03:00" level=info msg="db update request to person" requestID=1
+time="2024-05-29T17:13:29+03:00" level=info msg="db person updated" requestID=1
+time="2024-05-29T17:13:29+03:00" level=info msg="db update request to person" requestID=1
+time="2024-05-29T17:13:29+03:00" level=warning msg="db update can't query: repo error" requestID=1
+time="2024-05-29T17:13:29+03:00" level=info msg="db delete request to person" requestID=1
+time="2024-05-29T17:13:29+03:00" level=info msg="db person deleted" requestID=1
+time="2024-05-29T17:13:29+03:00" level=info msg="db delete request to person" requestID=1
+time="2024-05-29T17:13:29+03:00" level=warning msg="db delete can't query: repo err" requestID=1
+time="2024-05-29T17:13:29+03:00" level=info msg="db create request to person" requestID=1
+time="2024-05-29T17:13:30+03:00" level=info msg="db created person" requestID=1
+time="2024-05-29T17:13:30+03:00" level=info msg="db create request to person" requestID=1
+time="2024-05-29T17:13:31+03:00" level=warning msg="db can't query: repo error" requestID=1
+time="2024-05-29T17:13:31+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T17:13:31+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T17:13:31+03:00" level=warning msg="db can't query:  db_error" requestID=1
+time="2024-05-29T17:13:31+03:00" level=info msg="db get request to session storage" requestID=1
+time="2024-05-29T17:13:31+03:00" level=warning msg="db can't query: redis: nil" requestID=1
+time="2024-05-29T17:13:31+03:00" level=info msg="db delete request to session storage" requestID=1
+time="2024-05-29T17:14:31+03:00" level=info msg="db add request to person_interest" requestID=1
+time="2024-05-29T17:14:31+03:00" level=info msg="db add request to person_interest" requestID=1
+time="2024-05-29T17:14:31+03:00" level=warning msg="db insert can't query: repo error" requestID=1
+time="2024-05-29T17:14:31+03:00" level=info msg="db activating sub person" requestID=1
+time="2024-05-29T17:14:31+03:00" level=info msg="premium activated for user 1" requestID=1
+time="2024-05-29T17:14:31+03:00" level=info msg="db activating sub person" requestID=1
+time="2024-05-29T17:14:31+03:00" level=warning msg="db can't add premium: repo error" requestID=1
+time="2024-05-29T17:14:31+03:00" level=info msg="db activating sub person" requestID=1
+time="2024-05-29T17:14:31+03:00" level=info msg="premium activated for user 1" requestID=1
+time="2024-05-29T17:14:31+03:00" level=warning msg="db can't add premium to history: repo error" requestID=1
+time="2024-05-29T17:14:31+03:00" level=info msg="db getting sub history for user 1" requestID=1
+time="2024-05-29T17:14:31+03:00" level=info msg="db getting sub history for user 1" requestID=1
+time="2024-05-29T17:14:31+03:00" level=warning msg="db can't read sub history: db_error" requestID=1
+time="2024-05-29T17:14:31+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T17:14:31+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T17:14:31+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T17:14:31+03:00" level=warning msg="can't query: db_error" requestID=1
+time="2024-05-29T17:14:31+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T17:14:31+03:00" level=info msg="db got 1 interest ids" requestID=1
+time="2024-05-29T17:14:31+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T17:14:31+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T17:14:31+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T17:14:31+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T17:14:31+03:00" level=info msg="db delete request to person_interest" requestID=1
+time="2024-05-29T17:14:31+03:00" level=info msg="db person interest deleted" requestID=1
+time="2024-05-29T17:14:31+03:00" level=info msg="db delete request to person_interest" requestID=1
+time="2024-05-29T17:14:31+03:00" level=warning msg="db delete can't query: repo err" requestID=1
+time="2024-05-29T17:14:31+03:00" level=info msg="SELECT id, name, birthday, description, location, email, password, created_at, premium, likes_left, gender, premium_expires_at FROM person WHERE ((id IN ($1)) AND LOWER(name) LIKE $2)[1 %name1%] <nil>"
+time="2024-05-29T17:14:31+03:00" level=info msg="db get request to person" requestID=1
+time="2024-05-29T17:14:31+03:00" level=info msg="db returning records" requestID=1
+time="2024-05-29T17:14:31+03:00" level=info msg="db update request to person" requestID=1
+time="2024-05-29T17:14:31+03:00" level=info msg="db person updated" requestID=1
+time="2024-05-29T17:14:31+03:00" level=info msg="db update request to person" requestID=1
+time="2024-05-29T17:14:31+03:00" level=warning msg="db update can't query: repo error" requestID=1
+time="2024-05-29T17:14:31+03:00" level=info msg="db delete request to person" requestID=1
+time="2024-05-29T17:14:31+03:00" level=info msg="db person deleted" requestID=1
+time="2024-05-29T17:14:31+03:00" level=info msg="db delete request to person" requestID=1
+time="2024-05-29T17:14:31+03:00" level=warning msg="db delete can't query: repo err" requestID=1
+time="2024-05-29T17:14:31+03:00" level=info msg="db create request to person" requestID=1
+time="2024-05-29T17:14:32+03:00" level=info msg="db created person" requestID=1
+time="2024-05-29T17:14:32+03:00" level=info msg="db create request to person" requestID=1
+time="2024-05-29T17:14:33+03:00" level=warning msg="db can't query: repo error" requestID=1
+time="2024-05-29T17:14:33+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T17:14:33+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T17:14:33+03:00" level=warning msg="db can't query:  db_error" requestID=1
+time="2024-05-29T17:14:33+03:00" level=info msg="db get request to session storage" requestID=1
+time="2024-05-29T17:14:33+03:00" level=warning msg="db can't query: redis: nil" requestID=1
+time="2024-05-29T17:14:33+03:00" level=info msg="db delete request to session storage" requestID=1
+time="2024-05-29T18:03:34+03:00" level=info msg="db add request to person_interest" requestID=1
+time="2024-05-29T18:03:34+03:00" level=info msg="db add request to person_interest" requestID=1
+time="2024-05-29T18:03:34+03:00" level=warning msg="db insert can't query: repo error" requestID=1
+time="2024-05-29T18:03:34+03:00" level=info msg="db activating sub person" requestID=1
+time="2024-05-29T18:03:34+03:00" level=info msg="premium activated for user 1" requestID=1
+time="2024-05-29T18:03:34+03:00" level=info msg="db activating sub person" requestID=1
+time="2024-05-29T18:03:34+03:00" level=warning msg="db can't add premium: repo error" requestID=1
+time="2024-05-29T18:03:34+03:00" level=info msg="db activating sub person" requestID=1
+time="2024-05-29T18:03:34+03:00" level=info msg="premium activated for user 1" requestID=1
+time="2024-05-29T18:03:34+03:00" level=warning msg="db can't add premium to history: repo error" requestID=1
+time="2024-05-29T18:03:34+03:00" level=info msg="db getting sub history for user 1" requestID=1
+time="2024-05-29T18:03:34+03:00" level=info msg="db getting sub history for user 1" requestID=1
+time="2024-05-29T18:03:34+03:00" level=warning msg="db can't read sub history: db_error" requestID=1
+time="2024-05-29T18:03:34+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T18:03:34+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T18:03:34+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T18:03:34+03:00" level=warning msg="can't query: db_error" requestID=1
+time="2024-05-29T18:03:34+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T18:03:34+03:00" level=info msg="db got 1 interest ids" requestID=1
+time="2024-05-29T18:03:34+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T18:03:34+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T18:03:34+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T18:03:34+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T18:03:34+03:00" level=info msg="db delete request to person_interest" requestID=1
+time="2024-05-29T18:03:34+03:00" level=info msg="db person interest deleted" requestID=1
+time="2024-05-29T18:03:34+03:00" level=info msg="db delete request to person_interest" requestID=1
+time="2024-05-29T18:03:34+03:00" level=warning msg="db delete can't query: repo err" requestID=1
+time="2024-05-29T18:03:34+03:00" level=info msg="SELECT id, name, birthday, description, location, email, password, created_at, premium, likes_left, gender, premium_expires_at FROM person WHERE ((id IN ($1)) AND LOWER(name) LIKE $2)[1 %name1%] <nil>"
+time="2024-05-29T18:03:34+03:00" level=info msg="db get request to person" requestID=1
+time="2024-05-29T18:03:34+03:00" level=info msg="db returning records" requestID=1
+time="2024-05-29T18:03:34+03:00" level=info msg="db update request to person" requestID=1
+time="2024-05-29T18:03:34+03:00" level=info msg="db person updated" requestID=1
+time="2024-05-29T18:03:34+03:00" level=info msg="db update request to person" requestID=1
+time="2024-05-29T18:03:34+03:00" level=warning msg="db update can't query: repo error" requestID=1
+time="2024-05-29T18:03:34+03:00" level=info msg="db delete request to person" requestID=1
+time="2024-05-29T18:03:34+03:00" level=info msg="db person deleted" requestID=1
+time="2024-05-29T18:03:34+03:00" level=info msg="db delete request to person" requestID=1
+time="2024-05-29T18:03:34+03:00" level=warning msg="db delete can't query: repo err" requestID=1
+time="2024-05-29T18:03:34+03:00" level=info msg="db create request to person" requestID=1
+time="2024-05-29T18:03:35+03:00" level=info msg="db created person" requestID=1
+time="2024-05-29T18:03:35+03:00" level=info msg="db create request to person" requestID=1
+time="2024-05-29T18:03:36+03:00" level=warning msg="db can't query: repo error" requestID=1
+time="2024-05-29T18:03:36+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T18:03:36+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T18:03:36+03:00" level=warning msg="db can't query:  db_error" requestID=1
+time="2024-05-29T18:03:36+03:00" level=info msg="db get request to session storage" requestID=1
+time="2024-05-29T18:03:36+03:00" level=warning msg="db can't query: redis: nil" requestID=1
+time="2024-05-29T18:03:36+03:00" level=info msg="db delete request to session storage" requestID=1
+time="2024-05-29T18:04:34+03:00" level=info msg="db add request to person_interest" requestID=1
+time="2024-05-29T18:04:34+03:00" level=info msg="db add request to person_interest" requestID=1
+time="2024-05-29T18:04:34+03:00" level=warning msg="db insert can't query: repo error" requestID=1
+time="2024-05-29T18:04:34+03:00" level=info msg="db activating sub person" requestID=1
+time="2024-05-29T18:04:34+03:00" level=info msg="premium activated for user 1" requestID=1
+time="2024-05-29T18:04:34+03:00" level=info msg="db activating sub person" requestID=1
+time="2024-05-29T18:04:34+03:00" level=warning msg="db can't add premium: repo error" requestID=1
+time="2024-05-29T18:04:34+03:00" level=info msg="db activating sub person" requestID=1
+time="2024-05-29T18:04:34+03:00" level=info msg="premium activated for user 1" requestID=1
+time="2024-05-29T18:04:34+03:00" level=warning msg="db can't add premium to history: repo error" requestID=1
+time="2024-05-29T18:04:34+03:00" level=info msg="db getting sub history for user 1" requestID=1
+time="2024-05-29T18:04:34+03:00" level=info msg="db getting sub history for user 1" requestID=1
+time="2024-05-29T18:04:34+03:00" level=warning msg="db can't read sub history: db_error" requestID=1
+time="2024-05-29T18:04:34+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T18:04:34+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T18:04:34+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T18:04:34+03:00" level=warning msg="can't query: db_error" requestID=1
+time="2024-05-29T18:04:34+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T18:04:34+03:00" level=info msg="db got 1 interest ids" requestID=1
+time="2024-05-29T18:04:34+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T18:04:34+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T18:04:34+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T18:04:34+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T18:04:34+03:00" level=info msg="db delete request to person_interest" requestID=1
+time="2024-05-29T18:04:34+03:00" level=info msg="db person interest deleted" requestID=1
+time="2024-05-29T18:04:34+03:00" level=info msg="db delete request to person_interest" requestID=1
+time="2024-05-29T18:04:34+03:00" level=warning msg="db delete can't query: repo err" requestID=1
+time="2024-05-29T18:04:34+03:00" level=info msg="SELECT id, name, birthday, description, location, email, password, created_at, premium, likes_left, gender, premium_expires_at FROM person WHERE ((id IN ($1)) AND LOWER(name) LIKE $2)[1 %name1%] <nil>"
+time="2024-05-29T18:04:34+03:00" level=info msg="db get request to person" requestID=1
+time="2024-05-29T18:04:34+03:00" level=info msg="db returning records" requestID=1
+time="2024-05-29T18:04:34+03:00" level=info msg="db update request to person" requestID=1
+time="2024-05-29T18:04:34+03:00" level=info msg="db person updated" requestID=1
+time="2024-05-29T18:04:34+03:00" level=info msg="db update request to person" requestID=1
+time="2024-05-29T18:04:34+03:00" level=warning msg="db update can't query: repo error" requestID=1
+time="2024-05-29T18:04:34+03:00" level=info msg="db delete request to person" requestID=1
+time="2024-05-29T18:04:34+03:00" level=info msg="db person deleted" requestID=1
+time="2024-05-29T18:04:34+03:00" level=info msg="db delete request to person" requestID=1
+time="2024-05-29T18:04:34+03:00" level=warning msg="db delete can't query: repo err" requestID=1
+time="2024-05-29T18:04:34+03:00" level=info msg="db create request to person" requestID=1
+time="2024-05-29T18:04:35+03:00" level=info msg="db created person" requestID=1
+time="2024-05-29T18:04:35+03:00" level=info msg="db create request to person" requestID=1
+time="2024-05-29T18:04:36+03:00" level=warning msg="db can't query: repo error" requestID=1
+time="2024-05-29T18:04:36+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T18:04:36+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T18:04:36+03:00" level=warning msg="db can't query:  db_error" requestID=1
+time="2024-05-29T18:04:36+03:00" level=info msg="db get request to session storage" requestID=1
+time="2024-05-29T18:04:36+03:00" level=warning msg="db can't query: redis: nil" requestID=1
+time="2024-05-29T18:04:36+03:00" level=info msg="db delete request to session storage" requestID=1
+time="2024-05-29T18:15:49+03:00" level=info msg="db add request to person_interest" requestID=1
+time="2024-05-29T18:15:49+03:00" level=info msg="db add request to person_interest" requestID=1
+time="2024-05-29T18:15:49+03:00" level=warning msg="db insert can't query: repo error" requestID=1
+time="2024-05-29T18:15:49+03:00" level=info msg="db activating sub person" requestID=1
+time="2024-05-29T18:15:49+03:00" level=info msg="premium activated for user 1" requestID=1
+time="2024-05-29T18:15:49+03:00" level=info msg="db activating sub person" requestID=1
+time="2024-05-29T18:15:49+03:00" level=warning msg="db can't add premium: repo error" requestID=1
+time="2024-05-29T18:15:49+03:00" level=info msg="db activating sub person" requestID=1
+time="2024-05-29T18:15:49+03:00" level=info msg="premium activated for user 1" requestID=1
+time="2024-05-29T18:15:49+03:00" level=warning msg="db can't add premium to history: repo error" requestID=1
+time="2024-05-29T18:15:49+03:00" level=info msg="db getting sub history for user 1" requestID=1
+time="2024-05-29T18:15:49+03:00" level=info msg="db getting sub history for user 1" requestID=1
+time="2024-05-29T18:15:49+03:00" level=warning msg="db can't read sub history: db_error" requestID=1
+time="2024-05-29T18:15:49+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T18:15:49+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T18:15:49+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T18:15:49+03:00" level=warning msg="can't query: db_error" requestID=1
+time="2024-05-29T18:15:49+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T18:15:49+03:00" level=info msg="db got 1 interest ids" requestID=1
+time="2024-05-29T18:15:49+03:00" level=info msg="db get request to interest" requestID=1
+time="2024-05-29T18:15:49+03:00" level=info msg="return 1 interests" requestID=1
+time="2024-05-29T18:15:49+03:00" level=info msg="db get request to person_interest" requestID=1
+time="2024-05-29T18:15:49+03:00" level=warning msg="db can't query: db_error" requestID=1
+time="2024-05-29T18:15:49+03:00" level=info msg="db delete request to person_interest" requestID=1
+time="2024-05-29T18:15:49+03:00" level=info msg="db person interest deleted" requestID=1
+time="2024-05-29T18:15:49+03:00" level=info msg="db delete request to person_interest" requestID=1
+time="2024-05-29T18:15:49+03:00" level=warning msg="db delete can't query: repo err" requestID=1
+time="2024-05-29T18:15:49+03:00" level=info msg="SELECT id, name, birthday, description, location, email, password, created_at, premium, likes_left, gender, premium_expires_at FROM person WHERE ((id IN ($1)) AND LOWER(name) LIKE $2)[1 %name1%] <nil>"
+time="2024-05-29T18:15:49+03:00" level=info msg="db get request to person" requestID=1
+time="2024-05-29T18:15:49+03:00" level=info msg="db returning records" requestID=1
+time="2024-05-29T18:15:49+03:00" level=info msg="db update request to person" requestID=1
+time="2024-05-29T18:15:49+03:00" level=info msg="db person updated" requestID=1
+time="2024-05-29T18:15:49+03:00" level=info msg="db update request to person" requestID=1
+time="2024-05-29T18:15:49+03:00" level=warning msg="db update can't query: repo error" requestID=1
+time="2024-05-29T18:15:49+03:00" level=info msg="db delete request to person" requestID=1
+time="2024-05-29T18:15:49+03:00" level=info msg="db person deleted" requestID=1
+time="2024-05-29T18:15:49+03:00" level=info msg="db delete request to person" requestID=1
+time="2024-05-29T18:15:49+03:00" level=warning msg="db delete can't query: repo err" requestID=1
+time="2024-05-29T18:15:49+03:00" level=info msg="db create request to person" requestID=1
+time="2024-05-29T18:15:50+03:00" level=info msg="db created person" requestID=1
+time="2024-05-29T18:15:50+03:00" level=info msg="db create request to person" requestID=1
+time="2024-05-29T18:15:51+03:00" level=warning msg="db can't query: repo error" requestID=1
+time="2024-05-29T18:15:51+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T18:15:51+03:00" level=info msg="db get request to \"like\"" requestID=1
+time="2024-05-29T18:15:51+03:00" level=warning msg="db can't query:  db_error" requestID=1
+time="2024-05-29T18:15:51+03:00" level=info msg="db get request to session storage" requestID=1
+time="2024-05-29T18:15:51+03:00" level=warning msg="db can't query: redis: nil" requestID=1
+time="2024-05-29T18:15:51+03:00" level=info msg="db delete request to session storage" requestID=1

@@ -2,6 +2,7 @@ package repo
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"reflect"
 	"regexp"
@@ -9,6 +10,11 @@ import (
 	"time"
 
 	"github.com/DATA-DOG/go-sqlmock"
+	"github.com/go-redis/redismock/v9"
+	_ "github.com/lib/pq"
+	"github.com/redis/go-redis/v9"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	models "main.go/internal/auth"
 	. "main.go/internal/logs"
 	"main.go/internal/types"
@@ -738,4 +744,131 @@ func TestGetMatch(t *testing.T) {
 		t.Errorf("expected empty array, got %v", persons)
 		return
 	}
+}
+
+// func TestNewInterestStorage(t *testing.T) {
+// 	db, err := sql.Open("postgres", "user=your_user password=your_password dbname=your_db sslmode=disable")
+// 	if err != nil {
+// 		t.Fatalf("Failed to open database: %v", err)
+// 	}
+// 	defer db.Close()
+
+// 	storage := NewInterestStorage(db)
+// 	if storage == nil {
+// 		t.Fatalf("Failed to create ImageStorage instance")
+// 	}
+// }
+
+func TestNewInterestStorage(t *testing.T) {
+	dbReader, err := sql.Open("postgres", "source_name=mock")
+	require.NoError(t, err)
+	defer dbReader.Close()
+
+	storage := NewInterestStorage(dbReader)
+	require.NotNil(t, storage)
+	require.Equal(t, dbReader, storage.dbReader)
+}
+
+func TestNewSessionStorage(t *testing.T) {
+	db := redis.NewClient(&redis.Options{
+		Addr:     "localhost:6379",
+		Password: "",
+		DB:       0,
+	})
+
+	stor := NewSessionStorage(db)
+	assert.NotNil(t, stor)
+	assert.Equal(t, stor.db, db)
+}
+
+// func TestSessionStorage_GetBySID(t *testing.T) {
+// 	ctx := context.Background()
+// 	db := &mocks.RedisClient{}
+// 	stor := &SessionStorage{db: db}
+
+// 	// Test case 1: Successful retrieval of session
+// 	db.On("Get", ctx, "session-id").Return("123", nil).Once()
+// 	session, err := stor.GetBySID(ctx, "session-id")
+// 	require.NoError(t, err)
+// 	assert.Equal(t, types.UserID(123), session.UID)
+
+// 	// Test case 2: Error when retrieving session
+// 	db.On("Get", ctx, "session-id").Return("", errors.New("error")).Once()
+// 	_, err = stor.GetBySID(ctx, "session-id")
+// 	require.Error(t, err)
+
+// 	// Test case 3: Invalid session ID
+// 	db.On("Get", ctx, "invalid-session-id").Return("", nil).Once()
+// 	_, err = stor.GetBySID(ctx, "invalid-session-id")
+// 	require.Error(t, err)
+
+// 	// Test case 4: Error when converting session ID to int
+// 	db.On("Get", ctx, "session-id").Return("invalid", nil).Once()
+// 	_, err = stor.GetBySID(ctx, "session-id")
+// 	require.Error(t, err)
+
+// 	// Test case 5: Successful deletion of session
+// 	db.On("Del", ctx, "session-id").Return(0, nil).Once()
+// 	err = stor.DeleteSession(ctx, "session-id")
+// 	require.NoError(t, err)
+// }
+
+func TestGetBySID(t *testing.T) {
+	db, mock := redismock.NewClientMock()
+
+	SID := "mami mama mami"
+
+	//session := &auth.Session{SID: SID}
+
+	mock.ExpectGet(SID).RedisNil()
+
+	repo := NewSessionStorage(db)
+
+	logger := InitLog()
+	logger.RequestID = int64(1)
+	contexted := context.WithValue(context.Background(), Logg, logger)
+
+	_, err := repo.GetBySID(contexted, SID)
+	if err != nil {
+		t.Errorf("expected no error, got %v", err)
+	}
+
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Errorf("there were unfulfilled expectations: %s", err)
+	}
+}
+
+func TestCreateSession(t *testing.T) {
+	db, mock := redismock.NewClientMock()
+
+	SID := "mami mama mami"
+
+	//session := &auth.Session{SID: SID}
+
+	mock.ExpectDel(SID).RedisNil()
+
+	repo := NewSessionStorage(db)
+
+	logger := InitLog()
+	logger.RequestID = int64(1)
+	contexted := context.WithValue(context.Background(), Logg, logger)
+
+	err := repo.DeleteSession(contexted, SID)
+	if err != nil {
+		t.Errorf("expected no error, got %v", err)
+	}
+
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Errorf("there were unfulfilled expectations: %s", err)
+	}
+}
+
+func TestNewAuthPersonStorage(t *testing.T) {
+	dbReader, err := sql.Open("postgres", "source_name=mock")
+	require.NoError(t, err)
+	defer dbReader.Close()
+
+	storage := NewAuthPersonStorage(dbReader)
+	require.NotNil(t, storage)
+	require.Equal(t, dbReader, storage.dbReader)
 }

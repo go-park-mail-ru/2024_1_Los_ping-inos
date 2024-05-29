@@ -153,11 +153,6 @@ func startServer(cfg *config.Config, logger Log, deliver Delivers) error {
 			http.HandlerFunc(httpDeliver.IsAuthenticatedHandler()), hashset.New("GET")),
 		"authentication check", logger))
 
-	mux.Handle(apiPath+"me", RequestIDMiddleware(
-		AllowedMethodMiddleware(
-			IsAuthenticatedMiddleware(http.HandlerFunc(httpDeliver.GetUsername()), authManager), hashset.New("GET")),
-		"username (/me)", logger))
-
 	mux.Handle(apiPath+"profile", RequestIDMiddleware(
 		AllowedMethodMiddleware(
 			IsAuthenticatedMiddleware(CSRFMiddleware(http.HandlerFunc(httpDeliver.ProfileHandlers())), authManager), hashset.New("GET", "POST", "DELETE")),
