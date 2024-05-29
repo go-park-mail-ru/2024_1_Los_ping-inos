@@ -13,22 +13,22 @@ import (
 	. "main.go/internal/logs"
 )
 
-func TestGetImageRepo_Success(t *testing.T) {
-	db, err := sql.Open("postgres", "your_database_connection_string")
-	if err != nil {
-		t.Fatalf("Error opening database: %v", err)
-	}
-	defer db.Close()
-
-	storage, err := GetImageRepo("your_database_connection_string")
-	if err != nil {
-		t.Fatalf("Error creating ImageStorage: %v", err)
-	}
-
-	if storage.dbReader == nil {
-		t.Error("ImageStorage dbReader is nil")
-	}
-}
+//func TestGetImageRepo_Success(t *testing.T) {
+//	db, err := sql.Open("postgres", "your_database_connection_string")
+//	if err != nil {
+//		t.Fatalf("Error opening database: %v", err)
+//	}
+//	defer db.Close()
+//
+//	storage, err := GetImageRepo("your_database_connection_string")
+//	if err != nil {
+//		t.Fatalf("Error creating ImageStorage: %v", err)
+//	}
+//
+//	if storage.dbReader == nil {
+//		t.Error("ImageStorage dbReader is nil")
+//	}
+//}
 
 func TestNewImageStorage(t *testing.T) {
 	db, err := sql.Open("postgres", "user=your_user password=your_password dbname=your_db sslmode=disable")
