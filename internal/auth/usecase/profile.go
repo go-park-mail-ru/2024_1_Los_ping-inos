@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"slices"
 	"strconv"
 	"time"
 
@@ -143,6 +144,7 @@ func normalizeFromSet(input []interface{}) []types.InterestID {
 	for i := range input {
 		res[i] = input[i].(types.InterestID)
 	}
+	slices.Sort(res)
 	return res
 }
 
