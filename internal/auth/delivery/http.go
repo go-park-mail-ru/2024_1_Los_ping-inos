@@ -466,7 +466,7 @@ func (deliver *AuthHandler) ActivateSub() func(w http.ResponseWriter, r *http.Re
 		UID := request.Context().Value(RequestUserID).(types.UserID)
 
 		datetime, activated := deliver.checkSubStatus(UID)
-		if activated != nil && errors.As(activated, &types.MyErr{Err: auth.NoPaymentErr}) {
+		if activated != nil && activated.Error() == auth.NoPaymentErr.Error() {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("payment not provided")
 			requests.SendSimpleResponse(respWriter, request, http.StatusConflict, "payment not provided")
 			return

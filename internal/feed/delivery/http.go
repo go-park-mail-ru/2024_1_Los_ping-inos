@@ -2,7 +2,6 @@ package delivery
 
 import (
 	"context"
-	"errors"
 	"github.com/gorilla/websocket"
 	"github.com/mailru/easyjson"
 	"github.com/sirupsen/logrus"
@@ -98,12 +97,12 @@ func (deliver *FeedHandler) CreateLike() func(respWriter http.ResponseWriter, re
 			return
 		}
 
-		if err.Error() == feed.NoMatchFoundErr.Error() {
+		if err != nil && err.Error() == feed.NoMatchFoundErr.Error() {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("created like")
 			requests.SendSimpleResponse(respWriter, request, http.StatusOK, "ok")
 			return
 		}
-		if errors.As(err, &types.MyErr{Err: feed.NoLikesLeftErr}) {
+		if err != nil && err.Error() == feed.NoLikesLeftErr.Error() {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("no likes left")
 			requests.SendSimpleResponse(respWriter, request, http.StatusConflict, err.Error())
 			return
