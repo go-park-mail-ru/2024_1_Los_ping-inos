@@ -62,13 +62,13 @@ func (deliver *AuthHandler) ReadProfile(respWriter http.ResponseWriter, request 
 		prof []auth.Profile
 	)
 
-	//logger := request.Context().Value(Logg).(Log)
+	logger := request.Context().Value(Logg).(Log)
 
 	if request.URL.Query().Has("id") { // просмотр профиля по id (чужой профиль из ленты)
 		id, err = strconv.Atoi(request.URL.Query().Get("id"))
 		if err != nil {
 			requests.SendSimpleResponse(respWriter, request, http.StatusInternalServerError, err.Error())
-			//logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("get profile err: ", err.Error())
+			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("get profile err: ", err.Error())
 		}
 		prof, err = deliver.UseCase.GetProfile(auth.ProfileGetParams{ID: []types.UserID{types.UserID(id)}, NeedEmail: false}, request.Context())
 	} else { // свой профиль
@@ -77,18 +77,18 @@ func (deliver *AuthHandler) ReadProfile(respWriter http.ResponseWriter, request 
 
 	if err != nil {
 		requests.SendSimpleResponse(respWriter, request, http.StatusBadRequest, err.Error())
-		//logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("get profile err: ", err.Error())
+		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("get profile err: ", err.Error())
 		return
 	}
 
 	if len(prof) == 0 {
 		requests.SendSimpleResponse(respWriter, request, http.StatusBadRequest, "no such profile")
-		//logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("no such profile")
+		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("no such profile")
 		return
 	}
 
 	requests.SendResponse(respWriter, request, http.StatusOK, prof[0])
-	//logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("get profile sent response")
+	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("get profile sent response")
 }
 
 // UpdateProfile godoc
@@ -122,7 +122,7 @@ func (deliver *AuthHandler) UpdateProfile(respWriter http.ResponseWriter, reques
 		return
 	}
 
-	err = deliver.UseCase.UpdateProfile(request.Context().Value(1).(types.UserID), requestBody, request.Context())
+	err = deliver.UseCase.UpdateProfile(request.Context().Value(RequestUserID).(types.UserID), requestBody, request.Context())
 	if err != nil {
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't update profile: ", err.Error())
 		if errors.As(err, &types.MyErr{Err: types.DifferentPasswordsError}) {
@@ -187,7 +187,6 @@ func (deliver *AuthHandler) GetMatches() func(respWriter http.ResponseWriter, re
 			return
 		}
 
-		//err = json.Unmarshal(body, &requestBody) TODO
 		if err = easyjson.Unmarshal(body, &requestBody); err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't unmarshal body: ", err.Error())
 			requests.SendSimpleResponse(respWriter, request, http.StatusBadRequest, err.Error())

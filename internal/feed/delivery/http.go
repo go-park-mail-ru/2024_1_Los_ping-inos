@@ -133,7 +133,7 @@ func (deliver *FeedHandler) sendMatchNotice(ctx context.Context, id1, id2 types.
 		return err
 	}
 	err = connection.WriteMessage(1, respCoded)
-	if errors.As(err, &types.MyErr{Err: feed.WSClosedErr}) {
+	if err.Error() == feed.WSClosedErr.Error() {
 		deliver.usecase.DeleteConnection(ctx, id1)
 		return nil
 	}
