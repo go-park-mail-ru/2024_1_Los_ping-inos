@@ -87,13 +87,18 @@ func (deliver *FeedHandler) CreateLike() func(respWriter http.ResponseWriter, re
 		}
 
 		err = deliver.usecase.CreateLike(UID, requestBody.Profile2, request.Context())
+
+		if err != nil {
+			logrus.Info(err.Error())
+		}
+
 		if err != nil && err.Error() != "sql: Rows are closed" {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't update profile: ", err.Error())
 			requests.SendSimpleResponse(respWriter, request, http.StatusBadRequest, err.Error())
 			return
 		}
 
-		if errors.As(err, &types.MyErr{Err: feed.NoMatchFoundErr}) {
+		if err.Error() == feed.NoMatchFoundErr.Error() {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("created like")
 			requests.SendSimpleResponse(respWriter, request, http.StatusOK, "ok")
 			return
