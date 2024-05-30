@@ -105,27 +105,26 @@ func (deliver *AuthHandler) ReadProfile(respWriter http.ResponseWriter, request 
 // @Failure 405       {string} string
 // @Failure 409       {string} string // TODO
 func (deliver *AuthHandler) UpdateProfile(respWriter http.ResponseWriter, request *http.Request) {
-	//logger := request.Context().Value(Logg).(Log)
+	logger := request.Context().Value(Logg).(Log)
 
 	var requestBody auth.ProfileUpdateRequest
 
 	body, err := io.ReadAll(request.Body)
 	if err != nil {
-		//logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("bad body: ", err.Error())
+		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("bad body: ", err.Error())
 		requests.SendSimpleResponse(respWriter, request, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	//err = json.Unmarshal(body, &requestBody) TODO
 	if err = easyjson.Unmarshal(body, &requestBody); err != nil {
-		//logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't unmarshal body: ", err.Error())
+		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't unmarshal body: ", err.Error())
 		requests.SendSimpleResponse(respWriter, request, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	err = deliver.UseCase.UpdateProfile(request.Context().Value(1).(types.UserID), requestBody, request.Context())
 	if err != nil {
-		//logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't update profile: ", err.Error())
+		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't update profile: ", err.Error())
 		if errors.As(err, &types.MyErr{Err: types.DifferentPasswordsError}) {
 			requests.SendSimpleResponse(respWriter, request, http.StatusConflict, err.Error())
 		} else {
@@ -135,7 +134,7 @@ func (deliver *AuthHandler) UpdateProfile(respWriter http.ResponseWriter, reques
 	}
 
 	requests.SendSimpleResponse(respWriter, request, http.StatusOK, "")
-	//logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("update profile sent response")
+	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("update profile sent response")
 }
 
 // DeleteProfile godoc
