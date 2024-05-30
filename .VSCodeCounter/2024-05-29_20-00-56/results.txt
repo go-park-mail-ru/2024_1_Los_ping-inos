@@ -1,0 +1,118 @@
+Date : 2024-05-29 20:00:56
+Directory : /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal
+Total : 62 files,  12069 codes, 0 comments, 1871 blanks, all 13940 lines
+
+Languages
++------------------+------------+------------+------------+------------+------------+
+| language         | files      | code       | comment    | blank      | total      |
++------------------+------------+------------+------------+------------+------------+
+| Go               |         60 |     12,027 |          0 |      1,856 |     13,883 |
+| Protocol Buffers |          2 |         42 |          0 |         15 |         57 |
++------------------+------------+------------+------------+------------+------------+
+
+Directories
++----------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                               | files      | code       | comment    | blank      | total      |
++----------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                  |         62 |     12,069 |          0 |      1,871 |     13,940 |
+| auth                                                                                               |         19 |      5,803 |          0 |        833 |      6,636 |
+| auth (Files)                                                                                       |          3 |      1,538 |          0 |         87 |      1,625 |
+| auth/delivery                                                                                      |          3 |        712 |          0 |        108 |        820 |
+| auth/mocks                                                                                         |          1 |        284 |          0 |         52 |        336 |
+| auth/proto                                                                                         |          3 |        558 |          0 |         81 |        639 |
+| auth/repo                                                                                          |          5 |      1,143 |          0 |        271 |      1,414 |
+| auth/usecase                                                                                       |          4 |      1,568 |          0 |        234 |      1,802 |
+| cmd                                                                                                |          3 |        355 |          0 |         81 |        436 |
+| cmd/auth                                                                                           |          1 |        157 |          0 |         36 |        193 |
+| cmd/feed                                                                                           |          1 |        132 |          0 |         33 |        165 |
+| cmd/images                                                                                         |          1 |         66 |          0 |         12 |         78 |
+| feed                                                                                               |         16 |      4,187 |          0 |        593 |      4,780 |
+| feed (Files)                                                                                       |          3 |      1,456 |          0 |         70 |      1,526 |
+| feed/delivery                                                                                      |          1 |        316 |          0 |         41 |        357 |
+| feed/mocks                                                                                         |          1 |        263 |          0 |         46 |        309 |
+| feed/repo                                                                                          |          7 |      1,399 |          0 |        314 |      1,713 |
+| feed/usecase                                                                                       |          4 |        753 |          0 |        122 |        875 |
+| image                                                                                              |         14 |      1,357 |          0 |        275 |      1,632 |
+| image (Files)                                                                                      |          3 |        124 |          0 |         17 |        141 |
+| image/delivery                                                                                     |          3 |        249 |          0 |         58 |        307 |
+| image/delivery/grpc                                                                                |          1 |         32 |          0 |          6 |         38 |
+| image/delivery/http                                                                                |          2 |        217 |          0 |         52 |        269 |
+| image/mocks                                                                                        |          1 |         76 |          0 |         16 |         92 |
+| image/protos                                                                                       |          3 |        311 |          0 |         51 |        362 |
+| image/protos/gen                                                                                   |          2 |        296 |          0 |         44 |        340 |
+| image/protos/proto                                                                                 |          1 |         15 |          0 |          7 |         22 |
+| image/repo                                                                                         |          2 |        354 |          0 |         85 |        439 |
+| image/usecase                                                                                      |          2 |        243 |          0 |         48 |        291 |
+| logs                                                                                               |          1 |         21 |          0 |          6 |         27 |
+| pkg                                                                                                |          6 |        303 |          0 |         66 |        369 |
+| types                                                                                              |          3 |         43 |          0 |         17 |         60 |
++----------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++----------------------------------------------------------------------------------------------------+------------------+------------+------------+------------+------------+
+| filename                                                                                           | language         | code       | comment    | blank      | total      |
++----------------------------------------------------------------------------------------------------+------------------+------------+------------+------------+------------+
+| /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal/auth/auth_easyjson.go             | Go               |      1,337 |          0 |         56 |      1,393 |
+| /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal/auth/auth_models.go               | Go               |        157 |          0 |         25 |        182 |
+| /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal/auth/delivery/grpc.go             | Go               |         58 |          0 |         10 |         68 |
+| /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal/auth/delivery/http.go             | Go               |        482 |          0 |         67 |        549 |
+| /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal/auth/delivery/http_test.go        | Go               |        172 |          0 |         31 |        203 |
+| /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal/auth/interfaces.go                | Go               |         44 |          0 |          6 |         50 |
+| /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal/auth/mocks/core_mocks.go          | Go               |        284 |          0 |         52 |        336 |
+| /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal/auth/proto/auth.pb.go             | Go               |        402 |          0 |         55 |        457 |
+| /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal/auth/proto/auth.proto             | Protocol Buffers |         27 |          0 |          8 |         35 |
+| /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal/auth/proto/auth_grpc.pb.go        | Go               |        129 |          0 |         18 |        147 |
+| /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal/auth/repo/interest.go             | Go               |        139 |          0 |         27 |        166 |
+| /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal/auth/repo/payment.go              | Go               |         69 |          0 |         10 |         79 |
+| /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal/auth/repo/person.go               | Go               |        201 |          0 |         35 |        236 |
+| /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal/auth/repo/repo_test.go            | Go               |        686 |          0 |        189 |        875 |
+| /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal/auth/repo/session.go              | Go               |         48 |          0 |         10 |         58 |
+| /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal/auth/usecase/profile.go           | Go               |        138 |          0 |         29 |        167 |
+| /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal/auth/usecase/profile_test.go      | Go               |        606 |          0 |         77 |        683 |
+| /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal/auth/usecase/usecase.go           | Go               |        177 |          0 |         34 |        211 |
+| /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal/auth/usecase/usecase_test.go      | Go               |        647 |          0 |         94 |        741 |
+| /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal/cmd/auth/main.go                  | Go               |        157 |          0 |         36 |        193 |
+| /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal/cmd/feed/main.go                  | Go               |        132 |          0 |         33 |        165 |
+| /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal/cmd/images/main.go                | Go               |         66 |          0 |         12 |         78 |
+| /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal/feed/delivery/http.go             | Go               |        316 |          0 |         41 |        357 |
+| /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal/feed/feed_easyjson.go             | Go               |      1,269 |          0 |         45 |      1,314 |
+| /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal/feed/feed_models.go               | Go               |        150 |          0 |         19 |        169 |
+| /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal/feed/interfaces.go                | Go               |         37 |          0 |          6 |         43 |
+| /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal/feed/mocks/core_mocks.go          | Go               |        263 |          0 |         46 |        309 |
+| /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal/feed/repo/chat.go                 | Go               |        136 |          0 |         21 |        157 |
+| /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal/feed/repo/claim.go                | Go               |         52 |          0 |          8 |         60 |
+| /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal/feed/repo/interest.go             | Go               |         92 |          0 |         19 |        111 |
+| /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal/feed/repo/like.go                 | Go               |        118 |          0 |         23 |        141 |
+| /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal/feed/repo/person.go               | Go               |         80 |          0 |         17 |         97 |
+| /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal/feed/repo/postgres.go             | Go               |         10 |          0 |          4 |         14 |
+| /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal/feed/repo/repo_test.go            | Go               |        911 |          0 |        222 |      1,133 |
+| /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal/feed/usecase/chats.go             | Go               |         31 |          0 |          6 |         37 |
+| /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal/feed/usecase/chats_test.go        | Go               |        145 |          0 |         26 |        171 |
+| /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal/feed/usecase/usecase.go           | Go               |        107 |          0 |         22 |        129 |
+| /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal/feed/usecase/usecase_test.go      | Go               |        470 |          0 |         68 |        538 |
+| /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal/image/delivery/grpc/grpc.go       | Go               |         32 |          0 |          6 |         38 |
+| /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal/image/delivery/http/http.go       | Go               |        191 |          0 |         43 |        234 |
+| /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal/image/delivery/http/http_test.go  | Go               |         26 |          0 |          9 |         35 |
+| /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal/image/image_easyjson.go           | Go               |         77 |          0 |          9 |         86 |
+| /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal/image/image_models.go             | Go               |         30 |          0 |          4 |         34 |
+| /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal/image/interfaces.go               | Go               |         17 |          0 |          4 |         21 |
+| /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal/image/mocks/core_mocks.go         | Go               |         76 |          0 |         16 |         92 |
+| /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal/image/protos/gen/image.pb.go      | Go               |        202 |          0 |         28 |        230 |
+| /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal/image/protos/gen/image_grpc.pb.go | Go               |         94 |          0 |         16 |        110 |
+| /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal/image/protos/proto/image.proto    | Protocol Buffers |         15 |          0 |          7 |         22 |
+| /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal/image/repo/image.go               | Go               |        175 |          0 |         38 |        213 |
+| /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal/image/repo/repo_test.go           | Go               |        179 |          0 |         47 |        226 |
+| /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal/image/usecase/image.go            | Go               |         69 |          0 |         20 |         89 |
+| /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal/image/usecase/image_test.go       | Go               |        174 |          0 |         28 |        202 |
+| /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal/logs/log.go                       | Go               |         21 |          0 |          6 |         27 |
+| /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal/pkg/middlewares.go                | Go               |         96 |          0 |         14 |        110 |
+| /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal/pkg/pkg_test.go                   | Go               |         73 |          0 |         15 |         88 |
+| /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal/pkg/requests.go                   | Go               |          1 |          0 |          1 |          2 |
+| /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal/pkg/responce_test.go              | Go               |         33 |          0 |         14 |         47 |
+| /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal/pkg/responces.go                  | Go               |         60 |          0 |         14 |         74 |
+| /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal/pkg/security.go                   | Go               |         40 |          0 |          8 |         48 |
+| /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal/types/errors.go                   | Go               |         10 |          0 |          5 |         15 |
+| /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal/types/types.go                    | Go               |          8 |          0 |          4 |         12 |
+| /home/longwave/techpark/workisdone/2024_1_Los_ping-inos/internal/types/types_test.go               | Go               |         25 |          0 |          8 |         33 |
+| Total                                                                                              |                  |     12,069 |          0 |      1,871 |     13,940 |
++----------------------------------------------------------------------------------------------------+------------------+------------+------------+------------+------------+

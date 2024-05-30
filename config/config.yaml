@@ -13,6 +13,7 @@ database:
   dbname: "tpTinder"
   user: "postgres"
   password: "postgres"
+  max_open_conns: 10
 
 aws:
   key_id: ""

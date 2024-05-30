@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/mailru/easyjson"
+	"github.com/mailru/easyjson/jlexer"
 
 	"github.com/sirupsen/logrus"
 )
@@ -18,6 +19,11 @@ import (
 type Response struct {
 	Status int         `json:"status"`
 	Body   interface{} `json:"body"`
+}
+
+// UnmarshalEasyJSON implements easyjson.Unmarshaler.
+func (r *Response) UnmarshalEasyJSON(w *jlexer.Lexer) {
+	panic("unimplemented")
 }
 
 // func (r *Response) UnmarshalEasyJSON(data []byte) error {

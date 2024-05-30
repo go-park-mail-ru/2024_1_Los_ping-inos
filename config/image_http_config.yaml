@@ -19,3 +19,4 @@ database:
   user: "postgres"
   password: "postgres"
   timer: 5
+  max_open_conns: 10

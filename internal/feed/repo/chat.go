@@ -87,7 +87,13 @@ func (storage *PostgresStorage) CreateMessage(ctx context.Context, message feed.
 func (storage *PostgresStorage) GetLastMessages(ctx context.Context, id int64, ids []int) ([]feed.Message, error) {
 	logger := ctx.Value(Logg).(Log)
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("Get last messages request")
-	rows, err := storage.dbReader.Query(getLastMessQuery, id, pq.Array(ids))
+	stmt, err := storage.dbReader.Prepare(getLastMessQuery) // using prepared statement
+	if err != nil {
+		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db can't prepare: ", err.Error())
+		return nil, err
+	}
+	rows, err := stmt.Query(id, pq.Array(ids))
+	//rows, err := storage.dbReader.Query(getLastMessQuery, id, pq.Array(ids))
 	if err != nil {
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db can't query: ", err.Error())
 		return nil, err
