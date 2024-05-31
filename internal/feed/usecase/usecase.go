@@ -51,8 +51,37 @@ func (service *UseCase) CreateLike(profile1, profile2 types.UserID, ctx context.
 	return feed.NoLikesLeftErr
 }
 
-func (service *UseCase) GetChat(ctx context.Context, user1, user2 types.UserID) ([]feed.Message, error) {
-	return service.storage.GetChat(ctx, user1, user2)
+func (service *UseCase) GetChat(ctx context.Context, user1, user2 types.UserID) ([]feed.Message, []feed.Image, []feed.Person, error) {
+	imagePerson := []feed.Image{}
+	for i := 0; i < 5; i++ {
+		image, err := service.grpcClient.GetImage(ctx, &image.GetImageRequest{Id: int64(user1), Cell: fmt.Sprintf("%v", i)})
+		imagePiece := feed.Image{}
+		if err != nil {
+			imagePiece = feed.Image{
+				UserId:     int64(user1),
+				Url:        "",
+				CellNumber: fmt.Sprintf("%v", i),
+			}
+		} else {
+			imagePiece = feed.Image{
+				UserId:     int64(user1),
+				Url:        image.Url,
+				CellNumber: fmt.Sprintf("%v", i),
+			}
+		}
+		imagePerson = append(imagePerson, imagePiece)
+	}
+
+	persons, err := service.storage.GetPerson(ctx, user1)
+	if err != nil {
+		return nil, nil, nil, err
+	}
+	msgs, err := service.storage.GetChat(ctx, user1, user2)
+	if err != nil {
+		return nil, nil, nil, err
+	}
+
+	return msgs, imagePerson, persons, nil
 }
 
 func (service *UseCase) SaveMessage(ctx context.Context, message feed.MessageToReceive) (*feed.MessageToReceive, error) {

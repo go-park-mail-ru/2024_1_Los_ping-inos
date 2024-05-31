@@ -2,8 +2,9 @@ package repo
 
 import (
 	"context"
-	"main.go/internal/types"
 	"time"
+
+	"main.go/internal/types"
 
 	qb "github.com/Masterminds/squirrel"
 	"github.com/sirupsen/logrus"
@@ -93,4 +94,38 @@ func (storage *PostgresStorage) GetClaimed(ctx context.Context, id types.UserID)
 		res = append(res, tmp)
 	}
 	return res, nil
+}
+
+func (storage *PostgresStorage) GetPerson(ctx context.Context, id types.UserID) ([]feed.Person, error) {
+	logger := ctx.Value(Logg).(Log)
+
+	query := "SELECT name, premium FROM person WHERE id = $1"
+
+	persons := make([]feed.Person, 0)
+
+	stmt, err := storage.dbReader.Prepare(query) // using prepared statement
+	if err != nil {
+		return []feed.Person{}, err
+	}
+	rows, err := stmt.Query(id)
+	//rows, err := storage.dbReader.Query(query, userID, cell)
+	if err != nil {
+		return []feed.Person{}, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		person := feed.Person{}
+
+		err := rows.Scan(&person.Name, &person.Premium)
+		if err != nil {
+			return []feed.Person{}, err
+		}
+
+		persons = append(persons, person)
+	}
+
+	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db returning records")
+	return persons, nil
+
 }

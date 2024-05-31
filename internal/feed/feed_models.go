@@ -142,6 +142,13 @@ type (
 	}
 
 	//easyjson:json
+	GetChatFull struct {
+		Messages []Message `json:"messages"`
+		Images   []Image   `json:"images"`
+		Person   Person    `json:"person"`
+	}
+
+	//easyjson:json
 	ClaimsToSend struct {
 		Claims []PureClaim `json:"claims"`
 	}

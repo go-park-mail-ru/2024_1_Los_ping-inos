@@ -2,18 +2,19 @@ package delivery
 
 import (
 	"context"
+	"io"
+	"net/http"
+	"time"
+
 	"github.com/gorilla/websocket"
 	"github.com/mailru/easyjson"
 	"github.com/sirupsen/logrus"
-	"io"
 	. "main.go/config"
 	gen "main.go/internal/auth/proto"
 	"main.go/internal/feed"
 	. "main.go/internal/logs"
 	requests "main.go/internal/pkg"
 	"main.go/internal/types"
-	"net/http"
-	"time"
 )
 
 type FeedHandler struct {
@@ -166,7 +167,7 @@ func (deliver *FeedHandler) GetChat() func(respWriter http.ResponseWriter, reque
 			return
 		}
 
-		messages, err := deliver.usecase.GetChat(request.Context(), request.Context().Value(RequestUserID).(types.UserID), requestBody.Person)
+		messages, images, persons, err := deliver.usecase.GetChat(request.Context(), request.Context().Value(RequestUserID).(types.UserID), requestBody.Person)
 		if err != nil {
 			logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn(err.Error())
 			requests.SendSimpleResponse(respWriter, request, http.StatusInternalServerError, err.Error())
@@ -175,7 +176,14 @@ func (deliver *FeedHandler) GetChat() func(respWriter http.ResponseWriter, reque
 		if messages == nil {
 			messages = []feed.Message{}
 		}
-		requests.SendResponse(respWriter, request, http.StatusOK, feed.MessagesToSend{Messages: messages})
+
+		resp := feed.GetChatFull{
+			Messages: messages,
+			Images:   images,
+			Person:   persons[0],
+		}
+
+		requests.SendResponse(respWriter, request, http.StatusOK, resp)
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("sent chat")
 	}
 }
