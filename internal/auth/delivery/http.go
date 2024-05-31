@@ -72,6 +72,7 @@ func (deliver *AuthHandler) ReadProfile(respWriter http.ResponseWriter, request 
 		}
 		prof, err = deliver.UseCase.GetProfile(auth.ProfileGetParams{ID: []types.UserID{types.UserID(id)}, NeedEmail: false}, request.Context())
 	} else { // свой профиль
+		id := request.Context().Value(RequestUserID).(types.UserID)
 		prof, err = deliver.UseCase.GetProfile(auth.ProfileGetParams{ID: []types.UserID{types.UserID(id)}, NeedEmail: true}, request.Context())
 	}
 
