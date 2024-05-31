@@ -279,6 +279,7 @@ func (deliver *FeedHandler) GetAllChats() func(respWriter http.ResponseWriter, r
 				PersonID: matches.Chats[i].PersonID,
 				Name:     matches.Chats[i].Name,
 				Photo:    matches.Chats[i].Photo,
+				//Premuim:  matches.Chats[i].Premium,
 			}
 
 			for j := range messages {

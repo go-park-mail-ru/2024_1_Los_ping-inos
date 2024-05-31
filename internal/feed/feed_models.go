@@ -101,6 +101,7 @@ type (
 		Name        string  `json:"name"`
 		Photo       string  `json:"photo"`
 		LastMessage Message `json:"lastMessage"`
+		Premuim     bool    `json:"premuim"`
 	}
 
 	//easyjson:json
