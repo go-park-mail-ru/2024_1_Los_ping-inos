@@ -73,7 +73,7 @@ type (
 			Sender   types.UserID `json:"sender"`
 			Receiver types.UserID `json:"receiver"`
 			Time     int64        `json:"time"`
-		} `json:"properties"`
+		} `json:"Properties"`
 	}
 
 	//easyjson:json
