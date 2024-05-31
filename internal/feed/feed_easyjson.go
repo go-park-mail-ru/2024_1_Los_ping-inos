@@ -233,7 +233,7 @@ func easyjsonD77e0694DecodeMainGoInternalFeed2(in *jlexer.Lexer, out *MessageToR
 		switch key {
 		case "Type":
 			out.MsgType = string(in.String())
-		case "properties":
+		case "Properties":
 			easyjsonD77e0694Decode(in, &out.Properties)
 		default:
 			in.SkipRecursive()
@@ -255,7 +255,7 @@ func easyjsonD77e0694EncodeMainGoInternalFeed2(out *jwriter.Writer, in MessageTo
 		out.String(string(in.MsgType))
 	}
 	{
-		const prefix string = ",\"properties\":"
+		const prefix string = ",\"Properties\":"
 		out.RawString(prefix)
 		easyjsonD77e0694Encode(out, in.Properties)
 	}
