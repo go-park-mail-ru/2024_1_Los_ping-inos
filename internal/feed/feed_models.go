@@ -1,8 +1,11 @@
 package feed
 
 import (
-	"main.go/internal/types"
+	"errors"
 	"time"
+
+	"github.com/prometheus/client_golang/prometheus"
+	"main.go/internal/types"
 )
 
 type (
@@ -60,4 +63,114 @@ type (
 		Person1 types.UserID
 		Person2 types.UserID
 	}
+
+	//easyjson:json
+	MessageToReceive struct {
+		MsgType    string `json:"Type"`
+		Properties struct {
+			Id       int64        `json:"id"`
+			Data     string       `json:"data"`
+			Sender   types.UserID `json:"sender"`
+			Receiver types.UserID `json:"receiver"`
+			Time     int64        `json:"time"`
+		} `json:"Properties"`
+	}
+
+	//easyjson:json
+	Message struct {
+		MsgType    string `json:"Type"`
+		Properties MsgProperties
+	}
+
+	//easyjson:json
+	MsgProperties struct {
+		Id       int64        `json:"id"`
+		Data     string       `json:"data"`
+		Sender   types.UserID `json:"sender"`
+		Receiver types.UserID `json:"receiver"`
+		Time     time.Time    `json:"time"`
+	}
+
+	//easyjson:json
+	GetChatRequest struct {
+		Person types.UserID `json:"person"`
+	}
+
+	ChatPreview struct {
+		PersonID    int64   `json:"personID"`
+		Name        string  `json:"name"`
+		Photo       string  `json:"photo"`
+		LastMessage Message `json:"lastMessage"`
+		Premuim     bool    `json:"premuim"`
+	}
+
+	//easyjson:json
+	CreateLikeRequest struct {
+		Profile2 types.UserID `json:"id"`
+	}
+
+	//easyjson:json
+	AllChats struct {
+		Chats []ChatPreview `json:"chats"`
+	}
+
+	Claim struct {
+		Id         int64 `json:"id"`
+		TypeID     int64 `json:"typeID"`
+		SenderID   int64 `json:"senderID"`
+		ReceiverID int64 `json:"receiverID"`
+	}
+
+	//easyjson:json
+	CreateClaimRequest struct {
+		Type       int64 `json:"type"`
+		ReceiverID int64 `json:"receiverID"`
+	}
+
+	PureClaim struct {
+		Id    int64  `json:"id"`
+		Title string `json:"title"`
+	}
+
+	//easyjson:json
+	CardsToSend struct {
+		Cards []Card `json:"cards"`
+	}
+
+	//easyjson:json
+	MessagesToSend struct {
+		Messages []Message `json:"messages"`
+	}
+
+	//easyjson:json
+	GetChatFull struct {
+		Messages []Message `json:"messages"`
+		Images   []Image   `json:"images"`
+		Person   Person    `json:"person"`
+	}
+
+	//easyjson:json
+	ClaimsToSend struct {
+		Claims []PureClaim `json:"claims"`
+	}
+)
+
+var (
+	NoLikesLeftErr  = errors.New("no likes left")
+	NoMatchFoundErr = errors.New("sql: Rows are closed")
+	WSClosedErr     = errors.New("websocket: close sent")
+	TotalHits       = prometheus.NewCounterVec(
+		prometheus.CounterOpts{
+			Name: "feed_total_hits",
+			Help: "Count of hits in feed service.",
+		},
+		[]string{},
+	)
+	HitDuration = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "feed_methods_handling_duration",
+			Help: "Duration processing hit",
+		},
+		[]string{"method", "path"},
+	)
 )

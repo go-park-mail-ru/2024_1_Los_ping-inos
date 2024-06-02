@@ -6,51 +6,72 @@ import (
 	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
 	. "main.go/config"
-	"main.go/internal/auth"
+	auth "main.go/internal/auth/proto"
 	. "main.go/internal/logs"
 	"main.go/internal/types"
 	"net/http"
+	"strconv"
 )
 
-const CSRFHeader = "csrft"
+const (
+	CSRFHeader = "X-Csrf-Token"
+	TimingsKey = "timing"
+)
 
-func IsAuthenticatedMiddleware(next http.Handler, uc auth.IUseCase) http.Handler {
+func IsAuthenticatedMiddleware(next http.Handler, uc auth.AuthHandlClient) http.Handler {
 	return http.HandlerFunc(func(respWriter http.ResponseWriter, request *http.Request) {
-		log := request.Context().Value(Logg).(*Log)
+		log := request.Context().Value(Logg).(Log)
+		var session string // USER-ID
 
-		session, err := request.Cookie("session_id") // проверка авторизации
-		if err != nil || session == nil {
-			log.Logger.WithFields(logrus.Fields{RequestID: log.RequestID}).Info("unauthorized")
-			SendResponse(respWriter, request, http.StatusUnauthorized, "unauthorized")
+		if request.URL.Query().Has("uid") {
+			log.Logger.WithFields(logrus.Fields{RequestID: log.RequestID}).Info("authorized")
+			sess, _ := strconv.Atoi(request.URL.Query().Get("uid"))
+			contexted := request.WithContext(context.WithValue(request.Context(), RequestUserID, types.UserID(sess)))
+			next.ServeHTTP(respWriter, contexted)
+			return
+		} else {
+			sess, err := request.Cookie("session_id") // проверка авторизации
+			if err != nil || sess == nil {
+				log.Logger.WithFields(logrus.Fields{RequestID: log.RequestID}).Info("unauthorized")
+				SendSimpleResponse(respWriter, request, http.StatusUnauthorized, "unauthorized")
+				return
+			}
+			session = sess.Value
+		}
+
+		authResponse, err := uc.IsAuthenticated(request.Context(), &auth.IsAuthRequest{SessionID: session})
+
+		if err != nil {
+			log.Logger.WithFields(logrus.Fields{RequestID: log.RequestID}).Info("unauthorized: ", err.Error())
+			SendSimpleResponse(respWriter, request, http.StatusUnauthorized, "unauthorized: "+err.Error())
 			return
 		}
-		id, authorized := uc.IsAuthenticated(session.Value, request.Context())
 
-		if !authorized {
+		if !authResponse.IsAuthenticated {
 			log.Logger.WithFields(logrus.Fields{RequestID: log.RequestID}).Info("unauthorized")
-			SendResponse(respWriter, request, http.StatusUnauthorized, "unauthorized")
+			SendSimpleResponse(respWriter, request, http.StatusUnauthorized, "unauthorized")
 			return
 		}
+
 		log.Logger.WithFields(logrus.Fields{RequestID: log.RequestID}).Info("authorized")
-		contexted := request.WithContext(context.WithValue(request.Context(), RequestUserID, id))
-		contexted = request.WithContext(context.WithValue(contexted.Context(), RequestSID, session.Value))
+		contexted := request.WithContext(context.WithValue(request.Context(), RequestUserID, types.UserID(authResponse.UserID)))
+		contexted = request.WithContext(context.WithValue(contexted.Context(), RequestSID, session))
 		next.ServeHTTP(respWriter, contexted)
 	})
 }
 
 func AllowedMethodMiddleware(next http.Handler, methods *hashset.Set) http.Handler {
 	return http.HandlerFunc(func(respWriter http.ResponseWriter, request *http.Request) {
-		log := request.Context().Value(Logg).(*Log)
+		log := request.Context().Value(Logg).(Log)
 
 		if request.Method == http.MethodOptions {
 			log.Logger.WithFields(logrus.Fields{RequestID: log.RequestID}).Info("preflight")
-			SendResponse(respWriter, request, http.StatusOK, nil)
+			SendSimpleResponse(respWriter, request, http.StatusOK, "")
 			return
 		}
-
 		if !methods.Contains(request.Method) {
 			log.Logger.WithFields(logrus.Fields{RequestID: log.RequestID}).Info("method not allowed")
-			SendResponse(respWriter, request, http.StatusMethodNotAllowed, "method not allowed")
+			SendSimpleResponse(respWriter, request, http.StatusMethodNotAllowed, "method not allowed")
 			return
 		}
 		log.Logger.WithFields(logrus.Fields{RequestID: log.RequestID}).Info("methods checked")
@@ -58,7 +79,7 @@ func AllowedMethodMiddleware(next http.Handler, methods *hashset.Set) http.Handl
 	})
 }
 
-func RequestIDMiddleware(next http.Handler, msg string, logger *Log) http.Handler {
+func RequestIDMiddleware(next http.Handler, msg string, logger Log) http.Handler {
 	return http.HandlerFunc(func(respWriter http.ResponseWriter, request *http.Request) {
 		newID, _ := uuid.NewV7()
 		logger.RequestID = int64(newID.ID())
@@ -70,7 +91,7 @@ func RequestIDMiddleware(next http.Handler, msg string, logger *Log) http.Handle
 
 func CSRFMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(respWriter http.ResponseWriter, request *http.Request) {
-		log := request.Context().Value(Logg).(*Log)
+		log := request.Context().Value(Logg).(Log)
 		if request.Method == http.MethodGet {
 			next.ServeHTTP(respWriter, request)
 			return
@@ -80,7 +101,7 @@ func CSRFMiddleware(next http.Handler) http.Handler {
 			request.Context().Value(RequestUserID).(types.UserID), tok); !correct || err != nil {
 
 			log.Logger.WithFields(logrus.Fields{RequestID: log.RequestID}).Info("CSRF not correct")
-			SendResponse(respWriter, request, http.StatusForbidden, "CSRF not correct")
+			SendSimpleResponse(respWriter, request, http.StatusForbidden, "CSRF not correct")
 			return
 		}
 		next.ServeHTTP(respWriter, request)

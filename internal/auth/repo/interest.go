@@ -3,6 +3,7 @@ package repo
 import (
 	"context"
 	"database/sql"
+
 	qb "github.com/Masterminds/squirrel"
 	"github.com/sirupsen/logrus"
 	"main.go/internal/auth"
@@ -28,7 +29,7 @@ func NewInterestStorage(dbReader *sql.DB) *InterestStorage {
 }
 
 func (storage *InterestStorage) CreatePersonInterests(ctx context.Context, personID types.UserID, interestID []types.InterestID) error {
-	logger := ctx.Value(Logg).(*Log)
+	logger := ctx.Value(Logg).(Log)
 	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db add request to ", PersonInterestTableName)
 
@@ -50,8 +51,8 @@ func (storage *InterestStorage) CreatePersonInterests(ctx context.Context, perso
 	return nil
 }
 
-func (storage *InterestStorage) Get(ctx context.Context, filter *auth.InterestGetFilter) ([]*auth.Interest, error) {
-	logger := ctx.Value(Logg).(*Log)
+func (storage *InterestStorage) GetInterest(ctx context.Context, filter *auth.InterestGetFilter) ([]*auth.Interest, error) {
+	logger := ctx.Value(Logg).(Log)
 	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
 	whereMap := qb.And{}
 
@@ -70,16 +71,16 @@ func (storage *InterestStorage) Get(ctx context.Context, filter *auth.InterestGe
 		Select(interestFields).
 		From(InterestTableName).
 		Where(whereMap).
+		OrderBy("id").
 		RunWith(storage.dbReader)
 
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db get request to ", InterestTableName)
 	rows, err := query.Query()
-	defer rows.Close()
-
 	if err != nil {
 		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("can't query: ", err.Error())
 		return nil, err
 	}
+	defer rows.Close()
 
 	interests := make([]*auth.Interest, 0)
 	for rows.Next() {
@@ -110,7 +111,7 @@ func processInterestNameFilter(filter *auth.InterestGetFilter, whereMap *qb.And)
 }
 
 func (storage *InterestStorage) GetPersonInterests(ctx context.Context, personID types.UserID) ([]*auth.Interest, error) {
-	logger := ctx.Value(Logg).(*Log)
+	logger := ctx.Value(Logg).(Log)
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db get request to ", PersonInterestTableName)
 	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
 	query := stBuilder.
@@ -140,5 +141,25 @@ func (storage *InterestStorage) GetPersonInterests(ctx context.Context, personID
 		ids = append(ids, interestID)
 	}
 	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db got ", len(ids), " interest ids")
-	return storage.Get(ctx, &auth.InterestGetFilter{ID: ids})
+	return storage.GetInterest(ctx, &auth.InterestGetFilter{ID: ids})
+}
+
+func (storage *InterestStorage) DeletePersonInterests(ctx context.Context, personID types.UserID, interestID []types.InterestID) error {
+	logger := ctx.Value(Logg).(Log)
+	stBuilder := qb.StatementBuilder.PlaceholderFormat(qb.Dollar)
+	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db delete request to ", PersonInterestTableName)
+	query := stBuilder.
+		Delete(PersonInterestTableName).
+		Where(qb.And{qb.Eq{"person_id": personID}, qb.Eq{"interest_id": interestID}}).
+		RunWith(storage.dbReader)
+
+	rows, err := query.Query()
+	if err != nil {
+		logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Warn("db delete can't query: ", err.Error())
+		return err
+	}
+	defer rows.Close()
+
+	logger.Logger.WithFields(logrus.Fields{RequestID: logger.RequestID}).Info("db person interest deleted")
+	return nil
 }
